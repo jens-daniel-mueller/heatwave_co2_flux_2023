@@ -7,9 +7,54 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
+```{r libraries}
 
-```{r}
+library(tidyverse)
+library(khroma)
+
+```
+
+
+# Read data
+
+```{r read_data}
+
+co2_mm_gl <- read_csv("data/co2_mm_gl.csv", 
+    skip = 38)
+
+global_co2_merged <- read_table("data/global_co2_merged.txt", 
+    comment = "!",
+    col_names = c("decimal", "average"))
+
+
+atm_co2 <-
+  bind_rows(
+    co2_mm_gl %>%
+      select(decimal, average) %>%
+      mutate(data = "NOAA - Global marine surface"),
+    global_co2_merged %>%
+      mutate(data = "GCB - MLO & SPO")
+  )
+
+```
+
+```{r plot_time_series}
+
+atm_co2 %>% 
+  filter(decimal > 2010) %>% 
+  ggplot(aes(decimal, average, col = data)) +
+  geom_path() +
+  geom_point() +
+  labs(y = expression(Atm.~CO[2]~(ppm))) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_okabeito() +
+  theme_bw() +
+  scale_x_continuous(breaks = seq(1900,2100,2)) +
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.position = c(0.8,0.2))
+  
+  
 
 ```
 
