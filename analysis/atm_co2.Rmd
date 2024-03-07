@@ -10,6 +10,7 @@ editor_options:
 ```{r libraries}
 
 library(tidyverse)
+library(lubridate)
 library(khroma)
 
 ```
@@ -31,10 +32,17 @@ atm_co2 <-
   bind_rows(
     co2_mm_gl %>%
       select(decimal, average) %>%
-      mutate(data = "NOAA - Global marine surface"),
+      mutate(source = "NOAA - Global marine surface"),
     global_co2_merged %>%
-      mutate(data = "GCB - MLO & SPO")
+      mutate(source = "GCB - MLO & SPO")
   )
+
+atm_co2 <- 
+atm_co2 %>% 
+  mutate(date = date_decimal(decimal),
+         year = year(date),
+         month = month(date))
+
 
 ```
 
@@ -42,7 +50,7 @@ atm_co2 <-
 
 atm_co2 %>% 
   filter(decimal > 2010) %>% 
-  ggplot(aes(decimal, average, col = data)) +
+  ggplot(aes(decimal, average, col = source)) +
   geom_path() +
   geom_point() +
   labs(y = expression(Atm.~CO[2]~(ppm))) +
@@ -55,6 +63,108 @@ atm_co2 %>%
         legend.position = c(0.8,0.2))
   
   
+
+```
+
+```{r monthly_anomalies}
+
+atm_co2 <-
+atm_co2 %>% 
+  group_by(year, source) %>% 
+  mutate(annual_mean = mean(average)) %>% 
+  ungroup() %>% 
+  mutate(monthly_anomaly = average - annual_mean)
+
+atm_co2 %>% 
+  filter(decimal > 2013,
+         decimal < 2023) %>%
+  ggplot(aes(month, monthly_anomaly, col = source, group = interaction(source, year))) +
+  geom_path() +
+  geom_point() +
+  labs(y = expression(Monthly~anomaly~atm.~CO[2]~(ppm))) +
+  scale_color_okabeito() +
+  theme_bw() +
+  scale_x_continuous(breaks = seq(1,12,3)) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.8,0.2))
+
+atm_co2 %>% 
+  filter(decimal > 1980,
+         decimal < 2023) %>% 
+  ggplot(aes(month, monthly_anomaly, group = interaction(year), col = year)) +
+  geom_path() +
+  geom_point() +
+  labs(y = expression(Monthly~anomaly~atm.~CO[2]~(ppm))) +
+  scale_color_viridis_c() +
+  theme_bw() +
+  scale_x_continuous(breaks = seq(1,12,3)) +
+  facet_wrap(~ source) +
+  theme(legend.title = element_blank())
+
+atm_co2_monthly_anomaly <-
+  atm_co2 %>%
+  filter(decimal > 2013,
+         decimal < 2023) %>%
+  group_by(source, month) %>%
+  summarise(monthly_anomaly = mean(monthly_anomaly),
+            decimal_mean = mean(decimal - year)) %>%
+  ungroup()
+
+library(broom)
+annual_mean_2023_predicted <-
+  atm_co2 %>%
+  filter(decimal > 2013,
+         decimal < 2023) %>%
+  group_by(source, year) %>%
+  summarise(annual_mean = mean(average)) %>%
+  ungroup() %>%
+  nest(data = -source) %>%
+  mutate(fit = map(data, ~ lm(annual_mean ~ year, data = .x)),
+         tidied = map(fit, tidy)) %>%
+  unnest(tidied) %>%
+  select(source, term, estimate) %>%
+  pivot_wider(names_from = term,
+              values_from = estimate) %>%
+  mutate(annual_mean = `(Intercept)` + year * 2023) %>%
+  filter(source == "GCB - MLO & SPO") %>%
+  pull(annual_mean)
+
+  
+  
+
+atm_co2_monthly_anomaly <-
+  atm_co2_monthly_anomaly %>%
+  filter(source == "GCB - MLO & SPO") %>%
+  mutate(
+    year = 2023,
+    decimal = year + decimal_mean,
+    annual_mean = annual_mean_2023_predicted,
+    average =  annual_mean + monthly_anomaly,
+    source = "GCB - MLO & SPO (linear prediction)",
+    date = date_decimal(decimal)
+  ) %>%
+  select(-decimal_mean)
+
+atm_co2_predicted <-
+bind_rows(atm_co2 %>% filter(year < 2023 |
+                               source != "GCB - MLO & SPO"),
+          atm_co2_monthly_anomaly)
+
+atm_co2_predicted %>% 
+  filter(decimal > 2010) %>% 
+  ggplot() +
+  geom_path(aes(decimal, average, col = source)) +
+  geom_point(aes(decimal, average, col = source)) +
+  geom_path(aes(decimal, annual_mean, col = source, group = interaction(source, year),
+                linetype = "annual mean")) +
+  scale_linetype_manual(values = 2) +
+  labs(y = expression(Atm.~CO[2]~(ppm))) +
+  scale_color_okabeito() +
+  theme_bw() +
+  scale_x_continuous(breaks = seq(1900,2100,2)) +
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.position = c(0.8,0.2))
 
 ```
 
