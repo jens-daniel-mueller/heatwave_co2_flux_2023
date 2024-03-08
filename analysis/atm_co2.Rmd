@@ -12,6 +12,7 @@ editor_options:
 library(tidyverse)
 library(lubridate)
 library(khroma)
+library(broom)
 
 ```
 
@@ -68,11 +69,16 @@ atm_co2 %>%
 
 ```{r monthly_anomalies}
 
+
 atm_co2 <-
-atm_co2 %>% 
-  group_by(year, source) %>% 
-  mutate(annual_mean = mean(average)) %>% 
-  ungroup() %>% 
+  atm_co2 %>%
+  filter(year < 2023 | source != "GCB - MLO & SPO")
+
+atm_co2 <-
+  atm_co2 %>%
+  group_by(year, source) %>%
+  mutate(annual_mean = mean(average)) %>%
+  ungroup() %>%
   mutate(monthly_anomaly = average - annual_mean)
 
 atm_co2 %>% 
@@ -81,12 +87,27 @@ atm_co2 %>%
   ggplot(aes(month, monthly_anomaly, col = source, group = interaction(source, year))) +
   geom_path() +
   geom_point() +
-  labs(y = expression(Monthly~anomaly~atm.~CO[2]~(ppm))) +
-  scale_color_okabeito() +
+  labs(y = expression(Monthly~anomaly~from~annual~mean~(ppm)),
+       title = expression(Atmospheric~CO[2]~seasonality),
+       subtitle = "2013 - 2022") +
+  scale_color_manual(values = c("#000000", "#E69F00", "#56B4E9")) +
   theme_bw() +
-  scale_x_continuous(breaks = seq(1,12,3)) +
+  scale_x_continuous(breaks = seq(1,12,1), expand = c(0.01,0)) +
   theme(legend.title = element_blank(),
-        legend.position = c(0.8,0.2))
+        legend.position = c(0.3,0.2))
+
+ggsave(
+  here::here(
+    paste0(
+      "output/atm_CO2_seasonality.png"
+    )
+  ),
+  width = 6,
+  height = 4,
+  dpi = 600,
+  bg = "white"
+)
+
 
 atm_co2 %>% 
   filter(decimal > 1980,
@@ -110,7 +131,22 @@ atm_co2_monthly_anomaly <-
             decimal_mean = mean(decimal - year)) %>%
   ungroup()
 
-library(broom)
+
+atm_co2_annual_means <-
+  atm_co2 %>%
+  group_by(source, year) %>%
+  summarise(annual_mean = mean(average)) %>%
+  ungroup()
+
+atm_co2_annual_means %>% 
+  filter(year >= 2013,
+         year <= 2022) %>% 
+  group_by(source) %>%
+  summarise(long_term_mean = mean(annual_mean)) %>%
+  ungroup() %>% 
+  pull(long_term_mean)
+
+
 annual_mean_2023_predicted <-
   atm_co2 %>%
   filter(decimal > 2013,
@@ -130,8 +166,6 @@ annual_mean_2023_predicted <-
   pull(annual_mean)
 
   
-  
-
 atm_co2_monthly_anomaly <-
   atm_co2_monthly_anomaly %>%
   filter(source == "GCB - MLO & SPO") %>%
@@ -145,26 +179,46 @@ atm_co2_monthly_anomaly <-
   ) %>%
   select(-decimal_mean)
 
+
 atm_co2_predicted <-
-bind_rows(atm_co2 %>% filter(year < 2023 |
-                               source != "GCB - MLO & SPO"),
-          atm_co2_monthly_anomaly)
+  bind_rows(atm_co2 %>% filter(year < 2023 |
+                                 source != "GCB - MLO & SPO"),
+            atm_co2_monthly_anomaly)
+
+atm_co2_annual_means %>% 
+  filter(year > 2021)
 
 atm_co2_predicted %>% 
-  filter(decimal > 2010) %>% 
+  filter(decimal > 2013) %>% 
   ggplot() +
   geom_path(aes(decimal, average, col = source)) +
   geom_point(aes(decimal, average, col = source)) +
   geom_path(aes(decimal, annual_mean, col = source, group = interaction(source, year),
                 linetype = "annual mean")) +
   scale_linetype_manual(values = 2) +
-  labs(y = expression(Atm.~CO[2]~(ppm))) +
-  scale_color_okabeito() +
+  labs(y = expression(CO[2]~(ppm)),
+       title = expression(Atmospheric~CO[2]~timeseries),
+       subtitle = "2013 - 2022") +
+  scale_color_manual(values = c("#000000", "#56B4E9", "#E69F00")) +
   theme_bw() +
-  scale_x_continuous(breaks = seq(1900,2100,2)) +
+  scale_x_continuous(breaks = seq(1900,2100,2), expand = c(0.01,0)) +
   theme(axis.title.x = element_blank(),
         legend.title = element_blank(),
-        legend.position = c(0.8,0.2))
+        legend.position = c(0.3,0.7))
+
+
+ggsave(
+  here::here(
+    paste0(
+      "output/atm_CO2_timeseries.png"
+    )
+  ),
+  width = 6,
+  height = 4,
+  dpi = 600,
+  bg = "white"
+)
+
 
 ```
 
