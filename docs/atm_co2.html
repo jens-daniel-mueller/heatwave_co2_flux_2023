@@ -372,7 +372,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">atm_co2</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">07 March, 2024</h4>
+<h4 class="date">08 March, 2024</h4>
 
 </div>
 
@@ -401,7 +401,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-03-07
+<strong>Last updated:</strong> 2024-03-08
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -532,15 +532,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree36de8c8ea8a1c0f61b1932c44814cac0a47c7ce8targetblank36de8c8a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treeaf44790add19b299f29364e121b4b8820965c0d3targetblankaf44790a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/36de8c8ea8a1c0f61b1932c44814cac0a47c7ce8" target="_blank">36de8c8</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/af44790add19b299f29364e121b4b8820965c0d3" target="_blank">af44790</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree36de8c8ea8a1c0f61b1932c44814cac0a47c7ce8targetblank36de8c8a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treeaf44790add19b299f29364e121b4b8820965c0d3targetblankaf44790a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -550,7 +550,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/36de8c8ea8a1c0f61b1932c44814cac0a47c7ce8" target="_blank">36de8c8</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/af44790add19b299f29364e121b4b8820965c0d3" target="_blank">af44790</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -621,6 +621,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/af44790add19b299f29364e121b4b8820965c0d3/analysis/atm_co2.Rmd" target="_blank">af44790</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-08
+</td>
+<td>
+atm co2 2023 prediction
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/a2ce6d81778466bd2b54f9e27a94b516a22b0c6a/docs/atm_co2.html" target="_blank">a2ce6d8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -747,7 +781,8 @@ Attaching package: &#39;lubridate&#39;
 The following objects are masked from &#39;package:base&#39;:
 
     date, intersect, setdiff, union</code></pre>
-<pre class="r"><code>library(khroma)</code></pre>
+<pre class="r"><code>library(khroma)
+library(broom)</code></pre>
 <div id="read-data" class="section level1">
 <h1>Read data</h1>
 <pre class="r"><code>co2_mm_gl &lt;- read_csv(&quot;data/co2_mm_gl.csv&quot;, 
@@ -835,10 +870,14 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>atm_co2 &lt;-
-atm_co2 %&gt;% 
-  group_by(year, source) %&gt;% 
-  mutate(annual_mean = mean(average)) %&gt;% 
-  ungroup() %&gt;% 
+  atm_co2 %&gt;%
+  filter(year &lt; 2023 | source != &quot;GCB - MLO &amp; SPO&quot;)
+
+atm_co2 &lt;-
+  atm_co2 %&gt;%
+  group_by(year, source) %&gt;%
+  mutate(annual_mean = mean(average)) %&gt;%
+  ungroup() %&gt;%
   mutate(monthly_anomaly = average - annual_mean)
 
 atm_co2 %&gt;% 
@@ -847,14 +886,66 @@ atm_co2 %&gt;%
   ggplot(aes(month, monthly_anomaly, col = source, group = interaction(source, year))) +
   geom_path() +
   geom_point() +
-  labs(y = expression(Monthly~anomaly~atm.~CO[2]~(ppm))) +
-  scale_color_okabeito() +
+  labs(y = expression(Monthly~anomaly~from~annual~mean~(ppm)),
+       title = expression(Atmospheric~CO[2]~seasonality),
+       subtitle = &quot;2013 - 2022&quot;) +
+  scale_color_manual(values = c(&quot;#000000&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;)) +
   theme_bw() +
-  scale_x_continuous(breaks = seq(1,12,3)) +
+  scale_x_continuous(breaks = seq(1,12,1), expand = c(0.01,0)) +
   theme(legend.title = element_blank(),
-        legend.position = c(0.8,0.2))</code></pre>
+        legend.position = c(0.3,0.2))</code></pre>
 <p><img src="figure/atm_co2.Rmd/monthly_anomalies-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>atm_co2 %&gt;% 
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_anomalies-1">
+Past versions of monthly_anomalies-1.png
+</button>
+</p>
+<div id="fig-monthly_anomalies-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a2ce6d81778466bd2b54f9e27a94b516a22b0c6a/docs/figure/atm_co2.Rmd/monthly_anomalies-1.png" target="_blank">a2ce6d8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggsave(
+  here::here(
+    paste0(
+      &quot;output/atm_CO2_seasonality.png&quot;
+    )
+  ),
+  width = 6,
+  height = 4,
+  dpi = 600,
+  bg = &quot;white&quot;
+)
+
+
+atm_co2 %&gt;% 
   filter(decimal &gt; 1980,
          decimal &lt; 2023) %&gt;% 
   ggplot(aes(month, monthly_anomaly, group = interaction(year), col = year)) +
@@ -867,6 +958,43 @@ atm_co2 %&gt;%
   facet_wrap(~ source) +
   theme(legend.title = element_blank())</code></pre>
 <p><img src="figure/atm_co2.Rmd/monthly_anomalies-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_anomalies-2">
+Past versions of monthly_anomalies-2.png
+</button>
+</p>
+<div id="fig-monthly_anomalies-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a2ce6d81778466bd2b54f9e27a94b516a22b0c6a/docs/figure/atm_co2.Rmd/monthly_anomalies-2.png" target="_blank">a2ce6d8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>atm_co2_monthly_anomaly &lt;-
   atm_co2 %&gt;%
   filter(decimal &gt; 2013,
@@ -877,8 +1005,22 @@ atm_co2 %&gt;%
   ungroup()</code></pre>
 <pre><code>`summarise()` has grouped output by &#39;source&#39;. You can override using the
 `.groups` argument.</code></pre>
-<pre class="r"><code>library(broom)
-annual_mean_2023_predicted &lt;-
+<pre class="r"><code>atm_co2_annual_means &lt;-
+  atm_co2 %&gt;%
+  group_by(source, year) %&gt;%
+  summarise(annual_mean = mean(average)) %&gt;%
+  ungroup()</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;source&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>atm_co2_annual_means %&gt;% 
+  filter(year &gt;= 2013,
+         year &lt;= 2022) %&gt;% 
+  group_by(source) %&gt;%
+  summarise(long_term_mean = mean(annual_mean)) %&gt;%
+  ungroup() %&gt;% 
+  pull(long_term_mean)</code></pre>
+<pre><code>[1] 405.7722 406.2577</code></pre>
+<pre class="r"><code>annual_mean_2023_predicted &lt;-
   atm_co2 %&gt;%
   filter(decimal &gt; 2013,
          decimal &lt; 2023) %&gt;%
@@ -910,27 +1052,86 @@ annual_mean_2023_predicted &lt;-
   ) %&gt;%
   select(-decimal_mean)
 
-atm_co2_predicted &lt;-
-bind_rows(atm_co2 %&gt;% filter(year &lt; 2023 |
-                               source != &quot;GCB - MLO &amp; SPO&quot;),
-          atm_co2_monthly_anomaly)
 
-atm_co2_predicted %&gt;% 
-  filter(decimal &gt; 2010) %&gt;% 
+atm_co2_predicted &lt;-
+  bind_rows(atm_co2 %&gt;% filter(year &lt; 2023 |
+                                 source != &quot;GCB - MLO &amp; SPO&quot;),
+            atm_co2_monthly_anomaly)
+
+atm_co2_annual_means %&gt;% 
+  filter(year &gt; 2021)</code></pre>
+<pre><code># A tibble: 3 × 3
+  source                        year annual_mean
+  &lt;chr&gt;                        &lt;dbl&gt;       &lt;dbl&gt;
+1 GCB - MLO &amp; SPO               2022        416.
+2 NOAA - Global marine surface  2022        417.
+3 NOAA - Global marine surface  2023        419.</code></pre>
+<pre class="r"><code>atm_co2_predicted %&gt;% 
+  filter(decimal &gt; 2013) %&gt;% 
   ggplot() +
   geom_path(aes(decimal, average, col = source)) +
   geom_point(aes(decimal, average, col = source)) +
   geom_path(aes(decimal, annual_mean, col = source, group = interaction(source, year),
                 linetype = &quot;annual mean&quot;)) +
   scale_linetype_manual(values = 2) +
-  labs(y = expression(Atm.~CO[2]~(ppm))) +
-  scale_color_okabeito() +
+  labs(y = expression(CO[2]~(ppm)),
+       title = expression(Atmospheric~CO[2]~timeseries),
+       subtitle = &quot;2013 - 2022&quot;) +
+  scale_color_manual(values = c(&quot;#000000&quot;, &quot;#56B4E9&quot;, &quot;#E69F00&quot;)) +
   theme_bw() +
-  scale_x_continuous(breaks = seq(1900,2100,2)) +
+  scale_x_continuous(breaks = seq(1900,2100,2), expand = c(0.01,0)) +
   theme(axis.title.x = element_blank(),
         legend.title = element_blank(),
-        legend.position = c(0.8,0.2))</code></pre>
+        legend.position = c(0.3,0.7))</code></pre>
 <p><img src="figure/atm_co2.Rmd/monthly_anomalies-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_anomalies-3">
+Past versions of monthly_anomalies-3.png
+</button>
+</p>
+<div id="fig-monthly_anomalies-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a2ce6d81778466bd2b54f9e27a94b516a22b0c6a/docs/figure/atm_co2.Rmd/monthly_anomalies-3.png" target="_blank">a2ce6d8</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggsave(
+  here::here(
+    paste0(
+      &quot;output/atm_CO2_timeseries.png&quot;
+    )
+  ),
+  width = 6,
+  height = 4,
+  dpi = 600,
+  bg = &quot;white&quot;
+)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -966,33 +1167,34 @@ other attached packages:
 [13] tidyverse_1.3.2  workflowr_1.7.0 
 
 loaded via a namespace (and not attached):
- [1] httr_1.4.4          sass_0.4.4          viridisLite_0.4.1  
- [4] bit64_4.0.5         vroom_1.6.0         jsonlite_1.8.3     
- [7] splines_4.2.2       modelr_0.1.10       bslib_0.4.1        
-[10] assertthat_0.2.1    getPass_0.2-2       highr_0.9          
-[13] googlesheets4_1.0.1 cellranger_1.1.0    yaml_2.3.6         
-[16] lattice_0.20-45     pillar_1.9.0        backports_1.4.1    
-[19] glue_1.6.2          digest_0.6.30       promises_1.2.0.1   
-[22] rvest_1.0.3         colorspace_2.0-3    Matrix_1.5-3       
-[25] htmltools_0.5.3     httpuv_1.6.6        pkgconfig_2.0.3    
-[28] haven_2.5.1         scales_1.2.1        processx_3.8.0     
-[31] whisker_0.4         later_1.3.0         tzdb_0.3.0         
-[34] git2r_0.30.1        googledrive_2.0.0   mgcv_1.8-41        
-[37] farver_2.1.1        generics_0.1.3      ellipsis_0.3.2     
-[40] cachem_1.0.6        withr_2.5.0         cli_3.6.1          
-[43] magrittr_2.0.3      crayon_1.5.2        readxl_1.4.1       
-[46] evaluate_0.18       ps_1.7.2            fs_1.5.2           
-[49] fansi_1.0.3         nlme_3.1-160        xml2_1.3.3         
-[52] tools_4.2.2         hms_1.1.2           gargle_1.2.1       
-[55] lifecycle_1.0.3     munsell_0.5.0       reprex_2.0.2       
-[58] callr_3.7.3         compiler_4.2.2      jquerylib_0.1.4    
-[61] rlang_1.1.1         grid_4.2.2          rstudioapi_0.15.0  
-[64] labeling_0.4.2      rmarkdown_2.18      gtable_0.3.1       
-[67] DBI_1.1.3           R6_2.5.1            knitr_1.41         
-[70] fastmap_1.1.0       bit_4.0.5           utf8_1.2.2         
-[73] rprojroot_2.0.3     stringi_1.7.8       parallel_4.2.2     
-[76] Rcpp_1.0.11         vctrs_0.6.4         dbplyr_2.2.1       
-[79] tidyselect_1.2.0    xfun_0.35          </code></pre>
+ [1] nlme_3.1-160        fs_1.5.2            bit64_4.0.5        
+ [4] httr_1.4.4          rprojroot_2.0.3     tools_4.2.2        
+ [7] backports_1.4.1     bslib_0.4.1         utf8_1.2.2         
+[10] R6_2.5.1            DBI_1.1.3           mgcv_1.8-41        
+[13] colorspace_2.0-3    withr_2.5.0         tidyselect_1.2.0   
+[16] processx_3.8.0      bit_4.0.5           compiler_4.2.2     
+[19] git2r_0.30.1        textshaping_0.3.6   cli_3.6.1          
+[22] rvest_1.0.3         xml2_1.3.3          labeling_0.4.2     
+[25] sass_0.4.4          scales_1.2.1        callr_3.7.3        
+[28] systemfonts_1.0.4   digest_0.6.30       rmarkdown_2.18     
+[31] pkgconfig_2.0.3     htmltools_0.5.3     dbplyr_2.2.1       
+[34] fastmap_1.1.0       highr_0.9           rlang_1.1.1        
+[37] readxl_1.4.1        rstudioapi_0.15.0   jquerylib_0.1.4    
+[40] generics_0.1.3      farver_2.1.1        jsonlite_1.8.3     
+[43] vroom_1.6.0         googlesheets4_1.0.1 magrittr_2.0.3     
+[46] Matrix_1.5-3        Rcpp_1.0.11         munsell_0.5.0      
+[49] fansi_1.0.3         lifecycle_1.0.3     stringi_1.7.8      
+[52] whisker_0.4         yaml_2.3.6          grid_4.2.2         
+[55] parallel_4.2.2      promises_1.2.0.1    crayon_1.5.2       
+[58] lattice_0.20-45     haven_2.5.1         splines_4.2.2      
+[61] hms_1.1.2           knitr_1.41          ps_1.7.2           
+[64] pillar_1.9.0        reprex_2.0.2        glue_1.6.2         
+[67] evaluate_0.18       getPass_0.2-2       modelr_0.1.10      
+[70] vctrs_0.6.4         tzdb_0.3.0          httpuv_1.6.6       
+[73] cellranger_1.1.0    gtable_0.3.1        assertthat_0.2.1   
+[76] cachem_1.0.6        xfun_0.35           later_1.3.0        
+[79] viridisLite_0.4.1   ragg_1.2.4          googledrive_2.0.0  
+[82] gargle_1.2.1        ellipsis_0.3.2      here_1.0.1         </code></pre>
 </div>
 </div>
 
