@@ -15,14 +15,336 @@ editor_options:
 
 ```{r load_libraries_specific, include = FALSE}
 
+library(stars)
+library(lubridate)
+library(ggnewscale)
+library(khroma)
 
 ```
 
 
 # Read data
 
-```{r read_data}
+```{r define_paths}
 
+path_pCO2_products <-
+  "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/"
+
+path_reccap2 <-
+  "/nfs/kryo/work/datasets/gridded/ocean/interior/reccap2/"
+
+```
+
+```{r}
+
+region_masks_all <-
+  read_ncdf(paste(path_reccap2, "supplementary/RECCAP2_region_masks_all_v20221025.nc", sep = "")) %>%
+  as_tibble()
+
+
+region_masks_all <- region_masks_all %>%
+  filter(seamask == 1) %>% 
+  select(lon, lat, atlantic:southern) %>% 
+  pivot_longer(atlantic:southern) %>%
+  mutate(value = as.factor(value))
+
+region_masks_all <- region_masks_all %>%
+  filter(value != 0)
+
+region_masks_all <- region_masks_all %>%
+  mutate(biome = paste(name, value, sep = "_")) %>% 
+  select(lon, lat, biome)
+
+
+region_masks_all %>%
+  ggplot(aes(lon, lat, fill = biome)) +
+  geom_raster() +
+  coord_quickmap(expand = 0)
+
+
+region_masks_all <- region_masks_all  %>% 
+  mutate(biome = case_when(
+    biome == "atlantic_1" ~ "NA-SPSS",
+    biome == "atlantic_2" ~ "NA-STSS",
+    biome == "atlantic_3" ~ "NA-STPS",
+    biome == "atlantic_4" ~ "AEQU",
+    biome == "atlantic_5" ~ "SA-STPS",
+    # biome == "atlantic_6" ~ "MED",
+    biome == "pacific_1" ~ "NP-SPSS",
+    biome == "pacific_2" ~ "NP-STSS",
+    biome == "pacific_3" ~ "NP-STPS",
+    biome == "pacific_4" ~ "PEQU-E",
+    biome == "pacific_5" ~ "PEQU-W",
+    biome == "pacific_6" ~ "SP-STSS",
+    biome == "indian_1" ~ "Arabian Sea",
+    biome == "indian_2" ~ "Bay of Bengal",
+    biome == "indian_3" ~ "Equatorial Indian",
+    biome == "indian_4" ~ "Southern Indian",
+    # biome == "arctic_1" ~ "ARCTIC-ICE",
+    # biome == "arctic_2" ~ "NP-ICE",
+    # biome == "arctic_3" ~ "NA-ICE",
+    # biome == "arctic_4" ~ "Barents",
+    biome == "southern_1" ~ "SO-STSS",
+    biome == "southern_2" ~ "SO-SPSS",
+    biome == "southern_3" ~ "SO-ICE",
+    TRUE ~ "other"
+  ))
+
+region_masks_all <-
+  region_masks_all %>%
+  filter(biome != "other")
+  
+  
+region_masks_all %>%
+  ggplot(aes(lon, lat, fill = biome)) +
+  geom_raster() +
+  coord_quickmap(expand = 0)
+
+```
+
+
+
+
+```{r read_nc_metadata, eval=FALSE}
+
+library(ncdf4)
+nc <- nc_open(paste0(path_pCO2_products,"VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"))
+print(nc)
+
+```
+
+
+```{r read_VLIZ_SOM_FFN}
+
+SOM_FFN <- read_ncdf(paste0(path_pCO2_products,"VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"),
+                     make_units = FALSE)
+
+SOM_FFN_tibble <- SOM_FFN %>% 
+  as_tibble()
+
+SOM_FFN_tibble <-
+  SOM_FFN_tibble %>%
+  mutate(area = earth_surf(lat, lon)) 
+
+SOM_FFN_tibble <-
+  SOM_FFN_tibble %>%
+  mutate(across(dco2:fgco2_smoothed, ~ replace(., . >= 1e+19, NA)))
+
+
+```
+
+```{r maps}
+
+SOM_FFN_tibble <-
+  SOM_FFN_tibble %>% 
+  mutate(lon = if_else(lon < 0, lon + 360, lon))
+
+SOM_FFN_tibble <-
+  inner_join(SOM_FFN_tibble,
+             region_masks_all)
+
+SOM_FFN_tibble %>%
+  filter(time == max(time)) %>%
+  ggplot(aes(lon, lat, fill = fgco2_smoothed)) +
+  geom_raster() +
+  scale_fill_divergent() +
+  coord_quickmap(expand = 0)
+
+SOM_FFN_tibble %>%
+  filter(time == max(time)) %>%
+  ggplot(aes(lon, lat, fill = fgco2_smoothed)) +
+  geom_raster() +
+  scale_fill_divergent() +
+  coord_quickmap(expand = 0)
+
+SOM_FFN_annual_mean_maps <-
+  SOM_FFN_tibble %>%
+  mutate(year = year(time)) %>%
+  group_by(year, lon, lat) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %>%
+  ungroup()
+
+
+
+SOM_FFN_climatology <-
+  SOM_FFN_annual_mean_maps %>%
+  filter(year >= 1990,
+         year <= 2022) %>%
+  group_by(lon, lat) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %>%
+  ungroup()
+
+
+SOM_FFN_2023_anomaly <-
+  bind_rows(
+    SOM_FFN_climatology %>% mutate(reference = "climatology"),
+    SOM_FFN_annual_mean_maps %>%
+      filter(year == 2023) %>%
+      select(-year) %>% 
+      mutate(reference = "2023")
+  )
+
+
+SOM_FFN_2023_anomaly <-
+  SOM_FFN_2023_anomaly %>%
+  pivot_longer(-c(lon, lat, reference)) %>%
+  pivot_wider(names_from = reference,
+              values_from = value) %>%
+  mutate(anomaly = `2023` - climatology)
+  
+
+
+SOM_FFN_2023_anomaly %>%
+  filter(name == "sol") %>% 
+  ggplot(aes(lon, lat, fill = anomaly)) +
+  geom_raster() +
+  scale_fill_divergent() +
+  coord_quickmap(expand = 0)
+
+
+
+
+```
+
+
+
+```{r global_means_and_integrals}
+
+SOM_FFN_monthly_global <-
+  SOM_FFN_tibble %>%
+  select(-seaice) %>% 
+  group_by(time) %>% 
+  summarise(across(dco2:fgco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE),
+                   .names = "{.col}_mean"),
+            across(fgco2_raw:fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15,
+                   .names = "{.col}_integral")) %>% 
+  ungroup()
+
+SOM_FFN_monthly_biome <-
+  SOM_FFN_tibble %>%
+  select(-seaice) %>% 
+  group_by(time, biome) %>% 
+  summarise(across(dco2:fgco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE),
+                   .names = "{.col}_mean"),
+            across(fgco2_raw:fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15,
+                   .names = "{.col}_integral")) %>% 
+  ungroup()
+  
+SOM_FFN_monthly <- 
+  bind_rows(SOM_FFN_monthly_global %>% mutate(biome = "global"),
+            SOM_FFN_monthly_biome)
+
+
+
+SOM_FFN_monthly %>%
+  pivot_longer(-c(time, biome)) %>%
+  ggplot(aes(time, value)) +
+  geom_path() +
+  facet_grid(name ~ biome, scales = "free_y")
+
+
+
+SOM_FFN_monthly <-
+SOM_FFN_monthly %>%
+  mutate(year = year(time),
+         month = month(time),
+         .after = time)
+
+SOM_FFN_monthly %>%
+  pivot_longer(-c(time:month, biome)) %>%
+  filter(biome %in% c("global", "NA-SPSS", "NA-STPS", "NP-SPSS"),
+         name %in% c("dco2_mean", "atm_co2_mean", "sol_mean", "kw_mean", 
+                     "spco2_smoothed_mean", "fgco2_smoothed_integral")) %>%
+  ggplot(aes(month, value, group = as.factor(year))) +
+  geom_path(data = . %>% filter(year < 2022),
+            aes(col = year)) +
+  scale_color_viridis_c(direction = -1) +
+  new_scale_color() +
+  geom_path(data = . %>% filter(year >= 2022),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c("orange", "red")) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  facet_grid(name ~ biome, scales = "free_y") +
+  theme(legend.title = element_blank())
+
+SOM_FFN_monthly %>%
+  pivot_longer(-c(time:month, biome)) %>%
+  filter(
+    biome %in% c("global", "NA-SPSS", "NA-STPS", "NP-SPSS"),
+    name %in% c(
+      "dco2_mean",
+      "atm_co2_mean",
+      "sol_mean",
+      "kw_mean",
+      "spco2_smoothed_mean",
+      "fgco2_smoothed_integral"
+    )
+  ) %>%
+  group_split(biome) %>%
+  head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(month, value, group = as.factor(year))) +
+      geom_path(data = . %>% filter(year < 2022),
+                aes(col = year)) +
+      scale_color_viridis_c(direction = -1) +
+      new_scale_color() +
+      geom_path(
+        data = . %>% filter(year >= 2022),
+        aes(col = as.factor(year)),
+        linewidth = 1
+      ) +
+      scale_color_manual(values = c("orange", "red")) +
+      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+      facet_grid(name ~ biome, scales = "free_y") +
+      theme(legend.title = element_blank())
+  )
+
+
+
+```
+
+```{r regional_seasonality, fig.asp=1.5}
+
+SOM_FFN_monthly %>%
+  pivot_longer(-c(time:month, biome)) %>%
+  filter(
+    # biome %in% c("global", "NA-SPSS", "NA-STPS", "NP-SPSS"),
+    name %in% c(
+      "dco2_mean",
+      "atm_co2_mean",
+      "sol_mean",
+      "kw_mean",
+      "spco2_smoothed_mean",
+      "fgco2_smoothed_integral"
+    )
+  ) %>%
+  group_split(biome) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(month, value, group = as.factor(year))) +
+      geom_path(data = . %>% filter(year < 2022),
+                aes(col = year)) +
+      scale_color_viridis_c(direction = -1) +
+      new_scale_color() +
+      geom_path(
+        data = . %>% filter(year >= 2022),
+        aes(col = as.factor(year)),
+        linewidth = 1
+      ) +
+      scale_color_manual(values = c("orange", "red")) +
+      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+      facet_grid(name ~ biome, scales = "free_y") +
+      theme(legend.title = element_blank())
+  )
 
 
 ```
