@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treef4af74f06a8cf9a36b6d43984fd1d4352d0d96a7targetblankf4af74fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treea67e7999ccbe97b0ab6bad4a223c17350eebd36ftargetblanka67e799a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/f4af74f06a8cf9a36b6d43984fd1d4352d0d96a7" target="_blank">f4af74f</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/a67e7999ccbe97b0ab6bad4a223c17350eebd36f" target="_blank">a67e799</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treef4af74f06a8cf9a36b6d43984fd1d4352d0d96a7targetblankf4af74fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treea67e7999ccbe97b0ab6bad4a223c17350eebd36ftargetblanka67e799a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/f4af74f06a8cf9a36b6d43984fd1d4352d0d96a7" target="_blank">f4af74f</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/a67e7999ccbe97b0ab6bad4a223c17350eebd36f" target="_blank">a67e799</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -631,6 +631,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a67e7999ccbe97b0ab6bad4a223c17350eebd36f/analysis/pCO2_products.Rmd" target="_blank">a67e799</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-11
+</td>
+<td>
+regional analysis for SOM-FFN started
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/45a623c2fdbf0719d427607844e2edfdc646cba6/docs/pCO2_products.html" target="_blank">45a623c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -754,6 +788,339 @@ latitude_labels_trans &lt;- st_transform(latitude_labels, crs = target_crs)
 #                col = &quot;grey60&quot;)</code></pre>
 <div id="read-data" class="section level1">
 <h1>Read data</h1>
+<pre class="r"><code>path_pCO2_products &lt;-
+  &quot;/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/&quot;
+
+path_reccap2 &lt;-
+  &quot;/nfs/kryo/work/datasets/gridded/ocean/interior/reccap2/&quot;</code></pre>
+<pre class="r"><code>region_masks_all &lt;-
+  read_ncdf(paste(path_reccap2, &quot;supplementary/RECCAP2_region_masks_all_v20221025.nc&quot;, sep = &quot;&quot;)) %&gt;%
+  as_tibble()
+
+
+region_masks_all &lt;- region_masks_all %&gt;%
+  filter(seamask == 1) %&gt;% 
+  select(lon, lat, atlantic:southern) %&gt;% 
+  pivot_longer(atlantic:southern) %&gt;%
+  mutate(value = as.factor(value))
+
+region_masks_all &lt;- region_masks_all %&gt;%
+  filter(value != 0)
+
+region_masks_all &lt;- region_masks_all %&gt;%
+  mutate(biome = paste(name, value, sep = &quot;_&quot;)) %&gt;% 
+  select(lon, lat, biome)
+
+
+region_masks_all %&gt;%
+  ggplot(aes(lon, lat, fill = biome)) +
+  geom_raster() +
+  coord_quickmap(expand = 0)</code></pre>
+<p><img src="figure/pCO2_products.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>region_masks_all &lt;- region_masks_all  %&gt;% 
+  mutate(biome = case_when(
+    biome == &quot;atlantic_1&quot; ~ &quot;NA-SPSS&quot;,
+    biome == &quot;atlantic_2&quot; ~ &quot;NA-STSS&quot;,
+    biome == &quot;atlantic_3&quot; ~ &quot;NA-STPS&quot;,
+    biome == &quot;atlantic_4&quot; ~ &quot;AEQU&quot;,
+    biome == &quot;atlantic_5&quot; ~ &quot;SA-STPS&quot;,
+    # biome == &quot;atlantic_6&quot; ~ &quot;MED&quot;,
+    biome == &quot;pacific_1&quot; ~ &quot;NP-SPSS&quot;,
+    biome == &quot;pacific_2&quot; ~ &quot;NP-STSS&quot;,
+    biome == &quot;pacific_3&quot; ~ &quot;NP-STPS&quot;,
+    biome == &quot;pacific_4&quot; ~ &quot;PEQU-E&quot;,
+    biome == &quot;pacific_5&quot; ~ &quot;PEQU-W&quot;,
+    biome == &quot;pacific_6&quot; ~ &quot;SP-STSS&quot;,
+    biome == &quot;indian_1&quot; ~ &quot;Arabian Sea&quot;,
+    biome == &quot;indian_2&quot; ~ &quot;Bay of Bengal&quot;,
+    biome == &quot;indian_3&quot; ~ &quot;Equatorial Indian&quot;,
+    biome == &quot;indian_4&quot; ~ &quot;Southern Indian&quot;,
+    # biome == &quot;arctic_1&quot; ~ &quot;ARCTIC-ICE&quot;,
+    # biome == &quot;arctic_2&quot; ~ &quot;NP-ICE&quot;,
+    # biome == &quot;arctic_3&quot; ~ &quot;NA-ICE&quot;,
+    # biome == &quot;arctic_4&quot; ~ &quot;Barents&quot;,
+    biome == &quot;southern_1&quot; ~ &quot;SO-STSS&quot;,
+    biome == &quot;southern_2&quot; ~ &quot;SO-SPSS&quot;,
+    biome == &quot;southern_3&quot; ~ &quot;SO-ICE&quot;,
+    TRUE ~ &quot;other&quot;
+  ))
+
+region_masks_all &lt;-
+  region_masks_all %&gt;%
+  filter(biome != &quot;other&quot;)
+  
+  
+region_masks_all %&gt;%
+  ggplot(aes(lon, lat, fill = biome)) +
+  geom_raster() +
+  coord_quickmap(expand = 0)</code></pre>
+<p><img src="figure/pCO2_products.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(ncdf4)
+nc &lt;- nc_open(paste0(path_pCO2_products,&quot;VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc&quot;))
+print(nc)</code></pre>
+<pre class="r"><code>SOM_FFN &lt;- read_ncdf(paste0(path_pCO2_products,&quot;VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc&quot;),
+                     make_units = FALSE)
+
+SOM_FFN_tibble &lt;- SOM_FFN %&gt;% 
+  as_tibble()
+
+SOM_FFN_tibble &lt;-
+  SOM_FFN_tibble %&gt;%
+  mutate(area = earth_surf(lat, lon)) 
+
+SOM_FFN_tibble &lt;-
+  SOM_FFN_tibble %&gt;%
+  mutate(across(dco2:fgco2_smoothed, ~ replace(., . &gt;= 1e+19, NA)))</code></pre>
+<pre class="r"><code>SOM_FFN_tibble &lt;-
+  SOM_FFN_tibble %&gt;% 
+  mutate(lon = if_else(lon &lt; 0, lon + 360, lon))
+
+SOM_FFN_tibble &lt;-
+  inner_join(SOM_FFN_tibble,
+             region_masks_all)
+
+SOM_FFN_tibble %&gt;%
+  filter(time == max(time)) %&gt;%
+  ggplot(aes(lon, lat, fill = fgco2_smoothed)) +
+  geom_raster() +
+  scale_fill_divergent() +
+  coord_quickmap(expand = 0)</code></pre>
+<p><img src="figure/pCO2_products.Rmd/maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SOM_FFN_tibble %&gt;%
+  filter(time == max(time)) %&gt;%
+  ggplot(aes(lon, lat, fill = fgco2_smoothed)) +
+  geom_raster() +
+  scale_fill_divergent() +
+  coord_quickmap(expand = 0)</code></pre>
+<p><img src="figure/pCO2_products.Rmd/maps-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SOM_FFN_annual_mean_maps &lt;-
+  SOM_FFN_tibble %&gt;%
+  mutate(year = year(time)) %&gt;%
+  group_by(year, lon, lat) %&gt;%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %&gt;%
+  ungroup()
+
+
+
+SOM_FFN_climatology &lt;-
+  SOM_FFN_annual_mean_maps %&gt;%
+  filter(year &gt;= 1990,
+         year &lt;= 2022) %&gt;%
+  group_by(lon, lat) %&gt;%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %&gt;%
+  ungroup()
+
+
+SOM_FFN_2023_anomaly &lt;-
+  bind_rows(
+    SOM_FFN_climatology %&gt;% mutate(reference = &quot;climatology&quot;),
+    SOM_FFN_annual_mean_maps %&gt;%
+      filter(year == 2023) %&gt;%
+      select(-year) %&gt;% 
+      mutate(reference = &quot;2023&quot;)
+  )
+
+
+SOM_FFN_2023_anomaly &lt;-
+  SOM_FFN_2023_anomaly %&gt;%
+  pivot_longer(-c(lon, lat, reference)) %&gt;%
+  pivot_wider(names_from = reference,
+              values_from = value) %&gt;%
+  mutate(anomaly = `2023` - climatology)
+  
+
+
+SOM_FFN_2023_anomaly %&gt;%
+  filter(name == &quot;sol&quot;) %&gt;% 
+  ggplot(aes(lon, lat, fill = anomaly)) +
+  geom_raster() +
+  scale_fill_divergent() +
+  coord_quickmap(expand = 0)</code></pre>
+<p><img src="figure/pCO2_products.Rmd/maps-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SOM_FFN_monthly_global &lt;-
+  SOM_FFN_tibble %&gt;%
+  select(-seaice) %&gt;% 
+  group_by(time) %&gt;% 
+  summarise(across(dco2:fgco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE),
+                   .names = &quot;{.col}_mean&quot;),
+            across(fgco2_raw:fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15,
+                   .names = &quot;{.col}_integral&quot;)) %&gt;% 
+  ungroup()
+
+SOM_FFN_monthly_biome &lt;-
+  SOM_FFN_tibble %&gt;%
+  select(-seaice) %&gt;% 
+  group_by(time, biome) %&gt;% 
+  summarise(across(dco2:fgco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE),
+                   .names = &quot;{.col}_mean&quot;),
+            across(fgco2_raw:fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15,
+                   .names = &quot;{.col}_integral&quot;)) %&gt;% 
+  ungroup()
+  
+SOM_FFN_monthly &lt;- 
+  bind_rows(SOM_FFN_monthly_global %&gt;% mutate(biome = &quot;global&quot;),
+            SOM_FFN_monthly_biome)
+
+
+
+SOM_FFN_monthly %&gt;%
+  pivot_longer(-c(time, biome)) %&gt;%
+  ggplot(aes(time, value)) +
+  geom_path() +
+  facet_grid(name ~ biome, scales = &quot;free_y&quot;)</code></pre>
+<p><img src="figure/pCO2_products.Rmd/global_means_and_integrals-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SOM_FFN_monthly &lt;-
+SOM_FFN_monthly %&gt;%
+  mutate(year = year(time),
+         month = month(time),
+         .after = time)
+
+SOM_FFN_monthly %&gt;%
+  pivot_longer(-c(time:month, biome)) %&gt;%
+  filter(biome %in% c(&quot;global&quot;, &quot;NA-SPSS&quot;, &quot;NA-STPS&quot;, &quot;NP-SPSS&quot;),
+         name %in% c(&quot;dco2_mean&quot;, &quot;atm_co2_mean&quot;, &quot;sol_mean&quot;, &quot;kw_mean&quot;, 
+                     &quot;spco2_smoothed_mean&quot;, &quot;fgco2_smoothed_integral&quot;)) %&gt;%
+  ggplot(aes(month, value, group = as.factor(year))) +
+  geom_path(data = . %&gt;% filter(year &lt; 2022),
+            aes(col = year)) +
+  scale_color_viridis_c(direction = -1) +
+  new_scale_color() +
+  geom_path(data = . %&gt;% filter(year &gt;= 2022),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  facet_grid(name ~ biome, scales = &quot;free_y&quot;) +
+  theme(legend.title = element_blank())</code></pre>
+<p><img src="figure/pCO2_products.Rmd/global_means_and_integrals-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SOM_FFN_monthly %&gt;%
+  pivot_longer(-c(time:month, biome)) %&gt;%
+  filter(
+    biome %in% c(&quot;global&quot;, &quot;NA-SPSS&quot;, &quot;NA-STPS&quot;, &quot;NP-SPSS&quot;),
+    name %in% c(
+      &quot;dco2_mean&quot;,
+      &quot;atm_co2_mean&quot;,
+      &quot;sol_mean&quot;,
+      &quot;kw_mean&quot;,
+      &quot;spco2_smoothed_mean&quot;,
+      &quot;fgco2_smoothed_integral&quot;
+    )
+  ) %&gt;%
+  group_split(biome) %&gt;%
+  head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(month, value, group = as.factor(year))) +
+      geom_path(data = . %&gt;% filter(year &lt; 2022),
+                aes(col = year)) +
+      scale_color_viridis_c(direction = -1) +
+      new_scale_color() +
+      geom_path(
+        data = . %&gt;% filter(year &gt;= 2022),
+        aes(col = as.factor(year)),
+        linewidth = 1
+      ) +
+      scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;)) +
+      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+      facet_grid(name ~ biome, scales = &quot;free_y&quot;) +
+      theme(legend.title = element_blank())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/global_means_and_integrals-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SOM_FFN_monthly %&gt;%
+  pivot_longer(-c(time:month, biome)) %&gt;%
+  filter(
+    # biome %in% c(&quot;global&quot;, &quot;NA-SPSS&quot;, &quot;NA-STPS&quot;, &quot;NP-SPSS&quot;),
+    name %in% c(
+      &quot;dco2_mean&quot;,
+      &quot;atm_co2_mean&quot;,
+      &quot;sol_mean&quot;,
+      &quot;kw_mean&quot;,
+      &quot;spco2_smoothed_mean&quot;,
+      &quot;fgco2_smoothed_integral&quot;
+    )
+  ) %&gt;%
+  group_split(biome) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(month, value, group = as.factor(year))) +
+      geom_path(data = . %&gt;% filter(year &lt; 2022),
+                aes(col = year)) +
+      scale_color_viridis_c(direction = -1) +
+      new_scale_color() +
+      geom_path(
+        data = . %&gt;% filter(year &gt;= 2022),
+        aes(col = as.factor(year)),
+        linewidth = 1
+      ) +
+      scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;)) +
+      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+      facet_grid(name ~ biome, scales = &quot;free_y&quot;) +
+      theme(legend.title = element_blank())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[4]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[5]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[6]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-11.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[12]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-12.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[13]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-13.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[14]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-14.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[15]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-15.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[16]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-16.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[17]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-17.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[18]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-18.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[19]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/regional_seasonality-19.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -783,48 +1150,52 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] terra_1.7-65        sf_1.0-9            rnaturalearth_0.1.0
- [4] geomtextpath_0.1.1  colorspace_2.0-3    marelac_2.1.10     
- [7] shape_1.4.6         ggforce_0.4.1       metR_0.13.0        
-[10] scico_1.3.1         patchwork_1.1.2     collapse_1.8.9     
-[13] forcats_0.5.2       stringr_1.5.0       dplyr_1.1.3        
-[16] purrr_1.0.2         readr_2.1.3         tidyr_1.3.0        
-[19] tibble_3.2.1        ggplot2_3.4.4       tidyverse_1.3.2    
-[22] workflowr_1.7.0    
+ [1] khroma_1.9.0        ggnewscale_0.4.8    lubridate_1.9.0    
+ [4] timechange_0.1.1    stars_0.6-0         abind_1.4-5        
+ [7] terra_1.7-65        sf_1.0-9            rnaturalearth_0.1.0
+[10] geomtextpath_0.1.1  colorspace_2.0-3    marelac_2.1.10     
+[13] shape_1.4.6         ggforce_0.4.1       metR_0.13.0        
+[16] scico_1.3.1         patchwork_1.1.2     collapse_1.8.9     
+[19] forcats_0.5.2       stringr_1.5.0       dplyr_1.1.3        
+[22] purrr_1.0.2         readr_2.1.3         tidyr_1.3.0        
+[25] tibble_3.2.1        ggplot2_3.4.4       tidyverse_1.3.2    
+[28] workflowr_1.7.0    
 
 loaded via a namespace (and not attached):
- [1] googledrive_2.0.0       ellipsis_0.3.2          class_7.3-20           
- [4] rprojroot_2.0.3         fs_1.5.2                rstudioapi_0.15.0      
- [7] proxy_0.4-27            farver_2.1.1            bit64_4.0.5            
-[10] fansi_1.0.3             lubridate_1.9.0         xml2_1.3.3             
-[13] codetools_0.2-18        cachem_1.0.6            knitr_1.41             
-[16] polyclip_1.10-4         jsonlite_1.8.3          gsw_1.1-1              
-[19] broom_1.0.5             dbplyr_2.2.1            compiler_4.2.2         
-[22] httr_1.4.4              backports_1.4.1         assertthat_0.2.1       
-[25] fastmap_1.1.0           gargle_1.2.1            cli_3.6.1              
-[28] later_1.3.0             tweenr_2.0.2            htmltools_0.5.3        
-[31] tools_4.2.2             rnaturalearthdata_0.1.0 gtable_0.3.1           
-[34] glue_1.6.2              Rcpp_1.0.11             cellranger_1.1.0       
-[37] jquerylib_0.1.4         vctrs_0.6.4             xfun_0.35              
-[40] ps_1.7.2                rvest_1.0.3             timechange_0.1.1       
-[43] lifecycle_1.0.3         googlesheets4_1.0.1     oce_1.7-10             
-[46] getPass_0.2-2           MASS_7.3-58.1           scales_1.2.1           
-[49] vroom_1.6.0             hms_1.1.2               promises_1.2.0.1       
-[52] parallel_4.2.2          yaml_2.3.6              memoise_2.0.1          
-[55] sass_0.4.4              stringi_1.7.8           e1071_1.7-12           
-[58] checkmate_2.1.0         rlang_1.1.1             pkgconfig_2.0.3        
-[61] systemfonts_1.0.4       evaluate_0.18           lattice_0.20-45        
-[64] SolveSAPHE_2.1.0        bit_4.0.5               processx_3.8.0         
-[67] tidyselect_1.2.0        seacarb_3.3.1           magrittr_2.0.3         
-[70] R6_2.5.1                generics_0.1.3          DBI_1.1.3              
-[73] pillar_1.9.0            haven_2.5.1             whisker_0.4            
-[76] withr_2.5.0             units_0.8-0             sp_1.5-1               
-[79] modelr_0.1.10           crayon_1.5.2            KernSmooth_2.23-20     
-[82] utf8_1.2.2              tzdb_0.3.0              rmarkdown_2.18         
-[85] grid_4.2.2              readxl_1.4.1            data.table_1.14.6      
-[88] callr_3.7.3             git2r_0.30.1            reprex_2.0.2           
-[91] digest_0.6.30           classInt_0.4-8          httpuv_1.6.6           
-[94] textshaping_0.3.6       munsell_0.5.0           bslib_0.4.1            </code></pre>
+  [1] googledrive_2.0.0       ellipsis_0.3.2          class_7.3-20           
+  [4] rprojroot_2.0.3         fs_1.5.2                rstudioapi_0.15.0      
+  [7] proxy_0.4-27            farver_2.1.1            bit64_4.0.5            
+ [10] fansi_1.0.3             xml2_1.3.3              codetools_0.2-18       
+ [13] cachem_1.0.6            knitr_1.41              polyclip_1.10-4        
+ [16] jsonlite_1.8.3          gsw_1.1-1               broom_1.0.5            
+ [19] dbplyr_2.2.1            compiler_4.2.2          httr_1.4.4             
+ [22] backports_1.4.1         assertthat_0.2.1        fastmap_1.1.0          
+ [25] gargle_1.2.1            cli_3.6.1               later_1.3.0            
+ [28] tweenr_2.0.2            htmltools_0.5.3         tools_4.2.2            
+ [31] rnaturalearthdata_0.1.0 gtable_0.3.1            glue_1.6.2             
+ [34] Rcpp_1.0.11             RNetCDF_2.6-1           cellranger_1.1.0       
+ [37] jquerylib_0.1.4         vctrs_0.6.4             lwgeom_0.2-10          
+ [40] xfun_0.35               ps_1.7.2                rvest_1.0.3            
+ [43] ncmeta_0.3.5            lifecycle_1.0.3         googlesheets4_1.0.1    
+ [46] oce_1.7-10              getPass_0.2-2           MASS_7.3-58.1          
+ [49] scales_1.2.1            vroom_1.6.0             hms_1.1.2              
+ [52] promises_1.2.0.1        parallel_4.2.2          yaml_2.3.6             
+ [55] memoise_2.0.1           sass_0.4.4              stringi_1.7.8          
+ [58] highr_0.9               e1071_1.7-12            checkmate_2.1.0        
+ [61] rlang_1.1.1             pkgconfig_2.0.3         systemfonts_1.0.4      
+ [64] evaluate_0.18           lattice_0.20-45         SolveSAPHE_2.1.0       
+ [67] labeling_0.4.2          bit_4.0.5               processx_3.8.0         
+ [70] tidyselect_1.2.0        seacarb_3.3.1           magrittr_2.0.3         
+ [73] R6_2.5.1                generics_0.1.3          DBI_1.1.3              
+ [76] pillar_1.9.0            haven_2.5.1             whisker_0.4            
+ [79] withr_2.5.0             units_0.8-0             sp_1.5-1               
+ [82] modelr_0.1.10           crayon_1.5.2            KernSmooth_2.23-20     
+ [85] utf8_1.2.2              tzdb_0.3.0              rmarkdown_2.18         
+ [88] grid_4.2.2              readxl_1.4.1            data.table_1.14.6      
+ [91] callr_3.7.3             git2r_0.30.1            reprex_2.0.2           
+ [94] digest_0.6.30           classInt_0.4-8          httpuv_1.6.6           
+ [97] textshaping_0.3.6       munsell_0.5.0           viridisLite_0.4.1      
+[100] bslib_0.4.1            </code></pre>
 </div>
 </div>
 
