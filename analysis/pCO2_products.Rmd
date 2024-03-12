@@ -139,8 +139,8 @@ region_masks_all <- region_masks_all  %>%
     biome == "pacific_1" ~ "NP-SPSS",
     biome == "pacific_2" ~ "NP-STSS",
     biome == "pacific_3" ~ "NP-STPS",
-    biome == "pacific_4" ~ "PEQU-E",
-    biome == "pacific_5" ~ "PEQU-W",
+    biome == "pacific_4" ~ "PEQU-W",
+    biome == "pacific_5" ~ "PEQU-E",
     biome == "pacific_6" ~ "SP-STSS",
     biome == "indian_1" ~ "Arabian Sea",
     biome == "indian_2" ~ "Bay of Bengal",
@@ -169,12 +169,26 @@ map +
 
 region_masks_all %>%
   group_split(region) %>%
-  head(2) %>%
+  # head(2) %>%
   map(~ map +
         geom_tile(data = .x,
                     aes(lon, lat, fill = biome)) +
         labs(title = .x$region) +
         scale_fill_okabeito())
+
+key_biomes <- c("global",
+                "NA-SPSS",
+                "NA-STPS",
+                "NP-SPSS",
+                "PEQU-E",
+                "SO-SPSS")
+
+
+map +
+  geom_tile(data = region_masks_all %>% filter(biome %in% key_biomes),
+            aes(lon, lat, fill = biome)) +
+  labs(title = "Selected key biomes") +
+  scale_fill_muted()
 
 ```
 
@@ -183,11 +197,7 @@ region_masks_all %>%
 
 ## Climatology maps
 
-```{r maps, fig.asp=0.5}
-
-SOM_FFN <-
-  inner_join(SOM_FFN,
-             region_masks_all)
+```{r climatology_maps, fig.asp=0.5}
 
 SOM_FFN_annual_mean_maps <-
   SOM_FFN %>%
@@ -220,7 +230,6 @@ SOM_FFN_2023_anomaly <-
   pivot_wider(names_from = reference,
               values_from = value) %>%
   mutate(anomaly = `2023` - climatology)
-  
 
 SOM_FFN_2023_anomaly %>%
   group_split(name) %>%
@@ -230,6 +239,13 @@ SOM_FFN_2023_anomaly %>%
                   aes(lon, lat, fill = climatology)) +
         labs(title = .x$name) +
         scale_fill_viridis_c())
+
+```
+
+## Anomaly maps
+
+```{r anomaly_maps}
+
 
 SOM_FFN_2023_anomaly %>%
   group_split(name) %>%
@@ -241,50 +257,45 @@ SOM_FFN_2023_anomaly %>%
         scale_fill_divergent())
 
 
-
-
 ```
 
 
+## Regional means and integrals
 
-```{r global_means_and_integrals, eval=FALSE}
+
+
+```{r global_means_and_integrals}
+
+SOM_FFN <-
+  inner_join(SOM_FFN,
+             region_masks_all)
 
 SOM_FFN_monthly_global <-
   SOM_FFN %>%
-  select(-seaice) %>% 
   group_by(time) %>% 
-  summarise(across(dco2:fgco2_smoothed, 
-                   ~weighted.mean(., area, na.rm = TRUE),
-                   .names = "{.col}_mean"),
-            across(fgco2_raw:fgco2_smoothed, 
-                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15,
-                   .names = "{.col}_integral")) %>% 
+  summarise(across(dco2:spco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>% 
   ungroup()
 
 SOM_FFN_monthly_biome <-
   SOM_FFN %>%
-  select(-seaice) %>% 
-  group_by(time, biome) %>% 
-  summarise(across(dco2:fgco2_smoothed, 
-                   ~weighted.mean(., area, na.rm = TRUE),
-                   .names = "{.col}_mean"),
-            across(fgco2_raw:fgco2_smoothed, 
-                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15,
-                   .names = "{.col}_integral")) %>% 
+  group_by(time, region, biome) %>% 
+  summarise(across(dco2:spco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>% 
   ungroup()
   
 SOM_FFN_monthly <- 
-  bind_rows(SOM_FFN_monthly_global %>% mutate(biome = "global"),
+  bind_rows(SOM_FFN_monthly_global %>% 
+              mutate(biome = "global",
+                     region = "global"),
             SOM_FFN_monthly_biome)
 
-
-
-SOM_FFN_monthly %>%
-  pivot_longer(-c(time, biome)) %>%
-  ggplot(aes(time, value)) +
-  geom_path() +
-  facet_grid(name ~ biome, scales = "free_y")
-
+rm(SOM_FFN_monthly_global,
+   SOM_FFN_monthly_biome)
 
 
 SOM_FFN_monthly <-
@@ -293,60 +304,77 @@ SOM_FFN_monthly %>%
          month = month(time),
          .after = time)
 
+SOM_FFN_monthly <-
+  SOM_FFN_monthly %>%
+  pivot_longer(-c(time:month, biome, region))
+
+
+
+
+```
+
+
+### Seasonality
+
+```{r seasonality_overview}
+
 SOM_FFN_monthly %>%
-  pivot_longer(-c(time:month, biome)) %>%
-  filter(biome %in% c("global", "NA-SPSS", "NA-STPS", "NP-SPSS"),
-         name %in% c("dco2_mean", "atm_co2_mean", "sol_mean", "kw_mean", 
-                     "spco2_smoothed_mean", "fgco2_smoothed_integral")) %>%
+  filter(biome %in% key_biomes) %>%
   ggplot(aes(month, value, group = as.factor(year))) +
   geom_path(data = . %>% filter(year < 2022),
             aes(col = year)) +
-  scale_color_viridis_c(direction = -1) +
+  scale_color_grayC() +
   new_scale_color() +
   geom_path(data = . %>% filter(year >= 2022),
             aes(col = as.factor(year)),
             linewidth = 1) +
-  scale_color_manual(values = c("orange", "red")) +
+  scale_color_manual(values = c("orange", "red"),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
   facet_grid(name ~ biome, scales = "free_y") +
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank(),
+        axis.title.y = element_blank())
+
+
+```
+
+
+```{r seasonality_key_biomes, fig.asp=1.5}
 
 SOM_FFN_monthly %>%
-  pivot_longer(-c(time:month, biome)) %>%
-  filter(
-    biome %in% c("global", "NA-SPSS", "NA-STPS", "NP-SPSS"),
-    name %in% c(
-      "dco2_mean",
-      "atm_co2_mean",
-      "sol_mean",
-      "kw_mean",
-      "spco2_smoothed_mean",
-      "fgco2_smoothed_integral"
-    )
-  ) %>%
+  filter(biome %in% key_biomes) %>%
   group_split(biome) %>%
-  head(1) %>%
+  # head(1) %>%
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
       geom_path(data = . %>% filter(year < 2022),
                 aes(col = year)) +
-      scale_color_viridis_c(direction = -1) +
+      scale_color_grayC() +
       new_scale_color() +
       geom_path(
         data = . %>% filter(year >= 2022),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
-      scale_color_manual(values = c("orange", "red")) +
+      scale_color_manual(
+        values = c("orange", "red"),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
       scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
       facet_grid(name ~ biome, scales = "free_y") +
-      theme(legend.title = element_blank())
+      theme(legend.title = element_blank(),
+            axis.title.y = element_blank())
   )
 
-
-
 ```
+
+
+
+
+
 
 ```{r regional_seasonality, fig.asp=1.5, eval=FALSE}
 
