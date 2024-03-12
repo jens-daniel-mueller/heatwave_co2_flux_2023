@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treecab2d84b7cffd59e9cec8dc85e62555ffec9d849targetblankcab2d84a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree8c60127ce3d58562219b9c8511711f622cffd410targetblank8c60127a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/cab2d84b7cffd59e9cec8dc85e62555ffec9d849" target="_blank">cab2d84</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/8c60127ce3d58562219b9c8511711f622cffd410" target="_blank">8c60127</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treecab2d84b7cffd59e9cec8dc85e62555ffec9d849targetblankcab2d84a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree8c60127ce3d58562219b9c8511711f622cffd410targetblank8c60127a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/cab2d84b7cffd59e9cec8dc85e62555ffec9d849" target="_blank">cab2d84</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/8c60127ce3d58562219b9c8511711f622cffd410" target="_blank">8c60127</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -631,6 +631,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/8c60127ce3d58562219b9c8511711f622cffd410/analysis/pCO2_products.Rmd" target="_blank">8c60127</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+<td>
+quadratic regression model added
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/0473a508023e3ca812326f665a02aed8183c46a3/docs/pCO2_products.html" target="_blank">0473a50</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2219,11 +2253,61 @@ SOM_FFN_annual %&gt;%
   filter(biome %in% key_biomes) %&gt;%
   ggplot(aes(year, value)) +
   geom_point() +
-  geom_smooth(method = &quot;lm&quot;) +
+  geom_smooth(data = . %&gt;% filter(year &lt;= 2022),
+              method = &quot;lm&quot;,
+              fullrange = TRUE,
+              aes(col = &quot;linear&quot;),
+              se = FALSE) +
+  geom_smooth(data = . %&gt;% filter(year &lt;= 2022),
+              method = &quot;lm&quot;,
+              fullrange = TRUE,
+              formula = y ~ x + I(x^2),
+              aes(col = &quot;quadratic&quot;),
+              se = FALSE) +
+  scale_color_brewer(
+    palette = &quot;Set1&quot;,
+    name = &quot;Regression fit\n prior 2023&quot;) +
+  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   facet_grid(name ~ biome, scales = &quot;free_y&quot;) +
-  theme(legend.title = element_blank(),
-        axis.title.y = element_blank())</code></pre>
+  theme(axis.title.y = element_blank())</code></pre>
 <p><img src="figure/pCO2_products.Rmd/annual_mean_trends-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-annual_mean_trends-1">
+Past versions of annual_mean_trends-1.png
+</button>
+</p>
+<div id="fig-annual_mean_trends-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0473a508023e3ca812326f665a02aed8183c46a3/docs/figure/pCO2_products.Rmd/annual_mean_trends-1.png" target="_blank">0473a50</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>SOM_FFN_annual_lm &lt;-
   SOM_FFN_annual %&gt;%
   nest(data = -c(biome, name)) %&gt;%
@@ -2257,6 +2341,43 @@ SOM_FFN_annual_lm %&gt;%
   theme(legend.title = element_blank(),
         axis.title = element_blank())</code></pre>
 <p><img src="figure/pCO2_products.Rmd/annual_mean_trends-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-annual_mean_trends-2">
+Past versions of annual_mean_trends-2.png
+</button>
+</p>
+<div id="fig-annual_mean_trends-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0473a508023e3ca812326f665a02aed8183c46a3/docs/figure/pCO2_products.Rmd/annual_mean_trends-2.png" target="_blank">0473a50</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># SOM_FFN_annual_lm %&gt;%
 #   unnest(tidied) %&gt;%
 #   select(source, term, estimate) %&gt;%
@@ -2325,6 +2446,43 @@ SOM_FFN_monthly_lm %&gt;%
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/pCO2_products.Rmd/monthly_mean_trends-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-1">
+Past versions of monthly_mean_trends-1.png
+</button>
+</p>
+<div id="fig-monthly_mean_trends-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0473a508023e3ca812326f665a02aed8183c46a3/docs/figure/pCO2_products.Rmd/monthly_mean_trends-1.png" target="_blank">0473a50</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>SOM_FFN_monthly_lm %&gt;%
   unnest(augmented) %&gt;%
   filter(biome %in% key_biomes) %&gt;%
@@ -2348,6 +2506,43 @@ SOM_FFN_monthly_lm %&gt;%
   theme(legend.title = element_blank(),
         axis.title.y = element_blank())</code></pre>
 <p><img src="figure/pCO2_products.Rmd/monthly_mean_trends-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-2">
+Past versions of monthly_mean_trends-2.png
+</button>
+</p>
+<div id="fig-monthly_mean_trends-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0473a508023e3ca812326f665a02aed8183c46a3/docs/figure/pCO2_products.Rmd/monthly_mean_trends-2.png" target="_blank">0473a50</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># SOM_FFN_annual_lm %&gt;%
 #   unnest(tidied) %&gt;%
 #   select(source, term, estimate) %&gt;%
@@ -2415,23 +2610,23 @@ loaded via a namespace (and not attached):
  [46] lifecycle_1.0.3         googlesheets4_1.0.1     oce_1.7-10             
  [49] getPass_0.2-2           MASS_7.3-58.1           scales_1.2.1           
  [52] vroom_1.6.0             hms_1.1.2               promises_1.2.0.1       
- [55] parallel_4.2.2          yaml_2.3.6              memoise_2.0.1          
- [58] sass_0.4.4              stringi_1.7.8           highr_0.9              
- [61] e1071_1.7-12            checkmate_2.1.0         rlang_1.1.1            
- [64] pkgconfig_2.0.3         systemfonts_1.0.4       evaluate_0.18          
- [67] lattice_0.20-45         SolveSAPHE_2.1.0        labeling_0.4.2         
- [70] bit_4.0.5               processx_3.8.0          tidyselect_1.2.0       
- [73] seacarb_3.3.1           magrittr_2.0.3          R6_2.5.1               
- [76] generics_0.1.3          DBI_1.1.3               mgcv_1.8-41            
- [79] pillar_1.9.0            haven_2.5.1             whisker_0.4            
- [82] withr_2.5.0             units_0.8-0             sp_1.5-1               
- [85] modelr_0.1.10           crayon_1.5.2            KernSmooth_2.23-20     
- [88] utf8_1.2.2              tzdb_0.3.0              rmarkdown_2.18         
- [91] grid_4.2.2              readxl_1.4.1            data.table_1.14.6      
- [94] callr_3.7.3             git2r_0.30.1            reprex_2.0.2           
- [97] digest_0.6.30           classInt_0.4-8          httpuv_1.6.6           
-[100] textshaping_0.3.6       munsell_0.5.0           viridisLite_0.4.1      
-[103] bslib_0.4.1            </code></pre>
+ [55] parallel_4.2.2          RColorBrewer_1.1-3      yaml_2.3.6             
+ [58] memoise_2.0.1           sass_0.4.4              stringi_1.7.8          
+ [61] highr_0.9               e1071_1.7-12            checkmate_2.1.0        
+ [64] rlang_1.1.1             pkgconfig_2.0.3         systemfonts_1.0.4      
+ [67] evaluate_0.18           lattice_0.20-45         SolveSAPHE_2.1.0       
+ [70] labeling_0.4.2          bit_4.0.5               processx_3.8.0         
+ [73] tidyselect_1.2.0        seacarb_3.3.1           magrittr_2.0.3         
+ [76] R6_2.5.1                generics_0.1.3          DBI_1.1.3              
+ [79] mgcv_1.8-41             pillar_1.9.0            haven_2.5.1            
+ [82] whisker_0.4             withr_2.5.0             units_0.8-0            
+ [85] sp_1.5-1                modelr_0.1.10           crayon_1.5.2           
+ [88] KernSmooth_2.23-20      utf8_1.2.2              tzdb_0.3.0             
+ [91] rmarkdown_2.18          grid_4.2.2              readxl_1.4.1           
+ [94] data.table_1.14.6       callr_3.7.3             git2r_0.30.1           
+ [97] reprex_2.0.2            digest_0.6.30           classInt_0.4-8         
+[100] httpuv_1.6.6            textshaping_0.3.6       munsell_0.5.0          
+[103] viridisLite_0.4.1       bslib_0.4.1            </code></pre>
 </div>
 </div>
 </div>
