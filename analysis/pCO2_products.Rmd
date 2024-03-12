@@ -19,6 +19,7 @@ library(stars)
 library(lubridate)
 library(ggnewscale)
 library(khroma)
+library(broom)
 
 ```
 
@@ -371,46 +372,167 @@ SOM_FFN_monthly %>%
 
 ```
 
+## Trends annual means
+
+```{r annual_mean_trends}
+
+SOM_FFN_annual <-
+  SOM_FFN_monthly %>%
+  group_by(year, region, biome, name) %>%
+  summarise(value = mean(value)) %>%
+  ungroup()
+  
+SOM_FFN_annual %>% 
+  filter(biome %in% key_biomes) %>%
+  ggplot(aes(year, value)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_grid(name ~ biome, scales = "free_y") +
+  theme(legend.title = element_blank(),
+        axis.title.y = element_blank())
+
+SOM_FFN_annual_lm <-
+  SOM_FFN_annual %>%
+  nest(data = -c(biome, name)) %>%
+  mutate(fit = map(data, ~ lm(value ~ year, data = .x)),
+         tidied = map(fit, tidy),
+         augmented = map(fit, augment),
+         glanced = map(fit, glance))
 
 
 
+SOM_FFN_annual_lm %>%
+  unnest(augmented) %>%
+  filter(biome %in% key_biomes) %>%
+  ggplot(aes(year, .resid)) +
+  geom_hline(yintercept = 0) +
+  geom_path() +
+  geom_point(data = . %>% filter(year < 2022),
+             aes(fill = year),
+             shape = 21) +
+  scale_fill_grayC() +
+  new_scale_fill() +
+  geom_point(data = . %>% filter(year >= 2022),
+             aes(fill = as.factor(year)),
+             shape = 21, size = 1)  +
+  scale_fill_manual(values = c("orange", "red"),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+  labs(title = "Residual from linear trend in annual means") +
+  facet_grid(name ~ biome, scales = "free_y") +
+  theme(legend.title = element_blank(),
+        axis.title = element_blank())
 
 
-```{r regional_seasonality, fig.asp=1.5, eval=FALSE}
-
-SOM_FFN_monthly %>%
-  pivot_longer(-c(time:month, biome)) %>%
-  filter(
-    # biome %in% c("global", "NA-SPSS", "NA-STPS", "NP-SPSS"),
-    name %in% c(
-      "dco2_mean",
-      "atm_co2_mean",
-      "sol_mean",
-      "kw_mean",
-      "spco2_smoothed_mean",
-      "fgco2_smoothed_integral"
-    )
-  ) %>%
-  group_split(biome) %>%
-  # head(1) %>%
-  map(
-    ~ ggplot(data = .x,
-             aes(month, value, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < 2022),
-                aes(col = year)) +
-      scale_color_viridis_c(direction = -1) +
-      new_scale_color() +
-      geom_path(
-        data = . %>% filter(year >= 2022),
-        aes(col = as.factor(year)),
-        linewidth = 1
-      ) +
-      scale_color_manual(values = c("orange", "red")) +
-      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-      facet_grid(name ~ biome, scales = "free_y") +
-      theme(legend.title = element_blank())
-  )
+# SOM_FFN_annual_lm %>%
+#   unnest(tidied) %>%
+#   select(source, term, estimate) %>%
+#   pivot_wider(names_from = term,
+#               values_from = estimate) %>%
+#   mutate(annual_mean = `(Intercept)` + year * 2023) %>%
+#   filter(source == "GCB - MLO & SPO") %>%
+#   pull(annual_mean)
 
 
 ```
+
+
+## Trends monthly means
+
+```{r monthly_mean_trends}
+
+
+# SOM_FFN_monthly %>% 
+#   filter(biome %in% key_biomes,
+#          month == 4) %>%
+#   ggplot(aes(year, value)) +
+#   geom_point() +
+#   geom_smooth(method = "lm") +
+#   facet_grid(name ~ biome, scales = "free_y") +
+#   theme(legend.title = element_blank(),
+#         axis.title.y = element_blank())
+
+SOM_FFN_monthly_lm <-
+  SOM_FFN_monthly %>%
+  filter(year > 2010) %>% 
+  nest(data = -c(biome, name, month)) %>%
+  mutate(fit = map(data, ~ lm(value ~ year, data = .x)),
+         tidied = map(fit, tidy),
+         augmented = map(fit, augment),
+         glanced = map(fit, glance))
+
+
+
+SOM_FFN_monthly_lm %>%
+  unnest(augmented) %>%
+  filter(biome %in% key_biomes) %>%
+  group_split(month) %>%
+  head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, .resid)) +
+      geom_hline(yintercept = 0) +
+      geom_path() +
+      geom_point(
+        data = .x %>% filter(year < 2022),
+        aes(fill = year),
+        shape = 21
+      ) +
+      scale_fill_grayC() +
+      new_scale_fill() +
+      geom_point(
+        data = .x %>% filter(year >= 2022),
+        aes(fill = as.factor(year)),
+        shape = 21,
+        size = 1
+      )  +
+      scale_fill_manual(
+        values = c("orange", "red"),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
+      scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+      labs(title = paste("Residual from linear trend in means of month:", .x$month)) +
+      facet_grid(name ~ biome, scales = "free_y") +
+      theme(legend.title = element_blank(),
+            axis.title = element_blank())
+  )
+
+SOM_FFN_monthly_lm %>%
+  unnest(augmented) %>%
+  filter(biome %in% key_biomes) %>%
+  ggplot(aes(month, .resid, group = year)) +
+  geom_hline(yintercept = 0) +
+  geom_path(data = . %>% filter(year < 2022),
+             aes(color = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(
+    data = . %>% filter(year >= 2022),
+    aes(color = as.factor(year)),
+    linewidth = 1.5
+  )  +
+  scale_color_manual(values = c("orange", "red"),
+                    guide = guide_legend(reverse = TRUE,
+                                         order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3)) +
+  labs(title = "Residual from linear trend in monthly means") +
+  facet_grid(name ~ biome, scales = "free_y") +
+  theme(legend.title = element_blank(),
+        axis.title.y = element_blank())
+
+
+# SOM_FFN_annual_lm %>%
+#   unnest(tidied) %>%
+#   select(source, term, estimate) %>%
+#   pivot_wider(names_from = term,
+#               values_from = estimate) %>%
+#   mutate(annual_mean = `(Intercept)` + year * 2023) %>%
+#   filter(source == "GCB - MLO & SPO") %>%
+#   pull(annual_mean)
+
+
+```
+
 
