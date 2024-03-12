@@ -111,6 +111,112 @@ name_quadratic_fit <- c("atm_co2", "spco2_smoothed")
 
 ```
 
+# Anomaly detection
+
+```{r anomaly_detection_function}
+
+anomaly_determination <- function(df) {
+  # Linear regression models
+  
+  df_lm <-
+    df %>%
+    filter(year <= 2022,
+           !(name %in% name_quadratic_fit)) %>%
+    nest(data = -name) %>%
+    mutate(
+      fit = map(data, ~ lm(value ~ year, data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment),
+      glanced = map(fit, glance)
+    )
+  
+  
+  df_lm_2023 <-
+    full_join(
+      df_lm %>%
+        unnest(tidied) %>%
+        select(name, term, estimate) %>%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %>%
+        mutate(fit = `(Intercept)` + year * 2023) %>%
+        select(name, fit) %>%
+        mutate(year = 2023),
+      df %>%
+        filter(year == 2023,
+               !(name %in% name_quadratic_fit))
+    ) %>%
+    mutate(resid = value - fit)
+  
+  
+  df_lm <-
+    bind_rows(
+      df_lm %>%
+        unnest(augmented) %>%
+        select(name, year, value, fit = .fitted, resid = .resid),
+      df_lm_2023
+    )
+  
+  rm(df_lm_2023)
+  
+  # Quadratic regression models
+  
+  df_quadratic <-
+    df %>%
+    filter(year <= 2022,
+           name %in% name_quadratic_fit) %>%
+    nest(data = -name) %>%
+    mutate(
+      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment),
+      glanced = map(fit, glance)
+    )
+  
+  
+  df_quadratic_2023 <-
+    full_join(
+      df_quadratic %>%
+        unnest(tidied) %>%
+        select(name, term, estimate) %>%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %>%
+        mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %>%
+        select(name, fit) %>%
+        mutate(year = 2023),
+      df %>%
+        filter(year == 2023,
+               name %in% name_quadratic_fit)
+    ) %>%
+    mutate(resid = value - fit)
+  
+  
+  df_quadratic <-
+    bind_rows(
+      df_quadratic %>%
+        unnest(augmented) %>%
+        select(name, year, value, fit = .fitted, resid = .resid),
+      df_quadratic_2023
+    )
+  
+  rm(df_quadratic_2023)
+  
+  # Join linear and quadratic regression results
+  
+  df_regression <-
+    bind_rows(df_lm,
+              df_quadratic)
+  
+  rm(df_lm,
+     df_quadratic)
+  
+  
+  return(df_regression)
+  
+}
+
+```
+
+
 
 # Biome mask
 
@@ -293,95 +399,16 @@ SOM_FFN_annual_mean_maps_coarse <-
   pivot_longer(-c(year:lat))
 
 
-# Linear regression models
-
-SOM_FFN_annual_mean_maps_coarse_lm <-
-  SOM_FFN_annual_mean_maps_coarse %>%
-  filter(year <= 2022,
-         !(name %in% name_quadratic_fit)) %>% 
-  nest(data = -c(name, lon, lat)) %>%
-  mutate(fit = map(data, ~ lm(value ~ year, data = .x)),
-         tidied = map(fit, tidy),
-         augmented = map(fit, augment),
-         glanced = map(fit, glance))
-
-
-SOM_FFN_annual_mean_maps_coarse_lm_2023 <-
-  full_join(
-    SOM_FFN_annual_mean_maps_coarse_lm %>%
-      unnest(tidied) %>%
-      select(name, lon, lat, term, estimate) %>%
-      pivot_wider(names_from = term,
-                  values_from = estimate) %>%
-      mutate(fit = `(Intercept)` + year * 2023) %>%
-      select(name, lon, lat, fit) %>%
-      mutate(year = 2023),
-    SOM_FFN_annual_mean_maps_coarse %>%
-      filter(year == 2023,
-             !(name %in% name_quadratic_fit))
-  ) %>% 
-  mutate(resid = value - fit)
-
-
-SOM_FFN_annual_mean_maps_coarse_lm <-
-  bind_rows(
-    SOM_FFN_annual_mean_maps_coarse_lm %>%
-      unnest(augmented) %>%
-      select(name, lon, lat, year, value, fit = .fitted, resid = .resid),
-    SOM_FFN_annual_mean_maps_coarse_lm_2023
-  )
-
-rm(SOM_FFN_annual_mean_maps_coarse_lm_2023)
-
-# Quadratic regression models
-
-SOM_FFN_annual_mean_maps_coarse_quadratic <-
-  SOM_FFN_annual_mean_maps_coarse %>%
-  filter(year <= 2022,
-         name %in% name_quadratic_fit) %>% 
-  nest(data = -c(name, lon, lat)) %>%
-  mutate(fit = map(data, ~ lm(value ~ year + I(year^2), data = .x)),
-         tidied = map(fit, tidy),
-         augmented = map(fit, augment),
-         glanced = map(fit, glance))
-
-
-SOM_FFN_annual_mean_maps_coarse_quadratic_2023 <-
-  full_join(
-    SOM_FFN_annual_mean_maps_coarse_quadratic %>%
-      unnest(tidied) %>%
-      select(name, lon, lat, term, estimate) %>%
-      pivot_wider(names_from = term,
-                  values_from = estimate) %>%
-      mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %>%
-      select(name, lon, lat, fit) %>%
-      mutate(year = 2023),
-    SOM_FFN_annual_mean_maps_coarse %>%
-      filter(year == 2023,
-             name %in% name_quadratic_fit)
-  ) %>% 
-  mutate(resid = value - fit)
-
-
-SOM_FFN_annual_mean_maps_coarse_quadratic <-
-  bind_rows(
-    SOM_FFN_annual_mean_maps_coarse_quadratic %>%
-      unnest(augmented) %>%
-      select(name, lon, lat, year, value, fit = .fitted, resid = .resid),
-    SOM_FFN_annual_mean_maps_coarse_quadratic_2023
-  )
-
-rm(SOM_FFN_annual_mean_maps_coarse_quadratic_2023)
-
-# Join linear and quadratic regression results
-
 SOM_FFN_annual_mean_maps_coarse_regression <-
-  bind_rows(SOM_FFN_annual_mean_maps_coarse_lm,
-            SOM_FFN_annual_mean_maps_coarse_quadratic)
-
-rm(SOM_FFN_annual_mean_maps_coarse_lm,
-   SOM_FFN_annual_mean_maps_coarse_quadratic)
-
+  SOM_FFN_annual_mean_maps_coarse %>%
+  group_by(lon, lat) %>%
+  nest() %>%
+  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  select(-data) %>%
+  unnest(anomalies) %>%
+  ungroup()
+  
+  
 SOM_FFN_annual_mean_maps_coarse_regression %>%
   filter(year %in% c(min(year), max(year))) %>%
   select(-c(value, resid)) %>% 
@@ -389,7 +416,7 @@ SOM_FFN_annual_mean_maps_coarse_regression %>%
               values_from = fit) %>% 
   mutate(change = `2023` - `1990`) %>% 
   group_split(name) %>% 
-  # head(1) %>%
+  # head(2) %>%
   map( ~ map +
          geom_tile(data = .x,
                    aes(lon, lat, fill = change)) +
@@ -555,102 +582,15 @@ SOM_FFN_annual %>%
   facet_grid(name ~ biome, scales = "free_y") +
   theme(axis.title.y = element_blank())
 
-# Linear regression models
-
-SOM_FFN_annual_lm <-
-  SOM_FFN_annual %>%
-  filter(year <= 2022,
-         !(name %in% name_quadratic_fit)) %>% 
-  nest(data = -c(biome, name)) %>%
-  mutate(fit = map(data, ~ lm(value ~ year, data = .x)),
-         tidied = map(fit, tidy),
-         augmented = map(fit, augment),
-         glanced = map(fit, glance))
-
-
-SOM_FFN_annual_lm_2023 <-
-  full_join(
-    SOM_FFN_annual_lm %>%
-      unnest(tidied) %>%
-      select(biome, name, term, estimate) %>%
-      pivot_wider(names_from = term,
-                  values_from = estimate) %>%
-      mutate(fit = `(Intercept)` + year * 2023) %>%
-      select(biome, name, fit) %>%
-      mutate(year = 2023),
-    SOM_FFN_annual %>%
-      filter(year == 2023,
-             !(name %in% name_quadratic_fit))
-  ) %>% 
-  mutate(resid = value - fit)
-
-
-SOM_FFN_annual_lm <-
-  bind_rows(
-    SOM_FFN_annual_lm %>%
-      unnest(augmented) %>%
-      select(biome, name, year, value, fit = .fitted, resid = .resid),
-    SOM_FFN_annual_lm_2023 %>% 
-      select(-region)
-  )
-
-rm(SOM_FFN_annual_lm_2023)
-
-# Quadratic regression models
-
-SOM_FFN_annual_quadratic <-
-  SOM_FFN_annual %>%
-  filter(year <= 2022,
-         name %in% name_quadratic_fit) %>% 
-  nest(data = -c(biome, name)) %>%
-  mutate(fit = map(data, ~ lm(value ~ year + I(year^2), data = .x)),
-         tidied = map(fit, tidy),
-         augmented = map(fit, augment),
-         glanced = map(fit, glance))
-
-
-SOM_FFN_annual_quadratic_2023 <-
-  full_join(
-    SOM_FFN_annual_quadratic %>%
-      unnest(tidied) %>%
-      select(biome, name, term, estimate) %>%
-      pivot_wider(names_from = term,
-                  values_from = estimate) %>%
-      mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %>%
-      select(biome, name, fit) %>%
-      mutate(year = 2023),
-    SOM_FFN_annual %>%
-      filter(year == 2023,
-             name %in% name_quadratic_fit)
-  ) %>% 
-  mutate(resid = value - fit)
-
-
-SOM_FFN_annual_quadratic <-
-  bind_rows(
-    SOM_FFN_annual_quadratic %>%
-      unnest(augmented) %>%
-      select(biome, name, year, value, fit = .fitted, resid = .resid),
-    SOM_FFN_annual_quadratic_2023 %>% 
-      select(-region)
-  )
-
-rm(SOM_FFN_annual_quadratic_2023)
-
-# Join linear and quadratic regression results
-
 SOM_FFN_annual_regression <-
-  bind_rows(SOM_FFN_annual_lm,
-            SOM_FFN_annual_quadratic)
-
-rm(SOM_FFN_annual_lm,
-   SOM_FFN_annual_quadratic)
-
-
-
-# SOM_FFN_annual_lm <-
-#   SOM_FFN_annual_lm %>% 
-#   mutate(resid = -resid)
+  SOM_FFN_annual %>%
+  group_by(biome) %>%
+  nest() %>%
+  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  select(-data) %>%
+  unnest(anomalies) %>%
+  ungroup()
+  
 
 SOM_FFN_annual_regression %>%
   filter(biome %in% key_biomes) %>%
@@ -736,7 +676,7 @@ SOM_FFN_monthly_detrended %>%
 SOM_FFN_monthly_detrended %>%
   filter(biome %in% key_biomes) %>%
   group_split(biome) %>%
-  head(1) %>%
+  # head(1) %>%
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
