@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree65f52e0d7fa994955e143636c6d44fc209e5a741targetblank65f52e0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treed0a504d0ff89fd87c937643be92a930ee15b8b4etargetblankd0a504da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/65f52e0d7fa994955e143636c6d44fc209e5a741" target="_blank">65f52e0</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/d0a504d0ff89fd87c937643be92a930ee15b8b4e" target="_blank">d0a504d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree65f52e0d7fa994955e143636c6d44fc209e5a741targetblank65f52e0a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treed0a504d0ff89fd87c937643be92a930ee15b8b4etargetblankd0a504da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/65f52e0d7fa994955e143636c6d44fc209e5a741" target="_blank">65f52e0</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/d0a504d0ff89fd87c937643be92a930ee15b8b4e" target="_blank">d0a504d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -631,6 +631,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d0a504d0ff89fd87c937643be92a930ee15b8b4e/analysis/pCO2_products.Rmd" target="_blank">d0a504d</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+<td>
+biome seasonality plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/3f111066e66ec47284ab0684b336b740def635ca/docs/pCO2_products.html" target="_blank">3f11106</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -914,8 +948,8 @@ region_masks_all &lt;- region_masks_all  %&gt;%
     biome == &quot;pacific_1&quot; ~ &quot;NP-SPSS&quot;,
     biome == &quot;pacific_2&quot; ~ &quot;NP-STSS&quot;,
     biome == &quot;pacific_3&quot; ~ &quot;NP-STPS&quot;,
-    biome == &quot;pacific_4&quot; ~ &quot;PEQU-E&quot;,
-    biome == &quot;pacific_5&quot; ~ &quot;PEQU-W&quot;,
+    biome == &quot;pacific_4&quot; ~ &quot;PEQU-W&quot;,
+    biome == &quot;pacific_5&quot; ~ &quot;PEQU-E&quot;,
     biome == &quot;pacific_6&quot; ~ &quot;SP-STSS&quot;,
     biome == &quot;indian_1&quot; ~ &quot;Arabian Sea&quot;,
     biome == &quot;indian_2&quot; ~ &quot;Bay of Bengal&quot;,
@@ -942,9 +976,46 @@ map +
             aes(lon, lat, fill = region)) +
   scale_fill_muted()</code></pre>
 <p><img src="figure/pCO2_products.Rmd/prepare_region_mask-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-1">
+Past versions of prepare_region_mask-1.png
+</button>
+</p>
+<div id="fig-prepare_region_mask-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3f111066e66ec47284ab0684b336b740def635ca/docs/figure/pCO2_products.Rmd/prepare_region_mask-1.png" target="_blank">3f11106</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>region_masks_all %&gt;%
   group_split(region) %&gt;%
-  head(2) %&gt;%
+  # head(2) %&gt;%
   map(~ map +
         geom_tile(data = .x,
                     aes(lon, lat, fill = biome)) +
@@ -952,19 +1023,112 @@ map +
         scale_fill_okabeito())</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/pCO2_products.Rmd/prepare_region_mask-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-2">
+Past versions of prepare_region_mask-2.png
+</button>
+</p>
+<div id="fig-prepare_region_mask-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3f111066e66ec47284ab0684b336b740def635ca/docs/figure/pCO2_products.Rmd/prepare_region_mask-2.png" target="_blank">3f11106</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/pCO2_products.Rmd/prepare_region_mask-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-3">
+Past versions of prepare_region_mask-3.png
+</button>
+</p>
+<div id="fig-prepare_region_mask-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3f111066e66ec47284ab0684b336b740def635ca/docs/figure/pCO2_products.Rmd/prepare_region_mask-3.png" target="_blank">3f11106</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/prepare_region_mask-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[4]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/prepare_region_mask-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[5]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/prepare_region_mask-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>key_biomes &lt;- c(&quot;global&quot;,
+                &quot;NA-SPSS&quot;,
+                &quot;NA-STPS&quot;,
+                &quot;NP-SPSS&quot;,
+                &quot;PEQU-E&quot;,
+                &quot;SO-SPSS&quot;)
+
+
+map +
+  geom_tile(data = region_masks_all %&gt;% filter(biome %in% key_biomes),
+            aes(lon, lat, fill = biome)) +
+  labs(title = &quot;Selected key biomes&quot;) +
+  scale_fill_muted()</code></pre>
+<p><img src="figure/pCO2_products.Rmd/prepare_region_mask-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="pco2-products" class="section level1">
 <h1>pCO2 products</h1>
 <div id="climatology-maps" class="section level2">
 <h2>Climatology maps</h2>
-<pre class="r"><code>SOM_FFN &lt;-
-  inner_join(SOM_FFN,
-             region_masks_all)
-
-SOM_FFN_annual_mean_maps &lt;-
+<pre class="r"><code>SOM_FFN_annual_mean_maps &lt;-
   SOM_FFN %&gt;%
   group_by(year, lon, lat) %&gt;%
   summarise(across(dco2:fgco2_smoothed,
@@ -995,7 +1159,6 @@ SOM_FFN_2023_anomaly &lt;-
   pivot_wider(names_from = reference,
               values_from = value) %&gt;%
   mutate(anomaly = `2023` - climatology)
-  
 
 SOM_FFN_2023_anomaly %&gt;%
   group_split(name) %&gt;%
@@ -1006,133 +1169,25 @@ SOM_FFN_2023_anomaly %&gt;%
         labs(title = .x$name) +
         scale_fill_viridis_c())</code></pre>
 <pre><code>[[1]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-maps-1">
-Past versions of maps-1.png
-</button>
-</p>
-<div id="fig-maps-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/cfe3967190ec2352808cf1aadec4f2d3420389c9/docs/figure/pCO2_products.Rmd/maps-1.png" target="_blank">cfe3967</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-11
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/pCO2_products.Rmd/climatology_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[2]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-maps-2">
-Past versions of maps-2.png
-</button>
-</p>
-<div id="fig-maps-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/cfe3967190ec2352808cf1aadec4f2d3420389c9/docs/figure/pCO2_products.Rmd/maps-2.png" target="_blank">cfe3967</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-11
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/pCO2_products.Rmd/climatology_maps-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[3]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-maps-3">
-Past versions of maps-3.png
-</button>
-</p>
-<div id="fig-maps-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/cfe3967190ec2352808cf1aadec4f2d3420389c9/docs/figure/pCO2_products.Rmd/maps-3.png" target="_blank">cfe3967</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-11
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/pCO2_products.Rmd/climatology_maps-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[4]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pCO2_products.Rmd/climatology_maps-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[5]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pCO2_products.Rmd/climatology_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[6]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pCO2_products.Rmd/climatology_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="anomaly-maps" class="section level2">
+<h2>Anomaly maps</h2>
 <pre class="r"><code>SOM_FFN_2023_anomaly %&gt;%
   group_split(name) %&gt;%
   # head(1) %&gt;%
@@ -1142,58 +1197,55 @@ jens-daniel-mueller
         labs(title = .x$name) +
         scale_fill_divergent())</code></pre>
 <pre><code>[[1]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pCO2_products.Rmd/anomaly_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[2]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pCO2_products.Rmd/anomaly_maps-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[3]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pCO2_products.Rmd/anomaly_maps-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[4]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pCO2_products.Rmd/anomaly_maps-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[5]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pCO2_products.Rmd/anomaly_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[6]]</code></pre>
-<p><img src="figure/pCO2_products.Rmd/maps-12.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>SOM_FFN_monthly_global &lt;-
+<p><img src="figure/pCO2_products.Rmd/anomaly_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="regional-means-and-integrals" class="section level2">
+<h2>Regional means and integrals</h2>
+<pre class="r"><code>SOM_FFN &lt;-
+  inner_join(SOM_FFN,
+             region_masks_all)
+
+SOM_FFN_monthly_global &lt;-
   SOM_FFN %&gt;%
-  select(-seaice) %&gt;% 
   group_by(time) %&gt;% 
-  summarise(across(dco2:fgco2_smoothed, 
-                   ~weighted.mean(., area, na.rm = TRUE),
-                   .names = &quot;{.col}_mean&quot;),
-            across(fgco2_raw:fgco2_smoothed, 
-                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15,
-                   .names = &quot;{.col}_integral&quot;)) %&gt;% 
+  summarise(across(dco2:spco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;% 
   ungroup()
 
 SOM_FFN_monthly_biome &lt;-
   SOM_FFN %&gt;%
-  select(-seaice) %&gt;% 
-  group_by(time, biome) %&gt;% 
-  summarise(across(dco2:fgco2_smoothed, 
-                   ~weighted.mean(., area, na.rm = TRUE),
-                   .names = &quot;{.col}_mean&quot;),
-            across(fgco2_raw:fgco2_smoothed, 
-                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15,
-                   .names = &quot;{.col}_integral&quot;)) %&gt;% 
+  group_by(time, region, biome) %&gt;% 
+  summarise(across(dco2:spco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;% 
   ungroup()
   
 SOM_FFN_monthly &lt;- 
-  bind_rows(SOM_FFN_monthly_global %&gt;% mutate(biome = &quot;global&quot;),
+  bind_rows(SOM_FFN_monthly_global %&gt;% 
+              mutate(biome = &quot;global&quot;,
+                     region = &quot;global&quot;),
             SOM_FFN_monthly_biome)
 
-
-
-SOM_FFN_monthly %&gt;%
-  pivot_longer(-c(time, biome)) %&gt;%
-  ggplot(aes(time, value)) +
-  geom_path() +
-  facet_grid(name ~ biome, scales = &quot;free_y&quot;)
-
+rm(SOM_FFN_monthly_global,
+   SOM_FFN_monthly_biome)
 
 
 SOM_FFN_monthly &lt;-
@@ -1202,56 +1254,72 @@ SOM_FFN_monthly %&gt;%
          month = month(time),
          .after = time)
 
-SOM_FFN_monthly %&gt;%
-  pivot_longer(-c(time:month, biome)) %&gt;%
-  filter(biome %in% c(&quot;global&quot;, &quot;NA-SPSS&quot;, &quot;NA-STPS&quot;, &quot;NP-SPSS&quot;),
-         name %in% c(&quot;dco2_mean&quot;, &quot;atm_co2_mean&quot;, &quot;sol_mean&quot;, &quot;kw_mean&quot;, 
-                     &quot;spco2_smoothed_mean&quot;, &quot;fgco2_smoothed_integral&quot;)) %&gt;%
+SOM_FFN_monthly &lt;-
+  SOM_FFN_monthly %&gt;%
+  pivot_longer(-c(time:month, biome, region))</code></pre>
+<div id="seasonality" class="section level3">
+<h3>Seasonality</h3>
+<pre class="r"><code>SOM_FFN_monthly %&gt;%
+  filter(biome %in% key_biomes) %&gt;%
   ggplot(aes(month, value, group = as.factor(year))) +
   geom_path(data = . %&gt;% filter(year &lt; 2022),
             aes(col = year)) +
-  scale_color_viridis_c(direction = -1) +
+  scale_color_grayC() +
   new_scale_color() +
   geom_path(data = . %&gt;% filter(year &gt;= 2022),
             aes(col = as.factor(year)),
             linewidth = 1) +
-  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;)) +
+  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
   facet_grid(name ~ biome, scales = &quot;free_y&quot;) +
-  theme(legend.title = element_blank())
-
-SOM_FFN_monthly %&gt;%
-  pivot_longer(-c(time:month, biome)) %&gt;%
-  filter(
-    biome %in% c(&quot;global&quot;, &quot;NA-SPSS&quot;, &quot;NA-STPS&quot;, &quot;NP-SPSS&quot;),
-    name %in% c(
-      &quot;dco2_mean&quot;,
-      &quot;atm_co2_mean&quot;,
-      &quot;sol_mean&quot;,
-      &quot;kw_mean&quot;,
-      &quot;spco2_smoothed_mean&quot;,
-      &quot;fgco2_smoothed_integral&quot;
-    )
-  ) %&gt;%
+  theme(legend.title = element_blank(),
+        axis.title.y = element_blank())</code></pre>
+<p><img src="figure/pCO2_products.Rmd/seasonality_overview-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SOM_FFN_monthly %&gt;%
+  filter(biome %in% key_biomes) %&gt;%
   group_split(biome) %&gt;%
-  head(1) %&gt;%
+  # head(1) %&gt;%
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
       geom_path(data = . %&gt;% filter(year &lt; 2022),
                 aes(col = year)) +
-      scale_color_viridis_c(direction = -1) +
+      scale_color_grayC() +
       new_scale_color() +
       geom_path(
         data = . %&gt;% filter(year &gt;= 2022),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
-      scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;)) +
+      scale_color_manual(
+        values = c(&quot;orange&quot;, &quot;red&quot;),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
       scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
       facet_grid(name ~ biome, scales = &quot;free_y&quot;) +
-      theme(legend.title = element_blank())
+      theme(legend.title = element_blank(),
+            axis.title.y = element_blank())
   )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/seasonality_key_biomes-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/seasonality_key_biomes-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/seasonality_key_biomes-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[4]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/seasonality_key_biomes-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[5]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/seasonality_key_biomes-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[6]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/seasonality_key_biomes-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>SOM_FFN_monthly %&gt;%
   pivot_longer(-c(time:month, biome)) %&gt;%
   filter(
@@ -1359,6 +1427,7 @@ loaded via a namespace (and not attached):
  [94] digest_0.6.30           classInt_0.4-8          httpuv_1.6.6           
  [97] textshaping_0.3.6       munsell_0.5.0           viridisLite_0.4.1      
 [100] bslib_0.4.1            </code></pre>
+</div>
 </div>
 </div>
 </div>
