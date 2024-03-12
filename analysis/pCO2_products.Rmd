@@ -92,13 +92,33 @@ SOM_FFN <-
 
 SOM_FFN <-
   SOM_FFN %>% 
-  mutate(lon = if_else(lon < 0, lon + 360, lon))
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 ```
+
+# Analysis settings
+
+```{r analysis_settings}
+
+key_biomes <- c("global",
+                "NA-SPSS",
+                "NA-STPS",
+                "NP-SPSS",
+                "PEQU-E",
+                "SO-SPSS")
+
+name_quadratic_fit <- c("atm_co2", "spco2_smoothed")
+
+```
+
 
 # Biome mask
 
 ```{r prepare_region_mask, fig.asp=0.5}
+
+region_masks_all <-
+  region_masks_all %>%
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 land_mask <- region_masks_all %>%
   filter(seamask == 0)
@@ -178,13 +198,6 @@ region_masks_all %>%
         labs(title = .x$region) +
         scale_fill_okabeito())
 
-key_biomes <- c("global",
-                "NA-SPSS",
-                "NA-STPS",
-                "NP-SPSS",
-                "PEQU-E",
-                "SO-SPSS")
-
 
 map +
   geom_tile(data = region_masks_all %>% filter(biome %in% key_biomes),
@@ -197,7 +210,9 @@ map +
 
 # pCO2 products
 
-## Climatology maps
+## Maps
+
+### Climatologies
 
 ```{r climatology_maps, fig.asp=0.5}
 
@@ -243,9 +258,9 @@ SOM_FFN_2023_anomaly %>%
 
 ```
 
-## Anomaly maps
+### Anomaly from climatology
 
-```{r anomaly_maps}
+```{r anomaly_from_climatology_maps}
 
 
 SOM_FFN_2023_anomaly %>%
@@ -256,6 +271,140 @@ SOM_FFN_2023_anomaly %>%
                   aes(lon, lat, fill = anomaly)) +
         labs(title = .x$name) +
         scale_fill_divergent())
+
+
+```
+
+### Anomaly from prediction
+
+```{r anomaly_from_prediction_maps, eval=FALSE}
+
+SOM_FFN_annual_mean_maps_coarse <-
+  m_grid_horizontal_coarse(SOM_FFN_annual_mean_maps) %>%
+  group_by(year, lon_grid, lat_grid) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %>%
+  ungroup() %>% 
+  rename(lon = lon_grid, lat = lat_grid) %>% 
+  drop_na()
+
+SOM_FFN_annual_mean_maps_coarse <-
+  SOM_FFN_annual_mean_maps_coarse %>% 
+  pivot_longer(-c(year:lat))
+
+
+# Linear regression models
+
+SOM_FFN_annual_mean_maps_coarse_lm <-
+  SOM_FFN_annual_mean_maps_coarse %>%
+  filter(year <= 2022,
+         !(name %in% name_quadratic_fit)) %>% 
+  nest(data = -c(name, lon, lat)) %>%
+  mutate(fit = map(data, ~ lm(value ~ year, data = .x)),
+         tidied = map(fit, tidy),
+         augmented = map(fit, augment),
+         glanced = map(fit, glance))
+
+
+SOM_FFN_annual_mean_maps_coarse_lm_2023 <-
+  full_join(
+    SOM_FFN_annual_mean_maps_coarse_lm %>%
+      unnest(tidied) %>%
+      select(name, lon, lat, term, estimate) %>%
+      pivot_wider(names_from = term,
+                  values_from = estimate) %>%
+      mutate(fit = `(Intercept)` + year * 2023) %>%
+      select(name, lon, lat, fit) %>%
+      mutate(year = 2023),
+    SOM_FFN_annual_mean_maps_coarse %>%
+      filter(year == 2023,
+             !(name %in% name_quadratic_fit))
+  ) %>% 
+  mutate(resid = value - fit)
+
+
+SOM_FFN_annual_mean_maps_coarse_lm <-
+  bind_rows(
+    SOM_FFN_annual_mean_maps_coarse_lm %>%
+      unnest(augmented) %>%
+      select(name, lon, lat, year, value, fit = .fitted, resid = .resid),
+    SOM_FFN_annual_mean_maps_coarse_lm_2023
+  )
+
+rm(SOM_FFN_annual_mean_maps_coarse_lm_2023)
+
+# Quadratic regression models
+
+SOM_FFN_annual_mean_maps_coarse_quadratic <-
+  SOM_FFN_annual_mean_maps_coarse %>%
+  filter(year <= 2022,
+         name %in% name_quadratic_fit) %>% 
+  nest(data = -c(name, lon, lat)) %>%
+  mutate(fit = map(data, ~ lm(value ~ year + I(year^2), data = .x)),
+         tidied = map(fit, tidy),
+         augmented = map(fit, augment),
+         glanced = map(fit, glance))
+
+
+SOM_FFN_annual_mean_maps_coarse_quadratic_2023 <-
+  full_join(
+    SOM_FFN_annual_mean_maps_coarse_quadratic %>%
+      unnest(tidied) %>%
+      select(name, lon, lat, term, estimate) %>%
+      pivot_wider(names_from = term,
+                  values_from = estimate) %>%
+      mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %>%
+      select(name, lon, lat, fit) %>%
+      mutate(year = 2023),
+    SOM_FFN_annual_mean_maps_coarse %>%
+      filter(year == 2023,
+             name %in% name_quadratic_fit)
+  ) %>% 
+  mutate(resid = value - fit)
+
+
+SOM_FFN_annual_mean_maps_coarse_quadratic <-
+  bind_rows(
+    SOM_FFN_annual_mean_maps_coarse_quadratic %>%
+      unnest(augmented) %>%
+      select(name, lon, lat, year, value, fit = .fitted, resid = .resid),
+    SOM_FFN_annual_mean_maps_coarse_quadratic_2023
+  )
+
+rm(SOM_FFN_annual_mean_maps_coarse_quadratic_2023)
+
+# Join linear and quadratic regression results
+
+SOM_FFN_annual_mean_maps_coarse_regression <-
+  bind_rows(SOM_FFN_annual_mean_maps_coarse_lm,
+            SOM_FFN_annual_mean_maps_coarse_quadratic)
+
+rm(SOM_FFN_annual_mean_maps_coarse_lm,
+   SOM_FFN_annual_mean_maps_coarse_quadratic)
+
+SOM_FFN_annual_mean_maps_coarse_regression %>%
+  filter(year %in% c(min(year), max(year))) %>%
+  select(-c(value, resid)) %>% 
+  pivot_wider(names_from = year,
+              values_from = fit) %>% 
+  mutate(change = `2023` - `1990`) %>% 
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = change)) +
+         facet_wrap( ~ name) +
+         scale_fill_divergent(name = "change\n1990-2023"))
+
+SOM_FFN_annual_mean_maps_coarse_regression %>%
+  filter(year == 2023) %>%
+  group_split(name) %>% 
+  # head(1) %>% 
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = resid)) +
+         facet_wrap( ~ name) +
+         scale_fill_divergent(name = "2023\nanomaly"))
 
 
 ```
@@ -375,8 +524,6 @@ SOM_FFN_monthly %>%
 ## Trends annual means
 
 ```{r annual_mean_trends}
-
-name_quadratic_fit <- c("atm_co2", "spco2_smoothed")
 
 SOM_FFN_annual <-
   SOM_FFN_monthly %>%
@@ -527,6 +674,25 @@ SOM_FFN_annual_regression %>%
   theme(legend.title = element_blank(),
         axis.title = element_blank())
 
+SOM_FFN_annual_regression %>%
+  filter(biome != "global") %>%
+  ggplot(aes(biome, resid)) +
+  geom_hline(yintercept = 0) +
+  geom_jitter(data = . %>% filter(year < 2022),
+             aes(fill = year),
+             shape = 21, width = 0.2) +
+  scale_fill_grayC() +
+  new_scale_fill() +
+  geom_point(data = . %>% filter(year >= 2022),
+             aes(fill = as.factor(year)),
+             shape = 21, size = 2)  +
+  scale_fill_manual(values = c("orange", "red"),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  labs(title = "Residual from trend in annual means (actual - predicted)") +
+  facet_grid(name ~ ., scales = "free_y") +
+  theme(legend.title = element_blank(),
+        axis.title = element_blank())
 
 
 ```
@@ -538,10 +704,12 @@ SOM_FFN_annual_regression %>%
 
 ```{r detrended_seasonality}
 
-
+SOM_FFN_monthly_detrended <-
 full_join(SOM_FFN_monthly,
           SOM_FFN_annual_regression %>% select(-c(value, resid))) %>%
-  mutate(value = value - fit) %>% 
+  mutate(value = value - fit)
+
+SOM_FFN_monthly_detrended %>% 
   filter(biome %in% key_biomes) %>%
   ggplot(aes(month, value, group = as.factor(year))) +
   geom_path(data = . %>% filter(year < 2022),
@@ -560,107 +728,37 @@ full_join(SOM_FFN_monthly,
   theme(legend.title = element_blank(),
         axis.title.y = element_blank())
 
-
-
-
-
 ```
 
 
+```{r seasonality_detrended_key_biomes, fig.asp=1.5}
 
-## Trends monthly means
-
-```{r monthly_mean_trends}
-
-
-# SOM_FFN_monthly %>% 
-#   filter(biome %in% key_biomes,
-#          month == 4) %>%
-#   ggplot(aes(year, value)) +
-#   geom_point() +
-#   geom_smooth(method = "lm") +
-#   facet_grid(name ~ biome, scales = "free_y") +
-#   theme(legend.title = element_blank(),
-#         axis.title.y = element_blank())
-
-SOM_FFN_monthly_lm <-
-  SOM_FFN_monthly %>%
-  filter(year > 2010) %>% 
-  nest(data = -c(biome, name, month)) %>%
-  mutate(fit = map(data, ~ lm(value ~ year, data = .x)),
-         tidied = map(fit, tidy),
-         augmented = map(fit, augment),
-         glanced = map(fit, glance))
-
-
-
-SOM_FFN_monthly_lm %>%
-  unnest(augmented) %>%
+SOM_FFN_monthly_detrended %>%
   filter(biome %in% key_biomes) %>%
-  group_split(month) %>%
+  group_split(biome) %>%
   head(1) %>%
   map(
     ~ ggplot(data = .x,
-             aes(year, .resid)) +
-      geom_hline(yintercept = 0) +
-      geom_path() +
-      geom_point(
-        data = .x %>% filter(year < 2022),
-        aes(fill = year),
-        shape = 21
+             aes(month, value, group = as.factor(year))) +
+      geom_path(data = . %>% filter(year < 2022),
+                aes(col = year)) +
+      scale_color_grayC() +
+      new_scale_color() +
+      geom_path(
+        data = . %>% filter(year >= 2022),
+        aes(col = as.factor(year)),
+        linewidth = 1
       ) +
-      scale_fill_grayC() +
-      new_scale_fill() +
-      geom_point(
-        data = .x %>% filter(year >= 2022),
-        aes(fill = as.factor(year)),
-        shape = 21,
-        size = 1
-      )  +
-      scale_fill_manual(
+      scale_color_manual(
         values = c("orange", "red"),
         guide = guide_legend(reverse = TRUE,
                              order = 1)
       ) +
-      scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-      labs(title = paste("Residual from linear trend in means of month:", .x$month)) +
+      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
       facet_grid(name ~ biome, scales = "free_y") +
       theme(legend.title = element_blank(),
-            axis.title = element_blank())
+            axis.title.y = element_blank())
   )
-
-SOM_FFN_monthly_lm %>%
-  unnest(augmented) %>%
-  filter(biome %in% key_biomes) %>%
-  ggplot(aes(month, .resid, group = year)) +
-  geom_hline(yintercept = 0) +
-  geom_path(data = . %>% filter(year < 2022),
-             aes(color = year)) +
-  scale_color_grayC() +
-  new_scale_color() +
-  geom_path(
-    data = . %>% filter(year >= 2022),
-    aes(color = as.factor(year)),
-    linewidth = 1.5
-  )  +
-  scale_color_manual(values = c("orange", "red"),
-                    guide = guide_legend(reverse = TRUE,
-                                         order = 1)) +
-  scale_x_continuous(breaks = seq(1, 12, 3)) +
-  labs(title = "Residual from linear trend in monthly means") +
-  facet_grid(name ~ biome, scales = "free_y") +
-  theme(legend.title = element_blank(),
-        axis.title.y = element_blank())
-
-
-# SOM_FFN_annual_lm %>%
-#   unnest(tidied) %>%
-#   select(source, term, estimate) %>%
-#   pivot_wider(names_from = term,
-#               values_from = estimate) %>%
-#   mutate(annual_mean = `(Intercept)` + year * 2023) %>%
-#   filter(source == "GCB - MLO & SPO") %>%
-#   pull(annual_mean)
 
 
 ```
