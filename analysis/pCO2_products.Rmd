@@ -554,7 +554,7 @@ SOM_FFN_monthly %>%
 
 SOM_FFN_annual <-
   SOM_FFN_monthly %>%
-  group_by(year, region, biome, name) %>%
+  group_by(year, biome, name) %>%
   summarise(value = mean(value)) %>%
   ungroup()
   
@@ -644,9 +644,10 @@ SOM_FFN_annual_regression %>%
 
 ```{r detrended_seasonality}
 
+
 SOM_FFN_monthly_detrended <-
-full_join(SOM_FFN_monthly,
-          SOM_FFN_annual_regression %>% select(-c(value, resid))) %>%
+  full_join(SOM_FFN_monthly,
+            SOM_FFN_annual_regression %>% select(-c(value, resid))) %>%
   mutate(value = value - fit)
 
 SOM_FFN_monthly_detrended %>% 
