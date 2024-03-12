@@ -386,10 +386,23 @@ SOM_FFN_annual %>%
   filter(biome %in% key_biomes) %>%
   ggplot(aes(year, value)) +
   geom_point() +
-  geom_smooth(method = "lm") +
+  geom_smooth(data = . %>% filter(year <= 2022),
+              method = "lm",
+              fullrange = TRUE,
+              aes(col = "linear"),
+              se = FALSE) +
+  geom_smooth(data = . %>% filter(year <= 2022),
+              method = "lm",
+              fullrange = TRUE,
+              formula = y ~ x + I(x^2),
+              aes(col = "quadratic"),
+              se = FALSE) +
+  scale_color_brewer(
+    palette = "Set1",
+    name = "Regression fit\n prior 2023") +
+  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   facet_grid(name ~ biome, scales = "free_y") +
-  theme(legend.title = element_blank(),
-        axis.title.y = element_blank())
+  theme(axis.title.y = element_blank())
 
 SOM_FFN_annual_lm <-
   SOM_FFN_annual %>%
