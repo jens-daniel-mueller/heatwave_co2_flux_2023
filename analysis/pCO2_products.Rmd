@@ -22,7 +22,6 @@ library(khroma)
 
 ```
 
-
 # Read data
 
 ```{r define_paths}
@@ -35,31 +34,98 @@ path_reccap2 <-
 
 ```
 
-```{r}
+```{r read_region_mask}
 
 region_masks_all <-
-  read_ncdf(paste(path_reccap2, "supplementary/RECCAP2_region_masks_all_v20221025.nc", sep = "")) %>%
+  read_ncdf(
+    paste(
+      path_reccap2,
+      "supplementary/RECCAP2_region_masks_all_v20221025.nc",
+      sep = ""
+    )
+  ) %>%
   as_tibble()
+
+```
+
+
+```{r read_nc_metadata, eval=FALSE}
+
+library(ncdf4)
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
+  ))
+
+print(nc)
+
+```
+
+
+```{r read_VLIZ_SOM_FFN}
+
+SOM_FFN <-
+  read_ncdf(
+    paste0(
+      path_pCO2_products,
+      "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
+    ),
+    var = c("dco2", "atm_co2", "sol", "kw", "spco2_smoothed", "fgco2_smoothed"),
+    make_units = FALSE
+  )
+
+SOM_FFN <- SOM_FFN %>%
+  as_tibble()
+
+SOM_FFN <-
+  SOM_FFN %>%
+  mutate(across(dco2:fgco2_smoothed, ~ replace(., . >= 1e+19, NA)))
+
+SOM_FFN <-
+  SOM_FFN %>%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
+
+SOM_FFN <-
+  SOM_FFN %>% 
+  mutate(lon = if_else(lon < 0, lon + 360, lon))
+
+```
+
+# Biome mask
+
+```{r prepare_region_mask, fig.asp=0.5}
+
+land_mask <- region_masks_all %>%
+  filter(seamask == 0)
+
+map <- ggplot(land_mask,
+              aes(lon, lat)) +
+  geom_tile(fill = "grey80") +
+  coord_quickmap(expand = 0) +
+  theme(axis.title = element_blank())
 
 
 region_masks_all <- region_masks_all %>%
   filter(seamask == 1) %>% 
   select(lon, lat, atlantic:southern) %>% 
-  pivot_longer(atlantic:southern) %>%
-  mutate(value = as.factor(value))
+  pivot_longer(atlantic:southern,
+               names_to = "region",
+               values_to = "biome") %>%
+  mutate(biome = as.character(biome))
 
 region_masks_all <- region_masks_all %>%
-  filter(value != 0)
+  filter(biome != "0")
 
 region_masks_all <- region_masks_all %>%
-  mutate(biome = paste(name, value, sep = "_")) %>% 
-  select(lon, lat, biome)
+  mutate(biome = paste(region, biome, sep = "_"))
 
 
-region_masks_all %>%
-  ggplot(aes(lon, lat, fill = biome)) +
-  geom_raster() +
-  coord_quickmap(expand = 0)
+# map +
+#   geom_raster(data = region_masks_all,
+#               aes(lon, lat, fill = biome))
 
 
 region_masks_all <- region_masks_all  %>% 
@@ -69,7 +135,7 @@ region_masks_all <- region_masks_all  %>%
     biome == "atlantic_3" ~ "NA-STPS",
     biome == "atlantic_4" ~ "AEQU",
     biome == "atlantic_5" ~ "SA-STPS",
-    # biome == "atlantic_6" ~ "MED",
+    biome == "atlantic_6" ~ "MED",
     biome == "pacific_1" ~ "NP-SPSS",
     biome == "pacific_2" ~ "NP-STSS",
     biome == "pacific_3" ~ "NP-STPS",
@@ -84,6 +150,7 @@ region_masks_all <- region_masks_all  %>%
     # biome == "arctic_2" ~ "NP-ICE",
     # biome == "arctic_3" ~ "NA-ICE",
     # biome == "arctic_4" ~ "Barents",
+    str_detect(biome, "arctic") ~ "Arctic",
     biome == "southern_1" ~ "SO-STSS",
     biome == "southern_2" ~ "SO-SPSS",
     biome == "southern_3" ~ "SO-ICE",
@@ -93,79 +160,41 @@ region_masks_all <- region_masks_all  %>%
 region_masks_all <-
   region_masks_all %>%
   filter(biome != "other")
-  
-  
+
+
+map +
+  geom_tile(data = region_masks_all,
+            aes(lon, lat, fill = region)) +
+  scale_fill_muted()
+
 region_masks_all %>%
-  ggplot(aes(lon, lat, fill = biome)) +
-  geom_raster() +
-  coord_quickmap(expand = 0)
+  group_split(region) %>%
+  head(2) %>%
+  map(~ map +
+        geom_tile(data = .x,
+                    aes(lon, lat, fill = biome)) +
+        labs(title = .x$region) +
+        scale_fill_okabeito())
 
 ```
 
 
+# pCO2 products
 
+## Climatology maps
 
-```{r read_nc_metadata, eval=FALSE}
+```{r maps, fig.asp=0.5}
 
-library(ncdf4)
-nc <- nc_open(paste0(path_pCO2_products,"VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"))
-print(nc)
-
-```
-
-
-```{r read_VLIZ_SOM_FFN}
-
-SOM_FFN <- read_ncdf(paste0(path_pCO2_products,"VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"),
-                     make_units = FALSE)
-
-SOM_FFN_tibble <- SOM_FFN %>% 
-  as_tibble()
-
-SOM_FFN_tibble <-
-  SOM_FFN_tibble %>%
-  mutate(area = earth_surf(lat, lon)) 
-
-SOM_FFN_tibble <-
-  SOM_FFN_tibble %>%
-  mutate(across(dco2:fgco2_smoothed, ~ replace(., . >= 1e+19, NA)))
-
-
-```
-
-```{r maps}
-
-SOM_FFN_tibble <-
-  SOM_FFN_tibble %>% 
-  mutate(lon = if_else(lon < 0, lon + 360, lon))
-
-SOM_FFN_tibble <-
-  inner_join(SOM_FFN_tibble,
+SOM_FFN <-
+  inner_join(SOM_FFN,
              region_masks_all)
 
-SOM_FFN_tibble %>%
-  filter(time == max(time)) %>%
-  ggplot(aes(lon, lat, fill = fgco2_smoothed)) +
-  geom_raster() +
-  scale_fill_divergent() +
-  coord_quickmap(expand = 0)
-
-SOM_FFN_tibble %>%
-  filter(time == max(time)) %>%
-  ggplot(aes(lon, lat, fill = fgco2_smoothed)) +
-  geom_raster() +
-  scale_fill_divergent() +
-  coord_quickmap(expand = 0)
-
 SOM_FFN_annual_mean_maps <-
-  SOM_FFN_tibble %>%
-  mutate(year = year(time)) %>%
+  SOM_FFN %>%
   group_by(year, lon, lat) %>%
   summarise(across(dco2:fgco2_smoothed,
                    ~ mean(.))) %>%
   ungroup()
-
-
 
 SOM_FFN_climatology <-
   SOM_FFN_annual_mean_maps %>%
@@ -176,7 +205,6 @@ SOM_FFN_climatology <-
                    ~ mean(.))) %>%
   ungroup()
 
-
 SOM_FFN_2023_anomaly <-
   bind_rows(
     SOM_FFN_climatology %>% mutate(reference = "climatology"),
@@ -186,7 +214,6 @@ SOM_FFN_2023_anomaly <-
       mutate(reference = "2023")
   )
 
-
 SOM_FFN_2023_anomaly <-
   SOM_FFN_2023_anomaly %>%
   pivot_longer(-c(lon, lat, reference)) %>%
@@ -195,13 +222,23 @@ SOM_FFN_2023_anomaly <-
   mutate(anomaly = `2023` - climatology)
   
 
+SOM_FFN_2023_anomaly %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(~ map +
+        geom_tile(data = .x,
+                  aes(lon, lat, fill = climatology)) +
+        labs(title = .x$name) +
+        scale_fill_viridis_c())
 
 SOM_FFN_2023_anomaly %>%
-  filter(name == "sol") %>% 
-  ggplot(aes(lon, lat, fill = anomaly)) +
-  geom_raster() +
-  scale_fill_divergent() +
-  coord_quickmap(expand = 0)
+  group_split(name) %>%
+  # head(1) %>%
+  map(~ map +
+        geom_tile(data = .x,
+                  aes(lon, lat, fill = anomaly)) +
+        labs(title = .x$name) +
+        scale_fill_divergent())
 
 
 
@@ -210,10 +247,10 @@ SOM_FFN_2023_anomaly %>%
 
 
 
-```{r global_means_and_integrals}
+```{r global_means_and_integrals, eval=FALSE}
 
 SOM_FFN_monthly_global <-
-  SOM_FFN_tibble %>%
+  SOM_FFN %>%
   select(-seaice) %>% 
   group_by(time) %>% 
   summarise(across(dco2:fgco2_smoothed, 
@@ -225,7 +262,7 @@ SOM_FFN_monthly_global <-
   ungroup()
 
 SOM_FFN_monthly_biome <-
-  SOM_FFN_tibble %>%
+  SOM_FFN %>%
   select(-seaice) %>% 
   group_by(time, biome) %>% 
   summarise(across(dco2:fgco2_smoothed, 
@@ -311,7 +348,7 @@ SOM_FFN_monthly %>%
 
 ```
 
-```{r regional_seasonality, fig.asp=1.5}
+```{r regional_seasonality, fig.asp=1.5, eval=FALSE}
 
 SOM_FFN_monthly %>%
   pivot_longer(-c(time:month, biome)) %>%
