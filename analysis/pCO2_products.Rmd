@@ -37,6 +37,8 @@ path_reccap2 <-
 
 ```{r read_region_mask}
 
+print("RECCAP2_region_masks_all_v20221025.nc")
+
 region_masks_all <-
   read_ncdf(
     paste(
@@ -48,7 +50,6 @@ region_masks_all <-
   as_tibble()
 
 ```
-
 
 ```{r read_nc_metadata, eval=FALSE}
 
@@ -65,6 +66,8 @@ print(nc)
 
 
 ```{r read_VLIZ_SOM_FFN}
+
+print("VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc")
 
 SOM_FFN <-
   read_ncdf(
@@ -87,8 +90,7 @@ SOM_FFN <-
   SOM_FFN %>%
   mutate(area = earth_surf(lat, lon),
          year = year(time),
-         month = month(time)) %>% 
-  filter(year >= 1990)
+         month = month(time))
 
 SOM_FFN <-
   SOM_FFN %>% 
@@ -109,13 +111,25 @@ key_biomes <- c("global",
 
 name_quadratic_fit <- c("atm_co2", "spco2_smoothed")
 
+start_year <- 1990
+
+name_divergent <- c("dco2", "fgco2_smoothed")
+
 ```
 
 # Anomaly detection
 
+For the detection of anomalies at any point in time and space, we fit regression models and compare the fitted to the actual value.
+
+We use linear regression models for all parameters, except for `r print(name_quadratic_fit)``, which are approximated with quadratic fits.
+
+The regression models are fitted to data from the period `r print(paste(start_year, "- 2022"))``, and extrapolated to 2023.
+
+
 ```{r anomaly_detection_function}
 
 anomaly_determination <- function(df) {
+  
   # Linear regression models
   
   df_lm <-
@@ -126,8 +140,7 @@ anomaly_determination <- function(df) {
     mutate(
       fit = map(data, ~ lm(value ~ year, data = .x)),
       tidied = map(fit, tidy),
-      augmented = map(fit, augment),
-      glanced = map(fit, glance)
+      augmented = map(fit, augment)
     )
   
   
@@ -168,8 +181,7 @@ anomaly_determination <- function(df) {
     mutate(
       fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
       tidied = map(fit, tidy),
-      augmented = map(fit, augment),
-      glanced = map(fit, glance)
+      augmented = map(fit, augment)
     )
   
   
@@ -216,7 +228,120 @@ anomaly_determination <- function(df) {
 
 ```
 
+```{r anomaly_detection_function_nested}
 
+# my_sum <- function(df, col_to_sum,...) {
+# 
+#     col_to_sum <- enquo(col_to_sum)
+#     group_by <- quos(...)
+# 
+#     df %>%
+#         group_by(!!!group_by) %>%
+#         summarise(total_sum = sum(!!col_to_sum)) %>% 
+#         ungroup()
+# }
+# 
+# transactions %>% my_sum(amount, accountid, month)
+
+anomaly_determination <- function(df) {
+  
+  # Linear regression models
+  
+  df_lm <-
+    df %>%
+    filter(year <= 2022,
+           !(name %in% name_quadratic_fit)) %>%
+    nest(data = -name) %>%
+    mutate(
+      fit = map(data, ~ lm(value ~ year, data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment)
+    )
+  
+  
+  df_lm_2023 <-
+    full_join(
+      df_lm %>%
+        unnest(tidied) %>%
+        select(name, term, estimate) %>%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %>%
+        mutate(fit = `(Intercept)` + year * 2023) %>%
+        select(name, fit) %>%
+        mutate(year = 2023),
+      df %>%
+        filter(year == 2023,
+               !(name %in% name_quadratic_fit))
+    ) %>%
+    mutate(resid = value - fit)
+  
+  
+  df_lm <-
+    bind_rows(
+      df_lm %>%
+        unnest(augmented) %>%
+        select(name, year, value, fit = .fitted, resid = .resid),
+      df_lm_2023
+    )
+  
+  rm(df_lm_2023)
+  
+  # Quadratic regression models
+  
+  df_quadratic <-
+    df %>%
+    filter(year <= 2022,
+           name %in% name_quadratic_fit) %>%
+    nest(data = -name) %>%
+    mutate(
+      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment)
+    )
+  
+  
+  df_quadratic_2023 <-
+    full_join(
+      df_quadratic %>%
+        unnest(tidied) %>%
+        select(name, term, estimate) %>%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %>%
+        mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %>%
+        select(name, fit) %>%
+        mutate(year = 2023),
+      df %>%
+        filter(year == 2023,
+               name %in% name_quadratic_fit)
+    ) %>%
+    mutate(resid = value - fit)
+  
+  
+  df_quadratic <-
+    bind_rows(
+      df_quadratic %>%
+        unnest(augmented) %>%
+        select(name, year, value, fit = .fitted, resid = .resid),
+      df_quadratic_2023
+    )
+  
+  rm(df_quadratic_2023)
+  
+  # Join linear and quadratic regression results
+  
+  df_regression <-
+    bind_rows(df_lm,
+              df_quadratic)
+  
+  rm(df_lm,
+     df_quadratic)
+  
+  
+  return(df_regression)
+  
+}
+
+```
 
 # Biome mask
 
@@ -227,15 +352,19 @@ region_masks_all <-
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 land_mask <- region_masks_all %>%
-  filter(seamask == 0)
+  filter(seamask == 0) %>% 
+  select(lon, lat)
 
 map <- ggplot(land_mask,
               aes(lon, lat)) +
   geom_tile(fill = "grey80") +
-  coord_quickmap(expand = 0) +
-  theme(axis.title = element_blank())
-
-
+  scale_y_continuous(breaks = seq(-60,60,30)) +
+  scale_x_continuous(breaks = seq(0,360,60)) +
+  coord_quickmap(expand = 0, ylim = c(-80, 80)) +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())
+  
 region_masks_all <- region_masks_all %>%
   filter(seamask == 1) %>% 
   select(lon, lat, atlantic:southern) %>% 
@@ -249,12 +378,6 @@ region_masks_all <- region_masks_all %>%
 
 region_masks_all <- region_masks_all %>%
   mutate(biome = paste(region, biome, sep = "_"))
-
-
-# map +
-#   geom_raster(data = region_masks_all,
-#               aes(lon, lat, fill = biome))
-
 
 region_masks_all <- region_masks_all  %>% 
   mutate(biome = case_when(
@@ -293,50 +416,337 @@ region_masks_all <-
 map +
   geom_tile(data = region_masks_all,
             aes(lon, lat, fill = region)) +
-  scale_fill_muted()
+  labs(title = "Considered ocean regions") +
+  scale_fill_muted() +
+  theme(legend.title = element_blank())
 
 region_masks_all %>%
   group_split(region) %>%
-  # head(2) %>%
-  map(~ map +
-        geom_tile(data = .x,
-                    aes(lon, lat, fill = biome)) +
-        labs(title = .x$region) +
-        scale_fill_okabeito())
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = biome)) +
+         labs(title = paste("Region:", .x$region)) +
+         scale_fill_okabeito())
 
 
 map +
   geom_tile(data = region_masks_all %>% filter(biome %in% key_biomes),
             aes(lon, lat, fill = biome)) +
-  labs(title = "Selected key biomes") +
-  scale_fill_muted()
+  labs(title = "Selected biomes to highlight") +
+  scale_fill_muted() +
+  theme(legend.title = element_blank())
 
 
-
-
-
+region_masks_all <-
+  region_masks_all %>%
+  select(-region)
 
 ```
 
 
-# pCO2 products
+# Preprocessing
 
-## Apply biome mask
+```{r temporal_boundaries}
+
+SOM_FFN <-
+  SOM_FFN %>%
+  filter(year >= start_year)
+
+```
+
 
 ```{r biome_mask}
 
 SOM_FFN <-
-  inner_join(SOM_FFN,
-             region_masks_all)
+  full_join(SOM_FFN,
+            region_masks_all)
+
+# set all values outside biome mask to NA
+
+SOM_FFN <-
+  SOM_FFN %>%
+  mutate(across(dco2:fgco2_smoothed, ~ if_else(is.na(biome), NA, .)))
+
+# map +
+#   geom_tile(data = SOM_FFN %>% filter(time == max(time),
+#                                       !is.na(fgco2_smoothed)),
+#             aes(lon, lat))
 
 ```
 
 
-## Hovmoeller
+# Maps
 
-### Annual
+The following maps show the absolute state of each variable in 2023 as provided through the pCO2 product, the change in that variable from 1990 to 2023, as well es the anomalies in 2023 from the prediction of a linear/quadratic fit to the data from 1990 to 2022.
 
-```{r hovmoeller_annual}
+Maps are first presented as annual means, and than as monthly means. Note that the 2023 predictions for the monthly maps are done individually for each month, such the mean seasonal anomaly from the annual mean is removed.
+
+
+```{r climatology_maps, fig.asp=0.5, eval=FALSE}
+
+SOM_FFN_annual_mean_maps <-
+  SOM_FFN %>%
+  drop_na() %>% 
+  group_by(year, lon, lat) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %>%
+  ungroup()
+
+SOM_FFN_climatology <-
+  SOM_FFN_annual_mean_maps %>%
+  drop_na() %>% 
+  filter(year <= 2022) %>%
+  group_by(lon, lat) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %>%
+  ungroup()
+
+SOM_FFN_2023_anomaly <-
+  bind_rows(
+    SOM_FFN_climatology %>% mutate(reference = "climatology"),
+    SOM_FFN_annual_mean_maps %>%
+      filter(year == 2023) %>%
+      select(-year) %>% 
+      mutate(reference = "2023")
+  )
+
+SOM_FFN_2023_anomaly <-
+  SOM_FFN_2023_anomaly %>%
+  pivot_longer(-c(lon, lat, reference)) %>%
+  pivot_wider(names_from = reference,
+              values_from = value) %>%
+  mutate(anomaly = `2023` - climatology)
+
+SOM_FFN_2023_anomaly %>%
+  filter(!(name %in% name_divergent)) %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = climatology)) +
+      labs(title = "Climatology") +
+      scale_fill_viridis_c()
+  )
+
+SOM_FFN_2023_anomaly %>%
+  filter(name %in% name_divergent) %>% 
+  group_split(name) %>%
+  # head(2) %>%
+  map(~ map +
+        geom_tile(data = .x,
+                  aes(lon, lat, fill = climatology)) +
+        labs(title = "Climatology") +
+        scale_fill_divergent(.x$name))
+
+```
+
+
+```{r compute_coarse_resolution_monthly_maps, fig.asp=0.5}
+
+SOM_FFN_coarse <-
+  m_grid_horizontal_coarse(SOM_FFN)
+
+SOM_FFN_coarse <-
+  SOM_FFN_coarse %>%
+  group_by(year, month, lon_grid, lat_grid) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ weighted.mean(., area))) %>%
+  ungroup() %>%
+  rename(lon = lon_grid, lat = lat_grid) %>%
+  drop_na()
+
+```
+
+
+## Annual means
+
+### 2023
+
+```{r 2023_annual_mean_maps, fig.asp=0.5}
+
+SOM_FFN_coarse_annual <-
+  SOM_FFN_coarse %>%
+  group_by(year, lon, lat) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %>%
+  ungroup()
+
+SOM_FFN_coarse_annual <-
+  SOM_FFN_coarse_annual %>% 
+  pivot_longer(-c(year:lat))
+
+SOM_FFN_coarse_annual_regression <-
+  SOM_FFN_coarse_annual %>%
+  group_by(lon, lat) %>%
+  nest() %>%
+  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  select(-data) %>%
+  unnest(anomalies) %>%
+  ungroup()
+  
+
+SOM_FFN_coarse_annual_regression %>%
+  filter(year == 2023,
+         !(name %in% name_divergent)) %>%
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = value)) +
+         facet_wrap( ~ name) +
+         labs(title = "Estimate 2023") +
+         scale_fill_viridis_c(name = .x$name))
+  
+SOM_FFN_coarse_annual_regression %>%
+  filter(year == 2023,
+         name %in% name_divergent) %>%
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = value)) +
+         labs(title = "Estimate 2023") +
+         scale_fill_divergent(name = .x$name))
+  
+```
+
+### Change 1990 - 2023
+
+```{r change_1990_2023_annual_mean_maps, fig.asp=0.5}
+
+
+SOM_FFN_coarse_annual_regression %>%
+  filter(year %in% c(min(year), max(year))) %>%
+  select(-c(fit, resid)) %>% 
+  pivot_wider(names_from = year,
+              values_from = value) %>% 
+  mutate(change = `2023` - `1990`) %>% 
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = change)) +
+         labs(title =  "Change 1990-2023") +
+         scale_fill_divergent(name = .x$name))
+
+```
+
+### 2023 anomaly
+
+```{r anomaly_2023_annual_mean_maps, fig.asp=0.5}
+
+SOM_FFN_coarse_annual_regression %>%
+  filter(year == 2023) %>%
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = resid)) +
+         labs(title =  "2023 anomaly") +
+         scale_fill_divergent(name = .x$name))
+
+```
+
+## Monthly means
+
+### 2023
+
+```{r 2023_monthly_mean_maps, fig.asp=2}
+
+SOM_FFN_coarse_monthly <-
+  SOM_FFN_coarse %>%
+  group_by(year, month, lon, lat) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(.))) %>%
+  ungroup()
+
+SOM_FFN_coarse_monthly <-
+  SOM_FFN_coarse_monthly %>% 
+  pivot_longer(-c(year:lat))
+
+SOM_FFN_coarse_monthly_regression <-
+  SOM_FFN_coarse_monthly %>%
+  group_by(lon, lat, month) %>%
+  nest() %>%
+  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  select(-data) %>%
+  unnest(anomalies) %>%
+  ungroup()
+  
+
+SOM_FFN_coarse_monthly_regression %>%
+  filter(year == 2023,
+         !(name %in% name_divergent)) %>%
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = value)) +
+         labs(title = "Estimate 2023") +
+         scale_fill_viridis_c(name = .x$name) +
+         facet_wrap(~ month, ncol = 2))
+  
+SOM_FFN_coarse_monthly_regression %>%
+  filter(year == 2023,
+         name %in% name_divergent) %>%
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = value)) +
+         labs(title = "Estimate 2023") +
+         scale_fill_divergent(name = .x$name) +
+         facet_wrap(~ month, ncol = 2))
+  
+```
+
+### Change 1990 - 2023
+
+```{r change_1990_2023_monthly_mean_maps, fig.asp=2}
+
+
+SOM_FFN_coarse_monthly_regression %>%
+  filter(year %in% c(min(year), max(year))) %>%
+  select(-c(fit, resid)) %>% 
+  pivot_wider(names_from = year,
+              values_from = value) %>% 
+  mutate(change = `2023` - `1990`) %>% 
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = change)) +
+         labs(title = "Change 1990-2023") +
+         scale_fill_divergent(name = .x$name) +
+         facet_wrap(~ month, ncol = 2))
+
+```
+
+### 2023 anomaly
+
+```{r anomaly_2023_monthly_mean_maps, fig.asp=2}
+
+SOM_FFN_coarse_monthly_regression %>%
+  filter(year == 2023) %>%
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = resid)) +
+         labs(title = "2023 anomaly") +
+         scale_fill_divergent(name = .x$name) +
+         facet_wrap(~ month, ncol = 2))
+
+```
+
+
+# Hovmoeller plots
+
+## Annual means
+
+```{r hovmoeller_annual, fig.asp=0.5}
 
 SOM_FFN_hovmoeller_monthly_annual <-
   SOM_FFN %>%
@@ -388,9 +798,9 @@ SOM_FFN_hovmoeller_monthly_annual_regression %>%
 
 
 
-### Monthly
+## Monthly means
 
-```{r hovmoeller_monthly}
+```{r hovmoeller_monthly, fig.asp=0.5}
 
 SOM_FFN_hovmoeller_monthly <-
   SOM_FFN %>%
@@ -423,8 +833,6 @@ SOM_FFN_hovmoeller_monthly %>%
         theme(axis.title.x = element_blank()))
 
 
-library(tictoc)
-tic()
 SOM_FFN_hovmoeller_monthly_regression <-
   SOM_FFN_hovmoeller_monthly %>%
   select(-c(decimal)) %>% 
@@ -434,7 +842,6 @@ SOM_FFN_hovmoeller_monthly_regression <-
   select(-data) %>%
   unnest(anomalies) %>%
   ungroup()
-toc()
 
   
 SOM_FFN_hovmoeller_monthly_regression <-
@@ -451,6 +858,15 @@ SOM_FFN_hovmoeller_monthly_regression %>%
         coord_cartesian(expand = 0) +
         theme(axis.title.x = element_blank()))
   
+
+
+
+```
+
+## Monthly means since 2021
+
+```{r hovmoeller_monthly_recent_years}
+
 SOM_FFN_hovmoeller_monthly_regression %>%
   filter(year >= 2021) %>% 
   group_split(name) %>%
@@ -462,144 +878,17 @@ SOM_FFN_hovmoeller_monthly_regression %>%
         coord_cartesian(expand = 0) +
         theme(axis.title.x = element_blank()))
 
-
 ```
 
 
-
-
-## Maps
-
-### Climatologies
-
-```{r climatology_maps, fig.asp=0.5}
-
-SOM_FFN_annual_mean_maps <-
-  SOM_FFN %>%
-  group_by(year, lon, lat) %>%
-  summarise(across(dco2:fgco2_smoothed,
-                   ~ mean(.))) %>%
-  ungroup()
-
-SOM_FFN_climatology <-
-  SOM_FFN_annual_mean_maps %>%
-  filter(year <= 2022) %>%
-  group_by(lon, lat) %>%
-  summarise(across(dco2:fgco2_smoothed,
-                   ~ mean(.))) %>%
-  ungroup()
-
-SOM_FFN_2023_anomaly <-
-  bind_rows(
-    SOM_FFN_climatology %>% mutate(reference = "climatology"),
-    SOM_FFN_annual_mean_maps %>%
-      filter(year == 2023) %>%
-      select(-year) %>% 
-      mutate(reference = "2023")
-  )
-
-SOM_FFN_2023_anomaly <-
-  SOM_FFN_2023_anomaly %>%
-  pivot_longer(-c(lon, lat, reference)) %>%
-  pivot_wider(names_from = reference,
-              values_from = value) %>%
-  mutate(anomaly = `2023` - climatology)
-
-SOM_FFN_2023_anomaly %>%
-  group_split(name) %>%
-  # head(1) %>%
-  map(~ map +
-        geom_tile(data = .x,
-                  aes(lon, lat, fill = climatology)) +
-        labs(title = .x$name) +
-        scale_fill_viridis_c())
-
-```
-
-### Anomaly from climatology
-
-```{r anomaly_from_climatology_maps}
-
-
-SOM_FFN_2023_anomaly %>%
-  group_split(name) %>%
-  # head(1) %>%
-  map(~ map +
-        geom_tile(data = .x,
-                  aes(lon, lat, fill = anomaly)) +
-        labs(title = .x$name) +
-        scale_fill_divergent())
-
-
-```
-
-### Anomaly from prediction
-
-```{r anomaly_from_prediction_maps}
-
-SOM_FFN_annual_mean_maps_coarse <-
-  m_grid_horizontal_coarse(SOM_FFN_annual_mean_maps) %>%
-  group_by(year, lon_grid, lat_grid) %>%
-  summarise(across(dco2:fgco2_smoothed,
-                   ~ mean(.))) %>%
-  ungroup() %>% 
-  rename(lon = lon_grid, lat = lat_grid) %>% 
-  drop_na()
-
-SOM_FFN_annual_mean_maps_coarse <-
-  SOM_FFN_annual_mean_maps_coarse %>% 
-  pivot_longer(-c(year:lat))
-
-
-SOM_FFN_annual_mean_maps_coarse_regression <-
-  SOM_FFN_annual_mean_maps_coarse %>%
-  group_by(lon, lat) %>%
-  nest() %>%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  select(-data) %>%
-  unnest(anomalies) %>%
-  ungroup()
-  
-  
-SOM_FFN_annual_mean_maps_coarse_regression %>%
-  filter(year %in% c(min(year), max(year))) %>%
-  select(-c(value, resid)) %>% 
-  pivot_wider(names_from = year,
-              values_from = fit) %>% 
-  mutate(change = `2023` - `1990`) %>% 
-  group_split(name) %>% 
-  # head(2) %>%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = change)) +
-         facet_wrap( ~ name) +
-         scale_fill_divergent(name = "change\n1990-2023"))
-
-SOM_FFN_annual_mean_maps_coarse_regression %>%
-  filter(year == 2023) %>%
-  group_split(name) %>% 
-  # head(1) %>% 
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = resid)) +
-         facet_wrap( ~ name) +
-         scale_fill_divergent(name = "2023\nanomaly"))
-
-
-```
-
-
-## Regional means and integrals
-
-
+# Regional means and integrals
 
 ```{r global_means_and_integrals}
-
-
 
 SOM_FFN_monthly_global <-
   SOM_FFN %>%
   group_by(time) %>% 
+  drop_na() %>% 
   summarise(across(dco2:spco2_smoothed, 
                    ~weighted.mean(., area, na.rm = TRUE)),
             across(fgco2_smoothed, 
@@ -608,7 +897,8 @@ SOM_FFN_monthly_global <-
 
 SOM_FFN_monthly_biome <-
   SOM_FFN %>%
-  group_by(time, region, biome) %>% 
+  drop_na() %>% 
+  group_by(time, biome) %>% 
   summarise(across(dco2:spco2_smoothed, 
                    ~weighted.mean(., area, na.rm = TRUE)),
             across(fgco2_smoothed, 
@@ -617,8 +907,7 @@ SOM_FFN_monthly_biome <-
   
 SOM_FFN_monthly <- 
   bind_rows(SOM_FFN_monthly_global %>% 
-              mutate(biome = "global",
-                     region = "global"),
+              mutate(biome = "global"),
             SOM_FFN_monthly_biome)
 
 rm(SOM_FFN_monthly_global,
@@ -633,15 +922,13 @@ SOM_FFN_monthly %>%
 
 SOM_FFN_monthly <-
   SOM_FFN_monthly %>%
-  pivot_longer(-c(time:month, biome, region))
-
-
+  pivot_longer(-c(time:month, biome))
 
 
 ```
 
 
-### Seasonality
+## Seasonality
 
 ```{r seasonality_overview}
 
@@ -698,7 +985,7 @@ SOM_FFN_monthly %>%
 
 ```
 
-## Trends annual means
+# Trends annual means
 
 ```{r annual_mean_trends}
 
@@ -788,9 +1075,9 @@ SOM_FFN_annual_regression %>%
 ```
 
 
-## Detrended seasonality
+# Detrended seasonality
 
-### Predited annual mean removed
+## Predited annual mean removed
 
 ```{r detrended_seasonality}
 
