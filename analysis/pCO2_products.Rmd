@@ -278,7 +278,7 @@ region_masks_all <- region_masks_all  %>%
     # biome == "arctic_2" ~ "NP-ICE",
     # biome == "arctic_3" ~ "NA-ICE",
     # biome == "arctic_4" ~ "Barents",
-    str_detect(biome, "arctic") ~ "Arctic",
+    # str_detect(biome, "arctic") ~ "Arctic",
     biome == "southern_1" ~ "SO-STSS",
     biome == "southern_2" ~ "SO-SPSS",
     biome == "southern_3" ~ "SO-ICE",
@@ -311,10 +311,110 @@ map +
   labs(title = "Selected key biomes") +
   scale_fill_muted()
 
+
+
+
+
+
 ```
 
 
 # pCO2 products
+
+## Apply biome mask
+
+```{r biome_mask}
+
+SOM_FFN <-
+  inner_join(SOM_FFN,
+             region_masks_all)
+
+```
+
+
+## Hovmoeller
+
+```{r hovmoeller}
+
+SOM_FFN_hovmoeller <-
+  SOM_FFN %>%
+  group_by(year, month, lat) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(., na.rm = TRUE))) %>%
+  ungroup() %>% 
+  drop_na()
+
+SOM_FFN_hovmoeller <-
+  SOM_FFN_hovmoeller %>%
+  pivot_longer(-c(year, month, lat))
+
+SOM_FFN_hovmoeller <-
+  SOM_FFN_hovmoeller %>% 
+  mutate(decimal = year + (month-1) / 12) %>% 
+  group_by(name, lat) %>% 
+  mutate(delta_decimal = decimal - lag(decimal)) %>% 
+  ungroup()
+
+
+SOM_FFN_hovmoeller %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(~ ggplot(data = .x,
+                  aes(decimal, lat, fill = value)) +
+        geom_raster() +
+        scale_fill_viridis_c(.x$name) +
+        coord_cartesian(expand = 0) +
+        theme(axis.title.x = element_blank()))
+
+
+SOM_FFN_hovmoeller_annual <-
+  SOM_FFN %>%
+  group_by(year, lat) %>%
+  summarise(across(dco2:fgco2_smoothed,
+                   ~ mean(., na.rm = TRUE))) %>%
+  ungroup() %>% 
+  drop_na()
+
+SOM_FFN_hovmoeller_annual <-
+  SOM_FFN_hovmoeller_annual %>%
+  pivot_longer(-c(year, lat))
+
+
+SOM_FFN_hovmoeller_annual %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(~ ggplot(data = .x,
+                  aes(year, lat, fill = value)) +
+        geom_raster() +
+        scale_fill_viridis_c(.x$name) +
+        coord_cartesian(expand = 0) +
+        theme(axis.title.x = element_blank()))
+
+
+SOM_FFN_hovmoeller_annual_regression <-
+  SOM_FFN_hovmoeller_annual %>%
+  group_by(lat) %>%
+  nest() %>%
+  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  select(-data) %>%
+  unnest(anomalies) %>%
+  ungroup()
+
+  
+SOM_FFN_hovmoeller_annual_regression %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(~ ggplot(data = .x,
+                  aes(year, lat, fill = resid)) +
+        geom_raster() +
+        scale_fill_divergent(.x$name) +
+        coord_cartesian(expand = 0) +
+        theme(axis.title.x = element_blank()))
+
+
+```
+
+
 
 ## Maps
 
@@ -443,9 +543,7 @@ SOM_FFN_annual_mean_maps_coarse_regression %>%
 
 ```{r global_means_and_integrals}
 
-SOM_FFN <-
-  inner_join(SOM_FFN,
-             region_masks_all)
+
 
 SOM_FFN_monthly_global <-
   SOM_FFN %>%
