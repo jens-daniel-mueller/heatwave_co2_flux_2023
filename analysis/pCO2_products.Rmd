@@ -263,7 +263,7 @@ region_masks_all <- region_masks_all  %>%
     biome == "atlantic_3" ~ "NA-STPS",
     biome == "atlantic_4" ~ "AEQU",
     biome == "atlantic_5" ~ "SA-STPS",
-    biome == "atlantic_6" ~ "MED",
+    # biome == "atlantic_6" ~ "MED",
     biome == "pacific_1" ~ "NP-SPSS",
     biome == "pacific_2" ~ "NP-STSS",
     biome == "pacific_3" ~ "NP-STPS",
@@ -281,7 +281,7 @@ region_masks_all <- region_masks_all  %>%
     # str_detect(biome, "arctic") ~ "Arctic",
     biome == "southern_1" ~ "SO-STSS",
     biome == "southern_2" ~ "SO-SPSS",
-    biome == "southern_3" ~ "SO-ICE",
+    # biome == "southern_3" ~ "SO-ICE",
     TRUE ~ "other"
   ))
 
@@ -334,53 +334,25 @@ SOM_FFN <-
 
 ## Hovmoeller
 
-```{r hovmoeller}
+### Annual
 
-SOM_FFN_hovmoeller <-
-  SOM_FFN %>%
-  group_by(year, month, lat) %>%
-  summarise(across(dco2:fgco2_smoothed,
-                   ~ mean(., na.rm = TRUE))) %>%
-  ungroup() %>% 
-  drop_na()
+```{r hovmoeller_annual}
 
-SOM_FFN_hovmoeller <-
-  SOM_FFN_hovmoeller %>%
-  pivot_longer(-c(year, month, lat))
-
-SOM_FFN_hovmoeller <-
-  SOM_FFN_hovmoeller %>% 
-  mutate(decimal = year + (month-1) / 12) %>% 
-  group_by(name, lat) %>% 
-  mutate(delta_decimal = decimal - lag(decimal)) %>% 
-  ungroup()
-
-
-SOM_FFN_hovmoeller %>%
-  group_split(name) %>%
-  # head(1) %>%
-  map(~ ggplot(data = .x,
-                  aes(decimal, lat, fill = value)) +
-        geom_raster() +
-        scale_fill_viridis_c(.x$name) +
-        coord_cartesian(expand = 0) +
-        theme(axis.title.x = element_blank()))
-
-
-SOM_FFN_hovmoeller_annual <-
+SOM_FFN_hovmoeller_monthly_annual <-
   SOM_FFN %>%
   group_by(year, lat) %>%
-  summarise(across(dco2:fgco2_smoothed,
-                   ~ mean(., na.rm = TRUE))) %>%
+  summarise(across(dco2:spco2_smoothed, 
+                   ~weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2_smoothed, 
+                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>% 
   ungroup() %>% 
   drop_na()
 
-SOM_FFN_hovmoeller_annual <-
-  SOM_FFN_hovmoeller_annual %>%
+SOM_FFN_hovmoeller_monthly_annual <-
+  SOM_FFN_hovmoeller_monthly_annual %>%
   pivot_longer(-c(year, lat))
 
-
-SOM_FFN_hovmoeller_annual %>%
+SOM_FFN_hovmoeller_monthly_annual %>%
   group_split(name) %>%
   # head(1) %>%
   map(~ ggplot(data = .x,
@@ -391,8 +363,8 @@ SOM_FFN_hovmoeller_annual %>%
         theme(axis.title.x = element_blank()))
 
 
-SOM_FFN_hovmoeller_annual_regression <-
-  SOM_FFN_hovmoeller_annual %>%
+SOM_FFN_hovmoeller_monthly_annual_regression <-
+  SOM_FFN_hovmoeller_monthly_annual %>%
   group_by(lat) %>%
   nest() %>%
   mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
@@ -401,7 +373,7 @@ SOM_FFN_hovmoeller_annual_regression <-
   ungroup()
 
   
-SOM_FFN_hovmoeller_annual_regression %>%
+SOM_FFN_hovmoeller_monthly_annual_regression %>%
   group_split(name) %>%
   # head(1) %>%
   map(~ ggplot(data = .x,
@@ -413,6 +385,86 @@ SOM_FFN_hovmoeller_annual_regression %>%
 
 
 ```
+
+
+
+### Monthly
+
+```{r hovmoeller_monthly}
+
+SOM_FFN_hovmoeller_monthly <-
+  SOM_FFN %>%
+  group_by(year, month, lat) %>%
+  summarise(
+    across(dco2:spco2_smoothed,
+           ~ weighted.mean(., area, na.rm = TRUE)),
+    across(fgco2_smoothed,
+           ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)
+  ) %>%
+  ungroup() %>%
+  drop_na()
+
+SOM_FFN_hovmoeller_monthly <-
+  SOM_FFN_hovmoeller_monthly %>%
+  pivot_longer(-c(year, month, lat))
+
+SOM_FFN_hovmoeller_monthly <-
+  SOM_FFN_hovmoeller_monthly %>% 
+  mutate(decimal = year + (month-1) / 12)
+
+SOM_FFN_hovmoeller_monthly %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(~ ggplot(data = .x,
+                  aes(decimal, lat, fill = value)) +
+        geom_raster() +
+        scale_fill_viridis_c(.x$name) +
+        coord_cartesian(expand = 0) +
+        theme(axis.title.x = element_blank()))
+
+
+library(tictoc)
+tic()
+SOM_FFN_hovmoeller_monthly_regression <-
+  SOM_FFN_hovmoeller_monthly %>%
+  select(-c(decimal)) %>% 
+  group_by(lat, month) %>%
+  nest() %>%
+  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  select(-data) %>%
+  unnest(anomalies) %>%
+  ungroup()
+toc()
+
+  
+SOM_FFN_hovmoeller_monthly_regression <-
+  SOM_FFN_hovmoeller_monthly_regression %>%
+  mutate(decimal = year + (month - 1) / 12)
+  
+SOM_FFN_hovmoeller_monthly_regression %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(~ ggplot(data = .x,
+                  aes(decimal, lat, fill = resid)) +
+        geom_raster() +
+        scale_fill_divergent(.x$name) +
+        coord_cartesian(expand = 0) +
+        theme(axis.title.x = element_blank()))
+  
+SOM_FFN_hovmoeller_monthly_regression %>%
+  filter(year >= 2021) %>% 
+  group_split(name) %>%
+  # head(1) %>%
+  map(~ ggplot(data = .x,
+                  aes(decimal, lat, fill = resid)) +
+        geom_raster() +
+        scale_fill_divergent(.x$name) +
+        coord_cartesian(expand = 0) +
+        theme(axis.title.x = element_blank()))
+
+
+```
+
 
 
 
