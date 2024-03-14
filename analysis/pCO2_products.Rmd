@@ -657,7 +657,7 @@ SOM_FFN_coarse_annual_regression %>%
 
 ### 2023 absolute
 
-```{r 2023_monthly_mean_maps, fig.asp=1.8}
+```{r 2023_monthly_mean_maps, fig.asp=1.8, eval=FALSE}
 
 SOM_FFN_coarse_monthly <-
   SOM_FFN_coarse %>%
@@ -708,7 +708,7 @@ SOM_FFN_coarse_monthly_regression %>%
 
 ### Change 1990 - 2023
 
-```{r change_1990_2023_monthly_mean_maps, fig.asp=1.8}
+```{r change_1990_2023_monthly_mean_maps, fig.asp=1.8, eval=FALSE}
 
 
 SOM_FFN_coarse_monthly_regression %>%
@@ -730,7 +730,7 @@ SOM_FFN_coarse_monthly_regression %>%
 
 ### 2023 anomaly
 
-```{r anomaly_2023_monthly_mean_maps, fig.asp=1.8}
+```{r anomaly_2023_monthly_mean_maps, fig.asp=1.8, eval=FALSE}
 
 SOM_FFN_coarse_monthly_regression %>%
   filter(year == 2023) %>%
@@ -774,17 +774,18 @@ SOM_FFN_hovmoeller_monthly_annual <-
   SOM_FFN_hovmoeller_monthly_annual %>%
   pivot_longer(-c(year, lat))
 
+library(plotly)
 SOM_FFN_hovmoeller_monthly_annual %>%
   group_split(name) %>%
-  # head(1) %>%
-  map(~ ggplot(data = .x,
+  head(1) %>%
+  map(~ ggplotly(ggplot(data = .x,
                   aes(year, lat, fill = value)) +
         geom_raster() +
         scale_fill_viridis_c(.x$name) +
         coord_cartesian(expand = 0) +
         labs(title = "Annual means",
              y = "Latitude") +
-        theme(axis.title.x = element_blank()))
+        theme(axis.title.x = element_blank())))
 
 
 ```
@@ -884,14 +885,16 @@ SOM_FFN_hovmoeller_monthly_regression %>%
   group_split(name) %>%
   # head(1) %>%
   map(
-    ~ ggplot(data = .x,
+    ~ ggplotly(
+      ggplot(data = .x,
              aes(decimal, lat, fill = resid)) +
-      geom_raster() +
-      scale_fill_divergent(.x$name) +
-      coord_cartesian(expand = 0) +
-      labs(title = "Monthly mean anomalies",
-           y = "Latitude") +
-      theme(axis.title.x = element_blank())
+        geom_raster() +
+        scale_fill_divergent(.x$name) +
+        coord_cartesian(expand = 0) +
+        labs(title = "Monthly mean anomalies",
+             y = "Latitude") +
+        theme(axis.title.x = element_blank())
+    )
   )
   
 
