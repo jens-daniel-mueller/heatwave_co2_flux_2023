@@ -20,6 +20,7 @@ library(lubridate)
 library(ggnewscale)
 library(khroma)
 library(broom)
+library(scico)
 
 ```
 
@@ -1367,13 +1368,49 @@ SOM_FFN_monthly_detrended %>%
 
 # Flux anomaly correlation
 
-```{r anomalies_correlation, fig.asp=1.5}
+
+The following plots aim to unravel the correlation between biome- or globally- integrated monthly flux anomalies and the corresponding anomalies of the means/integrals of each other variable.
+
+Anomalies are first presented are first presented in absolute units. Due to the different flux magnitudes, we need to plot the globally and biome-integrated fluxes separately. Secondly, we normalize the anomalies to the monthly spread (expressed as standard deviation) of the anomalies from 1990 to 2022.
+
+## Monthly anomalies
+
+### Absolute
+
+```{r anomalies_correlation_absolute, fig.asp=1.5}
 
 
-SOM_FFN_monthly_detrended %>%
+SOM_FFN_monthly_detrended_anomaly <-
+  SOM_FFN_monthly_detrended %>%
   select(year, month, biome, name, resid) %>%
   pivot_wider(names_from = name,
-              values_from = resid) %>%
+              values_from = resid)
+
+
+SOM_FFN_monthly_detrended_anomaly %>%
+  filter(biome == "Global") %>%
+  pivot_longer(dco2:spco2)  %>%
+  ggplot(aes(value, fgco2)) +
+  geom_hline(yintercept = 0) +
+  geom_point(data = . %>% filter(year <= 2022),
+             aes(fill = year),
+             shape = 21) +
+  scale_fill_grayC() +
+  new_scale_fill() +
+  geom_point(data = . %>% filter(year > 2022),
+             aes(fill = as.factor(month)),
+             shape = 21,
+             size = 3)  +
+  scale_fill_scico_d(palette = "buda",
+                     guide = guide_legend(reverse = TRUE,
+                                            order = 1),
+                     name = "month\nof 2023") +
+  labs(title = "Globally integrated fluxes") +
+  facet_wrap( ~ name, ncol = 3, scales = "free_x") +
+  theme(axis.title.x = element_blank())
+
+SOM_FFN_monthly_detrended_anomaly %>%
+  filter(biome != "Global") %>%
   pivot_longer(dco2:spco2) %>%
   group_split(name) %>%
   # head(1) %>%
@@ -1381,23 +1418,97 @@ SOM_FFN_monthly_detrended %>%
     ~ ggplot(data = .x,
              aes(value, fgco2)) +
       geom_hline(yintercept = 0) +
-      geom_point(data = . %>% filter(year < 2022),
-                 aes(col = year)) +
-      scale_color_grayC() +
-      new_scale_color() +
-      geom_point(data = . %>% filter(year >= 2022),
-                 aes(col = as.factor(year)))  +
-      scale_color_manual(
-        values = c("orange", "red"),
-        guide = guide_legend(reverse = TRUE,
-                             order = 1)
+      geom_point(
+        data = . %>% filter(year <= 2022),
+        aes(fill = year),
+        shape = 21
       ) +
-      labs(x = .x$name) +
-      facet_wrap( ~ biome, ncol = 3) +
-      theme(
-        legend.title = element_blank())
+      scale_fill_grayC() +
+      new_scale_fill() +
+      geom_point(
+        data = . %>% filter(year > 2022),
+        aes(fill = as.factor(month)),
+        shape = 21,
+        size = 3
+      )  +
+      scale_fill_scico_d(
+        palette = "buda",
+        guide = guide_legend(reverse = TRUE,
+                             order = 1),
+        name = "month\nof 2023"
+      ) +
+      facet_wrap(~ biome, ncol = 3, scales = "free_x") +
+      labs(title = "Biome integrated fluxes",
+           x = .x$name)
   )
-  
+
+
+
+
+```
+
+### Relative to spread
+
+```{r anomalies_correlation_realtive_to_spread, fig.asp=2}
+
+SOM_FFN_monthly_detrended_anomaly_spread <-
+  SOM_FFN_monthly_detrended_anomaly %>%
+  pivot_longer(-c(month, biome, year)) %>%
+  filter(year < 2023) %>%
+  group_by(month, biome, name) %>%
+  summarise(spread = sd(value)) %>%
+  ungroup()
+
+
+
+SOM_FFN_monthly_detrended_anomaly_relative <-
+  full_join(
+    SOM_FFN_monthly_detrended_anomaly_spread,
+    SOM_FFN_monthly_detrended_anomaly %>%
+      pivot_longer(-c(month, biome, year))
+  )
+
+SOM_FFN_monthly_detrended_anomaly_relative <- 
+SOM_FFN_monthly_detrended_anomaly_relative %>% 
+  mutate(value = value / spread) %>% 
+  select(-spread) %>% 
+  pivot_wider() %>% 
+  pivot_longer(-c(month, biome, year, fgco2))
+
+
+SOM_FFN_monthly_detrended_anomaly_relative %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(value, fgco2)) +
+      geom_vline(xintercept = 0) +
+      geom_hline(yintercept = 0) +
+      geom_point(
+        data = . %>% filter(year <= 2022),
+        aes(fill = year),
+        shape = 21
+      ) +
+      scale_fill_grayC() +
+      new_scale_fill() +
+      geom_point(
+        data = . %>% filter(year > 2022),
+        aes(fill = as.factor(month)),
+        shape = 21,
+        size = 3
+      )  +
+      scale_fill_scico_d(
+        palette = "buda",
+        guide = guide_legend(reverse = TRUE,
+                             order = 1),
+        name = "month\nof 2023"
+      ) +
+      facet_wrap(~ biome, ncol = 3) +
+      coord_fixed() +
+      labs(x = .x$name)
+  )
+
+
 
 
 ```
