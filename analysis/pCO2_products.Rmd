@@ -131,7 +131,7 @@ We use linear regression models for all parameters, except for `r print(name_qua
 The regression models are fitted to data from the period `r print(paste(start_year, "- 2022"))``, and extrapolated to 2023.
 
 
-```{r anomaly_detection_function}
+```{r anomaly_detection_function, eval=FALSE}
 
 anomaly_determination <- function(df) {
   
@@ -235,6 +235,110 @@ anomaly_determination <- function(df) {
 
 ```{r anomaly_detection_function_nested}
 
+anomaly_determination <- function(df,...) {
+  
+  group_by <- quos(...)
+  
+  # Linear regression models
+  
+  df_lm <-
+    df %>%
+    filter(year <= 2022,
+           !(name %in% name_quadratic_fit)) %>%
+    nest(data = -c(name, !!!group_by)) %>%
+    mutate(
+      fit = map(data, ~ lm(value ~ year, data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment)
+    )
+  
+  
+  df_lm_2023 <-
+    full_join(
+      df_lm %>%
+        unnest(tidied) %>%
+        select(name, !!!group_by, term, estimate) %>%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %>%
+        mutate(fit = `(Intercept)` + year * 2023) %>%
+        select(name, !!!group_by, fit) %>%
+        mutate(year = 2023),
+      df %>%
+        filter(year == 2023,
+               !(name %in% name_quadratic_fit))
+    ) %>%
+    mutate(resid = value - fit)
+  
+  
+  df_lm <-
+    bind_rows(
+      df_lm %>%
+        unnest(augmented) %>%
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
+      df_lm_2023
+    )
+  
+  rm(df_lm_2023)
+  
+  # Quadratic regression models
+  
+  df_quadratic <-
+    df %>%
+    filter(year <= 2022,
+           name %in% name_quadratic_fit) %>%
+    nest(data = -c(name, !!!group_by)) %>%
+    mutate(
+      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment)
+    )
+  
+  
+  df_quadratic_2023 <-
+    full_join(
+      df_quadratic %>%
+        unnest(tidied) %>%
+        select(name, !!!group_by, term, estimate) %>%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %>%
+        mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %>%
+        select(name, !!!group_by, fit) %>%
+        mutate(year = 2023),
+      df %>%
+        filter(year == 2023,
+               name %in% name_quadratic_fit)
+    ) %>%
+    mutate(resid = value - fit)
+  
+  
+  df_quadratic <-
+    bind_rows(
+      df_quadratic %>%
+        unnest(augmented) %>%
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
+      df_quadratic_2023
+    )
+  
+  rm(df_quadratic_2023)
+  
+  # Join linear and quadratic regression results
+  
+  df_regression <-
+    bind_rows(df_lm,
+              df_quadratic)
+  
+  rm(df_lm,
+     df_quadratic)
+  
+  
+  return(df_regression)
+  
+}
+
+```
+
+```{r anomaly_detection_function_nested_parallel, eval=FALSE}
+
 # my_sum <- function(df, col_to_sum,...) {
 # 
 #     col_to_sum <- enquo(col_to_sum)
@@ -248,7 +352,9 @@ anomaly_determination <- function(df) {
 # 
 # transactions %>% my_sum(amount, accountid, month)
 
-anomaly_determination <- function(df) {
+anomaly_determination_parallel <- function(df,...) {
+  
+  group_by <- quos(...)
   
   # Linear regression models
   
@@ -256,9 +362,10 @@ anomaly_determination <- function(df) {
     df %>%
     filter(year <= 2022,
            !(name %in% name_quadratic_fit)) %>%
-    nest(data = -name) %>%
+    nest(data = -c(name, !!!group_by)) %>%
     mutate(
-      fit = map(data, ~ lm(value ~ year, data = .x)),
+      fit = future_map(data, ~ lm(value ~ year, data = .x),
+                .options = furrr_options(packages = "broom")),
       tidied = map(fit, tidy),
       augmented = map(fit, augment)
     )
@@ -268,11 +375,11 @@ anomaly_determination <- function(df) {
     full_join(
       df_lm %>%
         unnest(tidied) %>%
-        select(name, term, estimate) %>%
+        select(name, !!!group_by, term, estimate) %>%
         pivot_wider(names_from = term,
                     values_from = estimate) %>%
         mutate(fit = `(Intercept)` + year * 2023) %>%
-        select(name, fit) %>%
+        select(name, !!!group_by, fit) %>%
         mutate(year = 2023),
       df %>%
         filter(year == 2023,
@@ -285,7 +392,7 @@ anomaly_determination <- function(df) {
     bind_rows(
       df_lm %>%
         unnest(augmented) %>%
-        select(name, year, value, fit = .fitted, resid = .resid),
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
       df_lm_2023
     )
   
@@ -297,9 +404,10 @@ anomaly_determination <- function(df) {
     df %>%
     filter(year <= 2022,
            name %in% name_quadratic_fit) %>%
-    nest(data = -name) %>%
+    nest(data = -c(name, !!!group_by)) %>%
     mutate(
-      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
+      fit = future_map(data, ~ lm(value ~ year + I(year ^ 2), data = .x),
+                .options = furrr_options(packages = "broom")),
       tidied = map(fit, tidy),
       augmented = map(fit, augment)
     )
@@ -309,11 +417,11 @@ anomaly_determination <- function(df) {
     full_join(
       df_quadratic %>%
         unnest(tidied) %>%
-        select(name, term, estimate) %>%
+        select(name, !!!group_by, term, estimate) %>%
         pivot_wider(names_from = term,
                     values_from = estimate) %>%
         mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %>%
-        select(name, fit) %>%
+        select(name, !!!group_by, fit) %>%
         mutate(year = 2023),
       df %>%
         filter(year == 2023,
@@ -326,7 +434,7 @@ anomaly_determination <- function(df) {
     bind_rows(
       df_quadratic %>%
         unnest(augmented) %>%
-        select(name, year, value, fit = .fitted, resid = .resid),
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
       df_quadratic_2023
     )
   
@@ -582,15 +690,35 @@ SOM_FFN_coarse_annual <-
   SOM_FFN_coarse_annual %>% 
   pivot_longer(-c(year:lat))
 
+
+# plan(multisession, workers = 4)
+# SOM_FFN_coarse_annual_regression <-
+#   SOM_FFN_coarse_annual %>%
+#   nest(.by = c(lon, lat)) %>%
+#   mutate(anomalies = future_map(.x = data, 
+#                                 ~ anomaly_determination(.x),
+#                                 .options = furrr_options(packages = "broom"))) %>%
+#   select(-data) %>%
+#   unnest(anomalies)
+
+# SOM_FFN_coarse_annual_regression <-
+#   SOM_FFN_coarse_annual %>%
+#   nest(.by = c(lon, lat)) %>%
+#   mutate(anomalies = map(.x = data, 
+#                                 ~ anomaly_determination(.x))) %>%
+#   select(-data) %>%
+#   unnest(anomalies)
+
 SOM_FFN_coarse_annual_regression <-
   SOM_FFN_coarse_annual %>%
-  group_by(lon, lat) %>%
-  nest() %>%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  select(-data) %>%
-  unnest(anomalies) %>%
-  ungroup()
-  
+  anomaly_determination(lon, lat)
+
+
+# plan(multisession, workers = 4)
+# SOM_FFN_coarse_annual_regression <-
+#   SOM_FFN_coarse_annual %>%
+#   anomaly_determination_parallel(lon, lat)
+
 
 SOM_FFN_coarse_annual_regression %>%
   filter(year == 2023,
@@ -670,15 +798,24 @@ SOM_FFN_coarse_monthly <-
   SOM_FFN_coarse_monthly %>% 
   pivot_longer(-c(year:lat))
 
+# SOM_FFN_coarse_monthly_regression <-
+#   SOM_FFN_coarse_monthly %>%
+#   group_by(lon, lat, month) %>%
+#   nest() %>%
+#   mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+#   select(-data) %>%
+#   unnest(anomalies) %>%
+#   ungroup()
+  
 SOM_FFN_coarse_monthly_regression <-
   SOM_FFN_coarse_monthly %>%
-  group_by(lon, lat, month) %>%
-  nest() %>%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  select(-data) %>%
-  unnest(anomalies) %>%
-  ungroup()
-  
+  anomaly_determination(lon, lat, month)
+
+# plan(multisession, workers = 4)
+# SOM_FFN_coarse_monthly_regression <-
+#   SOM_FFN_coarse_monthly %>%
+#   anomaly_determination_parallel(lon, lat, month)
+
 
 SOM_FFN_coarse_monthly_regression %>%
   filter(year == 2023,
@@ -774,18 +911,18 @@ SOM_FFN_hovmoeller_monthly_annual <-
   SOM_FFN_hovmoeller_monthly_annual %>%
   pivot_longer(-c(year, lat))
 
-library(plotly)
+
 SOM_FFN_hovmoeller_monthly_annual %>%
   group_split(name) %>%
   head(1) %>%
-  map(~ ggplotly(ggplot(data = .x,
+  map(~ ggplot(data = .x,
                   aes(year, lat, fill = value)) +
         geom_raster() +
         scale_fill_viridis_c(.x$name) +
         coord_cartesian(expand = 0) +
         labs(title = "Annual means",
              y = "Latitude") +
-        theme(axis.title.x = element_blank())))
+        theme(axis.title.x = element_blank()))
 
 
 ```
@@ -797,12 +934,13 @@ SOM_FFN_hovmoeller_monthly_annual %>%
 
 SOM_FFN_hovmoeller_monthly_annual_regression <-
   SOM_FFN_hovmoeller_monthly_annual %>%
-  group_by(lat) %>%
-  nest() %>%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  select(-data) %>%
-  unnest(anomalies) %>%
-  ungroup()
+  anomaly_determination(lat)
+  # group_by(lat) %>%
+  # nest() %>%
+  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  # select(-data) %>%
+  # unnest(anomalies) %>%
+  # ungroup()
 
   
 SOM_FFN_hovmoeller_monthly_annual_regression %>%
@@ -869,12 +1007,13 @@ SOM_FFN_hovmoeller_monthly %>%
 SOM_FFN_hovmoeller_monthly_regression <-
   SOM_FFN_hovmoeller_monthly %>%
   select(-c(decimal)) %>% 
-  group_by(lat, month) %>%
-  nest() %>%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  select(-data) %>%
-  unnest(anomalies) %>%
-  ungroup()
+  anomaly_determination(lat, month)
+  # group_by(lat, month) %>%
+  # nest() %>%
+  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  # select(-data) %>%
+  # unnest(anomalies) %>%
+  # ungroup()
 
   
 SOM_FFN_hovmoeller_monthly_regression <-
@@ -885,8 +1024,7 @@ SOM_FFN_hovmoeller_monthly_regression %>%
   group_split(name) %>%
   # head(1) %>%
   map(
-    ~ ggplotly(
-      ggplot(data = .x,
+    ~ ggplot(data = .x,
              aes(decimal, lat, fill = resid)) +
         geom_raster() +
         scale_fill_divergent(.x$name) +
@@ -894,7 +1032,6 @@ SOM_FFN_hovmoeller_monthly_regression %>%
         labs(title = "Monthly mean anomalies",
              y = "Latitude") +
         theme(axis.title.x = element_blank())
-    )
   )
   
 
@@ -1077,12 +1214,13 @@ SOM_FFN_annual %>%
 
 SOM_FFN_annual_regression <-
   SOM_FFN_annual %>%
-  group_by(biome) %>%
-  nest() %>%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  select(-data) %>%
-  unnest(anomalies) %>%
-  ungroup()
+  anomaly_determination(biome)
+  # group_by(biome) %>%
+  # nest() %>%
+  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  # select(-data) %>%
+  # unnest(anomalies) %>%
+  # ungroup()
   
 
 SOM_FFN_annual_regression %>%
@@ -1225,12 +1363,13 @@ SOM_FFN_monthly %>%
 
 SOM_FFN_monthly_regression <-
   SOM_FFN_monthly %>%
-  group_by(biome, month) %>%
-  nest() %>%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  select(-data) %>%
-  unnest(anomalies) %>%
-  ungroup()
+  anomaly_determination(biome, month)
+  # group_by(biome, month) %>%
+  # nest() %>%
+  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
+  # select(-data) %>%
+  # unnest(anomalies) %>%
+  # ungroup()
   
 
 SOM_FFN_monthly_regression %>%
