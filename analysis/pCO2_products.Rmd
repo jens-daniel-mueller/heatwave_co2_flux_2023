@@ -1131,14 +1131,14 @@ SOM_FFN_annual_regression %>%
 ```{r anomalies_from_annual_mean_trends_overview}
 
 
-SOM_FFN_monthly_detrended <-
+SOM_FFN_annual_detrended <-
   full_join(SOM_FFN_monthly,
             SOM_FFN_annual_regression %>% select(-c(value, resid))) %>%
-  mutate(value = value - fit)
+  mutate(resid = value - fit)
 
-SOM_FFN_monthly_detrended %>% 
+SOM_FFN_annual_detrended %>% 
   filter(biome %in% key_biomes) %>%
-  ggplot(aes(month, value, group = as.factor(year))) +
+  ggplot(aes(month, resid, group = as.factor(year))) +
   geom_path(data = . %>% filter(year < 2022),
             aes(col = year)) +
   scale_color_grayC() +
@@ -1158,15 +1158,15 @@ SOM_FFN_monthly_detrended %>%
 ```
 
 
-```{r anomalies_from_annual_mean_trends_overview_key_biomes, fig.asp=1.5}
+```{r anomalies_from_annual_mean_trends_key_biomes, fig.asp=1.5}
 
-SOM_FFN_monthly_detrended %>%
+SOM_FFN_annual_detrended %>%
   filter(biome %in% key_biomes) %>%
   group_split(biome) %>%
   # head(1) %>%
   map(
     ~ ggplot(data = .x,
-             aes(month, value, group = as.factor(year))) +
+             aes(month, resid, group = as.factor(year))) +
       geom_path(data = . %>% filter(year < 2022),
                 aes(col = year)) +
       scale_color_grayC() +
@@ -1260,7 +1260,7 @@ SOM_FFN_monthly_regression %>%
 SOM_FFN_monthly_regression %>%
   filter(biome != "global") %>%
   group_split(month) %>%
-  head(1) %>%
+  # head(1) %>%
   map(
     ~ ggplot(data = .x,
              aes(biome, resid)) +
@@ -1302,17 +1302,17 @@ SOM_FFN_monthly_regression %>%
 ```
 
 
-```{r anomalies_from_monthly_mean_trends_overview, eval=FALSE}
+```{r anomalies_from_monthly_mean_trends_overview}
 
 
 SOM_FFN_monthly_detrended <-
   full_join(SOM_FFN_monthly,
-            SOM_FFN_annual_regression %>% select(-c(value, resid))) %>%
-  mutate(value = value - fit)
+            SOM_FFN_monthly_regression %>% select(-c(value, resid, time))) %>%
+  mutate(resid = value - fit)
 
 SOM_FFN_monthly_detrended %>% 
   filter(biome %in% key_biomes) %>%
-  ggplot(aes(month, value, group = as.factor(year))) +
+  ggplot(aes(month, resid, group = as.factor(year))) +
   geom_path(data = . %>% filter(year < 2022),
             aes(col = year)) +
   scale_color_grayC() +
@@ -1324,7 +1324,7 @@ SOM_FFN_monthly_detrended %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-  labs(title = "Anomalies from predicted annual mean") +
+  labs(title = "Anomalies from predicted monthly mean") +
   facet_grid(name ~ biome, scales = "free_y") +
   theme(legend.title = element_blank(),
         axis.title.y = element_blank())
@@ -1332,7 +1332,7 @@ SOM_FFN_monthly_detrended %>%
 ```
 
 
-```{r anomalies_from_monthly_mean_trends_overview_key_biomes, fig.asp=1.5, eval=FALSE}
+```{r anomalies_from_monthly_mean_trends_key_biomes, fig.asp=1.5}
 
 SOM_FFN_monthly_detrended %>%
   filter(biome %in% key_biomes) %>%
@@ -1340,7 +1340,7 @@ SOM_FFN_monthly_detrended %>%
   # head(1) %>%
   map(
     ~ ggplot(data = .x,
-             aes(month, value, group = as.factor(year))) +
+             aes(month, resid, group = as.factor(year))) +
       geom_path(data = . %>% filter(year < 2022),
                 aes(col = year)) +
       scale_color_grayC() +
@@ -1356,11 +1356,48 @@ SOM_FFN_monthly_detrended %>%
                              order = 1)
       ) +
       scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-      labs(title = "Anomalies from predicted annual mean") +
+      labs(title = "Anomalies from predicted monthly mean") +
       facet_grid(name ~ biome, scales = "free_y") +
       theme(legend.title = element_blank(),
             axis.title.y = element_blank())
   )
+
+
+```
+
+# Flux anomaly correlation
+
+```{r anomalies_correlation, fig.asp=1.5}
+
+
+SOM_FFN_monthly_detrended %>%
+  select(year, month, biome, name, resid) %>%
+  pivot_wider(names_from = name,
+              values_from = resid) %>%
+  pivot_longer(dco2:spco2) %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(value, fgco2)) +
+      geom_hline(yintercept = 0) +
+      geom_point(data = . %>% filter(year < 2022),
+                 aes(col = year)) +
+      scale_color_grayC() +
+      new_scale_color() +
+      geom_point(data = . %>% filter(year >= 2022),
+                 aes(col = as.factor(year)))  +
+      scale_color_manual(
+        values = c("orange", "red"),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
+      labs(x = .x$name) +
+      facet_wrap( ~ biome, ncol = 3) +
+      theme(
+        legend.title = element_blank())
+  )
+  
 
 
 ```
