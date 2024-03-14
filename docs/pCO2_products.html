@@ -542,15 +542,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treecd9c317a3aa955d0b6eef1957a691e2ba03d245btargetblankcd9c317a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree2cda6912697beac1e0686a9cdb4d7a0203d19131targetblank2cda691a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/cd9c317a3aa955d0b6eef1957a691e2ba03d245b" target="_blank">cd9c317</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/2cda6912697beac1e0686a9cdb4d7a0203d19131" target="_blank">2cda691</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treecd9c317a3aa955d0b6eef1957a691e2ba03d245btargetblankcd9c317a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree2cda6912697beac1e0686a9cdb4d7a0203d19131targetblank2cda691a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -560,7 +560,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/cd9c317a3aa955d0b6eef1957a691e2ba03d245b" target="_blank">cd9c317</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/2cda6912697beac1e0686a9cdb4d7a0203d19131" target="_blank">2cda691</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -631,6 +631,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2cda6912697beac1e0686a9cdb4d7a0203d19131/analysis/pCO2_products.Rmd" target="_blank">2cda691</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+improved nesting for anomaly determination
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/7a258b96e86faf4f0c77c680890129eb9507a76b/docs/pCO2_products.html" target="_blank">7a258b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1509,6 +1543,105 @@ extrapolated to 2023.</p>
   return(df_regression)
   
 }</code></pre>
+<pre class="r"><code>anomaly_determination &lt;- function(df,...) {
+  
+  group_by &lt;- quos(...)
+  
+  # Linear regression models
+  
+  df_lm &lt;-
+    df %&gt;%
+    filter(year &lt;= 2022,
+           !(name %in% name_quadratic_fit)) %&gt;%
+    nest(data = -c(name, !!!group_by)) %&gt;%
+    mutate(
+      fit = map(data, ~ lm(value ~ year, data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment)
+    )
+  
+  
+  df_lm_2023 &lt;-
+    full_join(
+      df_lm %&gt;%
+        unnest(tidied) %&gt;%
+        select(name, !!!group_by, term, estimate) %&gt;%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %&gt;%
+        mutate(fit = `(Intercept)` + year * 2023) %&gt;%
+        select(name, !!!group_by, fit) %&gt;%
+        mutate(year = 2023),
+      df %&gt;%
+        filter(year == 2023,
+               !(name %in% name_quadratic_fit))
+    ) %&gt;%
+    mutate(resid = value - fit)
+  
+  
+  df_lm &lt;-
+    bind_rows(
+      df_lm %&gt;%
+        unnest(augmented) %&gt;%
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
+      df_lm_2023
+    )
+  
+  rm(df_lm_2023)
+  
+  # Quadratic regression models
+  
+  df_quadratic &lt;-
+    df %&gt;%
+    filter(year &lt;= 2022,
+           name %in% name_quadratic_fit) %&gt;%
+    nest(data = -c(name, !!!group_by)) %&gt;%
+    mutate(
+      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment)
+    )
+  
+  
+  df_quadratic_2023 &lt;-
+    full_join(
+      df_quadratic %&gt;%
+        unnest(tidied) %&gt;%
+        select(name, !!!group_by, term, estimate) %&gt;%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %&gt;%
+        mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %&gt;%
+        select(name, !!!group_by, fit) %&gt;%
+        mutate(year = 2023),
+      df %&gt;%
+        filter(year == 2023,
+               name %in% name_quadratic_fit)
+    ) %&gt;%
+    mutate(resid = value - fit)
+  
+  
+  df_quadratic &lt;-
+    bind_rows(
+      df_quadratic %&gt;%
+        unnest(augmented) %&gt;%
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
+      df_quadratic_2023
+    )
+  
+  rm(df_quadratic_2023)
+  
+  # Join linear and quadratic regression results
+  
+  df_regression &lt;-
+    bind_rows(df_lm,
+              df_quadratic)
+  
+  rm(df_lm,
+     df_quadratic)
+  
+  
+  return(df_regression)
+  
+}</code></pre>
 <pre class="r"><code># my_sum &lt;- function(df, col_to_sum,...) {
 # 
 #     col_to_sum &lt;- enquo(col_to_sum)
@@ -1522,7 +1655,9 @@ extrapolated to 2023.</p>
 # 
 # transactions %&gt;% my_sum(amount, accountid, month)
 
-anomaly_determination &lt;- function(df) {
+anomaly_determination_parallel &lt;- function(df,...) {
+  
+  group_by &lt;- quos(...)
   
   # Linear regression models
   
@@ -1530,9 +1665,10 @@ anomaly_determination &lt;- function(df) {
     df %&gt;%
     filter(year &lt;= 2022,
            !(name %in% name_quadratic_fit)) %&gt;%
-    nest(data = -name) %&gt;%
+    nest(data = -c(name, !!!group_by)) %&gt;%
     mutate(
-      fit = map(data, ~ lm(value ~ year, data = .x)),
+      fit = future_map(data, ~ lm(value ~ year, data = .x),
+                .options = furrr_options(packages = &quot;broom&quot;)),
       tidied = map(fit, tidy),
       augmented = map(fit, augment)
     )
@@ -1542,11 +1678,11 @@ anomaly_determination &lt;- function(df) {
     full_join(
       df_lm %&gt;%
         unnest(tidied) %&gt;%
-        select(name, term, estimate) %&gt;%
+        select(name, !!!group_by, term, estimate) %&gt;%
         pivot_wider(names_from = term,
                     values_from = estimate) %&gt;%
         mutate(fit = `(Intercept)` + year * 2023) %&gt;%
-        select(name, fit) %&gt;%
+        select(name, !!!group_by, fit) %&gt;%
         mutate(year = 2023),
       df %&gt;%
         filter(year == 2023,
@@ -1559,7 +1695,7 @@ anomaly_determination &lt;- function(df) {
     bind_rows(
       df_lm %&gt;%
         unnest(augmented) %&gt;%
-        select(name, year, value, fit = .fitted, resid = .resid),
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
       df_lm_2023
     )
   
@@ -1571,9 +1707,10 @@ anomaly_determination &lt;- function(df) {
     df %&gt;%
     filter(year &lt;= 2022,
            name %in% name_quadratic_fit) %&gt;%
-    nest(data = -name) %&gt;%
+    nest(data = -c(name, !!!group_by)) %&gt;%
     mutate(
-      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
+      fit = future_map(data, ~ lm(value ~ year + I(year ^ 2), data = .x),
+                .options = furrr_options(packages = &quot;broom&quot;)),
       tidied = map(fit, tidy),
       augmented = map(fit, augment)
     )
@@ -1583,11 +1720,11 @@ anomaly_determination &lt;- function(df) {
     full_join(
       df_quadratic %&gt;%
         unnest(tidied) %&gt;%
-        select(name, term, estimate) %&gt;%
+        select(name, !!!group_by, term, estimate) %&gt;%
         pivot_wider(names_from = term,
                     values_from = estimate) %&gt;%
         mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %&gt;%
-        select(name, fit) %&gt;%
+        select(name, !!!group_by, fit) %&gt;%
         mutate(year = 2023),
       df %&gt;%
         filter(year == 2023,
@@ -1600,7 +1737,7 @@ anomaly_determination &lt;- function(df) {
     bind_rows(
       df_quadratic %&gt;%
         unnest(augmented) %&gt;%
-        select(name, year, value, fit = .fitted, resid = .resid),
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
       df_quadratic_2023
     )
   
@@ -2289,15 +2426,35 @@ SOM_FFN_coarse_annual &lt;-
   SOM_FFN_coarse_annual %&gt;% 
   pivot_longer(-c(year:lat))
 
+
+# plan(multisession, workers = 4)
+# SOM_FFN_coarse_annual_regression &lt;-
+#   SOM_FFN_coarse_annual %&gt;%
+#   nest(.by = c(lon, lat)) %&gt;%
+#   mutate(anomalies = future_map(.x = data, 
+#                                 ~ anomaly_determination(.x),
+#                                 .options = furrr_options(packages = &quot;broom&quot;))) %&gt;%
+#   select(-data) %&gt;%
+#   unnest(anomalies)
+
+# SOM_FFN_coarse_annual_regression &lt;-
+#   SOM_FFN_coarse_annual %&gt;%
+#   nest(.by = c(lon, lat)) %&gt;%
+#   mutate(anomalies = map(.x = data, 
+#                                 ~ anomaly_determination(.x))) %&gt;%
+#   select(-data) %&gt;%
+#   unnest(anomalies)
+
 SOM_FFN_coarse_annual_regression &lt;-
   SOM_FFN_coarse_annual %&gt;%
-  group_by(lon, lat) %&gt;%
-  nest() %&gt;%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
-  select(-data) %&gt;%
-  unnest(anomalies) %&gt;%
-  ungroup()
-  
+  anomaly_determination(lon, lat)
+
+
+# plan(multisession, workers = 4)
+# SOM_FFN_coarse_annual_regression &lt;-
+#   SOM_FFN_coarse_annual %&gt;%
+#   anomaly_determination_parallel(lon, lat)
+
 
 SOM_FFN_coarse_annual_regression %&gt;%
   filter(year == 2023,
@@ -3234,15 +3391,24 @@ SOM_FFN_coarse_monthly &lt;-
   SOM_FFN_coarse_monthly %&gt;% 
   pivot_longer(-c(year:lat))
 
+# SOM_FFN_coarse_monthly_regression &lt;-
+#   SOM_FFN_coarse_monthly %&gt;%
+#   group_by(lon, lat, month) %&gt;%
+#   nest() %&gt;%
+#   mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
+#   select(-data) %&gt;%
+#   unnest(anomalies) %&gt;%
+#   ungroup()
+  
 SOM_FFN_coarse_monthly_regression &lt;-
   SOM_FFN_coarse_monthly %&gt;%
-  group_by(lon, lat, month) %&gt;%
-  nest() %&gt;%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
-  select(-data) %&gt;%
-  unnest(anomalies) %&gt;%
-  ungroup()
-  
+  anomaly_determination(lon, lat, month)
+
+# plan(multisession, workers = 4)
+# SOM_FFN_coarse_monthly_regression &lt;-
+#   SOM_FFN_coarse_monthly %&gt;%
+#   anomaly_determination_parallel(lon, lat, month)
+
 
 SOM_FFN_coarse_monthly_regression %&gt;%
   filter(year == 2023,
@@ -3327,30 +3493,80 @@ SOM_FFN_hovmoeller_monthly_annual &lt;-
   SOM_FFN_hovmoeller_monthly_annual %&gt;%
   pivot_longer(-c(year, lat))
 
-library(plotly)
+
 SOM_FFN_hovmoeller_monthly_annual %&gt;%
   group_split(name) %&gt;%
   head(1) %&gt;%
-  map(~ ggplotly(ggplot(data = .x,
+  map(~ ggplot(data = .x,
                   aes(year, lat, fill = value)) +
         geom_raster() +
         scale_fill_viridis_c(.x$name) +
         coord_cartesian(expand = 0) +
         labs(title = &quot;Annual means&quot;,
              y = &quot;Latitude&quot;) +
-        theme(axis.title.x = element_blank())))</code></pre>
+        theme(axis.title.x = element_blank()))</code></pre>
 <pre><code>[[1]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/hovmoeller_annual_absolute-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_annual_absolute-1">
+Past versions of hovmoeller_annual_absolute-1.png
+</button>
+</p>
+<div id="fig-hovmoeller_annual_absolute-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7a258b96e86faf4f0c77c680890129eb9507a76b/docs/figure/pCO2_products.Rmd/hovmoeller_annual_absolute-1.png" target="_blank">7a258b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/4eb2ea755b051d0dcee199f3f05363315603c16b/docs/figure/pCO2_products.Rmd/hovmoeller_annual_absolute-1.png" target="_blank">4eb2ea7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="anomalies" class="section level3">
 <h3>Anomalies</h3>
 <pre class="r"><code>SOM_FFN_hovmoeller_monthly_annual_regression &lt;-
   SOM_FFN_hovmoeller_monthly_annual %&gt;%
-  group_by(lat) %&gt;%
-  nest() %&gt;%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
-  select(-data) %&gt;%
-  unnest(anomalies) %&gt;%
-  ungroup()
+  anomaly_determination(lat)
+  # group_by(lat) %&gt;%
+  # nest() %&gt;%
+  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
+  # select(-data) %&gt;%
+  # unnest(anomalies) %&gt;%
+  # ungroup()
 
   
 SOM_FFN_hovmoeller_monthly_annual_regression %&gt;%
@@ -3885,12 +4101,13 @@ jens-daniel-mueller
 <pre class="r"><code>SOM_FFN_hovmoeller_monthly_regression &lt;-
   SOM_FFN_hovmoeller_monthly %&gt;%
   select(-c(decimal)) %&gt;% 
-  group_by(lat, month) %&gt;%
-  nest() %&gt;%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
-  select(-data) %&gt;%
-  unnest(anomalies) %&gt;%
-  ungroup()
+  anomaly_determination(lat, month)
+  # group_by(lat, month) %&gt;%
+  # nest() %&gt;%
+  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
+  # select(-data) %&gt;%
+  # unnest(anomalies) %&gt;%
+  # ungroup()
 
   
 SOM_FFN_hovmoeller_monthly_regression &lt;-
@@ -3901,8 +4118,7 @@ SOM_FFN_hovmoeller_monthly_regression %&gt;%
   group_split(name) %&gt;%
   # head(1) %&gt;%
   map(
-    ~ ggplotly(
-      ggplot(data = .x,
+    ~ ggplot(data = .x,
              aes(decimal, lat, fill = resid)) +
         geom_raster() +
         scale_fill_divergent(.x$name) +
@@ -3910,19 +4126,312 @@ SOM_FFN_hovmoeller_monthly_regression %&gt;%
         labs(title = &quot;Monthly mean anomalies&quot;,
              y = &quot;Latitude&quot;) +
         theme(axis.title.x = element_blank())
-    )
   )</code></pre>
-<pre><code>[[1]]
-
-[[2]]
-
-[[3]]
-
-[[4]]
-
-[[5]]
-
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_anomalies-1">
+Past versions of hovmoeller_monthly_anomalies-1.png
+</button>
+</p>
+<div id="fig-hovmoeller_monthly_anomalies-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7a258b96e86faf4f0c77c680890129eb9507a76b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-1.png" target="_blank">7a258b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/4eb2ea755b051d0dcee199f3f05363315603c16b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-1.png" target="_blank">4eb2ea7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_anomalies-2">
+Past versions of hovmoeller_monthly_anomalies-2.png
+</button>
+</p>
+<div id="fig-hovmoeller_monthly_anomalies-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7a258b96e86faf4f0c77c680890129eb9507a76b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-2.png" target="_blank">7a258b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/4eb2ea755b051d0dcee199f3f05363315603c16b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-2.png" target="_blank">4eb2ea7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_anomalies-3">
+Past versions of hovmoeller_monthly_anomalies-3.png
+</button>
+</p>
+<div id="fig-hovmoeller_monthly_anomalies-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7a258b96e86faf4f0c77c680890129eb9507a76b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-3.png" target="_blank">7a258b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/4eb2ea755b051d0dcee199f3f05363315603c16b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-3.png" target="_blank">4eb2ea7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>
+[[4]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_anomalies-4">
+Past versions of hovmoeller_monthly_anomalies-4.png
+</button>
+</p>
+<div id="fig-hovmoeller_monthly_anomalies-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7a258b96e86faf4f0c77c680890129eb9507a76b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-4.png" target="_blank">7a258b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/4eb2ea755b051d0dcee199f3f05363315603c16b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-4.png" target="_blank">4eb2ea7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>
+[[5]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_anomalies-5">
+Past versions of hovmoeller_monthly_anomalies-5.png
+</button>
+</p>
+<div id="fig-hovmoeller_monthly_anomalies-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7a258b96e86faf4f0c77c680890129eb9507a76b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-5.png" target="_blank">7a258b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/4eb2ea755b051d0dcee199f3f05363315603c16b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-5.png" target="_blank">4eb2ea7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre><code>
 [[6]]</code></pre>
+<p><img src="figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_anomalies-6">
+Past versions of hovmoeller_monthly_anomalies-6.png
+</button>
+</p>
+<div id="fig-hovmoeller_monthly_anomalies-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7a258b96e86faf4f0c77c680890129eb9507a76b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-6.png" target="_blank">7a258b9</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/4eb2ea755b051d0dcee199f3f05363315603c16b/docs/figure/pCO2_products.Rmd/hovmoeller_monthly_anomalies-6.png" target="_blank">4eb2ea7</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="anomalies-since-2021" class="section level3">
 <h3>Anomalies since 2021</h3>
@@ -4672,12 +5181,13 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>SOM_FFN_annual_regression &lt;-
   SOM_FFN_annual %&gt;%
-  group_by(biome) %&gt;%
-  nest() %&gt;%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
-  select(-data) %&gt;%
-  unnest(anomalies) %&gt;%
-  ungroup()
+  anomaly_determination(biome)
+  # group_by(biome) %&gt;%
+  # nest() %&gt;%
+  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
+  # select(-data) %&gt;%
+  # unnest(anomalies) %&gt;%
+  # ungroup()
   
 
 SOM_FFN_annual_regression %&gt;%
@@ -5298,12 +5808,13 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>SOM_FFN_monthly_regression &lt;-
   SOM_FFN_monthly %&gt;%
-  group_by(biome, month) %&gt;%
-  nest() %&gt;%
-  mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
-  select(-data) %&gt;%
-  unnest(anomalies) %&gt;%
-  ungroup()
+  anomaly_determination(biome, month)
+  # group_by(biome, month) %&gt;%
+  # nest() %&gt;%
+  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %&gt;%
+  # select(-data) %&gt;%
+  # unnest(anomalies) %&gt;%
+  # ungroup()
   
 
 SOM_FFN_monthly_regression %&gt;%
@@ -7251,16 +7762,16 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] plotly_4.10.1       broom_1.0.5         khroma_1.9.0       
- [4] ggnewscale_0.4.8    lubridate_1.9.0     timechange_0.1.1   
- [7] stars_0.6-0         abind_1.4-5         terra_1.7-65       
-[10] sf_1.0-9            rnaturalearth_0.1.0 geomtextpath_0.1.1 
-[13] colorspace_2.0-3    marelac_2.1.10      shape_1.4.6        
-[16] ggforce_0.4.1       metR_0.13.0         scico_1.3.1        
-[19] patchwork_1.1.2     collapse_1.8.9      forcats_0.5.2      
-[22] stringr_1.5.0       dplyr_1.1.3         purrr_1.0.2        
-[25] readr_2.1.3         tidyr_1.3.0         tibble_3.2.1       
-[28] ggplot2_3.4.4       tidyverse_1.3.2     workflowr_1.7.0    
+ [1] broom_1.0.5         khroma_1.9.0        ggnewscale_0.4.8   
+ [4] lubridate_1.9.0     timechange_0.1.1    stars_0.6-0        
+ [7] abind_1.4-5         terra_1.7-65        sf_1.0-9           
+[10] rnaturalearth_0.1.0 geomtextpath_0.1.1  colorspace_2.0-3   
+[13] marelac_2.1.10      shape_1.4.6         ggforce_0.4.1      
+[16] metR_0.13.0         scico_1.3.1         patchwork_1.1.2    
+[19] collapse_1.8.9      forcats_0.5.2       stringr_1.5.0      
+[22] dplyr_1.1.3         purrr_1.0.2         readr_2.1.3        
+[25] tidyr_1.3.0         tibble_3.2.1        ggplot2_3.4.4      
+[28] tidyverse_1.3.2     workflowr_1.7.0    
 
 loaded via a namespace (and not attached):
   [1] googledrive_2.0.0       ellipsis_0.3.2          class_7.3-20           
@@ -7270,35 +7781,34 @@ loaded via a namespace (and not attached):
  [13] codetools_0.2-18        cachem_1.0.6            knitr_1.41             
  [16] polyclip_1.10-4         jsonlite_1.8.3          gsw_1.1-1              
  [19] dbplyr_2.2.1            compiler_4.2.2          httr_1.4.4             
- [22] backports_1.4.1         Matrix_1.5-3            lazyeval_0.2.2         
- [25] assertthat_0.2.1        fastmap_1.1.0           gargle_1.2.1           
- [28] cli_3.6.1               later_1.3.0             tweenr_2.0.2           
- [31] htmltools_0.5.3         tools_4.2.2             rnaturalearthdata_0.1.0
- [34] gtable_0.3.1            glue_1.6.2              Rcpp_1.0.11            
- [37] RNetCDF_2.6-1           cellranger_1.1.0        jquerylib_0.1.4        
- [40] vctrs_0.6.4             nlme_3.1-160            crosstalk_1.2.0        
- [43] lwgeom_0.2-10           xfun_0.35               ps_1.7.2               
- [46] rvest_1.0.3             ncmeta_0.3.5            lifecycle_1.0.3        
- [49] googlesheets4_1.0.1     oce_1.7-10              getPass_0.2-2          
- [52] MASS_7.3-58.1           scales_1.2.1            vroom_1.6.0            
- [55] hms_1.1.2               promises_1.2.0.1        parallel_4.2.2         
- [58] RColorBrewer_1.1-3      yaml_2.3.6              memoise_2.0.1          
- [61] sass_0.4.4              stringi_1.7.8           highr_0.9              
- [64] e1071_1.7-12            checkmate_2.1.0         rlang_1.1.1            
- [67] pkgconfig_2.0.3         systemfonts_1.0.4       evaluate_0.18          
- [70] lattice_0.20-45         SolveSAPHE_2.1.0        htmlwidgets_1.5.4      
- [73] labeling_0.4.2          bit_4.0.5               processx_3.8.0         
- [76] tidyselect_1.2.0        seacarb_3.3.1           magrittr_2.0.3         
- [79] R6_2.5.1                generics_0.1.3          DBI_1.1.3              
- [82] mgcv_1.8-41             pillar_1.9.0            haven_2.5.1            
- [85] whisker_0.4             withr_2.5.0             units_0.8-0            
- [88] sp_1.5-1                modelr_0.1.10           crayon_1.5.2           
- [91] KernSmooth_2.23-20      utf8_1.2.2              tzdb_0.3.0             
- [94] rmarkdown_2.18          grid_4.2.2              readxl_1.4.1           
- [97] data.table_1.14.6       callr_3.7.3             git2r_0.30.1           
-[100] reprex_2.0.2            digest_0.6.30           classInt_0.4-8         
-[103] httpuv_1.6.6            textshaping_0.3.6       munsell_0.5.0          
-[106] viridisLite_0.4.1       bslib_0.4.1            </code></pre>
+ [22] backports_1.4.1         Matrix_1.5-3            assertthat_0.2.1       
+ [25] fastmap_1.1.0           gargle_1.2.1            cli_3.6.1              
+ [28] later_1.3.0             tweenr_2.0.2            htmltools_0.5.3        
+ [31] tools_4.2.2             rnaturalearthdata_0.1.0 gtable_0.3.1           
+ [34] glue_1.6.2              Rcpp_1.0.11             RNetCDF_2.6-1          
+ [37] cellranger_1.1.0        jquerylib_0.1.4         vctrs_0.6.4            
+ [40] nlme_3.1-160            lwgeom_0.2-10           xfun_0.35              
+ [43] ps_1.7.2                rvest_1.0.3             ncmeta_0.3.5           
+ [46] lifecycle_1.0.3         googlesheets4_1.0.1     oce_1.7-10             
+ [49] getPass_0.2-2           MASS_7.3-58.1           scales_1.2.1           
+ [52] vroom_1.6.0             hms_1.1.2               promises_1.2.0.1       
+ [55] parallel_4.2.2          RColorBrewer_1.1-3      yaml_2.3.6             
+ [58] memoise_2.0.1           sass_0.4.4              stringi_1.7.8          
+ [61] highr_0.9               e1071_1.7-12            checkmate_2.1.0        
+ [64] rlang_1.1.1             pkgconfig_2.0.3         systemfonts_1.0.4      
+ [67] evaluate_0.18           lattice_0.20-45         SolveSAPHE_2.1.0       
+ [70] labeling_0.4.2          bit_4.0.5               processx_3.8.0         
+ [73] tidyselect_1.2.0        seacarb_3.3.1           magrittr_2.0.3         
+ [76] R6_2.5.1                generics_0.1.3          DBI_1.1.3              
+ [79] mgcv_1.8-41             pillar_1.9.0            haven_2.5.1            
+ [82] whisker_0.4             withr_2.5.0             units_0.8-0            
+ [85] sp_1.5-1                modelr_0.1.10           crayon_1.5.2           
+ [88] KernSmooth_2.23-20      utf8_1.2.2              tzdb_0.3.0             
+ [91] rmarkdown_2.18          grid_4.2.2              readxl_1.4.1           
+ [94] data.table_1.14.6       callr_3.7.3             git2r_0.30.1           
+ [97] reprex_2.0.2            digest_0.6.30           classInt_0.4-8         
+[100] httpuv_1.6.6            textshaping_0.3.6       munsell_0.5.0          
+[103] viridisLite_0.4.1       bslib_0.4.1            </code></pre>
 </div>
 </div>
 </div>
