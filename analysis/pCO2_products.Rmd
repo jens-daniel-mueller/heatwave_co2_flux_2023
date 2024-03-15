@@ -21,6 +21,7 @@ library(ggnewscale)
 library(khroma)
 library(broom)
 library(scico)
+library(ggtext)
 
 ```
 
@@ -558,6 +559,69 @@ region_masks_all <-
 ```
 
 
+# Define labels and breaks
+
+
+```{r define_labels_and_breaks_OIA_variables_change}
+
+labels_breaks <- function(i_name) {
+  
+  if (i_name == "dco2") {
+    i_legend_title <- "ΔpCO<sub>2</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "atm_co2") {
+    i_legend_title <- "pCO<sub>2,atm</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "sol") {
+    i_legend_title <- "CO<sub>2</sub> solubility<br>(mol m<sup>-3</sup> µatm<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "kw") {
+    i_legend_title <- "K<sub>w</sub><br>(m yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "spco2") {
+    i_legend_title <- "pCO<sub>2,ocean</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "fgco2") {
+    i_legend_title <- "FCO<sub>2</sub><br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  all_labels_breaks <- lst(i_legend_title,
+                           # i_breaks,
+                           # i_contour_level,
+                           # i_contour_level_abs
+                           )
+  
+  return(all_labels_breaks)
+  
+}
+
+# labels_breaks("fgco2")
+
+```
+
 # Preprocessing
 
 ```{r temporal_boundaries}
@@ -723,14 +787,17 @@ SOM_FFN_coarse_annual_regression <-
 SOM_FFN_coarse_annual_regression %>%
   filter(year == 2023,
          !(name %in% name_divergent)) %>%
-  group_split(name) %>% 
+  group_split(name) %>%
   # head(1) %>%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = value)) +
-         labs(title = "Annual mean 2023") +
-         scale_fill_viridis_c(name = .x$name))
-  
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title = "Annual mean 2023") +
+      scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown())
+  )
+
 SOM_FFN_coarse_annual_regression %>%
   filter(year == 2023,
          name %in% name_divergent) %>%
@@ -740,7 +807,10 @@ SOM_FFN_coarse_annual_regression %>%
          geom_tile(data = .x,
                    aes(lon, lat, fill = value)) +
          labs(title = "Annual mean 2023") +
-         scale_fill_divergent(name = .x$name))
+         scale_fill_divergent(
+           name = labels_breaks(.x %>% distinct(name))) +
+         theme(legend.title = element_markdown())
+  )
   
 ```
 
@@ -761,7 +831,10 @@ SOM_FFN_coarse_annual_regression %>%
          geom_tile(data = .x,
                    aes(lon, lat, fill = change)) +
          labs(title =  "Change 1990-2023") +
-         scale_fill_divergent(name = .x$name))
+         scale_fill_divergent(
+           name = labels_breaks(.x %>% distinct(name))) +
+         theme(legend.title = element_markdown())
+  )
 
 ```
 
@@ -777,7 +850,10 @@ SOM_FFN_coarse_annual_regression %>%
          geom_tile(data = .x,
                    aes(lon, lat, fill = resid)) +
          labs(title =  "2023 anomaly") +
-         scale_fill_divergent(name = .x$name))
+         scale_fill_divergent(
+           name = labels_breaks(.x %>% distinct(name))) +
+         theme(legend.title = element_markdown())
+  )
 
 ```
 
@@ -832,14 +908,17 @@ SOM_FFN_coarse_monthly_regression %>%
 SOM_FFN_coarse_monthly_regression %>%
   filter(year == 2023,
          name %in% name_divergent) %>%
-  group_split(name) %>% 
+  group_split(name) %>%
   # head(1) %>%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = value)) +
-         labs(title = "Monthly means 2023") +
-         scale_fill_divergent(name = .x$name) +
-         facet_wrap(~ month, ncol = 2))
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title = "Monthly means 2023") +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )
   
 ```
 
@@ -850,18 +929,21 @@ SOM_FFN_coarse_monthly_regression %>%
 
 SOM_FFN_coarse_monthly_regression %>%
   filter(year %in% c(min(year), max(year))) %>%
-  select(-c(value, resid)) %>% 
+  select(-c(value, resid)) %>%
   pivot_wider(names_from = year,
-              values_from = fit) %>% 
-  mutate(change = `2023` - `1990`) %>% 
-  group_split(name) %>% 
+              values_from = fit) %>%
+  mutate(change = `2023` - `1990`) %>%
+  group_split(name) %>%
   # head(1) %>%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = change)) +
-         labs(title = "Change 1990-2023") +
-         scale_fill_divergent(name = .x$name) +
-         facet_wrap(~ month, ncol = 2))
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = change)) +
+      labs(title = "Change 1990-2023") +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )
 
 ```
 
@@ -871,14 +953,17 @@ SOM_FFN_coarse_monthly_regression %>%
 
 SOM_FFN_coarse_monthly_regression %>%
   filter(year == 2023) %>%
-  group_split(name) %>% 
+  group_split(name) %>%
   # head(1) %>%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = resid)) +
-         labs(title = "2023 anomaly") +
-         scale_fill_divergent(name = .x$name) +
-         facet_wrap(~ month, ncol = 2))
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = resid)) +
+      labs(title = "2023 anomaly") +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )
 
 ```
 
@@ -914,15 +999,18 @@ SOM_FFN_hovmoeller_monthly_annual <-
 
 SOM_FFN_hovmoeller_monthly_annual %>%
   group_split(name) %>%
-  head(1) %>%
-  map(~ ggplot(data = .x,
-                  aes(year, lat, fill = value)) +
-        geom_raster() +
-        scale_fill_viridis_c(.x$name) +
-        coord_cartesian(expand = 0) +
-        labs(title = "Annual means",
-             y = "Latitude") +
-        theme(axis.title.x = element_blank()))
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      coord_cartesian(expand = 0) +
+      labs(title = "Annual means",
+           y = "Latitude") +
+      theme(axis.title.x = element_blank())
+  )
 
 
 ```
@@ -950,7 +1038,8 @@ SOM_FFN_hovmoeller_monthly_annual_regression %>%
     ~ ggplot(data = .x,
              aes(year, lat, fill = resid)) +
       geom_raster() +
-      scale_fill_divergent(.x$name) +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
       coord_cartesian(expand = 0) +
       labs(title = "Annual mean anomalies",
            y = "Latitude") +
@@ -990,12 +1079,17 @@ SOM_FFN_hovmoeller_monthly <-
 SOM_FFN_hovmoeller_monthly %>%
   group_split(name) %>%
   # head(1) %>%
-  map(~ ggplot(data = .x,
-                  aes(decimal, lat, fill = value)) +
-        geom_raster() +
-        scale_fill_viridis_c(.x$name) +
-        coord_cartesian(expand = 0) +
-        theme(axis.title.x = element_blank()))
+  map(
+    ~ ggplot(data = .x,
+             aes(decimal, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      labs(title = "Monthly means",
+           y = "Latitude") +
+      coord_cartesian(expand = 0) +
+      theme(axis.title.x = element_blank())
+  )
 
 
 ```
@@ -1026,12 +1120,13 @@ SOM_FFN_hovmoeller_monthly_regression %>%
   map(
     ~ ggplot(data = .x,
              aes(decimal, lat, fill = resid)) +
-        geom_raster() +
-        scale_fill_divergent(.x$name) +
-        coord_cartesian(expand = 0) +
-        labs(title = "Monthly mean anomalies",
-             y = "Latitude") +
-        theme(axis.title.x = element_blank())
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      coord_cartesian(expand = 0) +
+      labs(title = "Monthly mean anomalies",
+           y = "Latitude") +
+      theme(axis.title.x = element_blank())
   )
   
 
@@ -1051,7 +1146,8 @@ SOM_FFN_hovmoeller_monthly_regression %>%
     ~ ggplot(data = .x,
              aes(decimal, lat, fill = resid)) +
       geom_raster() +
-      scale_fill_divergent(.x$name) +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
       coord_cartesian(expand = 0) +
       labs(title = "Monthly mean anomalies",
            y = "Latitude") +
