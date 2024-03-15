@@ -119,7 +119,7 @@ name_quadratic_fit <- c("atm_co2", "spco2")
 
 start_year <- 1990
 
-name_divergent <- c("dco2", "fgco2")
+name_divergent <- c("dco2", "fgco2", "fgco2_hov", "fgco2_int")
 
 ```
 
@@ -608,6 +608,20 @@ labels_breaks <- function(i_name) {
     # i_contour_level_abs <- 2200
   }
   
+  if (i_name == "fgco2_hov") {
+    i_legend_title <- "FCO<sub>2</sub><br>(PgC deg<sup>-1</sup> yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "fgco2_int") {
+    i_legend_title <- "FCO<sub>2</sub><br>(PgC yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
   all_labels_breaks <- lst(i_legend_title,
                            # i_breaks,
                            # i_contour_level,
@@ -618,7 +632,20 @@ labels_breaks <- function(i_name) {
   
 }
 
+
 # labels_breaks("fgco2")
+
+x_axis_labels <-
+  c(
+    "dco2" = labels_breaks("dco2")$i_legend_title,
+    "atm_co2" = labels_breaks("atm_co2")$i_legend_title,
+    "sol" = labels_breaks("sol")$i_legend_title,
+    "kw" = labels_breaks("kw")$i_legend_title,
+    "spco2" = labels_breaks("spco2")$i_legend_title,
+    "fgco2_hov" = labels_breaks("fgco2_hov")$i_legend_title,
+    "fgco2_int" = labels_breaks("fgco2_int")$i_legend_title
+  )
+
 
 ```
 
@@ -658,67 +685,6 @@ SOM_FFN <-
 The following maps show the absolute state of each variable in 2023 as provided through the pCO2 product, the change in that variable from 1990 to 2023, as well es the anomalies in 2023. Changes and anomalies are determined based on the predicted value of a linear regression model fit to the data from 1990 to 2022.
 
 Maps are first presented as annual means, and than as monthly means. Note that the 2023 predictions for the monthly maps are done individually for each month, such the mean seasonal anomaly from the annual mean is removed.
-
-
-```{r climatology_maps, fig.asp=0.5, eval=FALSE}
-
-SOM_FFN_annual_mean_maps <-
-  SOM_FFN %>%
-  drop_na() %>% 
-  group_by(year, lon, lat) %>%
-  summarise(across(dco2:fgco2,
-                   ~ mean(.))) %>%
-  ungroup()
-
-SOM_FFN_climatology <-
-  SOM_FFN_annual_mean_maps %>%
-  drop_na() %>% 
-  filter(year <= 2022) %>%
-  group_by(lon, lat) %>%
-  summarise(across(dco2:fgco2,
-                   ~ mean(.))) %>%
-  ungroup()
-
-SOM_FFN_2023_anomaly <-
-  bind_rows(
-    SOM_FFN_climatology %>% mutate(reference = "climatology"),
-    SOM_FFN_annual_mean_maps %>%
-      filter(year == 2023) %>%
-      select(-year) %>% 
-      mutate(reference = "2023")
-  )
-
-SOM_FFN_2023_anomaly <-
-  SOM_FFN_2023_anomaly %>%
-  pivot_longer(-c(lon, lat, reference)) %>%
-  pivot_wider(names_from = reference,
-              values_from = value) %>%
-  mutate(anomaly = `2023` - climatology)
-
-SOM_FFN_2023_anomaly %>%
-  filter(!(name %in% name_divergent)) %>%
-  group_split(name) %>%
-  # head(1) %>%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = climatology)) +
-      labs(title = "Climatology") +
-      scale_fill_viridis_c()
-  )
-
-SOM_FFN_2023_anomaly %>%
-  filter(name %in% name_divergent) %>% 
-  group_split(name) %>%
-  # head(2) %>%
-  map(~ map +
-        geom_tile(data = .x,
-                  aes(lon, lat, fill = climatology)) +
-        labs(title = "Climatology") +
-        scale_fill_divergent(.x$name))
-
-```
-
 
 ```{r compute_coarse_resolution_monthly_maps, fig.asp=0.5}
 
@@ -896,15 +862,18 @@ SOM_FFN_coarse_monthly_regression <-
 SOM_FFN_coarse_monthly_regression %>%
   filter(year == 2023,
          !(name %in% name_divergent)) %>%
-  group_split(name) %>% 
+  group_split(name) %>%
   # head(1) %>%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = value)) +
-         labs(title = "Monthly means 2023") +
-         scale_fill_viridis_c(name = .x$name) +
-         facet_wrap(~ month, ncol = 2))
-  
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title = "Monthly means 2023") +
+      scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )
+
 SOM_FFN_coarse_monthly_regression %>%
   filter(year == 2023,
          name %in% name_divergent) %>%
@@ -990,6 +959,7 @@ SOM_FFN_hovmoeller_monthly_annual <-
             across(fgco2, 
                    ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>% 
   ungroup() %>% 
+  rename(fgco2_hov = fgco2) %>% 
   drop_na()
 
 SOM_FFN_hovmoeller_monthly_annual <-
@@ -998,6 +968,7 @@ SOM_FFN_hovmoeller_monthly_annual <-
 
 
 SOM_FFN_hovmoeller_monthly_annual %>%
+  filter(!(name %in% name_divergent)) %>% 
   group_split(name) %>%
   # head(1) %>%
   map(
@@ -1005,6 +976,22 @@ SOM_FFN_hovmoeller_monthly_annual %>%
              aes(year, lat, fill = value)) +
       geom_raster() +
       scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      coord_cartesian(expand = 0) +
+      labs(title = "Annual means",
+           y = "Latitude") +
+      theme(axis.title.x = element_blank())
+  )
+
+SOM_FFN_hovmoeller_monthly_annual %>%
+  filter(name %in% name_divergent) %>% 
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
       theme(legend.title = element_markdown()) +
       coord_cartesian(expand = 0) +
       labs(title = "Annual means",
@@ -1059,13 +1046,12 @@ SOM_FFN_hovmoeller_monthly_annual_regression %>%
 SOM_FFN_hovmoeller_monthly <-
   SOM_FFN %>%
   group_by(year, month, lat) %>%
-  summarise(
-    across(dco2:spco2,
-           ~ weighted.mean(., area, na.rm = TRUE)),
-    across(fgco2,
-           ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)
-  ) %>%
+  summarise(across(dco2:spco2,
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup() %>%
+  rename(fgco2_hov = fgco2) %>%
   drop_na()
 
 SOM_FFN_hovmoeller_monthly <-
@@ -1077,6 +1063,7 @@ SOM_FFN_hovmoeller_monthly <-
   mutate(decimal = year + (month-1) / 12)
 
 SOM_FFN_hovmoeller_monthly %>%
+  filter(!(name %in% name_divergent)) %>%
   group_split(name) %>%
   # head(1) %>%
   map(
@@ -1084,6 +1071,22 @@ SOM_FFN_hovmoeller_monthly %>%
              aes(decimal, lat, fill = value)) +
       geom_raster() +
       scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      labs(title = "Monthly means",
+           y = "Latitude") +
+      coord_cartesian(expand = 0) +
+      theme(axis.title.x = element_blank())
+  )
+
+SOM_FFN_hovmoeller_monthly %>%
+  filter(name %in% name_divergent) %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(decimal, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
       theme(legend.title = element_markdown()) +
       labs(title = "Monthly means",
            y = "Latitude") +
@@ -1168,26 +1171,26 @@ Anomalies are first presented relative to the predicted annual mean of each year
 
 SOM_FFN_monthly_global <-
   SOM_FFN %>%
-  group_by(time) %>% 
-  drop_na() %>% 
-  summarise(across(dco2:spco2, 
-                   ~weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2, 
-                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>% 
+  group_by(time) %>%
+  drop_na() %>%
+  summarise(across(dco2:spco2,
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup()
 
 SOM_FFN_monthly_biome <-
   SOM_FFN %>%
-  drop_na() %>% 
-  group_by(time, biome) %>% 
-  summarise(across(dco2:spco2, 
-                   ~weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2, 
-                   ~sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>% 
+  drop_na() %>%
+  group_by(time, biome) %>%
+  summarise(across(dco2:spco2,
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup()
-  
-SOM_FFN_monthly <- 
-  bind_rows(SOM_FFN_monthly_global %>% 
+
+SOM_FFN_monthly <-
+  bind_rows(SOM_FFN_monthly_global %>%
               mutate(biome = "Global"),
             SOM_FFN_monthly_biome)
 
@@ -1196,7 +1199,11 @@ rm(SOM_FFN_monthly_global,
 
 
 SOM_FFN_monthly <-
-SOM_FFN_monthly %>%
+  SOM_FFN_monthly %>%
+  rename(fgco2_int = fgco2)
+
+SOM_FFN_monthly <-
+  SOM_FFN_monthly %>%
   mutate(year = year(time),
          month = month(time),
          .after = time)
@@ -1213,7 +1220,40 @@ SOM_FFN_monthly <-
 
 ### Overview
 
-```{r absolute_global_means_and_integrals_overview}
+```{r absolute_global_means_and_integrals_overview, fig.asp=1}
+
+SOM_FFN_monthly %>%
+  filter(biome %in% "Global") %>%
+  ggplot(aes(month, value, group = as.factor(year))) +
+  geom_path(data = . %>% filter(year < 2022),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %>% filter(year >= 2022),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c("orange", "red"),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = "Absolute values | Global") +
+  facet_wrap(name ~ .,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             strip.position = "left",
+             ncol = 2) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank()
+  )
+
+
+```
+
+```{r absolute_biome_means_and_integrals_overview, fig.asp=1}
 
 SOM_FFN_monthly %>%
   filter(biome %in% key_biomes) %>%
@@ -1230,9 +1270,17 @@ SOM_FFN_monthly %>%
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
   labs(title = "Absolute values") +
-  facet_grid(name ~ biome, scales = "free_y") +
-  theme(legend.title = element_blank(),
-        axis.title.y = element_blank())
+  facet_grid(name ~ biome,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             switch = "y") +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank()
+  )
 
 
 ```
@@ -1240,7 +1288,7 @@ SOM_FFN_monthly %>%
 
 ### Selected biomes
 
-```{r absolute_global_means_and_integrals_key_biomes, fig.asp=1.5}
+```{r absolute_global_means_and_integrals_key_biomes, fig.asp=1}
 
 SOM_FFN_monthly %>%
   filter(biome %in% key_biomes) %>%
@@ -1264,10 +1312,19 @@ SOM_FFN_monthly %>%
                              order = 1)
       ) +
       scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-      labs(title = "Absolute values") +
-      facet_grid(name ~ biome, scales = "free_y") +
-      theme(legend.title = element_blank(),
-            axis.title.y = element_blank())
+  labs(title = paste("Absolute values |", .x$biome)) +
+  facet_wrap(name ~ .,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             strip.position = "left",
+             ncol = 2) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank()
+  )
   )
 
 ```
@@ -1276,7 +1333,7 @@ SOM_FFN_monthly %>%
 
 ### Annual mean trends
 
-```{r annual_mean_trends}
+```{r annual_mean_trends, fig.asp=1}
 
 SOM_FFN_annual <-
   SOM_FFN_monthly %>%
@@ -1284,6 +1341,41 @@ SOM_FFN_annual <-
   summarise(value = mean(value)) %>%
   ungroup()
   
+SOM_FFN_annual %>% 
+  filter(biome %in% "Global") %>%
+  ggplot(aes(year, value)) +
+  geom_point() +
+  geom_smooth(data = . %>% filter(year <= 2022,
+                                  !(name %in% name_quadratic_fit)),
+              method = "lm",
+              fullrange = TRUE,
+              aes(col = "linear"),
+              se = FALSE) +
+  geom_smooth(data = . %>% filter(year <= 2022,
+                                  name %in% name_quadratic_fit),
+              method = "lm",
+              fullrange = TRUE,
+              formula = y ~ x + I(x^2),
+              aes(col = "quadratic"),
+              se = FALSE) +
+  scale_color_brewer(
+    palette = "Set1",
+    name = "Regression fit\n prior 2023") +
+  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+  labs(title = "Annual mean trends | Global") +
+  facet_wrap(name ~ .,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             strip.position = "left",
+             ncol = 2) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank()
+  )
+  
+
 SOM_FFN_annual %>% 
   filter(biome %in% key_biomes) %>%
   ggplot(aes(year, value)) +
@@ -1305,18 +1397,53 @@ SOM_FFN_annual %>%
     palette = "Set1",
     name = "Regression fit\n prior 2023") +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-  facet_grid(name ~ biome, scales = "free_y") +
-  theme(axis.title = element_blank())
+  labs(title = "Annual mean trends | Selected biomes") +
+  facet_grid(name ~ biome,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             switch = "y") +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank()
+  )
 
 SOM_FFN_annual_regression <-
   SOM_FFN_annual %>%
   anomaly_determination(biome)
-  # group_by(biome) %>%
-  # nest() %>%
-  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  # select(-data) %>%
-  # unnest(anomalies) %>%
-  # ungroup()
+  
+
+SOM_FFN_annual_regression %>%
+  filter(biome %in% "Global") %>%
+  ggplot(aes(year, resid)) +
+  geom_hline(yintercept = 0) +
+  geom_path() +
+  geom_point(data = . %>% filter(year < 2022),
+             aes(fill = year),
+             shape = 21) +
+  scale_fill_grayC() +
+  new_scale_fill() +
+  geom_point(data = . %>% filter(year >= 2022),
+             aes(fill = as.factor(year)),
+             shape = 21, size = 2)  +
+  scale_fill_manual(values = c("orange", "red"),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+  labs(title = "Residual from fit to annual means (actual - predicted) | Global") +
+  facet_wrap(name ~ .,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             strip.position = "left",
+             ncol = 2) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank()
+  )
   
 
 SOM_FFN_annual_regression %>%
@@ -1336,10 +1463,18 @@ SOM_FFN_annual_regression %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-  labs(title = "Residual from fit to annual means (actual - predicted)") +
-  facet_grid(name ~ biome, scales = "free_y") +
-  theme(legend.title = element_blank(),
-        axis.title = element_blank())
+  labs(title = "Residual from fit to annual means (actual - predicted) | Selected biomes") +
+  facet_grid(name ~ biome,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             switch = "y") +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank()
+  )
 
 SOM_FFN_annual_regression %>%
   filter(biome != "global") %>%
@@ -1356,23 +1491,59 @@ SOM_FFN_annual_regression %>%
   scale_fill_manual(values = c("orange", "red"),
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
-  labs(title = "Residual from fit to annual means (actual - predicted)") +
-  facet_grid(name ~ ., scales = "free_y") +
-  theme(legend.title = element_blank(),
-        axis.title = element_blank(),
-        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  labs(title = "Residual from fit to annual means (actual - predicted) | Selected biomes") +
+  facet_grid(name ~ .,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             switch = "y") +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)
+  )
 
 
 ```
 
 
-```{r anomalies_from_annual_mean_trends_overview}
+```{r anomalies_from_annual_mean_trends_overview, fig.asp=1}
 
 
 SOM_FFN_annual_detrended <-
   full_join(SOM_FFN_monthly,
             SOM_FFN_annual_regression %>% select(-c(value, resid))) %>%
   mutate(resid = value - fit)
+
+SOM_FFN_annual_detrended %>% 
+  filter(biome %in% "Global") %>%
+  ggplot(aes(month, resid, group = as.factor(year))) +
+  geom_path(data = . %>% filter(year < 2022),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %>% filter(year >= 2022),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c("orange", "red"),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = "Anomalies from predicted annual mean | Global") +
+  facet_wrap(name ~ .,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             strip.position = "left",
+             ncol = 2) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank()
+  )
 
 SOM_FFN_annual_detrended %>% 
   filter(biome %in% key_biomes) %>%
@@ -1388,10 +1559,19 @@ SOM_FFN_annual_detrended %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-  labs(title = "Anomalies from predicted annual mean") +
-  facet_grid(name ~ biome, scales = "free_y") +
-  theme(legend.title = element_blank(),
-        axis.title.y = element_blank())
+  labs(title = "Anomalies from predicted annual mean | Selected biomes") +
+  facet_grid(name ~ biome,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             switch = "y") +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)
+  )
 
 ```
 
@@ -1420,10 +1600,21 @@ SOM_FFN_annual_detrended %>%
                              order = 1)
       ) +
       scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-      labs(title = "Anomalies from predicted annual mean") +
-      facet_grid(name ~ biome, scales = "free_y") +
-      theme(legend.title = element_blank(),
-            axis.title.y = element_blank())
+      labs(title = paste("Anomalies from predicted annual mean |", .x$biome)) +
+      facet_wrap(
+        name ~ .,
+        scales = "free_y",
+        labeller = labeller(name = x_axis_labels),
+        strip.position = "left",
+        ncol = 2
+      ) +
+      theme(
+        strip.text.y.left = element_markdown(),
+        strip.placement = "outside",
+        strip.background.y = element_blank(),
+        axis.title = element_blank(),
+        legend.title = element_blank()
+      )
   )
 
 
@@ -1433,6 +1624,39 @@ SOM_FFN_annual_detrended %>%
 ### Monthly mean trends
 
 ```{r monthly_mean_trends}
+
+SOM_FFN_monthly %>% 
+  filter(biome %in% "Global") %>%
+  mutate(month = as.factor(month)) %>% 
+  ggplot(aes(year, value, col = month)) +
+  # geom_point() +
+  geom_smooth(data = . %>% filter(year <= 2022,
+                                  !(name %in% name_quadratic_fit)),
+              method = "lm",
+              fullrange = TRUE,
+              se = FALSE) +
+  geom_smooth(data = . %>% filter(year <= 2022,
+                                  name %in% name_quadratic_fit),
+              method = "lm",
+              fullrange = TRUE,
+              formula = y ~ x + I(x^2),
+              se = FALSE) +
+  scale_color_scico_d(
+    palette = "romaO",
+    name = "Regression fit\n prior 2023") +
+  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+  labs(title = "Monthly mean trends | Global") +
+  facet_wrap(name ~ .,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             strip.position = "left",
+             ncol = 2) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank()
+  )
 
 SOM_FFN_monthly %>% 
   filter(biome %in% key_biomes) %>%
@@ -1450,65 +1674,41 @@ SOM_FFN_monthly %>%
               fullrange = TRUE,
               formula = y ~ x + I(x^2),
               se = FALSE) +
-  scale_color_brewer(
-    palette = "Paired",
+  scale_color_scico_d(
+    palette = "romaO",
     name = "Regression fit\n prior 2023") +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-  facet_grid(name ~ biome, scales = "free_y") +
-  theme(axis.title = element_blank())
+  labs(title = "Monthly mean trends | Selected biomes") +
+  facet_grid(name ~ biome,
+             scales = "free_y",
+             labeller = labeller(name = x_axis_labels),
+             switch = "y") +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank()
+  )
 
 SOM_FFN_monthly_regression <-
   SOM_FFN_monthly %>%
   anomaly_determination(biome, month)
-  # group_by(biome, month) %>%
-  # nest() %>%
-  # mutate(anomalies = map(.x = data, ~ anomaly_determination(.x))) %>%
-  # select(-data) %>%
-  # unnest(anomalies) %>%
-  # ungroup()
-  
 
-SOM_FFN_monthly_regression %>%
-  filter(biome %in% key_biomes) %>%
-  group_split(month) %>% 
-  # head(1) %>% 
-  map( 
-    ~ggplot(data = .x,
-            aes(year, resid)) +
-  geom_hline(yintercept = 0) +
-  geom_path() +
-  geom_point(data = . %>% filter(year < 2022),
-             aes(fill = year),
-             shape = 21) +
-  scale_fill_grayC() +
-  new_scale_fill() +
-  geom_point(data = . %>% filter(year >= 2022),
-             aes(fill = as.factor(year)),
-             shape = 21, size = 2)  +
-  scale_fill_manual(values = c("orange", "red"),
-                     guide = guide_legend(reverse = TRUE,
-                                          order = 1)) +
-  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-  labs(title = "Residual from fit to monthly means (actual - predicted)",
-       subtitle = paste("Month:", .x$month)) +
-  facet_grid(name ~ biome, scales = "free_y") +
-  theme(legend.title = element_blank(),
-        axis.title = element_blank()))
 
 
 SOM_FFN_monthly_regression %>%
-  filter(biome != "global") %>%
+  filter(biome %in% "Global") %>%
   group_split(month) %>%
   # head(1) %>%
   map(
     ~ ggplot(data = .x,
-             aes(biome, resid)) +
+             aes(year, resid)) +
       geom_hline(yintercept = 0) +
-      geom_jitter(
+      geom_path() +
+      geom_point(
         data = . %>% filter(year < 2022),
         aes(fill = year),
-        shape = 21,
-        width = 0.2
+        shape = 21
       ) +
       scale_fill_grayC() +
       new_scale_fill() +
@@ -1523,17 +1723,67 @@ SOM_FFN_monthly_regression %>%
         guide = guide_legend(reverse = TRUE,
                              order = 1)
       ) +
-  labs(title = "Residual from fit to monthly means (actual - predicted)",
-       subtitle = paste("Month:", .x$month)) +
-      facet_grid(name ~ ., scales = "free_y") +
+      scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+      labs(title = "Residual from fit to monthly means (actual - predicted) | Global",
+           subtitle = paste("Month:", .x$month)) +
+      facet_wrap(
+        name ~ .,
+        scales = "free_y",
+        labeller = labeller(name = x_axis_labels),
+        strip.position = "left",
+        ncol = 2
+      ) +
       theme(
-        legend.title = element_blank(),
+        strip.text.y.left = element_markdown(),
+        strip.placement = "outside",
+        strip.background.y = element_blank(),
         axis.title = element_blank(),
-        axis.text.x = element_text(
-          angle = 90,
-          vjust = 0.5,
-          hjust = 1
-        )
+        legend.title = element_blank()
+      )
+  )
+
+SOM_FFN_monthly_regression %>%
+  filter(biome %in% key_biomes) %>%
+  group_split(month) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, resid)) +
+      geom_hline(yintercept = 0) +
+      geom_path() +
+      geom_point(
+        data = . %>% filter(year < 2022),
+        aes(fill = year),
+        shape = 21
+      ) +
+      scale_fill_grayC() +
+      new_scale_fill() +
+      geom_point(
+        data = . %>% filter(year >= 2022),
+        aes(fill = as.factor(year)),
+        shape = 21,
+        size = 2
+      )  +
+      scale_fill_manual(
+        values = c("orange", "red"),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
+      scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+      labs(title = "Residual from fit to monthly means (actual - predicted) | Selected biomes",
+           subtitle = paste("Month:", .x$month)) +
+      facet_grid(
+        name ~ biome,
+        scales = "free_y",
+        labeller = labeller(name = x_axis_labels),
+        switch = "y"
+      ) +
+      theme(
+        strip.text.y.left = element_markdown(),
+        strip.placement = "outside",
+        strip.background.y = element_blank(),
+        axis.title = element_blank(),
+        legend.title = element_blank()
       )
   )
 
@@ -1550,6 +1800,36 @@ SOM_FFN_monthly_detrended <-
   mutate(resid = value - fit)
 
 SOM_FFN_monthly_detrended %>% 
+  filter(biome %in% "Global") %>%
+  ggplot(aes(month, resid, group = as.factor(year))) +
+  geom_path(data = . %>% filter(year < 2022),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %>% filter(year >= 2022),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c("orange", "red"),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = "Anomalies from predicted monthly mean | Global") +
+  facet_wrap(
+    name ~ .,
+    scales = "free_y",
+    labeller = labeller(name = x_axis_labels),
+    strip.position = "left",
+    ncol = 2
+  ) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank()
+  )
+
+SOM_FFN_monthly_detrended %>% 
   filter(biome %in% key_biomes) %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
   geom_path(data = . %>% filter(year < 2022),
@@ -1563,10 +1843,20 @@ SOM_FFN_monthly_detrended %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-  labs(title = "Anomalies from predicted monthly mean") +
-  facet_grid(name ~ biome, scales = "free_y") +
-  theme(legend.title = element_blank(),
-        axis.title.y = element_blank())
+  labs(title = "Anomalies from predicted monthly mean | Selected biomes") +
+  facet_grid(
+    name ~ biome,
+    scales = "free_y",
+    labeller = labeller(name = x_axis_labels),
+    switch = "y"
+  ) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank()
+  )
 
 ```
 
@@ -1595,10 +1885,21 @@ SOM_FFN_monthly_detrended %>%
                              order = 1)
       ) +
       scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-      labs(title = "Anomalies from predicted monthly mean") +
-      facet_grid(name ~ biome, scales = "free_y") +
-      theme(legend.title = element_blank(),
-            axis.title.y = element_blank())
+      labs(title = paste("Anomalies from predicted monthly mean |", .x$biome)) +
+      facet_wrap(
+        name ~ .,
+        scales = "free_y",
+        labeller = labeller(name = x_axis_labels),
+        strip.position = "left",
+        ncol = 2
+      ) +
+      theme(
+        strip.text.y.left = element_markdown(),
+        strip.placement = "outside",
+        strip.background.y = element_blank(),
+        axis.title = element_blank(),
+        legend.title = element_blank()
+      )
   )
 
 
@@ -1628,7 +1929,7 @@ SOM_FFN_monthly_detrended_anomaly <-
 SOM_FFN_monthly_detrended_anomaly %>%
   filter(biome == "Global") %>%
   pivot_longer(dco2:spco2)  %>%
-  ggplot(aes(value, fgco2)) +
+  ggplot(aes(value, fgco2_int)) +
   geom_hline(yintercept = 0) +
   geom_point(data = . %>% filter(year <= 2022),
              aes(fill = year),
@@ -1641,11 +1942,27 @@ SOM_FFN_monthly_detrended_anomaly %>%
              size = 3)  +
   scale_fill_scico_d(palette = "buda",
                      guide = guide_legend(reverse = TRUE,
-                                            order = 1),
-                     name = "month\nof 2023") +
-  labs(title = "Globally integrated fluxes") +
-  facet_wrap( ~ name, ncol = 3, scales = "free_x") +
-  theme(axis.title.x = element_blank())
+                                          order = 1),
+                     name = "Month\nof 2023") +
+  labs(title = "Globally integrated fluxes",
+       y = labels_breaks("fgco2_int")$i_legend_title) +
+  facet_wrap(
+    ~ name,
+    scales = "free_x",
+    labeller = labeller(name = x_axis_labels),
+    strip.position = "bottom",
+    ncol = 2
+  ) +
+  theme(
+    strip.text.x.bottom = element_markdown(),
+    strip.placement = "outside",
+    strip.background.x = element_blank(),
+    axis.title.y = element_markdown(),
+    axis.title.x = element_blank(),
+    legend.title = element_blank()
+  )
+
+
 
 SOM_FFN_monthly_detrended_anomaly %>%
   filter(biome != "Global") %>%
@@ -1654,7 +1971,7 @@ SOM_FFN_monthly_detrended_anomaly %>%
   # head(1) %>%
   map(
     ~ ggplot(data = .x,
-             aes(value, fgco2)) +
+             aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
         data = . %>% filter(year <= 2022),
@@ -1673,14 +1990,17 @@ SOM_FFN_monthly_detrended_anomaly %>%
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "month\nof 2023"
+        name = "Month\nof 2023"
       ) +
-      facet_wrap(~ biome, ncol = 3, scales = "free_x") +
-      labs(title = "Biome integrated fluxes",
-           x = .x$name)
+      facet_wrap( ~ biome, ncol = 3, scales = "free_x") +
+      labs(
+        title = "Biome integrated fluxes",
+        y = labels_breaks("fgco2_int")$i_legend_title,
+        x = labels_breaks(.x %>% distinct(name))$i_legend_title
+      ) +
+      theme(axis.title.x = element_markdown(),
+            axis.title.y = element_markdown())
   )
-
-
 
 
 ```
@@ -1711,7 +2031,8 @@ SOM_FFN_monthly_detrended_anomaly_relative %>%
   mutate(value = value / spread) %>% 
   select(-spread) %>% 
   pivot_wider() %>% 
-  pivot_longer(-c(month, biome, year, fgco2))
+  pivot_longer(-c(month, biome, year, fgco2_int))
+
 
 
 SOM_FFN_monthly_detrended_anomaly_relative %>%
@@ -1719,7 +2040,7 @@ SOM_FFN_monthly_detrended_anomaly_relative %>%
   # head(1) %>%
   map(
     ~ ggplot(data = .x,
-             aes(value, fgco2)) +
+             aes(value, fgco2_int)) +
       geom_vline(xintercept = 0) +
       geom_hline(yintercept = 0) +
       geom_point(
@@ -1739,14 +2060,18 @@ SOM_FFN_monthly_detrended_anomaly_relative %>%
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "month\nof 2023"
+        name = "Month\nof 2023"
       ) +
       facet_wrap(~ biome, ncol = 3) +
       coord_fixed() +
-      labs(x = .x$name)
+      labs(
+        title = "Biome integrated fluxes normalized to spread",
+        y = str_split_i(labels_breaks("fgco2_int")$i_legend_title, "<br>", i = 1),
+        x = str_split_i(labels_breaks(.x %>% distinct(name))$i_legend_title, "<br>", i = 1)
+      ) +
+      theme(axis.title.x = element_markdown(),
+            axis.title.y = element_markdown())
   )
-
-
 
 
 ```
