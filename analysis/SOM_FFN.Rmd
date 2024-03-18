@@ -1,5 +1,5 @@
 ---
-title: "OceanSODA"
+title: "SOM_FFN"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: workflowr::wflow_html
@@ -54,51 +54,7 @@ print(nc)
 ```
 
 
-```{r read_OceanSODA}
-
-OceanSODA_files <- list.files(path = path_OceanSODA)
-
-OceanSODA_files <-
-  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|sfco2|temp"))]
-
-for (i_OceanSODA_files in OceanSODA_files) {
-  i_SOM_FFN <-
-    read_ncdf(paste0(path_OceanSODA,
-                     i_OceanSODA_files),
-              make_units = FALSE)
-  
-  if (exists("SOM_FFN")) {
-    SOM_FFN <-
-      c(SOM_FFN,
-                i_SOM_FFN)
-  }
-  
-  if (!exists("SOM_FFN")) {
-    SOM_FFN <- i_SOM_FFN
-  }
-  
-}
-
-rm(OceanSODA_files, i_OceanSODA_files, i_SOM_FFN)
-
-SOM_FFN <- SOM_FFN %>%
-  as_tibble()
-
-SOM_FFN <-
-  SOM_FFN %>%
-  mutate(area = earth_surf(lat, lon),
-         year = year(time),
-         month = month(time))
-
-SOM_FFN <-
-  SOM_FFN %>% 
-  mutate(lon = if_else(lon < 20, lon + 360, lon)) %>% 
-  rename(dco2 = dfco2)
-
-```
-
-
-```{r read_VLIZ_SOM_FFN, eval=FALSE}
+```{r read_VLIZ_SOM_FFN}
 
 print("VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc")
 
