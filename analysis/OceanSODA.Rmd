@@ -46,7 +46,7 @@ nc <-
 nc <-
   nc_open(paste0(
     path_OceanSODA,
-    "fgco2_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
+    "spco2_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
   ))
 
 print(nc)
@@ -59,7 +59,7 @@ print(nc)
 OceanSODA_files <- list.files(path = path_OceanSODA)
 
 OceanSODA_files <-
-  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|sfco2|temp"))]
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|sfco2|temp|sal|sol"))]
 
 for (i_OceanSODA_files in OceanSODA_files) {
   i_pco2_product <-
@@ -93,7 +93,8 @@ pco2_product <-
 pco2_product <-
   pco2_product %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon),
-         fgco2 = fgco2 * 1e-3 * 365)
+         fgco2 = fgco2 * 1e-3 * 365,
+         sol = sol * 1e-3)
 
 ```
 
