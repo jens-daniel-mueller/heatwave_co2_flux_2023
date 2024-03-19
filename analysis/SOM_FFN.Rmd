@@ -58,7 +58,7 @@ print(nc)
 
 print("VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc")
 
-SOM_FFN <-
+pco2_product <-
   read_ncdf(
     paste0(
       path_pCO2_products,
@@ -68,25 +68,25 @@ SOM_FFN <-
     make_units = FALSE
   )
 
-SOM_FFN <- SOM_FFN %>%
+pco2_product <- pco2_product %>%
   as_tibble()
 
-SOM_FFN <-
-  SOM_FFN %>%
+pco2_product <-
+  pco2_product %>%
   rename(spco2 = spco2_smoothed, fgco2 = fgco2_smoothed)
 
-SOM_FFN <-
-  SOM_FFN %>%
+pco2_product <-
+  pco2_product %>%
   mutate(across(dco2:fgco2, ~ replace(., . >= 1e+19, NA)))
 
-SOM_FFN <-
-  SOM_FFN %>%
+pco2_product <-
+  pco2_product %>%
   mutate(area = earth_surf(lat, lon),
          year = year(time),
          month = month(time))
 
-SOM_FFN <-
-  SOM_FFN %>% 
+pco2_product <-
+  pco2_product %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 ```
