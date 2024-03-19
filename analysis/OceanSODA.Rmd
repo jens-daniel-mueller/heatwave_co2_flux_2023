@@ -62,6 +62,9 @@ OceanSODA_files <-
   OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|sfco2|temp|sal|sol"))]
 
 for (i_OceanSODA_files in OceanSODA_files) {
+  
+  # i_OceanSODA_files <- OceanSODA_files[1]
+  
   i_pco2_product <-
     read_ncdf(paste0(path_OceanSODA,
                      i_OceanSODA_files),
@@ -103,7 +106,8 @@ pco2_product <-
 
 pCO2productanalysis <-
   knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd")
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "OceanSODA"
   )
 
 

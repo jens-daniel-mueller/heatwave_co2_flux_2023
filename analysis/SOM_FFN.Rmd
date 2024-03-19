@@ -65,6 +65,7 @@ pco2_product <-
       "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
     ),
     var = c("dco2", "atm_co2", "sol", "kw", "spco2_smoothed", "fgco2_smoothed"),
+    ignore_bounds = TRUE,
     make_units = FALSE
   )
 
@@ -96,7 +97,8 @@ pco2_product <-
 
 pCO2productanalysis <-
   knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd")
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "SOM_FFN"
   )
 
 
