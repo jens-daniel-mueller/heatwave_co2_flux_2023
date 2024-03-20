@@ -555,15 +555,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree39d9769446688949f8e5a2a4a1e54e41484c2013targetblank39d9769a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree23dde7ace670429326752ef3860bab5c0569164dtargetblank23dde7aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/39d9769446688949f8e5a2a4a1e54e41484c2013" target="_blank">39d9769</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/23dde7ace670429326752ef3860bab5c0569164d" target="_blank">23dde7a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree39d9769446688949f8e5a2a4a1e54e41484c2013targetblank39d9769a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree23dde7ace670429326752ef3860bab5c0569164dtargetblank23dde7aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -573,7 +573,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/39d9769446688949f8e5a2a4a1e54e41484c2013" target="_blank">39d9769</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/23dde7ace670429326752ef3860bab5c0569164d" target="_blank">23dde7a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -590,6 +590,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
 
 Untracked files:
     Untracked:  analysis/child/
@@ -641,6 +642,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/23dde7ace670429326752ef3860bab5c0569164d/analysis/OceanSODA.Rmd" target="_blank">23dde7a</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-20
+</td>
+<td>
+new variables added
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/8698b5136959c00509e23cae6da2124821b6e4b8/docs/OceanSODA.html" target="_blank">8698b51</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1034,23 +1069,24 @@ nc &lt;-
 nc &lt;-
   nc_open(paste0(
     path_OceanSODA,
-    &quot;spco2_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc&quot;
+    &quot;press_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc&quot;
   ))
 
 print(nc)</code></pre>
 <pre class="r"><code>OceanSODA_files &lt;- list.files(path = path_OceanSODA)
 
 OceanSODA_files &lt;-
-  OceanSODA_files[OceanSODA_files %&gt;% str_detect(c(&quot;dfco2|fgco2_O|kw|sfco2|temp|sal|sol&quot;))]
+  OceanSODA_files[OceanSODA_files %&gt;% str_detect(c(&quot;mld|press|chl&quot;))]
 
 for (i_OceanSODA_files in OceanSODA_files) {
   
-  # i_OceanSODA_files &lt;- OceanSODA_files[1]
+  # i_OceanSODA_files &lt;- OceanSODA_files[2]
   
   i_pco2_product &lt;-
     read_ncdf(paste0(path_OceanSODA,
                      i_OceanSODA_files),
-              make_units = FALSE)
+              make_units = FALSE,
+              ignore_bounds = TRUE)
   
   if (exists(&quot;pco2_product&quot;)) {
     pco2_product &lt;-
@@ -1068,6 +1104,47 @@ rm(OceanSODA_files, i_OceanSODA_files, i_pco2_product)
 
 pco2_product &lt;- pco2_product %&gt;%
   as_tibble()
+pco2_product_temp &lt;- pco2_product
+rm(pco2_product)
+
+
+
+OceanSODA_files &lt;- list.files(path = path_OceanSODA)
+
+OceanSODA_files &lt;-
+  OceanSODA_files[OceanSODA_files %&gt;% str_detect(c(&quot;dfco2|fgco2_O|kw|spco2|temp|sal|sol&quot;))]
+
+for (i_OceanSODA_files in OceanSODA_files) {
+  
+  # i_OceanSODA_files &lt;- OceanSODA_files[2]
+  
+  i_pco2_product &lt;-
+    read_ncdf(paste0(path_OceanSODA,
+                     i_OceanSODA_files),
+              make_units = FALSE,
+              ignore_bounds = TRUE)
+  
+  if (exists(&quot;pco2_product&quot;)) {
+    pco2_product &lt;-
+      c(pco2_product,
+                i_pco2_product)
+  }
+  
+  if (!exists(&quot;pco2_product&quot;)) {
+    pco2_product &lt;- i_pco2_product
+  }
+  
+}
+
+rm(OceanSODA_files, i_OceanSODA_files, i_pco2_product)
+# rm(pco2_product)
+
+pco2_product &lt;- pco2_product %&gt;%
+  as_tibble()
+
+pco2_product &lt;-
+  full_join(pco2_product, pco2_product_temp)
+rm(pco2_product_temp)
 
 pco2_product &lt;-
   pco2_product %&gt;%
@@ -1079,7 +1156,8 @@ pco2_product &lt;-
   pco2_product %&gt;% 
   mutate(lon = if_else(lon &lt; 20, lon + 360, lon),
          fgco2 = fgco2 * 1e-3 * 365,
-         sol = sol * 1e-3)</code></pre>
+         sol = sol * 1e-3) %&gt;% 
+  rename(chl = chl_filled)</code></pre>
 <pre class="r"><code>pCO2productanalysis &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
@@ -1640,6 +1718,27 @@ jens-daniel-mueller
     # i_contour_level_abs &lt;- 2200
   }
   
+  if (i_name == &quot;chl&quot;) {
+    i_legend_title &lt;- &quot;Chl-a&lt;br&gt;(mg m&lt;sup&gt;-3&lt;/sup&gt;)&quot;
+    # i_breaks &lt;- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level &lt;- 50
+    # i_contour_level_abs &lt;- 2200
+  }
+  
+  if (i_name == &quot;mld&quot;) {
+    i_legend_title &lt;- &quot;MLD&lt;br&gt;(m)&quot;
+    # i_breaks &lt;- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level &lt;- 50
+    # i_contour_level_abs &lt;- 2200
+  }
+  
+  if (i_name == &quot;press&quot;) {
+    i_legend_title &lt;- &quot;pressure&lt;sub&gt;atm&lt;/sub&gt;&lt;br&gt;(unit?)&quot;
+    # i_breaks &lt;- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level &lt;- 50
+    # i_contour_level_abs &lt;- 2200
+  }
+  
   all_labels_breaks &lt;- lst(i_legend_title,
                            # i_breaks,
                            # i_contour_level,
@@ -1665,7 +1764,10 @@ x_axis_labels &lt;-
     &quot;fgco2_hov&quot; = labels_breaks(&quot;fgco2_hov&quot;)$i_legend_title,
     &quot;fgco2_int&quot; = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title,
     &quot;temperature&quot; = labels_breaks(&quot;temperature&quot;)$i_legend_title,
-    &quot;salinity&quot; = labels_breaks(&quot;salinity&quot;)$i_legend_title
+    &quot;salinity&quot; = labels_breaks(&quot;salinity&quot;)$i_legend_title,
+    &quot;chl&quot; = labels_breaks(&quot;chl&quot;)$i_legend_title,
+    &quot;mld&quot; = labels_breaks(&quot;mld&quot;)$i_legend_title,
+    &quot;press&quot; = labels_breaks(&quot;press&quot;)$i_legend_title
   )</code></pre>
 </div>
 <div id="preprocessing" class="section level1">
@@ -1704,6 +1806,9 @@ annual mean is removed.</p>
 5X5° grid.</p>
 <pre class="r"><code>pco2_product_coarse &lt;-
   m_grid_horizontal_coarse(pco2_product)
+ 
+# pco2_product_coarse %&gt;%
+#   distinct(year)
 
 pco2_product_coarse &lt;-
   pco2_product_coarse %&gt;%
@@ -1712,8 +1817,13 @@ pco2_product_coarse &lt;-
   summarise(across(-area,
                    ~ weighted.mean(., area))) %&gt;%
   ungroup() %&gt;%
-  rename(lon = lon_grid, lat = lat_grid) %&gt;%
-  drop_na()</code></pre>
+  rename(lon = lon_grid, lat = lat_grid)
+
+pco2_product_coarse &lt;-
+  pco2_product_coarse %&gt;%
+  pivot_longer(-c(year, month, lon, lat)) %&gt;% 
+  drop_na() %&gt;%
+  pivot_wider()</code></pre>
 <div id="annual-means" class="section level2">
 <h2>Annual means</h2>
 <div id="absolute" class="section level3">
@@ -2100,20 +2210,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 2023,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;% 
-  # head(1) %&gt;%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = value)) +
-         labs(title = &quot;Annual mean 2023&quot;) +
-         scale_fill_divergent(
-           name = labels_breaks(.x %&gt;% distinct(name))) +
-         theme(legend.title = element_markdown())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/2023_annual_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_annual_mean_maps-7">
@@ -2152,24 +2250,50 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-</div>
-<div id="change-1990---2023" class="section level3">
-<h3>Change 1990 - 2023</h3>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/2023_annual_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/2023_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year %in% c(min(year), max(year))) %&gt;%
-  select(-c(value, resid)) %&gt;% 
-  pivot_wider(names_from = year,
-              values_from = fit) %&gt;% 
-  mutate(change = `2023` - `1990`) %&gt;% 
+  filter(year == 2023,
+         name %in% name_divergent) %&gt;%
   group_split(name) %&gt;% 
   # head(1) %&gt;%
   map( ~ map +
          geom_tile(data = .x,
-                   aes(lon, lat, fill = change)) +
-         labs(title =  &quot;Change 1990-2023&quot;) +
+                   aes(lon, lat, fill = value)) +
+         labs(title = &quot;Annual mean 2023&quot;) +
          scale_fill_divergent(
            name = labels_breaks(.x %&gt;% distinct(name))) +
          theme(legend.title = element_markdown())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/2023_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="trends" class="section level3">
+<h3>Trends</h3>
+<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
+  group_by(name) %&gt;%
+  filter(year %in% c(min(year), max(year))) %&gt;%
+  ungroup() %&gt;%
+  select(-c(value, resid)) %&gt;%
+  arrange(year) %&gt;%
+  group_by(lon, lat, name) %&gt;%
+  mutate(change = fit - lag(fit),
+         period = paste(lag(year), year, sep = &quot;-&quot;)) %&gt;%
+  ungroup() %&gt;%
+  filter(!is.na(change)) %&gt;% 
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = change)) +
+      labs(title =  paste(&quot;Change: &quot;,.x$period)) +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown())
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_2023_annual_mean_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -2494,6 +2618,15 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/change_1990_2023_annual_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/change_1990_2023_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/change_1990_2023_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomaly" class="section level3">
 <h3>2023 anomaly</h3>
@@ -2832,6 +2965,15 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomaly_2023_annual_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomaly_2023_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomaly_2023_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;OceanSODA&quot;,&quot;_anomaly_map_annual.csv&quot;))</code></pre>
@@ -3212,21 +3354,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 2023,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = value)) +
-      labs(title = &quot;Monthly means 2023&quot;) +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      facet_wrap( ~ month, ncol = 2)
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/2023_monthly_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_monthly_mean_maps-7">
@@ -3265,25 +3394,52 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-</div>
-<div id="change-1990---2023-1" class="section level3">
-<h3>Change 1990 - 2023</h3>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/2023_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/2023_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
+  filter(year == 2023,
+         name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title = &quot;Monthly means 2023&quot;) +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/2023_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="trends-1" class="section level3">
+<h3>Trends</h3>
+<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
+  group_by(name) %&gt;%
   filter(year %in% c(min(year), max(year))) %&gt;%
+  ungroup() %&gt;%
   select(-c(value, resid)) %&gt;%
-  pivot_wider(names_from = year,
-              values_from = fit) %&gt;%
-  mutate(change = `2023` - `1990`) %&gt;%
+  arrange(year) %&gt;%
+  group_by(lon, lat, name, month) %&gt;%
+  mutate(change = fit - lag(fit),
+         period = paste(lag(year), year, sep = &quot;-&quot;)) %&gt;%
+  ungroup() %&gt;%
+  filter(!is.na(change)) %&gt;%
   group_split(name) %&gt;%
   # head(1) %&gt;%
   map(
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = change)) +
-      labs(title = &quot;Change 1990-2023&quot;) +
+      labs(title =  paste(&quot;Change: &quot;, .x$period)) +
       scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
       theme(legend.title = element_markdown()) +
-      facet_wrap( ~ month, ncol = 2)
+      facet_wrap(~ month, ncol = 2)
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_2023_monthly_mean_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -3608,6 +3764,15 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/change_1990_2023_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/change_1990_2023_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/change_1990_2023_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomaly-1" class="section level3">
 <h3>2023 anomaly</h3>
@@ -3947,6 +4112,15 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomaly_2023_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomaly_2023_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomaly_2023_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;OceanSODA&quot;,&quot;_anomaly_map_monthly.csv&quot;))</code></pre>
@@ -4325,22 +4499,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_hovmoeller_monthly_annual %&gt;%
-  filter(name %in% name_divergent) %&gt;% 
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ ggplot(data = .x,
-             aes(year, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      coord_cartesian(expand = 0) +
-      labs(title = &quot;Annual means&quot;,
-           y = &quot;Latitude&quot;) +
-      theme(axis.title.x = element_blank())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/hovmoeller_annual_absolute-7.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_annual_absolute-7">
@@ -4379,6 +4539,29 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_annual_absolute-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_annual_absolute-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_hovmoeller_monthly_annual %&gt;%
+  filter(name %in% name_divergent) %&gt;% 
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      coord_cartesian(expand = 0) +
+      labs(title = &quot;Annual means&quot;,
+           y = &quot;Latitude&quot;) +
+      theme(axis.title.x = element_blank())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_annual_absolute-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomalies" class="section level3">
 <h3>Anomalies</h3>
@@ -4730,6 +4913,15 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_annual_anomaly-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_annual_anomaly-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_annual_anomaly-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="monthly-means-1" class="section level2">
@@ -5098,22 +5290,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_hovmoeller_monthly %&gt;%
-  filter(name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ ggplot(data = .x,
-             aes(decimal, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      labs(title = &quot;Monthly means&quot;,
-           y = &quot;Latitude&quot;) +
-      coord_cartesian(expand = 0) +
-      theme(axis.title.x = element_blank())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_absolute-7.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_absolute-7">
@@ -5152,6 +5330,29 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_absolute-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_absolute-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_hovmoeller_monthly %&gt;%
+  filter(name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(decimal, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      labs(title = &quot;Monthly means&quot;,
+           y = &quot;Latitude&quot;) +
+      coord_cartesian(expand = 0) +
+      theme(axis.title.x = element_blank())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_absolute-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomalies-1" class="section level3">
 <h3>Anomalies</h3>
@@ -5502,6 +5703,15 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_anomalies-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_anomalies-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_anomalies-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;OceanSODA&quot;,&quot;_anomaly_hovmoeller_monthly.csv&quot;))</code></pre>
 </div>
@@ -5852,6 +6062,15 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_anomalies_recent_years-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_anomalies_recent_years-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/hovmoeller_monthly_anomalies_recent_years-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
@@ -10354,6 +10573,15 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread-9.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
