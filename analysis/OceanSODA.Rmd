@@ -46,7 +46,7 @@ nc <-
 nc <-
   nc_open(paste0(
     path_OceanSODA,
-    "spco2_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
+    "press_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
   ))
 
 print(nc)
@@ -59,16 +59,17 @@ print(nc)
 OceanSODA_files <- list.files(path = path_OceanSODA)
 
 OceanSODA_files <-
-  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|sfco2|temp|sal|sol"))]
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("mld|press|chl"))]
 
 for (i_OceanSODA_files in OceanSODA_files) {
   
-  # i_OceanSODA_files <- OceanSODA_files[1]
+  # i_OceanSODA_files <- OceanSODA_files[2]
   
   i_pco2_product <-
     read_ncdf(paste0(path_OceanSODA,
                      i_OceanSODA_files),
-              make_units = FALSE)
+              make_units = FALSE,
+              ignore_bounds = TRUE)
   
   if (exists("pco2_product")) {
     pco2_product <-
@@ -86,6 +87,47 @@ rm(OceanSODA_files, i_OceanSODA_files, i_pco2_product)
 
 pco2_product <- pco2_product %>%
   as_tibble()
+pco2_product_temp <- pco2_product
+rm(pco2_product)
+
+
+
+OceanSODA_files <- list.files(path = path_OceanSODA)
+
+OceanSODA_files <-
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|spco2|temp|sal|sol"))]
+
+for (i_OceanSODA_files in OceanSODA_files) {
+  
+  # i_OceanSODA_files <- OceanSODA_files[2]
+  
+  i_pco2_product <-
+    read_ncdf(paste0(path_OceanSODA,
+                     i_OceanSODA_files),
+              make_units = FALSE,
+              ignore_bounds = TRUE)
+  
+  if (exists("pco2_product")) {
+    pco2_product <-
+      c(pco2_product,
+                i_pco2_product)
+  }
+  
+  if (!exists("pco2_product")) {
+    pco2_product <- i_pco2_product
+  }
+  
+}
+
+rm(OceanSODA_files, i_OceanSODA_files, i_pco2_product)
+# rm(pco2_product)
+
+pco2_product <- pco2_product %>%
+  as_tibble()
+
+pco2_product <-
+  full_join(pco2_product, pco2_product_temp)
+rm(pco2_product_temp)
 
 pco2_product <-
   pco2_product %>%
@@ -97,7 +139,8 @@ pco2_product <-
   pco2_product %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon),
          fgco2 = fgco2 * 1e-3 * 365,
-         sol = sol * 1e-3)
+         sol = sol * 1e-3) %>% 
+  rename(chl = chl_filled)
 
 ```
 
