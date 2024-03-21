@@ -273,7 +273,22 @@ region_masks_all <-
   region_masks_all %>%
   select(-region)
 
+# region_masks_all <- region_masks_all  %>%
+#   mutate(region = case_when(
+#     str_detect(biome, "NA-") ~ "North Atlantic",
+#     str_detect(biome, "NP-") ~ "North Pacific",
+#     str_detect(biome, "SO-") ~ "Southern Ocean",
+#     TRUE ~ NA))
+# 
+# map +
+#   geom_tile(data = region_masks_all %>% filter(!is.na(region)),
+#             aes(lon, lat, fill = region)) +
+#   labs(title = "Selected large regions") +
+#   scale_fill_muted() +
+#   theme(legend.title = element_blank())
+
 ```
+
 
 
 # Define labels and breaks
@@ -1316,6 +1331,15 @@ pco2_product_annual_regression %>%
 ```
 
 
+```{r write_biome_annual_regression}
+
+pco2_product_annual_regression %>%
+  write_csv(paste0("../data/","{{product_name}}","_biome_annual_regression.csv"))
+
+```
+
+
+
 ```{r anomalies_from_annual_mean_trends_overview, fig.asp=fig.height}
 
 
@@ -1729,11 +1753,59 @@ The following plots aim to unravel the correlation between biome- or globally- i
 
 Anomalies are first presented are first presented in absolute units. Due to the different flux magnitudes, we need to plot the globally and biome-integrated fluxes separately. Secondly, we normalize the anomalies to the monthly spread (expressed as standard deviation) of the anomalies from 1990 to 2022.
 
+## Annual anomalies
+
+### Absolute
+
+```{r anomalies_correlation_absolute_global_annual, fig.asp=fig.height}
+
+pco2_product_annual_regression %>%
+  filter(biome == "Global") %>%
+  select(-c(value, fit)) %>% 
+  pivot_wider(values_from = resid) %>% 
+  pivot_longer(-c(year, biome, fgco2_int))  %>%
+  ggplot(aes(value, fgco2_int)) +
+  geom_hline(yintercept = 0) +
+  geom_point(data = . %>% filter(year <= 2022),
+             aes(fill = year),
+             shape = 21) +
+  geom_smooth(data = . %>% filter(year <= 2022),
+              method = "lm", se = FALSE, aes(col = "Regression fit\n prior 2023")) +
+  scale_color_grey() +
+  scale_fill_grayC() +
+  new_scale_fill() +
+  geom_point(data = . %>% filter(year >= 2022),
+             aes(fill = as.factor(year)),
+             shape = 21, size = 2)  +
+  scale_fill_manual(values = c("orange", "red"),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  labs(title = "Globally integrated fluxes",
+       y = labels_breaks("fgco2_int")$i_legend_title) +
+  facet_wrap(
+    ~ name,
+    scales = "free_x",
+    labeller = labeller(name = x_axis_labels),
+    strip.position = "bottom",
+    ncol = 2
+  ) +
+  theme(
+    strip.text.x.bottom = element_markdown(),
+    strip.placement = "outside",
+    strip.background.x = element_blank(),
+    axis.title.y = element_markdown(),
+    axis.title.x = element_blank(),
+    legend.title = element_blank()
+  )
+
+
+```
+
 ## Monthly anomalies
 
 ### Absolute
 
-```{r anomalies_correlation_absolute_global, fig.asp=fig.height}
+```{r anomalies_correlation_absolute_global_monthly, fig.asp=fig.height}
 
 
 pco2_product_monthly_detrended_anomaly <-
@@ -1787,7 +1859,7 @@ pco2_product_monthly_detrended_anomaly %>%
 
 ```
 
-```{r anomalies_correlation_absolute_biome, fig.asp=1.8}
+```{r anomalies_correlation_absolute_biome_monthly, fig.asp=1.8}
 
 
 
@@ -1842,7 +1914,7 @@ pco2_product_monthly_detrended_anomaly %>%
 
 ### Relative to spread
 
-```{r anomalies_correlation_realtive_to_spread, fig.asp=1.8}
+```{r anomalies_correlation_realtive_to_spread_monthly, fig.asp=1.8}
 
 
 pco2_product_monthly_detrended_anomaly_spread <-

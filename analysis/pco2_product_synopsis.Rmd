@@ -270,9 +270,8 @@ Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 
 pco2_product_coarse_annual_regression %>%
   filter(name %in% name_core) %>%
-  filter(name %in% "kw") %>%
   group_split(name) %>%
-  # head(4) %>%
+  # head(1) %>%
   map(
     ~ map +
       geom_tile(data = .x,
@@ -297,7 +296,7 @@ pco2_product_coarse_annual_regression %>%
 pco2_product_coarse_monthly_regression %>%
   filter(name %in% name_core) %>%
   group_split(name) %>%
-  head(1) %>%
+  # head(1) %>%
   map(
     ~ map +
       geom_tile(data = .x,
