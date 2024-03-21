@@ -558,15 +558,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4targetblank2fdbfeca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree11efe95495495506c8a627ad8ae7033d6fad4d60targetblank11efe95a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4" target="_blank">2fdbfec</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/11efe95495495506c8a627ad8ae7033d6fad4d60" target="_blank">11efe95</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4targetblank2fdbfeca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree11efe95495495506c8a627ad8ae7033d6fad4d60targetblank11efe95a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -576,7 +576,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4" target="_blank">2fdbfec</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/11efe95495495506c8a627ad8ae7033d6fad4d60" target="_blank">11efe95</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -642,6 +642,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/47238dacd8470c84be5ce74dad63d2556fce604e/docs/OceanSODA.html" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1296,7 +1313,7 @@ pco2_product &lt;-
   &quot;/nfs/kryo/work/datasets/gridded/ocean/interior/reccap2/&quot;</code></pre>
 <pre class="r"><code>print(&quot;RECCAP2_region_masks_all_v20221025.nc&quot;)</code></pre>
 <pre><code>[1] &quot;RECCAP2_region_masks_all_v20221025.nc&quot;</code></pre>
-<pre class="r"><code>region_masks_all &lt;-
+<pre class="r"><code>biome_mask &lt;-
   read_ncdf(
     paste(
       path_reccap2,
@@ -1434,11 +1451,11 @@ extrapolated to 2023.</p>
 </div>
 <div id="biome-mask" class="section level1">
 <h1>Biome mask</h1>
-<pre class="r"><code>region_masks_all &lt;-
-  region_masks_all %&gt;%
+<pre class="r"><code>biome_mask &lt;-
+  biome_mask %&gt;%
   mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
 
-land_mask &lt;- region_masks_all %&gt;%
+land_mask &lt;- biome_mask %&gt;%
   filter(seamask == 0) %&gt;% 
   select(lon, lat)
 
@@ -1455,7 +1472,7 @@ map &lt;- ggplot(land_mask,
 map %&gt;%
   write_rds(&quot;../data/map.rds&quot;)
   
-region_masks_all &lt;- region_masks_all %&gt;%
+biome_mask &lt;- biome_mask %&gt;%
   filter(seamask == 1) %&gt;% 
   select(lon, lat, atlantic:southern) %&gt;% 
   pivot_longer(atlantic:southern,
@@ -1463,13 +1480,13 @@ region_masks_all &lt;- region_masks_all %&gt;%
                values_to = &quot;biome&quot;) %&gt;%
   mutate(biome = as.character(biome))
 
-region_masks_all &lt;- region_masks_all %&gt;%
+biome_mask &lt;- biome_mask %&gt;%
   filter(biome != &quot;0&quot;)
 
-region_masks_all &lt;- region_masks_all %&gt;%
+biome_mask &lt;- biome_mask %&gt;%
   mutate(biome = paste(region, biome, sep = &quot;_&quot;))
 
-region_masks_all &lt;- region_masks_all  %&gt;% 
+biome_mask &lt;- biome_mask  %&gt;% 
   mutate(biome = case_when(
     biome == &quot;atlantic_1&quot; ~ &quot;NA-SPSS&quot;,
     biome == &quot;atlantic_2&quot; ~ &quot;NA-STSS&quot;,
@@ -1498,13 +1515,12 @@ region_masks_all &lt;- region_masks_all  %&gt;%
     TRUE ~ &quot;other&quot;
   ))
 
-region_masks_all &lt;-
-  region_masks_all %&gt;%
+biome_mask &lt;-
+  biome_mask %&gt;%
   filter(biome != &quot;other&quot;)
 
-
 map +
-  geom_tile(data = region_masks_all,
+  geom_tile(data = biome_mask,
             aes(lon, lat, fill = region)) +
   labs(title = &quot;Considered ocean regions&quot;) +
   scale_fill_muted() +
@@ -1547,7 +1563,7 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>region_masks_all %&gt;%
+<pre class="r"><code>biome_mask %&gt;%
   group_split(region) %&gt;%
   # head(1) %&gt;%
   map( ~ map +
@@ -1715,7 +1731,7 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>map +
-  geom_tile(data = region_masks_all %&gt;% filter(biome %in% key_biomes),
+  geom_tile(data = biome_mask %&gt;% filter(biome %in% key_biomes),
             aes(lon, lat, fill = biome)) +
   labs(title = &quot;Selected biomes to highlight&quot;) +
   scale_fill_muted() +
@@ -1758,23 +1774,36 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>region_masks_all &lt;-
-  region_masks_all %&gt;%
+<pre class="r"><code>biome_mask &lt;-
+  biome_mask %&gt;%
   select(-region)
 
-# region_masks_all &lt;- region_masks_all  %&gt;%
-#   mutate(region = case_when(
-#     str_detect(biome, &quot;NA-&quot;) ~ &quot;North Atlantic&quot;,
-#     str_detect(biome, &quot;NP-&quot;) ~ &quot;North Pacific&quot;,
-#     str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
-#     TRUE ~ NA))
-# 
-# map +
-#   geom_tile(data = region_masks_all %&gt;% filter(!is.na(region)),
-#             aes(lon, lat, fill = region)) +
-#   labs(title = &quot;Selected large regions&quot;) +
-#   scale_fill_muted() +
-#   theme(legend.title = element_blank())</code></pre>
+
+super_biome_mask &lt;- biome_mask  %&gt;%
+  mutate(
+    biome = case_when(
+      str_detect(biome, &quot;NA-&quot;) ~ &quot;North Atlantic&quot;,
+      str_detect(biome, &quot;NP-&quot;) ~ &quot;North Pacific&quot;,
+      str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
+      TRUE ~ &quot;other&quot;
+    )
+  )
+
+super_biome_mask &lt;-
+  super_biome_mask %&gt;%
+  filter(biome != &quot;other&quot;)
+
+map +
+  geom_tile(data = super_biome_mask,
+            aes(lon, lat, fill = biome)) +
+  labs(title = &quot;Selected super biomes&quot;) +
+  scale_fill_muted() +
+  theme(legend.title = element_blank())</code></pre>
+<p><img src="figure/OceanSODA.Rmd/prepare_region_mask-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>super_biomes &lt;-
+  super_biome_mask %&gt;%
+  distinct(biome) %&gt;%
+  pull()</code></pre>
 </div>
 <div id="define-labels-and-breaks" class="section level1">
 <h1>Define labels and breaks</h1>
@@ -1923,7 +1952,7 @@ x_axis_labels &lt;-
   filter(year &gt;= start_year)</code></pre>
 <pre class="r"><code>pco2_product &lt;-
   full_join(pco2_product,
-            region_masks_all)
+            biome_mask)
 
 # set all values outside biome mask to NA
 
@@ -9243,13 +9272,36 @@ pco2_product_monthly_biome &lt;-
                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
   ungroup()
 
+pco2_product_monthly_biome_super &lt;-
+  pco2_product %&gt;%
+  mutate(
+    biome = case_when(
+      str_detect(biome, &quot;NA-&quot;) ~ &quot;North Atlantic&quot;,
+      str_detect(biome, &quot;NP-&quot;) ~ &quot;North Pacific&quot;,
+      str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
+      TRUE ~ &quot;other&quot;
+    )
+  ) %&gt;%
+  filter(biome != &quot;other&quot;) %&gt;%
+  select(-c(lon, lat, year, month)) %&gt;%
+  group_by(time, biome) %&gt;%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
+  ungroup()
+
 pco2_product_monthly &lt;-
   bind_rows(pco2_product_monthly_global %&gt;%
               mutate(biome = &quot;Global&quot;),
-            pco2_product_monthly_biome)
+            pco2_product_monthly_biome,
+            pco2_product_monthly_biome_super)
 
-rm(pco2_product_monthly_global,
-   pco2_product_monthly_biome)
+rm(
+  pco2_product_monthly_global,
+  pco2_product_monthly_biome,
+  pco2_product_monthly_biome_super
+)
 
 
 pco2_product_monthly &lt;-
@@ -9445,122 +9497,34 @@ jens-daniel-mueller
     legend.title = element_blank(),
     axis.title.y = element_blank()
   )</code></pre>
-<p><img src="figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_biome_means_and_integrals_overview-1">
-Past versions of absolute_biome_means_and_integrals_overview-1.png
-</button>
-</p>
-<div id="fig-absolute_biome_means_and_integrals_overview-1"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview-1.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview_biomes-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_monthly %&gt;%
+  filter(biome %in% super_biomes) %&gt;%
+  ggplot(aes(month, value, group = as.factor(year))) +
+  geom_path(data = . %&gt;% filter(year &lt; 2022),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %&gt;% filter(year &gt;= 2022),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = &quot;Absolute values | Selected super biomes&quot;) +
+  facet_grid(name ~ biome,
+             scales = &quot;free_y&quot;,
+             labeller = labeller(name = x_axis_labels),
+             switch = &quot;y&quot;) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank()
+  )</code></pre>
+<p><img src="figure/OceanSODA.Rmd/absolute_biome_means_and_integrals_overview_biomes_super-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="selected-biomes" class="section level3">
 <h3>Selected biomes</h3>
@@ -10190,6 +10154,53 @@ jens-daniel-mueller
 </div>
 </div>
 </div>
+<div id="super-biomes" class="section level3">
+<h3>Super biomes</h3>
+<pre class="r"><code>pco2_product_monthly %&gt;%
+  filter(biome %in% super_biomes) %&gt;%
+  group_split(biome) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(month, value, group = as.factor(year))) +
+      geom_path(data = . %&gt;% filter(year &lt; 2022),
+                aes(col = year)) +
+      scale_color_grayC() +
+      new_scale_color() +
+      geom_path(
+        data = . %&gt;% filter(year &gt;= 2022),
+        aes(col = as.factor(year)),
+        linewidth = 1
+      ) +
+      scale_color_manual(
+        values = c(&quot;orange&quot;, &quot;red&quot;),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
+      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = paste(&quot;Absolute values |&quot;, .x$biome)) +
+  facet_wrap(name ~ .,
+             scales = &quot;free_y&quot;,
+             labeller = labeller(name = x_axis_labels),
+             strip.position = &quot;left&quot;,
+             ncol = 2) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank()
+  )
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/absolute_global_means_and_integrals_key_biomes_super-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/absolute_global_means_and_integrals_key_biomes_super-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/absolute_global_means_and_integrals_key_biomes_super-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="anomalies-2" class="section level2">
 <h2>Anomalies</h2>
@@ -10498,40 +10509,38 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_annual_regression &lt;-
-  pco2_product_annual %&gt;%
-  anomaly_determination(biome)
-  
-
-pco2_product_annual_regression %&gt;%
-  filter(biome %in% &quot;Global&quot;) %&gt;%
-  ggplot(aes(year, resid)) +
-  geom_hline(yintercept = 0) +
+<pre class="r"><code>pco2_product_annual %&gt;% 
+  filter(biome %in% super_biomes) %&gt;%
+  ggplot(aes(year, value)) +
   geom_path() +
-  geom_point(data = . %&gt;% filter(year &lt; 2022),
-             aes(fill = year),
-             shape = 21) +
-  scale_fill_grayC() +
-  new_scale_fill() +
-  geom_point(data = . %&gt;% filter(year &gt;= 2022),
-             aes(fill = as.factor(year)),
-             shape = 21, size = 2)  +
-  scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
-                     guide = guide_legend(reverse = TRUE,
-                                          order = 1)) +
+  geom_point(size = 0.2) +
+  geom_smooth(data = . %&gt;% filter(year &lt;= 2022,
+                                  !(name %in% name_quadratic_fit)),
+              method = &quot;lm&quot;,
+              fullrange = TRUE,
+              aes(col = &quot;linear&quot;),
+              se = FALSE) +
+  geom_smooth(data = . %&gt;% filter(year &lt;= 2022,
+                                  name %in% name_quadratic_fit),
+              method = &quot;lm&quot;,
+              fullrange = TRUE,
+              formula = y ~ x + I(x^2),
+              aes(col = &quot;quadratic&quot;),
+              se = FALSE) +
+  scale_color_brewer(
+    palette = &quot;Set1&quot;,
+    name = &quot;Regression fit\n prior 2023&quot;) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-  labs(title = &quot;Residual from fit to annual means (actual - predicted) | Global&quot;) +
-  facet_wrap(name ~ .,
+  labs(title = &quot;Annual mean trends | Selected super biomes&quot;) +
+  facet_grid(name ~ biome,
              scales = &quot;free_y&quot;,
              labeller = labeller(name = x_axis_labels),
-             strip.position = &quot;left&quot;,
-             ncol = 2) +
+             switch = &quot;y&quot;) +
   theme(
     strip.text.y.left = element_markdown(),
     strip.placement = &quot;outside&quot;,
     strip.background.y = element_blank(),
-    axis.title = element_blank(),
-    legend.title = element_blank()
+    axis.title = element_blank()
   )</code></pre>
 <p><img src="figure/OceanSODA.Rmd/annual_mean_trends-3.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -10648,8 +10657,13 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_annual_regression %&gt;%
-  filter(biome %in% key_biomes) %&gt;%
+<pre class="r"><code>pco2_product_annual_regression &lt;-
+  pco2_product_annual %&gt;%
+  anomaly_determination(biome)
+  
+
+pco2_product_annual_regression %&gt;%
+  filter(biome %in% &quot;Global&quot;) %&gt;%
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
@@ -10665,11 +10679,12 @@ jens-daniel-mueller
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-  labs(title = &quot;Residual from fit to annual means (actual - predicted) | Selected biomes&quot;) +
-  facet_grid(name ~ biome,
+  labs(title = &quot;Residual from fit to annual means (actual - predicted) | Global&quot;) +
+  facet_wrap(name ~ .,
              scales = &quot;free_y&quot;,
              labeller = labeller(name = x_axis_labels),
-             switch = &quot;y&quot;) +
+             strip.position = &quot;left&quot;,
+             ncol = 2) +
   theme(
     strip.text.y.left = element_markdown(),
     strip.placement = &quot;outside&quot;,
@@ -10793,12 +10808,13 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_annual_regression %&gt;%
-  filter(biome != &quot;global&quot;) %&gt;%
-  ggplot(aes(biome, resid)) +
+  filter(biome %in% key_biomes) %&gt;%
+  ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
-  geom_jitter(data = . %&gt;% filter(year &lt; 2022),
+  geom_path() +
+  geom_point(data = . %&gt;% filter(year &lt; 2022),
              aes(fill = year),
-             shape = 21, width = 0.2) +
+             shape = 21) +
   scale_fill_grayC() +
   new_scale_fill() +
   geom_point(data = . %&gt;% filter(year &gt;= 2022),
@@ -10807,8 +10823,9 @@ jens-daniel-mueller
   scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
-  labs(title = &quot;Residual from fit to annual means (actual - predicted) | All biomes&quot;) +
-  facet_grid(name ~ .,
+  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+  labs(title = &quot;Residual from fit to annual means (actual - predicted) | Selected biomes&quot;) +
+  facet_grid(name ~ biome,
              scales = &quot;free_y&quot;,
              labeller = labeller(name = x_axis_labels),
              switch = &quot;y&quot;) +
@@ -10817,8 +10834,7 @@ jens-daniel-mueller
     strip.placement = &quot;outside&quot;,
     strip.background.y = element_blank(),
     axis.title = element_blank(),
-    legend.title = element_blank(),
-        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)
+    legend.title = element_blank()
   )</code></pre>
 <p><img src="figure/OceanSODA.Rmd/annual_mean_trends-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -10935,6 +10951,65 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_annual_regression %&gt;%
+  filter(biome %in% super_biomes) %&gt;%
+  ggplot(aes(year, resid)) +
+  geom_hline(yintercept = 0) +
+  geom_path() +
+  geom_point(data = . %&gt;% filter(year &lt; 2022),
+             aes(fill = year),
+             shape = 21) +
+  scale_fill_grayC() +
+  new_scale_fill() +
+  geom_point(data = . %&gt;% filter(year &gt;= 2022),
+             aes(fill = as.factor(year)),
+             shape = 21, size = 2)  +
+  scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+  labs(title = &quot;Residual from fit to annual means (actual - predicted) | Selected super biomes&quot;) +
+  facet_grid(name ~ biome,
+             scales = &quot;free_y&quot;,
+             labeller = labeller(name = x_axis_labels),
+             switch = &quot;y&quot;) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank()
+  )</code></pre>
+<p><img src="figure/OceanSODA.Rmd/annual_mean_trends-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_annual_regression %&gt;%
+  filter(biome != &quot;global&quot;) %&gt;%
+  ggplot(aes(biome, resid)) +
+  geom_hline(yintercept = 0) +
+  geom_jitter(data = . %&gt;% filter(year &lt; 2022),
+             aes(fill = year),
+             shape = 21, width = 0.2) +
+  scale_fill_grayC() +
+  new_scale_fill() +
+  geom_point(data = . %&gt;% filter(year &gt;= 2022),
+             aes(fill = as.factor(year)),
+             shape = 21, size = 2)  +
+  scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  labs(title = &quot;Residual from fit to annual means (actual - predicted) | All biomes&quot;) +
+  facet_grid(name ~ .,
+             scales = &quot;free_y&quot;,
+             labeller = labeller(name = x_axis_labels),
+             switch = &quot;y&quot;) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    axis.title = element_blank(),
+    legend.title = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)
+  )</code></pre>
+<p><img src="figure/OceanSODA.Rmd/annual_mean_trends-7.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_annual_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;OceanSODA&quot;,&quot;_biome_annual_regression.csv&quot;))</code></pre>
 <pre class="r"><code>pco2_product_annual_detrended &lt;-
@@ -11228,6 +11303,34 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_annual_detrended %&gt;% 
+  filter(biome %in% super_biomes) %&gt;%
+  ggplot(aes(month, resid, group = as.factor(year))) +
+  geom_path(data = . %&gt;% filter(year &lt; 2022),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %&gt;% filter(year &gt;= 2022),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = &quot;Anomalies from predicted annual mean | Selected super biomes&quot;) +
+  facet_grid(name ~ biome,
+             scales = &quot;free_y&quot;,
+             labeller = labeller(name = x_axis_labels),
+             switch = &quot;y&quot;) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    axis.title.y = element_blank(),
+    legend.title = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)
+  )</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_from_annual_mean_trends_overview-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_annual_detrended %&gt;%
   filter(biome %in% key_biomes) %&gt;%
   group_split(biome) %&gt;%
@@ -11856,6 +11959,52 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_annual_detrended %&gt;%
+  filter(biome %in% super_biomes) %&gt;%
+  group_split(biome) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(month, resid, group = as.factor(year))) +
+      geom_path(data = . %&gt;% filter(year &lt; 2022),
+                aes(col = year)) +
+      scale_color_grayC() +
+      new_scale_color() +
+      geom_path(
+        data = . %&gt;% filter(year &gt;= 2022),
+        aes(col = as.factor(year)),
+        linewidth = 1
+      ) +
+      scale_color_manual(
+        values = c(&quot;orange&quot;, &quot;red&quot;),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
+      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+      labs(title = paste(&quot;Anomalies from predicted annual mean |&quot;, .x$biome)) +
+      facet_wrap(
+        name ~ .,
+        scales = &quot;free_y&quot;,
+        labeller = labeller(name = x_axis_labels),
+        strip.position = &quot;left&quot;,
+        ncol = 2
+      ) +
+      theme(
+        strip.text.y.left = element_markdown(),
+        strip.placement = &quot;outside&quot;,
+        strip.background.y = element_blank(),
+        axis.title = element_blank(),
+        legend.title = element_blank()
+      )
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_from_annual_mean_trends_key_biomes_super-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_from_annual_mean_trends_key_biomes_super-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_from_annual_mean_trends_key_biomes_super-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_annual_detrended %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;OceanSODA&quot;,&quot;_biome_annual_detrended.csv&quot;))</code></pre>
 </div>
 <div id="monthly-mean-trends" class="section level3">
@@ -11868,16 +12017,17 @@ jens-daniel-mueller
   geom_smooth(data = . %&gt;% filter(year &lt;= 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
-              fullrange = TRUE,
-              se = FALSE) +
-  geom_smooth(data = . %&gt;% filter(year &lt;= 2022,
-                                  name %in% name_quadratic_fit),
-              method = &quot;lm&quot;,
-              fullrange = TRUE,
-              formula = y ~ x + I(x^2),
-              se = FALSE) +
-  scale_color_scico_d(
-    palette = &quot;romaO&quot;,
+              se = FALSE,
+              fullrange = TRUE) +
+  geom_smooth(
+    data = . %&gt;% filter(year &lt;= 2022,
+                        name %in% name_quadratic_fit),
+    method = &quot;lm&quot;,
+    fullrange = TRUE,
+    formula = y ~ x + I(x ^ 2),
+    se = FALSE
+  ) +
+  scale_color_scico_d(palette = &quot;romaO&quot;, 
     name = &quot;Regression fit\n prior 2023&quot;) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Monthly mean trends | Global&quot;) +
@@ -12017,14 +12167,15 @@ jens-daniel-mueller
               method = &quot;lm&quot;,
               fullrange = TRUE,
               se = FALSE) +
-  geom_smooth(data = . %&gt;% filter(year &lt;= 2022,
-                                  name %in% name_quadratic_fit),
-              method = &quot;lm&quot;,
-              fullrange = TRUE,
-              formula = y ~ x + I(x^2),
-              se = FALSE) +
-  scale_color_scico_d(
-    palette = &quot;romaO&quot;,
+  geom_smooth(
+    data = . %&gt;% filter(year &lt;= 2022,
+                        name %in% name_quadratic_fit),
+    method = &quot;lm&quot;,
+    fullrange = TRUE,
+    formula = y ~ x + I(x ^ 2),
+    se = FALSE
+  ) +
+  scale_color_scico_d(palette = &quot;romaO&quot;,
     name = &quot;Regression fit\n prior 2023&quot;) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Monthly mean trends | Selected biomes&quot;) +
@@ -12158,11 +12309,10 @@ jens-daniel-mueller
   anomaly_determination(biome, month)
 
 
-
 pco2_product_monthly_regression %&gt;%
   filter(biome %in% &quot;Global&quot;) %&gt;%
   group_split(month) %&gt;%
-  # head(1) %&gt;%
+  head(1) %&gt;%
   map(
     ~ ggplot(data = .x,
              aes(year, resid)) +
@@ -12320,8 +12470,51 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre><code>
-[[2]]</code></pre>
+<pre class="r"><code>pco2_product_monthly_regression %&gt;%
+  filter(biome %in% key_biomes) %&gt;%
+  group_split(month) %&gt;%
+  head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, resid)) +
+      geom_hline(yintercept = 0) +
+      geom_path() +
+      geom_point(
+        data = . %&gt;% filter(year &lt; 2022),
+        aes(fill = year),
+        shape = 21
+      ) +
+      scale_fill_grayC() +
+      new_scale_fill() +
+      geom_point(
+        data = . %&gt;% filter(year &gt;= 2022),
+        aes(fill = as.factor(year)),
+        shape = 21,
+        size = 2
+      )  +
+      scale_fill_manual(
+        values = c(&quot;orange&quot;, &quot;red&quot;),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
+      scale_x_continuous(breaks = seq(1980, 2020, 20)) +
+      labs(title = &quot;Residual from fit to monthly means (actual - predicted) | Selected biomes&quot;,
+           subtitle = paste(&quot;Month:&quot;, .x$month)) +
+      facet_grid(
+        name ~ biome,
+        scales = &quot;free_y&quot;,
+        labeller = labeller(name = x_axis_labels),
+        switch = &quot;y&quot;
+      ) +
+      theme(
+        strip.text.y.left = element_markdown(),
+        strip.placement = &quot;outside&quot;,
+        strip.background.y = element_blank(),
+        axis.title = element_blank(),
+        legend.title = element_blank()
+      )
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-4.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-4">
@@ -12425,2623 +12618,6 @@ jens-daniel-mueller
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-4.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[3]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-5">
-Past versions of monthly_mean_trends-5.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-5.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-5.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-5.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-5.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-5.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-5.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-5.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-5.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[4]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-6.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-6">
-Past versions of monthly_mean_trends-6.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-6.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-6.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-6.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-6.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-6.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-6.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-6.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-6.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[5]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-7.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-7">
-Past versions of monthly_mean_trends-7.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-7" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-7.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-7.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-7.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-7.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-7.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-7.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-7.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-7.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[6]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-8.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-8">
-Past versions of monthly_mean_trends-8.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-8" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-8.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-8.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-8.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-8.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-8.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-8.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-8.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-8.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[7]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-9.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-9">
-Past versions of monthly_mean_trends-9.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-9" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-9.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-9.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-9.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-9.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-9.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-9.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-9.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-9.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[8]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-10.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-10">
-Past versions of monthly_mean_trends-10.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-10" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-10.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-10.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-10.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-10.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-10.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-10.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-10.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-10.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[9]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-11.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-11">
-Past versions of monthly_mean_trends-11.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-11" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-11.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-11.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-11.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-11.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-11.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-11.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-11.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-11.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[10]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-12.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-12">
-Past versions of monthly_mean_trends-12.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-12" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-12.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-12.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-12.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-12.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-12.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-12.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-12.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-12.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[11]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-13.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-13">
-Past versions of monthly_mean_trends-13.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-13" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-13.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-13.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-13.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-13.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-13.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-13.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-13.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-13.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[12]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-14.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-14">
-Past versions of monthly_mean_trends-14.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-14" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-14.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-14.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-14.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-14.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-14.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-14.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-14.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-14.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>pco2_product_monthly_regression %&gt;%
-  filter(biome %in% key_biomes) %&gt;%
-  group_split(month) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ ggplot(data = .x,
-             aes(year, resid)) +
-      geom_hline(yintercept = 0) +
-      geom_path() +
-      geom_point(
-        data = . %&gt;% filter(year &lt; 2022),
-        aes(fill = year),
-        shape = 21
-      ) +
-      scale_fill_grayC() +
-      new_scale_fill() +
-      geom_point(
-        data = . %&gt;% filter(year &gt;= 2022),
-        aes(fill = as.factor(year)),
-        shape = 21,
-        size = 2
-      )  +
-      scale_fill_manual(
-        values = c(&quot;orange&quot;, &quot;red&quot;),
-        guide = guide_legend(reverse = TRUE,
-                             order = 1)
-      ) +
-      scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-      labs(title = &quot;Residual from fit to monthly means (actual - predicted) | Selected biomes&quot;,
-           subtitle = paste(&quot;Month:&quot;, .x$month)) +
-      facet_grid(
-        name ~ biome,
-        scales = &quot;free_y&quot;,
-        labeller = labeller(name = x_axis_labels),
-        switch = &quot;y&quot;
-      ) +
-      theme(
-        strip.text.y.left = element_markdown(),
-        strip.placement = &quot;outside&quot;,
-        strip.background.y = element_blank(),
-        axis.title = element_blank(),
-        legend.title = element_blank()
-      )
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-15.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-15">
-Past versions of monthly_mean_trends-15.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-15" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-15.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-15.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-15.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-15.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-15.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-15.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-15.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-15.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[2]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-16.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-16">
-Past versions of monthly_mean_trends-16.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-16" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-16.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-16.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-16.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-16.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-16.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-16.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-16.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-16.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[3]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-17.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-17">
-Past versions of monthly_mean_trends-17.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-17" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-17.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-17.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-17.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-17.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-17.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-17.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-17.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-17.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[4]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-18.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-18">
-Past versions of monthly_mean_trends-18.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-18" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-18.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-18.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-18.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-18.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-18.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-18.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-18.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-18.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[5]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-19.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-19">
-Past versions of monthly_mean_trends-19.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-19" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-19.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-19.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-19.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-19.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-19.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-19.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-19.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-19.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[6]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-20.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-20">
-Past versions of monthly_mean_trends-20.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-20" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-20.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-20.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-20.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-20.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-20.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-20.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-20.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-20.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[7]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-21.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-21">
-Past versions of monthly_mean_trends-21.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-21" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-21.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-21.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-21.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-21.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-21.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-21.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-21.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-21.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[8]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-22.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-22">
-Past versions of monthly_mean_trends-22.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-22" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-22.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-22.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-22.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-22.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-22.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-22.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-22.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-22.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[9]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-23.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-23">
-Past versions of monthly_mean_trends-23.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-23" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-23.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-23.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-23.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-23.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-23.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-23.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-23.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-23.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[10]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-24.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-24">
-Past versions of monthly_mean_trends-24.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-24" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-24.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-24.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-24.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-24.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-24.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-24.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-24.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-24.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[11]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-25.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-25">
-Past versions of monthly_mean_trends-25.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-25" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-25.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-25.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-25.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-25.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-25.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-25.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-25.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-25.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[12]]</code></pre>
-<p><img src="figure/OceanSODA.Rmd/monthly_mean_trends-26.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-monthly_mean_trends-26">
-Past versions of monthly_mean_trends-26.png
-</button>
-</p>
-<div id="fig-monthly_mean_trends-26" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2fdbfecf950cbbcaa3b62c8a6794f0a7723fa3c4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-26.png" target="_blank">2fdbfec</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/83fcd67dd84dc8d6e9059e1b9b9448c1d96efdbc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-26.png" target="_blank">83fcd67</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/342018ba85ed9d147481ceb36a51bdc4929fad3b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-26.png" target="_blank">342018b</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/f0a1de7628faa6ca8150c617e5623609b69f06d4/docs/figure/OceanSODA.Rmd/monthly_mean_trends-26.png" target="_blank">f0a1de7</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2d2fb75cbae1337a1bac7febfba316bcbece86bc/docs/figure/OceanSODA.Rmd/monthly_mean_trends-26.png" target="_blank">2d2fb75</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d520917cb0d9eda831598388d034add71e5d1f1d/docs/figure/OceanSODA.Rmd/monthly_mean_trends-26.png" target="_blank">d520917</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/03321bd92222420286fef69bc1cc7b72cc258bef/docs/figure/OceanSODA.Rmd/monthly_mean_trends-26.png" target="_blank">03321bd</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/OceanSODA.Rmd/monthly_mean_trends-26.png" target="_blank">b41fa51</a>
 </td>
 <td>
 jens-daniel-mueller
@@ -15348,6 +12924,35 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_monthly_detrended %&gt;% 
+  filter(biome %in% super_biomes) %&gt;%
+  ggplot(aes(month, resid, group = as.factor(year))) +
+  geom_path(data = . %&gt;% filter(year &lt; 2022),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %&gt;% filter(year &gt;= 2022),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = &quot;Anomalies from predicted monthly mean | Selected super biomes&quot;) +
+  facet_grid(
+    name ~ biome,
+    scales = &quot;free_y&quot;,
+    labeller = labeller(name = x_axis_labels),
+    switch = &quot;y&quot;
+  ) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    axis.title.y = element_blank(),
+    legend.title = element_blank()
+  )</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_from_monthly_mean_trends_overview-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended %&gt;%
   filter(biome %in% key_biomes) %&gt;%
   group_split(biome) %&gt;%
@@ -15975,6 +13580,52 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_monthly_detrended %&gt;%
+  filter(biome %in% super_biomes) %&gt;%
+  group_split(biome) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(month, resid, group = as.factor(year))) +
+      geom_path(data = . %&gt;% filter(year &lt; 2022),
+                aes(col = year)) +
+      scale_color_grayC() +
+      new_scale_color() +
+      geom_path(
+        data = . %&gt;% filter(year &gt;= 2022),
+        aes(col = as.factor(year)),
+        linewidth = 1
+      ) +
+      scale_color_manual(
+        values = c(&quot;orange&quot;, &quot;red&quot;),
+        guide = guide_legend(reverse = TRUE,
+                             order = 1)
+      ) +
+      scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+      labs(title = paste(&quot;Anomalies from predicted monthly mean |&quot;, .x$biome)) +
+      facet_wrap(
+        name ~ .,
+        scales = &quot;free_y&quot;,
+        labeller = labeller(name = x_axis_labels),
+        strip.position = &quot;left&quot;,
+        ncol = 2
+      ) +
+      theme(
+        strip.text.y.left = element_markdown(),
+        strip.placement = &quot;outside&quot;,
+        strip.background.y = element_blank(),
+        axis.title.y = element_blank(),
+        legend.title = element_blank()
+      )
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
@@ -16002,10 +13653,15 @@ from 1990 to 2022.</p>
   geom_point(data = . %&gt;% filter(year &lt;= 2022),
              aes(fill = year),
              shape = 21) +
-  geom_smooth(data = . %&gt;% filter(year &lt;= 2022),
-              method = &quot;lm&quot;, se = FALSE, aes(col = &quot;Regression fit\n prior 2023&quot;)) +
+  geom_smooth(
+    data = . %&gt;% filter(year &lt;= 2022),
+    method = &quot;lm&quot;,
+    se = FALSE,
+    fullrange = TRUE,
+    aes(col = &quot;Regression fit\n prior 2023&quot;)
+  ) +
   scale_color_grey() +
-  scale_fill_grayC() +
+  scale_fill_grayC()+
   new_scale_fill() +
   geom_point(data = . %&gt;% filter(year &gt;= 2022),
              aes(fill = as.factor(year)),
@@ -16031,6 +13687,44 @@ from 1990 to 2022.</p>
     legend.title = element_blank()
   )</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_global_annual-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_global_annual-1">
+Past versions of anomalies_correlation_absolute_global_annual-1.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_global_annual-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_global_annual-1.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="monthly-anomalies" class="section level2">
@@ -16085,8 +13779,97 @@ pco2_product_monthly_detrended_anomaly %&gt;%
     axis.title.x = element_blank()
   )</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_global_monthly-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_global_monthly-1">
+Past versions of anomalies_correlation_absolute_global_monthly-1.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_global_monthly-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_global_monthly-1.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
-  filter(biome != &quot;Global&quot;) %&gt;%
+  filter(biome == &quot;Global&quot;) %&gt;%
+  pivot_longer(-c(year, month, biome, fgco2_int))  %&gt;%
+  ggplot(aes(value, fgco2_int)) +
+  geom_hline(yintercept = 0) +
+  geom_point(data = . %&gt;% filter(year &lt;= 2022),
+             aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
+             alpha = 0.2) +
+  geom_smooth(
+    data = . %&gt;% filter(year &lt;= 2022),
+    aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
+    method = &quot;lm&quot;,
+    se = FALSE,
+    fullrange = TRUE
+  )  +
+  scale_color_grey(name = &quot;&quot;) +
+  new_scale_color() +
+  # geom_smooth(data = . %&gt;% filter(year &lt;= 2022),
+  #             method = &quot;lm&quot;, se = FALSE,
+  #           aes(col = as.factor(month)))  +
+  geom_path(data = . %&gt;% filter(year &gt; 2022),
+            aes(col = as.factor(month), group = 1))  +
+  geom_point(data = . %&gt;% filter(year &gt; 2022),
+             aes(fill =  as.factor(month)),
+             shape = 21,
+             size = 3)  +
+  scale_color_scico_d(palette = &quot;buda&quot;,
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1),
+                     name = &quot;Month\nof 2023&quot;) +
+  scale_fill_scico_d(palette = &quot;buda&quot;,
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1),
+                     name = &quot;Month\nof 2023&quot;) +
+  labs(title = &quot;Globally integrated fluxes&quot;,
+       y = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title) +
+  facet_wrap(
+    ~ name,
+    scales = &quot;free_x&quot;,
+    labeller = labeller(name = x_axis_labels),
+    strip.position = &quot;bottom&quot;,
+    ncol = 2
+  ) +
+  theme(
+    strip.text.x.bottom = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.x = element_blank(),
+    axis.title.y = element_markdown(),
+    axis.title.x = element_blank()
+  )</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_global_monthly-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
+  filter(!(biome %in% c(super_biomes, &quot;Global&quot;))) %&gt;%
   pivot_longer(-c(year, month, biome, fgco2_int))  %&gt;%
   group_split(name) %&gt;%
   # head(1) %&gt;%
@@ -16096,13 +13879,20 @@ pco2_product_monthly_detrended_anomaly %&gt;%
       geom_hline(yintercept = 0) +
       geom_point(
         data = . %&gt;% filter(year &lt;= 2022),
-        aes(fill = year),
-        shape = 21
+        aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
+        alpha = 0.2
       ) +
-      scale_fill_grayC(name = &quot;&quot;) +
-      new_scale_fill() +
-        geom_path(data = . %&gt;% filter(year &gt; 2022),
-            aes(col = as.factor(month), group = 1))  +
+      geom_smooth(
+        data = . %&gt;% filter(year &lt;= 2022),
+        aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
+        method = &quot;lm&quot;,
+        se = FALSE,
+        fullrange = TRUE
+      )  +
+      scale_color_grey(name = &quot;&quot;) +
+      new_scale_color() +
+      geom_path(data = . %&gt;% filter(year &gt; 2022),
+                aes(col = as.factor(month), group = 1))  +
       geom_point(
         data = . %&gt;% filter(year &gt; 2022),
         aes(fill = as.factor(month)),
@@ -16132,30 +13922,450 @@ pco2_product_monthly_detrended_anomaly %&gt;%
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-1">
+Past versions of anomalies_correlation_absolute_biome_monthly-1.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-1.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-2">
+Past versions of anomalies_correlation_absolute_biome_monthly-2.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-2.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-3">
+Past versions of anomalies_correlation_absolute_biome_monthly-3.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-3.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[4]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-4">
+Past versions of anomalies_correlation_absolute_biome_monthly-4.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-5">
+Past versions of anomalies_correlation_absolute_biome_monthly-5.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-5.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[6]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-6">
+Past versions of anomalies_correlation_absolute_biome_monthly-6.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-6.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-7">
+Past versions of anomalies_correlation_absolute_biome_monthly-7.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-7.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[8]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-8">
+Past versions of anomalies_correlation_absolute_biome_monthly-8.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-8.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[9]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_biome_monthly-9">
+Past versions of anomalies_correlation_absolute_biome_monthly-9.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_absolute_biome_monthly-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_biome_monthly-9.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
+  filter(biome %in% super_biomes) %&gt;%
+  pivot_longer(-c(year, month, biome, fgco2_int))  %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(value, fgco2_int)) +
+      geom_hline(yintercept = 0) +
+      geom_point(
+        data = . %&gt;% filter(year &lt;= 2022),
+        aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
+        alpha = 0.2
+      ) +
+      geom_smooth(
+        data = . %&gt;% filter(year &lt;= 2022),
+        aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
+        method = &quot;lm&quot;,
+        se = FALSE,
+        fullrange = TRUE
+      )  +
+      scale_color_grey(name = &quot;&quot;) +
+      new_scale_color() +
+      geom_path(data = . %&gt;% filter(year &gt; 2022),
+                aes(col = as.factor(month), group = 1))  +
+      geom_point(
+        data = . %&gt;% filter(year &gt; 2022),
+        aes(fill = as.factor(month)),
+        shape = 21,
+        size = 3
+      )  +
+      scale_color_scico_d(
+        palette = &quot;buda&quot;,
+        guide = guide_legend(reverse = TRUE,
+                             order = 1),
+        name = &quot;Month\nof 2023&quot;
+      ) +
+      scale_fill_scico_d(
+        palette = &quot;buda&quot;,
+        guide = guide_legend(reverse = TRUE,
+                             order = 1),
+        name = &quot;Month\nof 2023&quot;
+      ) +
+      facet_wrap( ~ biome, ncol = 3, scales = &quot;free_x&quot;) +
+      labs(
+        title = &quot;Super biome integrated fluxes&quot;,
+        y = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title,
+        x = labels_breaks(.x %&gt;% distinct(name))$i_legend_title
+      ) +
+      theme(axis.title.x = element_markdown(),
+            axis.title.y = element_markdown())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[4]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[5]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[6]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="relative-to-spread" class="section level3">
 <h3>Relative to spread</h3>
@@ -16164,7 +14374,7 @@ pco2_product_monthly_detrended_anomaly %&gt;%
   pivot_longer(-c(month, biome, year)) %&gt;%
   filter(year &lt; 2023) %&gt;%
   group_by(month, biome, name) %&gt;%
-  summarise(spread = sd(value)) %&gt;%
+  summarise(spread = sd(value, na.rm = TRUE)) %&gt;%
   ungroup()
 
 
@@ -16195,11 +14405,18 @@ pco2_product_monthly_detrended_anomaly_relative %&gt;%
       geom_hline(yintercept = 0) +
       geom_point(
         data = . %&gt;% filter(year &lt;= 2022),
-        aes(fill = year),
-        shape = 21
+        aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
+        alpha = 0.2
       ) +
-      scale_fill_grayC() +
-      new_scale_fill() +
+      geom_smooth(
+        data = . %&gt;% filter(year &lt;= 2022),
+        aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
+        method = &quot;lm&quot;,
+        se = FALSE,
+        fullrange = TRUE
+      )  +
+      scale_color_grey(name = &quot;&quot;) +
+      new_scale_color() +
       geom_path(data = . %&gt;% filter(year &gt; 2022),
                 aes(col = as.factor(month), group = 1))  +
       geom_point(
@@ -16232,30 +14449,372 @@ pco2_product_monthly_detrended_anomaly_relative %&gt;%
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-1">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-1.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-1.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-2">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-2.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-2.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-3">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-3.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-3.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[4]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-4">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-4.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-5">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-5.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-5.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[6]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-6">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-6.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-6.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-7">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-7.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-7.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[8]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-8">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-8.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-8.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[9]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_realtive_to_spread_monthly-9">
+Past versions of anomalies_correlation_realtive_to_spread_monthly-9.png
+</button>
+</p>
+<div id="fig-anomalies_correlation_realtive_to_spread_monthly-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/47238dacd8470c84be5ce74dad63d2556fce604e/docs/figure/OceanSODA.Rmd/anomalies_correlation_realtive_to_spread_monthly-9.png" target="_blank">47238da</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
