@@ -46,7 +46,7 @@ nc <-
 nc <-
   nc_open(paste0(
     path_OceanSODA,
-    "chl_filled_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
+    "kw_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
   ))
 
 print(nc)
@@ -145,7 +145,8 @@ pco2_product <-
          fgco2 = fgco2 * 1e-3 * 365,
          sol = sol * 1e-3,
          mld = 10^mld,
-         chl_filled = 10^chl_filled) %>% 
+         chl_filled = 10^chl_filled,
+         kw = kw * 1e-2 * 24 * 365) %>% 
   rename(chl = chl_filled)
 
 ```

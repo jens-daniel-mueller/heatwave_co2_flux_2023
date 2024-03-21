@@ -270,6 +270,7 @@ Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 
 pco2_product_coarse_annual_regression %>%
   filter(name %in% name_core) %>%
+  filter(name %in% "kw") %>%
   group_split(name) %>%
   # head(4) %>%
   map(
@@ -323,7 +324,7 @@ Hovmoeller plots are first presented as annual means, and than as monthly means.
 
 ### Anomalies
 
-```{r hovmoeller_monthly_anomalies, fig.asp=0.5}
+```{r hovmoeller_monthly_anomalies, fig.asp=0.8}
 
 
 pco2_product_hovmoeller_monthly_regression %>%
