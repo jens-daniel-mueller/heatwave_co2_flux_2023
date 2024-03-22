@@ -558,15 +558,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treef69ff937446dc46f6c2473f187fefaa9e6a2184btargetblankf69ff93a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treedc2068e74d1cac08fd9ef11906e4d729f8eba217targetblankdc2068ea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/f69ff937446dc46f6c2473f187fefaa9e6a2184b" target="_blank">f69ff93</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/dc2068e74d1cac08fd9ef11906e4d729f8eba217" target="_blank">dc2068e</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treef69ff937446dc46f6c2473f187fefaa9e6a2184btargetblankf69ff93a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treedc2068e74d1cac08fd9ef11906e4d729f8eba217targetblankdc2068ea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -576,7 +576,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/f69ff937446dc46f6c2473f187fefaa9e6a2184b" target="_blank">f69ff93</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/dc2068e74d1cac08fd9ef11906e4d729f8eba217" target="_blank">dc2068e</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -642,6 +642,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/OceanSODA.html" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1386,6 +1403,8 @@ extrapolated to 2023.</p>
 <pre class="r"><code>anomaly_determination &lt;- function(df,...) {
   
   group_by &lt;- quos(...)
+  # group_by &lt;- quos(lon, lat)
+  # df &lt;- pco2_product_coarse_annual
   
   # Linear regression models
   
@@ -1545,7 +1564,7 @@ biome_mask &lt;- biome_mask  %&gt;%
     # str_detect(biome, &quot;arctic&quot;) ~ &quot;Arctic&quot;,
     biome == &quot;southern_1&quot; ~ &quot;SO-STSS&quot;,
     biome == &quot;southern_2&quot; ~ &quot;SO-SPSS&quot;,
-    # biome == &quot;southern_3&quot; ~ &quot;SO-ICE&quot;,
+    biome == &quot;southern_3&quot; ~ &quot;SO-ICE&quot;,
     TRUE ~ &quot;other&quot;
   ))
 
@@ -2036,6 +2055,14 @@ pco2_product &lt;-
                 ~ if_else(is.na(biome), NA, .)))
 
 # map +
+#   geom_tile(data = biome_mask,
+#             aes(lon, lat, fill = biome)) +
+#   geom_tile(data = pco2_product %&gt;% filter(!is.na(fgco2)) %&gt;% distinct(lon, lat),
+#             aes(lon, lat)) +
+#   labs(title = &quot;Considered ocean regions&quot;) +
+#   theme(legend.title = element_blank())
+
+# map +
 #   geom_tile(data = pco2_product %&gt;% filter(time == max(time),
 #                                       !is.na(fgco2)),
 #             aes(lon, lat))</code></pre>
@@ -2089,9 +2116,23 @@ pco2_product_coarse_annual &lt;-
   pco2_product_coarse_annual %&gt;% 
   pivot_longer(-c(year, lon, lat))
 
+# map +
+#   geom_tile(data = biome_mask,
+#             aes(lon, lat, fill = biome)) +
+#   geom_tile(data = pco2_product_coarse_annual %&gt;% 
+#               filter(!is.na(value),
+#                      name == &quot;fgco2&quot;) %&gt;% 
+#               distinct(lon, lat, name),
+#             aes(lon, lat),
+#             alpha = 0.2) +
+#   labs(title = &quot;Considered ocean regions&quot;) +
+#   theme(legend.title = element_blank()) +
+#   facet_wrap(~name)
+
 
 pco2_product_coarse_annual_regression &lt;-
   pco2_product_coarse_annual %&gt;%
+  drop_na() %&gt;% 
   anomaly_determination(lon, lat)
 
 pco2_product_coarse_annual_regression &lt;-
@@ -3917,6 +3958,7 @@ pco2_product_coarse_monthly &lt;-
 
 pco2_product_coarse_monthly_regression &lt;-
   pco2_product_coarse_monthly %&gt;%
+  drop_na() %&gt;% 
   anomaly_determination(lon, lat, month)
 
 pco2_product_coarse_monthly_regression &lt;-
@@ -9328,6 +9370,7 @@ are presented relative to the predicted monthly mean values, such that
 the mean seasonality is removed.</p>
 <pre class="r"><code>pco2_product_monthly_global &lt;-
   pco2_product %&gt;%
+  filter(!is.na(fgco2)) %&gt;% 
   select(-c(lon, lat, year, month, biome)) %&gt;% 
   group_by(time) %&gt;%
   summarise(across(-c(fgco2, area),
@@ -9338,6 +9381,7 @@ the mean seasonality is removed.</p>
 
 pco2_product_monthly_biome &lt;-
   pco2_product %&gt;%
+  filter(!is.na(fgco2)) %&gt;% 
   select(-c(lon, lat, year, month)) %&gt;% 
   group_by(time, biome) %&gt;%
   summarise(across(-c(fgco2, area),
@@ -9348,6 +9392,7 @@ pco2_product_monthly_biome &lt;-
 
 pco2_product_monthly_biome_super &lt;-
   pco2_product %&gt;%
+  filter(!is.na(fgco2)) %&gt;% 
   mutate(
     biome = case_when(
       str_detect(biome, &quot;NA-&quot;) ~ &quot;North Atlantic&quot;,
@@ -15145,6 +15190,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-1.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-1.png" target="_blank">e3e1491</a>
 </td>
 <td>
@@ -15185,6 +15241,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-2.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-2.png" target="_blank">e3e1491</a>
@@ -15229,6 +15296,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-3.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-3.png" target="_blank">e3e1491</a>
 </td>
 <td>
@@ -15269,6 +15347,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">e3e1491</a>
@@ -15313,6 +15402,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-5.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-5.png" target="_blank">e3e1491</a>
 </td>
 <td>
@@ -15353,6 +15453,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-6.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-6.png" target="_blank">e3e1491</a>
@@ -15397,6 +15508,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-7.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-7.png" target="_blank">e3e1491</a>
 </td>
 <td>
@@ -15439,6 +15561,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-8.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-8.png" target="_blank">e3e1491</a>
 </td>
 <td>
@@ -15479,6 +15612,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dc2068e74d1cac08fd9ef11906e4d729f8eba217/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-9.png" target="_blank">dc2068e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_super_biome_monthly-9.png" target="_blank">e3e1491</a>
