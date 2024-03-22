@@ -106,6 +106,24 @@ pco2_product_annual_detrended <-
 
 ```
 
+```{r read_biome_monthly_detrended_anomaly, eval=FALSE}
+
+files <- list.files("../data",
+                    pattern = "_biome_monthly_detrended_anomaly.csv",
+                    full.names = TRUE)
+
+pco2_product_monthly_detrended_anomaly <-
+  read_csv(files[1],
+           id = "product")
+
+pco2_product_monthly_detrended_anomaly <-
+  pco2_product_monthly_detrended_anomaly %>% 
+  mutate(product = str_extract(product, "OceanSODA|SOM_FFN"))
+
+```
+
+
+
 ```{r read_map}
 
 map <-
@@ -512,6 +530,41 @@ Anomalies are first presented are first presented in absolute units. Due to the 
 ### Absolute
 
 
+```{r absolute_and_anomaly}
+
+pco2_product_annual_regression %>%
+  filter(year == 2023,
+         name %in% name_core) %>%
+  mutate(region = case_when(biome == "Global" ~ "Global",
+                            biome %in% super_biomes ~ "Super biomes",
+                            TRUE ~ "Biomes"),
+         region = factor(region, levels = c("Global", "Super biomes", "Biomes"))) %>% 
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_col(aes(biome, value, fill = product),
+                 position = "dodge2") +
+      scale_fill_light() +
+      geom_col(aes(biome, fit, group = product, col = "linear\nprediction"),
+               position = "dodge2",
+               fill = "transparent") +
+      labs(y = labels_breaks(unique(.x$name))$i_legend_title) +
+      scale_color_grey() +
+      facet_grid(.~region, scales = "free_x", space = "free_x") +
+      theme(legend.title = element_blank(),
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+            axis.title.x = element_blank(),
+            axis.title.y = element_markdown(),
+            strip.background = element_blank(),
+            legend.position = "top")
+  )
+  
+
+
+```
+
+
 ```{r anomalies_correlation_absolute_annual_global, fig.asp=0.5}
 
 pco2_product_annual_regression %>%
@@ -676,40 +729,6 @@ pco2_product_annual_regression %>%
   )
 
 ```
-
-```{r absolute_and_anomaly}
-
-pco2_product_annual_regression %>%
-  filter(year == 2023,
-         name %in% name_core) %>%
-  mutate(region = case_when(biome == "Global" ~ "Global",
-                            biome %in% super_biomes ~ "Super biomes",
-                            TRUE ~ "Biomes"),
-         region = factor(region, levels = c("Global", "Super biomes", "Biomes"))) %>% 
-  group_split(name) %>%
-  head(1) %>%
-  map(
-    ~ ggplot(data = .x) +
-      geom_col(aes(biome, value, fill = product),
-                 position = "dodge2") +
-      scale_fill_light() +
-      geom_col(aes(biome, fit, group = product, col = "linear\nprediction"),
-               position = "dodge2",
-               fill = "transparent") +
-      labs(y = labels_breaks(unique(.x$name))$i_legend_title) +
-      scale_color_grey() +
-      facet_grid(.~region, scales = "free_x", space = "free_x") +
-      theme(legend.title = element_blank(),
-            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-            axis.title.x = element_blank(),
-            axis.title.y = element_markdown(),
-            legend.position = "top")
-  )
-  
-
-
-```
-
 
 ## Monthly anomalies
 
