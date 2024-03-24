@@ -1,0 +1,62 @@
+---
+title: "Atmospheric CO2"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r parent, child = "/nfs/kryo/work/jenmueller/emlr_cant/utilities/setup.Rmd"}
+# this chunk runs the code stored in setup.Rmd
+# if required, please refer to instructions given here:
+# https://jdblischak.github.io/workflowr/articles/wflow-07-common-code.html
+```
+
+```{r load_libraries_specific, include = FALSE}
+
+```
+
+
+# Read data
+
+```{r read_data}
+
+MHW_cat_pixel_2023 <- read_rds("../data/MHW_cat_pixel_2023.Rds")
+MHW_cat_daily_2023 <- read_rds("../data/MHW_cat_daily_2023.Rds")
+```
+
+```{r plot_mhw_map}
+
+fillColCat <- c(
+  "I Moderate" = "#ffc866",
+  "II Strong" = "#ff6900",
+  "III Severe" = "#9e0000",
+  "IV Extreme" = "#2d0000"
+  )
+
+MHW_cat_pixel_2023 %>% 
+  # filter(t == min(t)) %>% 
+  ggplot(aes(lon, lat, fill = category)) +
+  scale_fill_manual(values = fillColCat) +
+  geom_tile()
+
+MHW_cat_pixel_2023 %>% 
+  # filter(t == min(t)) %>% 
+  ggplot(aes(lon, lat, fill = intensity)) +
+  scale_fill_viridis_c(option = "magma") +
+  geom_tile()
+
+MHW_cat_pixel_2023 %>% 
+  # filter(t == min(t)) %>% 
+  ggplot(aes(lon, lat, fill = intensity_sum)) +
+  scale_fill_viridis_b(option = "magma",
+                       breaks = c(seq(0,1000,200),Inf),
+                       direction = -1) +
+  geom_tile() +
+  coord_quickmap(expand = 0)
+
+  
+
+```
+
