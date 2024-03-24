@@ -576,15 +576,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree459e41d750d3705ceb3e411fccb9e66f9730a30ftargetblank459e41da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree78b2c560834a9075aac4741c24259e0364e0203ftargetblank78b2c56a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/459e41d750d3705ceb3e411fccb9e66f9730a30f" target="_blank">459e41d</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/78b2c560834a9075aac4741c24259e0364e0203f" target="_blank">78b2c56</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree459e41d750d3705ceb3e411fccb9e66f9730a30ftargetblank459e41da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree78b2c560834a9075aac4741c24259e0364e0203ftargetblank78b2c56a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -594,7 +594,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/459e41d750d3705ceb3e411fccb9e66f9730a30f" target="_blank">459e41d</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/78b2c560834a9075aac4741c24259e0364e0203f" target="_blank">78b2c56</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -613,7 +613,6 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
     Modified:   analysis/child/pCO2_product_analysis.Rmd
     Modified:   code/Workflowr_project_managment.R
 
@@ -661,6 +660,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/62ea4dd2d5270fd4511138269c5f0dee2f44b21b/docs/SOM_FFN.html" target="_blank">62ea4dd</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1097,39 +1113,30 @@ pco2_product &lt;-
     product_name = &quot;SOM_FFN&quot;
   )</code></pre>
 </div>
-<div id="read-data-1" class="section level1">
-<h1>Read data</h1>
-<pre class="r"><code>path_reccap2 &lt;-
-  &quot;/nfs/kryo/work/datasets/gridded/ocean/interior/reccap2/&quot;</code></pre>
-<pre class="r"><code>print(&quot;RECCAP2_region_masks_all_v20221025.nc&quot;)</code></pre>
-<pre><code>[1] &quot;RECCAP2_region_masks_all_v20221025.nc&quot;</code></pre>
-<pre class="r"><code>biome_mask &lt;-
-  read_ncdf(
-    paste(
-      path_reccap2,
-      &quot;supplementary/RECCAP2_region_masks_all_v20221025.nc&quot;,
-      sep = &quot;&quot;
-    )
-  ) %&gt;%
-  as_tibble()</code></pre>
-</div>
 <div id="analysis-settings" class="section level1">
 <h1>Analysis settings</h1>
-<pre class="r"><code>key_biomes &lt;- c(&quot;global&quot;,
-                &quot;NA-SPSS&quot;,
-                &quot;NA-STPS&quot;,
-                &quot;NP-SPSS&quot;,
-                &quot;PEQU-E&quot;,
-                &quot;SO-SPSS&quot;)
-
-key_biomes %&gt;% 
-  write_rds(&quot;../data/key_biomes.rds&quot;)
-
-name_quadratic_fit &lt;- c(&quot;atm_co2&quot;, &quot;spco2&quot;, &quot;sfco2&quot;)
+<pre class="r"><code>name_quadratic_fit &lt;- c(&quot;atm_co2&quot;, &quot;spco2&quot;, &quot;sfco2&quot;)
 
 start_year &lt;- 1990
 
 name_divergent &lt;- c(&quot;dco2&quot;, &quot;fgco2&quot;, &quot;fgco2_hov&quot;, &quot;fgco2_int&quot;)</code></pre>
+</div>
+<div id="load-masks" class="section level1">
+<h1>Load masks</h1>
+<pre class="r"><code>map &lt;-
+  read_rds(&quot;../data/map.rds&quot;)
+
+key_biomes &lt;-
+  read_rds(&quot;../data/key_biomes.rds&quot;)
+
+super_biomes &lt;-
+  read_rds(&quot;../data/super_biomes.rds&quot;)
+
+super_biome_mask &lt;-
+  read_rds(&quot;../data/super_biome_mask.rds&quot;)
+
+biome_mask &lt;-
+  read_rds(&quot;../data/biome_mask.rds&quot;)</code></pre>
 </div>
 <div id="anomaly-detection" class="section level1">
 <h1>Anomaly detection</h1>
@@ -1240,468 +1247,6 @@ extrapolated to 2023.</p>
   return(df_regression)
   
 }</code></pre>
-</div>
-<div id="biome-mask" class="section level1">
-<h1>Biome mask</h1>
-<pre class="r"><code>biome_mask &lt;-
-  biome_mask %&gt;%
-  mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
-
-land_mask &lt;- biome_mask %&gt;%
-  filter(seamask == 0) %&gt;% 
-  select(lon, lat)
-
-map &lt;- ggplot(land_mask,
-              aes(lon, lat)) +
-  geom_tile(fill = &quot;grey80&quot;) +
-  scale_y_continuous(breaks = seq(-60,60,30)) +
-  scale_x_continuous(breaks = seq(0,360,60)) +
-  coord_quickmap(expand = 0, ylim = c(-80, 80)) +
-  theme(axis.title = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank())
-
-map %&gt;%
-  write_rds(&quot;../data/map.rds&quot;)
-  
-biome_mask &lt;- biome_mask %&gt;%
-  filter(seamask == 1) %&gt;% 
-  select(lon, lat, atlantic:southern) %&gt;% 
-  pivot_longer(atlantic:southern,
-               names_to = &quot;region&quot;,
-               values_to = &quot;biome&quot;) %&gt;%
-  mutate(biome = as.character(biome))
-
-biome_mask &lt;- biome_mask %&gt;%
-  filter(biome != &quot;0&quot;)
-
-biome_mask &lt;- biome_mask %&gt;%
-  mutate(biome = paste(region, biome, sep = &quot;_&quot;))
-
-biome_mask &lt;- biome_mask  %&gt;% 
-  mutate(biome = case_when(
-    biome == &quot;atlantic_1&quot; ~ &quot;NA-SPSS&quot;,
-    biome == &quot;atlantic_2&quot; ~ &quot;NA-STSS&quot;,
-    biome == &quot;atlantic_3&quot; ~ &quot;NA-STPS&quot;,
-    biome == &quot;atlantic_4&quot; ~ &quot;AEQU&quot;,
-    biome == &quot;atlantic_5&quot; ~ &quot;SA-STPS&quot;,
-    # biome == &quot;atlantic_6&quot; ~ &quot;MED&quot;,
-    biome == &quot;pacific_1&quot; ~ &quot;NP-SPSS&quot;,
-    biome == &quot;pacific_2&quot; ~ &quot;NP-STSS&quot;,
-    biome == &quot;pacific_3&quot; ~ &quot;NP-STPS&quot;,
-    biome == &quot;pacific_4&quot; ~ &quot;PEQU-W&quot;,
-    biome == &quot;pacific_5&quot; ~ &quot;PEQU-E&quot;,
-    biome == &quot;pacific_6&quot; ~ &quot;SP-STSS&quot;,
-    biome == &quot;indian_1&quot; ~ &quot;Arabian Sea&quot;,
-    biome == &quot;indian_2&quot; ~ &quot;Bay of Bengal&quot;,
-    biome == &quot;indian_3&quot; ~ &quot;Equatorial Indian&quot;,
-    biome == &quot;indian_4&quot; ~ &quot;Southern Indian&quot;,
-    # biome == &quot;arctic_1&quot; ~ &quot;ARCTIC-ICE&quot;,
-    # biome == &quot;arctic_2&quot; ~ &quot;NP-ICE&quot;,
-    # biome == &quot;arctic_3&quot; ~ &quot;NA-ICE&quot;,
-    # biome == &quot;arctic_4&quot; ~ &quot;Barents&quot;,
-    # str_detect(biome, &quot;arctic&quot;) ~ &quot;Arctic&quot;,
-    biome == &quot;southern_1&quot; ~ &quot;SO-STSS&quot;,
-    biome == &quot;southern_2&quot; ~ &quot;SO-SPSS&quot;,
-    # biome == &quot;southern_3&quot; ~ &quot;SO-ICE&quot;,
-    TRUE ~ &quot;other&quot;
-  ))
-
-biome_mask &lt;-
-  biome_mask %&gt;%
-  filter(biome != &quot;other&quot;)
-
-map +
-  geom_tile(data = biome_mask,
-            aes(lon, lat, fill = region)) +
-  labs(title = &quot;Considered ocean regions&quot;) +
-  scale_fill_muted() +
-  theme(legend.title = element_blank())</code></pre>
-<p><img src="figure/SOM_FFN.Rmd/prepare_region_mask-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-1">
-Past versions of prepare_region_mask-1.png
-</button>
-</p>
-<div id="fig-prepare_region_mask-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/934da22c98f0f16ca5edbce765eb725ea304600c/docs/figure/SOM_FFN.Rmd/prepare_region_mask-1.png" target="_blank">934da22</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ae4041cdc02907477890c74cd838ec4ed2331146/docs/figure/SOM_FFN.Rmd/prepare_region_mask-1.png" target="_blank">ae4041c</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/SOM_FFN.Rmd/prepare_region_mask-1.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>biome_mask %&gt;%
-  group_split(region) %&gt;%
-  # head(1) %&gt;%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = biome)) +
-         labs(title = paste(&quot;Region:&quot;, .x$region)) +
-         scale_fill_okabeito())</code></pre>
-<pre><code>[[1]]</code></pre>
-<p><img src="figure/SOM_FFN.Rmd/prepare_region_mask-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-2">
-Past versions of prepare_region_mask-2.png
-</button>
-</p>
-<div id="fig-prepare_region_mask-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/SOM_FFN.Rmd/prepare_region_mask-2.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[2]]</code></pre>
-<p><img src="figure/SOM_FFN.Rmd/prepare_region_mask-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-3">
-Past versions of prepare_region_mask-3.png
-</button>
-</p>
-<div id="fig-prepare_region_mask-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/SOM_FFN.Rmd/prepare_region_mask-3.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[3]]</code></pre>
-<p><img src="figure/SOM_FFN.Rmd/prepare_region_mask-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-4">
-Past versions of prepare_region_mask-4.png
-</button>
-</p>
-<div id="fig-prepare_region_mask-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/SOM_FFN.Rmd/prepare_region_mask-4.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[4]]</code></pre>
-<p><img src="figure/SOM_FFN.Rmd/prepare_region_mask-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-5">
-Past versions of prepare_region_mask-5.png
-</button>
-</p>
-<div id="fig-prepare_region_mask-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/934da22c98f0f16ca5edbce765eb725ea304600c/docs/figure/SOM_FFN.Rmd/prepare_region_mask-5.png" target="_blank">934da22</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ae4041cdc02907477890c74cd838ec4ed2331146/docs/figure/SOM_FFN.Rmd/prepare_region_mask-5.png" target="_blank">ae4041c</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/SOM_FFN.Rmd/prepare_region_mask-5.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>map +
-  geom_tile(data = biome_mask %&gt;% filter(biome %in% key_biomes),
-            aes(lon, lat, fill = biome)) +
-  labs(title = &quot;Selected biomes to highlight&quot;) +
-  scale_fill_muted() +
-  theme(legend.title = element_blank())</code></pre>
-<p><img src="figure/SOM_FFN.Rmd/prepare_region_mask-6.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-6">
-Past versions of prepare_region_mask-6.png
-</button>
-</p>
-<div id="fig-prepare_region_mask-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b41fa510a320def39fa77b02282faf83721c7e5b/docs/figure/SOM_FFN.Rmd/prepare_region_mask-6.png" target="_blank">b41fa51</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>biome_mask &lt;-
-  biome_mask %&gt;%
-  select(-region)
-
-
-super_biome_mask &lt;- biome_mask  %&gt;%
-  mutate(
-    biome = case_when(
-      str_detect(biome, &quot;NA-&quot;) ~ &quot;North Atlantic&quot;,
-      str_detect(biome, &quot;NP-&quot;) ~ &quot;North Pacific&quot;,
-      str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
-      TRUE ~ &quot;other&quot;
-    )
-  )
-
-super_biome_mask &lt;-
-  super_biome_mask %&gt;%
-  filter(biome != &quot;other&quot;)
-
-map +
-  geom_tile(data = super_biome_mask,
-            aes(lon, lat, fill = biome)) +
-  labs(title = &quot;Selected super biomes&quot;) +
-  scale_fill_muted() +
-  theme(legend.title = element_blank())</code></pre>
-<p><img src="figure/SOM_FFN.Rmd/prepare_region_mask-7.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prepare_region_mask-7">
-Past versions of prepare_region_mask-7.png
-</button>
-</p>
-<div id="fig-prepare_region_mask-7" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/934da22c98f0f16ca5edbce765eb725ea304600c/docs/figure/SOM_FFN.Rmd/prepare_region_mask-7.png" target="_blank">934da22</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ae4041cdc02907477890c74cd838ec4ed2331146/docs/figure/SOM_FFN.Rmd/prepare_region_mask-7.png" target="_blank">ae4041c</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3e14912966183a31181cc724efdb5d663c10c01/docs/figure/SOM_FFN.Rmd/prepare_region_mask-7.png" target="_blank">e3e1491</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-21
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>super_biomes &lt;-
-  super_biome_mask %&gt;%
-  distinct(biome) %&gt;%
-  pull()
-
-super_biomes %&gt;%
-  write_rds(&quot;../data/super_biomes.rds&quot;)</code></pre>
 </div>
 <div id="define-labels-and-breaks" class="section level1">
 <h1>Define labels and breaks</h1>
@@ -1857,20 +1402,7 @@ x_axis_labels &lt;-
 pco2_product &lt;-
   pco2_product %&gt;%
   mutate(across(-c(lat, lon, time, area, year, month, biome), 
-                ~ if_else(is.na(biome), NA, .)))
-
-# map +
-#   geom_tile(data = biome_mask,
-#             aes(lon, lat, fill = biome)) +
-#   geom_tile(data = pco2_product %&gt;% filter(!is.na(fgco2)) %&gt;% distinct(lon, lat),
-#             aes(lon, lat)) +
-#   labs(title = &quot;Considered ocean regions&quot;) +
-#   theme(legend.title = element_blank())
-
-# map +
-#   geom_tile(data = pco2_product %&gt;% filter(time == max(time),
-#                                       !is.na(fgco2)),
-#             aes(lon, lat))</code></pre>
+                ~ if_else(is.na(biome), NA, .)))</code></pre>
 </div>
 <div id="maps" class="section level1">
 <h1>Maps</h1>
@@ -1887,9 +1419,7 @@ annual mean is removed.</p>
 5X5° grid.</p>
 <pre class="r"><code>pco2_product_coarse &lt;-
   m_grid_horizontal_coarse(pco2_product)
- 
-# pco2_product_coarse %&gt;%
-#   distinct(year)
+
 
 pco2_product_coarse &lt;-
   pco2_product_coarse %&gt;%
@@ -1920,20 +1450,6 @@ pco2_product_coarse &lt;-
 pco2_product_coarse_annual &lt;-
   pco2_product_coarse_annual %&gt;% 
   pivot_longer(-c(year, lon, lat))
-
-# map +
-#   geom_tile(data = biome_mask,
-#             aes(lon, lat, fill = biome)) +
-#   geom_tile(data = pco2_product_coarse_annual %&gt;% 
-#               filter(!is.na(value),
-#                      name == &quot;fgco2&quot;) %&gt;% 
-#               distinct(lon, lat, name),
-#             aes(lon, lat),
-#             alpha = 0.2) +
-#   labs(title = &quot;Considered ocean regions&quot;) +
-#   theme(legend.title = element_blank()) +
-#   facet_wrap(~name)
-
 
 pco2_product_coarse_annual_regression &lt;-
   pco2_product_coarse_annual %&gt;%
@@ -6610,7 +6126,7 @@ pco2_product_monthly &lt;-
 <h3>Overview</h3>
 <pre class="r"><code>fig.height &lt;- pco2_product_monthly %&gt;% 
   distinct(name) %&gt;% 
-  nrow() * 0.15</code></pre>
+  nrow() + 2 * 0.1</code></pre>
 <pre class="r"><code>pco2_product_monthly %&gt;%
   filter(biome %in% &quot;Global&quot;) %&gt;%
   ggplot(aes(month, value, group = as.factor(year))) +
@@ -10517,9 +10033,6 @@ pco2_product_monthly_detrended_anomaly %&gt;%
   )  +
   scale_color_grey(name = &quot;&quot;) +
   new_scale_color() +
-  # geom_smooth(data = . %&gt;% filter(year &lt;= 2022),
-  #             method = &quot;lm&quot;, se = FALSE,
-  #           aes(col = as.factor(month)))  +
   geom_path(data = . %&gt;% filter(year &gt; 2022),
             aes(col = as.factor(month), group = 1))  +
   geom_point(data = . %&gt;% filter(year &gt; 2022),
@@ -10665,7 +10178,7 @@ jens-daniel-mueller
                              order = 1),
         name = &quot;Month\nof 2023&quot;
       ) +
-      facet_wrap( ~ biome, ncol = 3, scales = &quot;free_x&quot;) +
+      facet_wrap( ~ biome, ncol = 3, scales = &quot;free&quot;) +
       labs(
         title = &quot;Biome integrated fluxes&quot;,
         y = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title,
