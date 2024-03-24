@@ -12,24 +12,38 @@ library(ggtext)
 
 ```{r analysis_settings}
 
-key_biomes <- c("global",
-                "NA-SPSS",
-                "NA-STPS",
-                "NP-SPSS",
-                "PEQU-E",
-                "SO-SPSS")
-
-key_biomes %>% 
-  write_rds("../data/key_biomes.rds")
-
 name_quadratic_fit <- c("atm_co2", "spco2", "sfco2")
 
 start_year <- 1990
 
 name_divergent <- c("dco2", "fgco2", "fgco2_hov", "fgco2_int")
 
+```
+
+# Load masks
+
+```{r mask_and_map}
+
+
+map %>%
+  write_rds("../data/map.rds")
+
+key_biomes %>% 
+  write_rds("../data/key_biomes.rds")
+
+super_biomes %>%
+  write_rds("../data/super_biomes.rds")
+
+super_biome_mask %>%
+  write_rds("../data/super_biome_mask.rds")
+
+biome_mask %>%
+  write_rds("../data/biome_mask.rds")
+
 
 ```
+
+
 
 # Anomaly detection
 
@@ -317,19 +331,6 @@ pco2_product <-
   mutate(across(-c(lat, lon, time, area, year, month, biome), 
                 ~ if_else(is.na(biome), NA, .)))
 
-# map +
-#   geom_tile(data = biome_mask,
-#             aes(lon, lat, fill = biome)) +
-#   geom_tile(data = pco2_product %>% filter(!is.na(fgco2)) %>% distinct(lon, lat),
-#             aes(lon, lat)) +
-#   labs(title = "Considered ocean regions") +
-#   theme(legend.title = element_blank())
-
-# map +
-#   geom_tile(data = pco2_product %>% filter(time == max(time),
-#                                       !is.na(fgco2)),
-#             aes(lon, lat))
-
 ```
 
 
@@ -345,9 +346,7 @@ Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 
 pco2_product_coarse <-
   m_grid_horizontal_coarse(pco2_product)
- 
-# pco2_product_coarse %>%
-#   distinct(year)
+
 
 pco2_product_coarse <-
   pco2_product_coarse %>%
