@@ -20,8 +20,9 @@ library(khroma)
 
 ```
 
-
 # Read data
+
+In this study, we use the biome mask from RECCAP2, a modification of the original mask developed by Fay and McKinley (2014). 
 
 ```{r define_reccap_path}
 
@@ -71,6 +72,8 @@ map <- ggplot(land_mask,
         axis.text = element_blank(),
         axis.ticks = element_blank())
 
+map
+
 map %>%
   write_rds("../data/map.rds")
 
@@ -78,7 +81,9 @@ map %>%
 
 # Global ocean
 
-```{r global_ocean_regions}
+Global ocean estimates are integrated or averaged across the following areas.
+
+```{r global_ocean_regions, fig.asp=0.5}
 
 biome_mask <- biome_mask %>%
   filter(seamask == 1) %>% 
@@ -141,6 +146,8 @@ map +
 
 ## All biomes
 
+In the following, all individual biomes are plotted by ocean region.
+
 ```{r all_biomes, fig.asp=0.5}
 
 biome_mask %>%
@@ -155,6 +162,8 @@ biome_mask %>%
 ```
 
 ## Key biomes
+
+Following key biomes are highlighted throughout the analysis.
 
 ```{r key_biomes, fig.asp=0.5}
 
@@ -183,6 +192,8 @@ biome_mask <-
 ```
 
 ## Super biomes
+
+In addition to biomes, we focus our analysis on following combined super biomes.
 
 ```{r super_biomes, fig.asp=0.5}
 
