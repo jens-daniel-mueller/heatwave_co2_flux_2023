@@ -120,7 +120,7 @@ wflow_publish(here::here(
 message = "use setup child Rmd file")
 
 # commit regular changes (locally) and rebuild site
-wflow_publish(all = TRUE, message = "generate all plots")
+wflow_publish(all = TRUE, message = "seperate biome mask")
 
 # commit changes including _site.yml (locally) and rebuild site
 wflow_publish(c("analysis/*Rmd"), message = "include G19 comparison", republish = TRUE)

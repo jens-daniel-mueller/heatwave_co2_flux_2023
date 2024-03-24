@@ -1,5 +1,5 @@
 ---
-title: "Atmospheric CO2"
+title: "Biome mask"
 author: "Jens Daniel Müller"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output: workflowr::wflow_html
@@ -14,6 +14,9 @@ editor_options:
 ```
 
 ```{r load_libraries_specific, include = FALSE}
+
+library(stars)
+library(khroma)
 
 ```
 
@@ -42,15 +45,17 @@ biome_mask <-
   ) %>%
   as_tibble()
 
-```
-
-# Biome mask
-
-```{r prepare_region_mask, fig.asp=0.5}
 
 biome_mask <-
   biome_mask %>%
   mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+
+```
+
+# Basemap and landmask
+
+```{r basemap}
 
 land_mask <- biome_mask %>%
   filter(seamask == 0) %>% 
@@ -68,7 +73,13 @@ map <- ggplot(land_mask,
 
 map %>%
   write_rds("../data/map.rds")
-  
+
+```
+
+# Global ocean
+
+```{r global_ocean_regions}
+
 biome_mask <- biome_mask %>%
   filter(seamask == 1) %>% 
   select(lon, lat, atlantic:southern) %>% 
@@ -123,6 +134,15 @@ map +
   scale_fill_muted() +
   theme(legend.title = element_blank())
 
+```
+
+
+# Biomes
+
+## All biomes
+
+```{r all_biomes, fig.asp=0.5}
+
 biome_mask %>%
   group_split(region) %>%
   # head(1) %>%
@@ -132,6 +152,21 @@ biome_mask %>%
          labs(title = paste("Region:", .x$region)) +
          scale_fill_okabeito())
 
+```
+
+## Key biomes
+
+```{r key_biomes, fig.asp=0.5}
+
+key_biomes <- c("global",
+                "NA-SPSS",
+                "NA-STPS",
+                "NP-SPSS",
+                "PEQU-E",
+                "SO-SPSS")
+
+key_biomes %>% 
+  write_rds("../data/key_biomes.rds")
 
 map +
   geom_tile(data = biome_mask %>% filter(biome %in% key_biomes),
@@ -144,6 +179,12 @@ map +
 biome_mask <-
   biome_mask %>%
   select(-region)
+
+```
+
+## Super biomes
+
+```{r super_biomes, fig.asp=0.5}
 
 
 super_biome_mask <- biome_mask  %>%
