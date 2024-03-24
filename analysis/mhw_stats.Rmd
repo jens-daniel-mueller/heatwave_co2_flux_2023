@@ -18,13 +18,50 @@ editor_options:
 ```
 
 
+# Load masks
+
+```{r mask_and_map}
+
+map <-
+  read_rds("../data/map.rds")
+
+key_biomes <-
+  read_rds("../data/key_biomes.rds")
+
+super_biomes <-
+  read_rds("../data/super_biomes.rds")
+
+super_biome_mask <-
+  read_rds("../data/super_biome_mask.rds")
+
+biome_mask <-
+  read_rds("../data/biome_mask.rds")
+
+
+```
+
+
+
 # Read data
 
 ```{r read_data}
 
 MHW_cat_pixel_2023 <- read_rds("../data/MHW_cat_pixel_2023.Rds")
+
+
+MHW_cat_pixel_2023 <-
+  MHW_cat_pixel_2023 %>%
+  rename(time = t) %>%
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+
 MHW_cat_daily_2023 <- read_rds("../data/MHW_cat_daily_2023.Rds")
+
+
 ```
+
+# Maps
+
 
 ```{r plot_mhw_map}
 
@@ -35,28 +72,20 @@ fillColCat <- c(
   "IV Extreme" = "#2d0000"
   )
 
-MHW_cat_pixel_2023 %>% 
-  # filter(t == min(t)) %>% 
-  ggplot(aes(lon, lat, fill = category)) +
+
+map +
   scale_fill_manual(values = fillColCat) +
-  geom_tile()
+  geom_tile(data =
+              MHW_cat_pixel_2023, aes(lon, lat, fill = category))
 
-MHW_cat_pixel_2023 %>% 
-  # filter(t == min(t)) %>% 
-  ggplot(aes(lon, lat, fill = intensity)) +
-  scale_fill_viridis_c(option = "magma") +
-  geom_tile()
 
-MHW_cat_pixel_2023 %>% 
-  # filter(t == min(t)) %>% 
-  ggplot(aes(lon, lat, fill = intensity_sum)) +
+map +
+  geom_tile(data =
+              MHW_cat_pixel_2023, aes(lon, lat, fill = intensity_sum)) +
   scale_fill_viridis_b(option = "magma",
-                       breaks = c(seq(0,1000,200),Inf),
-                       direction = -1) +
-  geom_tile() +
-  coord_quickmap(expand = 0)
+                       breaks = c(seq(0, 1000, 200), Inf),
+                       direction = -1)
 
-  
 
 ```
 
