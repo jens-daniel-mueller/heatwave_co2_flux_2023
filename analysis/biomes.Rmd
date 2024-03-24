@@ -20,43 +20,159 @@ editor_options:
 
 # Read data
 
-```{r read_data}
+```{r define_reccap_path}
 
-MHW_cat_pixel_2023 <- read_rds("../data/MHW_cat_pixel_2023.Rds")
-MHW_cat_daily_2023 <- read_rds("../data/MHW_cat_daily_2023.Rds")
+path_reccap2 <-
+  "/nfs/kryo/work/datasets/gridded/ocean/interior/reccap2/"
+
 ```
 
-```{r plot_mhw_map}
 
-fillColCat <- c(
-  "I Moderate" = "#ffc866",
-  "II Strong" = "#ff6900",
-  "III Severe" = "#9e0000",
-  "IV Extreme" = "#2d0000"
+```{r read_region_mask}
+
+print("RECCAP2_region_masks_all_v20221025.nc")
+
+biome_mask <-
+  read_ncdf(
+    paste(
+      path_reccap2,
+      "supplementary/RECCAP2_region_masks_all_v20221025.nc",
+      sep = ""
+    )
+  ) %>%
+  as_tibble()
+
+```
+
+# Biome mask
+
+```{r prepare_region_mask, fig.asp=0.5}
+
+biome_mask <-
+  biome_mask %>%
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+land_mask <- biome_mask %>%
+  filter(seamask == 0) %>% 
+  select(lon, lat)
+
+map <- ggplot(land_mask,
+              aes(lon, lat)) +
+  geom_tile(fill = "grey80") +
+  scale_y_continuous(breaks = seq(-60,60,30)) +
+  scale_x_continuous(breaks = seq(0,360,60)) +
+  coord_quickmap(expand = 0, ylim = c(-80, 80)) +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())
+
+map %>%
+  write_rds("../data/map.rds")
+  
+biome_mask <- biome_mask %>%
+  filter(seamask == 1) %>% 
+  select(lon, lat, atlantic:southern) %>% 
+  pivot_longer(atlantic:southern,
+               names_to = "region",
+               values_to = "biome") %>%
+  mutate(biome = as.character(biome))
+
+biome_mask <- biome_mask %>%
+  filter(biome != "0")
+
+biome_mask <- biome_mask %>%
+  mutate(biome = paste(region, biome, sep = "_"))
+
+biome_mask <- biome_mask  %>% 
+  mutate(biome = case_when(
+    biome == "atlantic_1" ~ "NA-SPSS",
+    biome == "atlantic_2" ~ "NA-STSS",
+    biome == "atlantic_3" ~ "NA-STPS",
+    biome == "atlantic_4" ~ "AEQU",
+    biome == "atlantic_5" ~ "SA-STPS",
+    # biome == "atlantic_6" ~ "MED",
+    biome == "pacific_1" ~ "NP-SPSS",
+    biome == "pacific_2" ~ "NP-STSS",
+    biome == "pacific_3" ~ "NP-STPS",
+    biome == "pacific_4" ~ "PEQU-W",
+    biome == "pacific_5" ~ "PEQU-E",
+    biome == "pacific_6" ~ "SP-STSS",
+    biome == "indian_1" ~ "Arabian Sea",
+    biome == "indian_2" ~ "Bay of Bengal",
+    biome == "indian_3" ~ "Equatorial Indian",
+    biome == "indian_4" ~ "Southern Indian",
+    # biome == "arctic_1" ~ "ARCTIC-ICE",
+    # biome == "arctic_2" ~ "NP-ICE",
+    # biome == "arctic_3" ~ "NA-ICE",
+    # biome == "arctic_4" ~ "Barents",
+    # str_detect(biome, "arctic") ~ "Arctic",
+    biome == "southern_1" ~ "SO-STSS",
+    biome == "southern_2" ~ "SO-SPSS",
+    # biome == "southern_3" ~ "SO-ICE",
+    TRUE ~ "other"
+  ))
+
+biome_mask <-
+  biome_mask %>%
+  filter(biome != "other")
+
+map +
+  geom_tile(data = biome_mask,
+            aes(lon, lat, fill = region)) +
+  labs(title = "Considered ocean regions") +
+  scale_fill_muted() +
+  theme(legend.title = element_blank())
+
+biome_mask %>%
+  group_split(region) %>%
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = biome)) +
+         labs(title = paste("Region:", .x$region)) +
+         scale_fill_okabeito())
+
+
+map +
+  geom_tile(data = biome_mask %>% filter(biome %in% key_biomes),
+            aes(lon, lat, fill = biome)) +
+  labs(title = "Selected biomes to highlight") +
+  scale_fill_muted() +
+  theme(legend.title = element_blank())
+
+
+biome_mask <-
+  biome_mask %>%
+  select(-region)
+
+
+super_biome_mask <- biome_mask  %>%
+  mutate(
+    biome = case_when(
+      str_detect(biome, "NA-") ~ "North Atlantic",
+      str_detect(biome, "NP-") ~ "North Pacific",
+      str_detect(biome, "SO-") ~ "Southern Ocean",
+      TRUE ~ "other"
+    )
   )
 
-MHW_cat_pixel_2023 %>% 
-  # filter(t == min(t)) %>% 
-  ggplot(aes(lon, lat, fill = category)) +
-  scale_fill_manual(values = fillColCat) +
-  geom_tile()
+super_biome_mask <-
+  super_biome_mask %>%
+  filter(biome != "other")
 
-MHW_cat_pixel_2023 %>% 
-  # filter(t == min(t)) %>% 
-  ggplot(aes(lon, lat, fill = intensity)) +
-  scale_fill_viridis_c(option = "magma") +
-  geom_tile()
+map +
+  geom_tile(data = super_biome_mask,
+            aes(lon, lat, fill = biome)) +
+  labs(title = "Selected super biomes") +
+  scale_fill_muted() +
+  theme(legend.title = element_blank())
 
-MHW_cat_pixel_2023 %>% 
-  # filter(t == min(t)) %>% 
-  ggplot(aes(lon, lat, fill = intensity_sum)) +
-  scale_fill_viridis_b(option = "magma",
-                       breaks = c(seq(0,1000,200),Inf),
-                       direction = -1) +
-  geom_tile() +
-  coord_quickmap(expand = 0)
+super_biomes <-
+  super_biome_mask %>%
+  distinct(biome) %>%
+  pull()
 
-  
+super_biomes %>%
+  write_rds("../data/super_biomes.rds")
 
 ```
-

@@ -129,23 +129,25 @@ wflow_publish(c("analysis/*Rmd"), message = "include G19 comparison", republish 
 wflow_publish(here::here(
   "analysis",
   c(
-    "pco2_product_synopsis.Rmd",
     "index.Rmd",
+    "biomes.Rmd",
+    "mhw_stats.Rmd",
     "atm_co2.Rmd",
+    "CMEMS.Rmd",
     "SOM_FFN.Rmd",
-    "OceanSODA.Rmd"
+    "OceanSODA.Rmd",
+    "pco2_product_synopsis.Rmd"
   )
 ),
-message = "Annual mean anomaly correlation analysis",
+message = "biomes added to ancillary",
 republish = TRUE)
 
 
 wflow_publish(here::here("analysis",
                          c(
-                           "OceanSODA.Rmd",
                            "pco2_product_synopsis.Rmd"
                          )),
-              message = "convert kw unit")
+              message = "CMEMS included")
 
 
 
