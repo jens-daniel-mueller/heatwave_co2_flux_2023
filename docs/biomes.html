@@ -576,15 +576,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree900b8d0be454095ba3eb14389e62e31f2820c678targetblank900b8d0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree36b12ecd3a218a47f0514c8df2cf9c2f516462dctargetblank36b12eca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/900b8d0be454095ba3eb14389e62e31f2820c678" target="_blank">900b8d0</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/36b12ecd3a218a47f0514c8df2cf9c2f516462dc" target="_blank">36b12ec</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree900b8d0be454095ba3eb14389e62e31f2820c678targetblank900b8d0a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree36b12ecd3a218a47f0514c8df2cf9c2f516462dctargetblank36b12eca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -594,7 +594,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/900b8d0be454095ba3eb14389e62e31f2820c678" target="_blank">900b8d0</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/36b12ecd3a218a47f0514c8df2cf9c2f516462dc" target="_blank">36b12ec</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -655,6 +655,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/36b12ecd3a218a47f0514c8df2cf9c2f516462dc/analysis/biomes.Rmd" target="_blank">36b12ec</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+<td>
+seperate biome mask
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/biomes.html" target="_blank">78465dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -829,6 +863,8 @@ latitude_labels_trans &lt;- st_transform(latitude_labels, crs = target_crs)
 #                col = &quot;grey60&quot;)</code></pre>
 <div id="read-data" class="section level1">
 <h1>Read data</h1>
+<p>In this study, we use the biome mask from RECCAP2, a modification of
+the original mask developed by Fay and McKinley (2014).</p>
 <pre class="r"><code>path_reccap2 &lt;-
   &quot;/nfs/kryo/work/datasets/gridded/ocean/interior/reccap2/&quot;</code></pre>
 <pre class="r"><code>print(&quot;RECCAP2_region_masks_all_v20221025.nc&quot;)</code></pre>
@@ -864,11 +900,15 @@ map &lt;- ggplot(land_mask,
         axis.text = element_blank(),
         axis.ticks = element_blank())
 
-map %&gt;%
+map</code></pre>
+<p><img src="figure/biomes.Rmd/basemap-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>map %&gt;%
   write_rds(&quot;../data/map.rds&quot;)</code></pre>
 </div>
 <div id="global-ocean" class="section level1">
 <h1>Global ocean</h1>
+<p>Global ocean estimates are integrated or averaged across the
+following areas.</p>
 <pre class="r"><code>biome_mask &lt;- biome_mask %&gt;%
   filter(seamask == 1) %&gt;% 
   select(lon, lat, atlantic:southern) %&gt;% 
@@ -923,11 +963,50 @@ map +
   scale_fill_muted() +
   theme(legend.title = element_blank())</code></pre>
 <p><img src="figure/biomes.Rmd/global_ocean_regions-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-global_ocean_regions-1">
+Past versions of global_ocean_regions-1.png
+</button>
+</p>
+<div id="fig-global_ocean_regions-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/figure/biomes.Rmd/global_ocean_regions-1.png" target="_blank">78465dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="biomes" class="section level1">
 <h1>Biomes</h1>
 <div id="all-biomes" class="section level2">
 <h2>All biomes</h2>
+<p>In the following, all individual biomes are plotted by ocean
+region.</p>
 <pre class="r"><code>biome_mask %&gt;%
   group_split(region) %&gt;%
   # head(1) %&gt;%
@@ -938,18 +1017,167 @@ map +
          scale_fill_okabeito())</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/biomes.Rmd/all_biomes-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-all_biomes-1">
+Past versions of all_biomes-1.png
+</button>
+</p>
+<div id="fig-all_biomes-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/figure/biomes.Rmd/all_biomes-1.png" target="_blank">78465dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/biomes.Rmd/all_biomes-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-all_biomes-2">
+Past versions of all_biomes-2.png
+</button>
+</p>
+<div id="fig-all_biomes-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/figure/biomes.Rmd/all_biomes-2.png" target="_blank">78465dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
 <p><img src="figure/biomes.Rmd/all_biomes-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-all_biomes-3">
+Past versions of all_biomes-3.png
+</button>
+</p>
+<div id="fig-all_biomes-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/figure/biomes.Rmd/all_biomes-3.png" target="_blank">78465dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[4]]</code></pre>
 <p><img src="figure/biomes.Rmd/all_biomes-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-all_biomes-4">
+Past versions of all_biomes-4.png
+</button>
+</p>
+<div id="fig-all_biomes-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/figure/biomes.Rmd/all_biomes-4.png" target="_blank">78465dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="key-biomes" class="section level2">
 <h2>Key biomes</h2>
+<p>Following key biomes are highlighted throughout the analysis.</p>
 <pre class="r"><code>key_biomes &lt;- c(&quot;global&quot;,
                 &quot;NA-SPSS&quot;,
                 &quot;NA-STPS&quot;,
@@ -967,12 +1195,51 @@ map +
   scale_fill_muted() +
   theme(legend.title = element_blank())</code></pre>
 <p><img src="figure/biomes.Rmd/key_biomes-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-key_biomes-1">
+Past versions of key_biomes-1.png
+</button>
+</p>
+<div id="fig-key_biomes-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/figure/biomes.Rmd/key_biomes-1.png" target="_blank">78465dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>biome_mask &lt;-
   biome_mask %&gt;%
   select(-region)</code></pre>
 </div>
 <div id="super-biomes" class="section level2">
 <h2>Super biomes</h2>
+<p>In addition to biomes, we focus our analysis on following combined
+super biomes.</p>
 <pre class="r"><code>super_biome_mask &lt;- biome_mask  %&gt;%
   mutate(
     biome = case_when(
@@ -994,6 +1261,43 @@ map +
   scale_fill_muted() +
   theme(legend.title = element_blank())</code></pre>
 <p><img src="figure/biomes.Rmd/super_biomes-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-super_biomes-1">
+Past versions of super_biomes-1.png
+</button>
+</p>
+<div id="fig-super_biomes-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/figure/biomes.Rmd/super_biomes-1.png" target="_blank">78465dc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>super_biomes &lt;-
   super_biome_mask %&gt;%
   distinct(biome) %&gt;%
