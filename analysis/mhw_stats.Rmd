@@ -93,7 +93,7 @@ fillColCat <- c(
 
 
 map +
-  geom_tile(data =
+  geom_raster(data =
               cat.clim %>% filter(mday == 1,
                                   month %in% c(2, 5, 8, 11)),
             aes(lon, lat, fill = category)) +
@@ -113,7 +113,7 @@ cat.clim.stats <-
 
 
 map +
-  geom_tile(data =
+  geom_raster(data =
               cat.clim.stats, aes(lon, lat, fill = n)) +
   scale_fill_viridis_c(option = "magma",
                        direction = -1,
@@ -147,7 +147,7 @@ cat.clim.stats.all <-
 
 
 map +
-  geom_tile(data =
+  geom_raster(data =
               cat.clim.stats.all, aes(lon, lat, fill = n_cum)) +
   scale_fill_viridis_c(option = "magma",
                        direction = -1,
@@ -171,7 +171,7 @@ cat.clim.intensity <-
   ungroup()
 
 map +
-  geom_tile(data =
+  geom_raster(data =
               cat.clim.intensity, aes(lon, lat, fill = intensity)) +
   scale_fill_viridis_c(option = "rocket",
                        direction = -1,
@@ -188,7 +188,7 @@ map +
 
 
 map +
-  geom_tile(data =
+  geom_raster(data =
               cat.clim.intensity, aes(lon, lat, fill = intensity_sum)) +
   scale_fill_viridis_c(option = "rocket",
                        direction = -1,
@@ -198,14 +198,29 @@ map +
   facet_wrap(~ category, ncol = 1)
 
 map +
-  geom_tile(data =
-              MHW_cat_pixel_2023, aes(lon, lat, fill = intensity_sum)) +
+  geom_raster(
+    data =
+      cat.clim.intensity %>%
+      group_by(lon, lat) %>%
+      summarise(intensity_sum = sum(intensity_sum)) %>%
+      ungroup(),
+    aes(lon, lat, fill = intensity_sum)
+  ) +
   scale_fill_viridis_c(option = "rocket",
                        direction = -1,
                        name = "Intensity sum\n(days °C)") +
-  labs(title = "Annual cummulative intensity per category in 2023",
-       subtitle = "Computed from MHW_cat_pixel_2023") +
-  facet_wrap(~ category, ncol = 1)
+  labs(title = "Annual cummulative intensity in 2023",
+       subtitle = "Computed from daily cat.clim.2023 files")
+
+map +
+  geom_raster(data =
+              MHW_cat_pixel_2023 %>% ungroup(),
+            aes(lon, lat, fill = intensity_sum)) +
+  scale_fill_viridis_c(option = "rocket",
+                       direction = -1,
+                       name = "Intensity sum\n(days °C)") +
+  labs(title = "Annual cummulative intensity in 2023",
+       subtitle = "Computed from MHW_cat_pixel_2023")
 
 ```
 
