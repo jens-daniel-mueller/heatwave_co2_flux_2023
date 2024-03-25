@@ -15,6 +15,8 @@ editor_options:
 
 ```{r load_libraries_specific, include = FALSE}
 
+library(lubridate)
+
 ```
 
 
@@ -48,44 +50,162 @@ biome_mask <-
 
 MHW_cat_pixel_2023 <- read_rds("../data/MHW_cat_pixel_2023.Rds")
 
-
 MHW_cat_pixel_2023 <-
   MHW_cat_pixel_2023 %>%
   rename(time = t) %>%
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 
-MHW_cat_daily_2023 <- read_rds("../data/MHW_cat_daily_2023.Rds")
+# MHW_cat_daily_2023 <- read_rds("../data/MHW_cat_daily_2023.Rds")
 
+cat.clim.files <- list.files("../data/input/MHW_2023",
+                             full.names = TRUE)
+
+cat.clim <- cat.clim.files %>%
+  map_dfr(read_rds)
+
+rm(cat.clim.files)
+
+cat.clim <-
+  cat.clim %>%
+  rename(time = t) %>%
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+cat.clim <-
+  cat.clim %>%
+  mutate(mday = mday(time),
+         month = month(time))
 
 ```
 
-# Maps
+# MHW maps
 
+## Selected dates
 
-```{r plot_mhw_map}
+```{r plot_mhw_maps, fig.asp=1.8}
 
 fillColCat <- c(
   "I Moderate" = "#ffc866",
   "II Strong" = "#ff6900",
   "III Severe" = "#9e0000",
   "IV Extreme" = "#2d0000"
-  )
+)
 
 
 map +
-  scale_fill_manual(values = fillColCat) +
   geom_tile(data =
-              MHW_cat_pixel_2023, aes(lon, lat, fill = category))
+              cat.clim %>% filter(mday == 1,
+                                  month %in% c(2, 5, 8, 11)),
+            aes(lon, lat, fill = category)) +
+  scale_fill_manual(values = fillColCat,
+                    name = "MHW category") +
+  facet_wrap( ~ time, ncol = 1)
 
+```
+
+## Days per category
+
+```{r mhw_days_category}
+
+cat.clim.stats <-
+  cat.clim %>% 
+  count(lon, lat, category)
+
+
+map +
+  geom_tile(data =
+              cat.clim.stats, aes(lon, lat, fill = n)) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       limits = c(0,365),
+                       name = "Days") +
+  labs(title = "MHW days per category in 2023") +
+  facet_wrap(~ category, ncol = 1)
+
+
+```
+
+## Days per category
+
+```{r mhw_days_category_limit}
+
+cat.clim.stats.all <-
+  cat.clim.stats %>%
+  complete(lon, lat, category, n = 0)
+
+cat.clim.stats.all <-
+  cat.clim.stats.all %>%
+  arrange(desc(category)) %>%
+  group_by(lon, lat) %>%
+  mutate(n_cum = cumsum(n)) %>%
+  ungroup()
+
+cat.clim.stats.all <-
+  cat.clim.stats.all %>%
+  filter(n_cum > 0) %>%
+  mutate(category = paste(">=", category))
+
+
+map +
+  geom_tile(data =
+              cat.clim.stats.all, aes(lon, lat, fill = n_cum)) +
+  scale_fill_viridis_c(option = "magma",
+                       direction = -1,
+                       limits = c(0,365),
+                       name = "Days") +
+  labs(title = "MHW days exceeding category in 2023") +
+  facet_wrap(~ category, ncol = 1)
+
+
+```
+
+## Annual mean intensity
+
+```{r MHW_intensity_mean}
+
+cat.clim.intensity <-
+  cat.clim %>%
+  group_by(lon, lat, category) %>% 
+  summarise(intensity_sum = sum(intensity),
+            intensity = mean(intensity)) %>% 
+  ungroup()
+
+map +
+  geom_tile(data =
+              cat.clim.intensity, aes(lon, lat, fill = intensity)) +
+  scale_fill_viridis_c(option = "rocket",
+                       direction = -1,
+                       name = "Intensity (°C)") +
+  labs(title = "Annual mean intensity per category in 2023") +
+  facet_wrap(~ category, ncol = 1)
+
+```
+
+
+## Annual cummulative intensity
+
+```{r MHW_intensity_cummulative}
+
+
+map +
+  geom_tile(data =
+              cat.clim.intensity, aes(lon, lat, fill = intensity_sum)) +
+  scale_fill_viridis_c(option = "rocket",
+                       direction = -1,
+                       name = "Intensity sum\n(days °C)") +
+  labs(title = "Annual cummulative intensity per category in 2023",
+       subtitle = "Computed from daily cat.clim.2023 files") +
+  facet_wrap(~ category, ncol = 1)
 
 map +
   geom_tile(data =
               MHW_cat_pixel_2023, aes(lon, lat, fill = intensity_sum)) +
-  scale_fill_viridis_b(option = "magma",
-                       breaks = c(seq(0, 1000, 200), Inf),
-                       direction = -1)
-
+  scale_fill_viridis_c(option = "rocket",
+                       direction = -1,
+                       name = "Intensity sum\n(days °C)") +
+  labs(title = "Annual cummulative intensity per category in 2023",
+       subtitle = "Computed from MHW_cat_pixel_2023") +
+  facet_wrap(~ category, ncol = 1)
 
 ```
 
