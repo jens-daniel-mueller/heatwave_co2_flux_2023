@@ -924,7 +924,7 @@ pco2_product_monthly <-
 
 fig.height <- pco2_product_monthly %>% 
   distinct(name) %>% 
-  nrow() * 0.15
+  nrow() + 2 * 0.1
 
 ```
 
@@ -2013,9 +2013,6 @@ pco2_product_monthly_detrended_anomaly %>%
   )  +
   scale_color_grey(name = "") +
   new_scale_color() +
-  # geom_smooth(data = . %>% filter(year <= 2022),
-  #             method = "lm", se = FALSE,
-  #           aes(col = as.factor(month)))  +
   geom_path(data = . %>% filter(year > 2022),
             aes(col = as.factor(month), group = 1))  +
   geom_point(data = . %>% filter(year > 2022),
@@ -2095,7 +2092,7 @@ pco2_product_monthly_detrended_anomaly %>%
                              order = 1),
         name = "Month\nof 2023"
       ) +
-      facet_wrap( ~ biome, ncol = 3, scales = "free_x") +
+      facet_wrap( ~ biome, ncol = 3, scales = "free") +
       labs(
         title = "Biome integrated fluxes",
         y = labels_breaks("fgco2_int")$i_legend_title,

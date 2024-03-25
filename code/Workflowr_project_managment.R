@@ -139,7 +139,7 @@ wflow_publish(here::here(
     "pco2_product_synopsis.Rmd"
   )
 ),
-message = "biomes added to ancillary",
+message = "new figure aspect ratios",
 republish = TRUE)
 
 
