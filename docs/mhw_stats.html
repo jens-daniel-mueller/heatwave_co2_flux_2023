@@ -415,7 +415,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Marine Heatwave 2023</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">24 March, 2024</h4>
+<h4 class="date">25 March, 2024</h4>
 
 </div>
 
@@ -444,7 +444,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-03-24
+<strong>Last updated:</strong> 2024-03-25
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -576,15 +576,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree78b2c560834a9075aac4741c24259e0364e0203ftargetblank78b2c56a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree25ae26997885821b395377eb189cfedc9e3c7d24targetblank25ae269a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/78b2c560834a9075aac4741c24259e0364e0203f" target="_blank">78b2c56</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/25ae26997885821b395377eb189cfedc9e3c7d24" target="_blank">25ae269</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree78b2c560834a9075aac4741c24259e0364e0203ftargetblank78b2c56a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree25ae26997885821b395377eb189cfedc9e3c7d24targetblank25ae269a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -594,7 +594,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/78b2c560834a9075aac4741c24259e0364e0203f" target="_blank">78b2c56</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/25ae26997885821b395377eb189cfedc9e3c7d24" target="_blank">25ae269</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -611,10 +611,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-
-Unstaged changes:
-    Modified:   analysis/child/pCO2_product_analysis.Rmd
-    Modified:   code/Workflowr_project_managment.R
+    Ignored:    data/input/
 
 </code></pre>
 <p>
@@ -660,6 +657,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/25ae26997885821b395377eb189cfedc9e3c7d24/analysis/mhw_stats.Rmd" target="_blank">25ae269</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-25
+</td>
+<td>
+Daily MHW stats added
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/4589270efd8632c3c48cc95fbf914aac7d00d315/docs/mhw_stats.html" target="_blank">4589270</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -904,133 +935,143 @@ biome_mask &lt;-
 <h1>Read data</h1>
 <pre class="r"><code>MHW_cat_pixel_2023 &lt;- read_rds(&quot;../data/MHW_cat_pixel_2023.Rds&quot;)
 
-
 MHW_cat_pixel_2023 &lt;-
   MHW_cat_pixel_2023 %&gt;%
   rename(time = t) %&gt;%
   mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
 
 
-MHW_cat_daily_2023 &lt;- read_rds(&quot;../data/MHW_cat_daily_2023.Rds&quot;)</code></pre>
+# MHW_cat_daily_2023 &lt;- read_rds(&quot;../data/MHW_cat_daily_2023.Rds&quot;)
+
+cat.clim.files &lt;- list.files(&quot;../data/input/MHW_2023&quot;,
+                             full.names = TRUE)
+
+cat.clim &lt;- cat.clim.files %&gt;%
+  map_dfr(read_rds)
+
+rm(cat.clim.files)
+
+cat.clim &lt;-
+  cat.clim %&gt;%
+  rename(time = t) %&gt;%
+  mutate(lon = if_else(lon &lt; 20, lon + 360, lon))
+
+cat.clim &lt;-
+  cat.clim %&gt;%
+  mutate(mday = mday(time),
+         month = month(time))</code></pre>
 </div>
-<div id="maps" class="section level1">
-<h1>Maps</h1>
+<div id="mhw-maps" class="section level1">
+<h1>MHW maps</h1>
+<div id="selected-dates" class="section level2">
+<h2>Selected dates</h2>
 <pre class="r"><code>fillColCat &lt;- c(
   &quot;I Moderate&quot; = &quot;#ffc866&quot;,
   &quot;II Strong&quot; = &quot;#ff6900&quot;,
   &quot;III Severe&quot; = &quot;#9e0000&quot;,
   &quot;IV Extreme&quot; = &quot;#2d0000&quot;
-  )
+)
 
 
 map +
-  scale_fill_manual(values = fillColCat) +
   geom_tile(data =
-              MHW_cat_pixel_2023, aes(lon, lat, fill = category))</code></pre>
-<p><img src="figure/mhw_stats.Rmd/plot_mhw_map-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot_mhw_map-1">
-Past versions of plot_mhw_map-1.png
-</button>
-</p>
-<div id="fig-plot_mhw_map-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/5d6554a53fd57dd1a72c0483dc9bb41187cc9534/docs/figure/mhw_stats.Rmd/plot_mhw_map-1.png" target="_blank">5d6554a</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1a5167d3900043a4afdc4c20c43e4d03a9b0cd25/docs/figure/mhw_stats.Rmd/plot_mhw_map-1.png" target="_blank">1a5167d</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-24
-</td>
-</tr>
-</tbody>
-</table>
+              cat.clim %&gt;% filter(mday == 1,
+                                  month %in% c(2, 5, 8, 11)),
+            aes(lon, lat, fill = category)) +
+  scale_fill_manual(values = fillColCat,
+                    name = &quot;MHW category&quot;) +
+  facet_wrap( ~ time, ncol = 1)</code></pre>
+<p><img src="figure/mhw_stats.Rmd/plot_mhw_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+<div id="days-per-category" class="section level2">
+<h2>Days per category</h2>
+<pre class="r"><code>cat.clim.stats &lt;-
+  cat.clim %&gt;% 
+  count(lon, lat, category)
+
+
+map +
+  geom_tile(data =
+              cat.clim.stats, aes(lon, lat, fill = n)) +
+  scale_fill_viridis_c(option = &quot;magma&quot;,
+                       direction = -1,
+                       limits = c(0,365),
+                       name = &quot;Days&quot;) +
+  labs(title = &quot;MHW days per category in 2023&quot;) +
+  facet_wrap(~ category, ncol = 1)</code></pre>
+<p><img src="figure/mhw_stats.Rmd/mhw_days_category-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+<div id="days-per-category-1" class="section level2">
+<h2>Days per category</h2>
+<pre class="r"><code>cat.clim.stats.all &lt;-
+  cat.clim.stats %&gt;%
+  complete(lon, lat, category, n = 0)
+
+cat.clim.stats.all &lt;-
+  cat.clim.stats.all %&gt;%
+  arrange(desc(category)) %&gt;%
+  group_by(lon, lat) %&gt;%
+  mutate(n_cum = cumsum(n)) %&gt;%
+  ungroup()
+
+cat.clim.stats.all &lt;-
+  cat.clim.stats.all %&gt;%
+  filter(n_cum &gt; 0) %&gt;%
+  mutate(category = paste(&quot;&gt;=&quot;, category))
+
+
+map +
+  geom_tile(data =
+              cat.clim.stats.all, aes(lon, lat, fill = n_cum)) +
+  scale_fill_viridis_c(option = &quot;magma&quot;,
+                       direction = -1,
+                       limits = c(0,365),
+                       name = &quot;Days&quot;) +
+  labs(title = &quot;MHW days exceeding category in 2023&quot;) +
+  facet_wrap(~ category, ncol = 1)</code></pre>
+<p><img src="figure/mhw_stats.Rmd/mhw_days_category_limit-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="annual-mean-intensity" class="section level2">
+<h2>Annual mean intensity</h2>
+<pre class="r"><code>cat.clim.intensity &lt;-
+  cat.clim %&gt;%
+  group_by(lon, lat, category) %&gt;% 
+  summarise(intensity_sum = sum(intensity),
+            intensity = mean(intensity)) %&gt;% 
+  ungroup()
+
+map +
+  geom_tile(data =
+              cat.clim.intensity, aes(lon, lat, fill = intensity)) +
+  scale_fill_viridis_c(option = &quot;rocket&quot;,
+                       direction = -1,
+                       name = &quot;Intensity (°C)&quot;) +
+  labs(title = &quot;Annual mean intensity per category in 2023&quot;) +
+  facet_wrap(~ category, ncol = 1)</code></pre>
+<p><img src="figure/mhw_stats.Rmd/MHW_intensity_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="annual-cummulative-intensity" class="section level2">
+<h2>Annual cummulative intensity</h2>
+<pre class="r"><code>map +
+  geom_tile(data =
+              cat.clim.intensity, aes(lon, lat, fill = intensity_sum)) +
+  scale_fill_viridis_c(option = &quot;rocket&quot;,
+                       direction = -1,
+                       name = &quot;Intensity sum\n(days °C)&quot;) +
+  labs(title = &quot;Annual cummulative intensity per category in 2023&quot;,
+       subtitle = &quot;Computed from daily cat.clim.2023 files&quot;) +
+  facet_wrap(~ category, ncol = 1)</code></pre>
+<p><img src="figure/mhw_stats.Rmd/MHW_intensity_cummulative-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>map +
   geom_tile(data =
               MHW_cat_pixel_2023, aes(lon, lat, fill = intensity_sum)) +
-  scale_fill_viridis_b(option = &quot;magma&quot;,
-                       breaks = c(seq(0, 1000, 200), Inf),
-                       direction = -1)</code></pre>
-<p><img src="figure/mhw_stats.Rmd/plot_mhw_map-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot_mhw_map-2">
-Past versions of plot_mhw_map-2.png
-</button>
-</p>
-<div id="fig-plot_mhw_map-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/5d6554a53fd57dd1a72c0483dc9bb41187cc9534/docs/figure/mhw_stats.Rmd/plot_mhw_map-2.png" target="_blank">5d6554a</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1a5167d3900043a4afdc4c20c43e4d03a9b0cd25/docs/figure/mhw_stats.Rmd/plot_mhw_map-2.png" target="_blank">1a5167d</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+  scale_fill_viridis_c(option = &quot;rocket&quot;,
+                       direction = -1,
+                       name = &quot;Intensity sum\n(days °C)&quot;) +
+  labs(title = &quot;Annual cummulative intensity per category in 2023&quot;,
+       subtitle = &quot;Computed from MHW_cat_pixel_2023&quot;) +
+  facet_wrap(~ category, ncol = 1)</code></pre>
+<p><img src="figure/mhw_stats.Rmd/MHW_intensity_cummulative-2.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1060,49 +1101,50 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] terra_1.7-65        sf_1.0-9            rnaturalearth_0.1.0
- [4] geomtextpath_0.1.1  colorspace_2.0-3    marelac_2.1.10     
- [7] shape_1.4.6         ggforce_0.4.1       metR_0.13.0        
-[10] scico_1.3.1         patchwork_1.1.2     collapse_1.8.9     
-[13] forcats_0.5.2       stringr_1.5.0       dplyr_1.1.3        
-[16] purrr_1.0.2         readr_2.1.3         tidyr_1.3.0        
-[19] tibble_3.2.1        ggplot2_3.4.4       tidyverse_1.3.2    
-[22] workflowr_1.7.0    
+ [1] lubridate_1.9.0     timechange_0.1.1    terra_1.7-65       
+ [4] sf_1.0-9            rnaturalearth_0.1.0 geomtextpath_0.1.1 
+ [7] colorspace_2.0-3    marelac_2.1.10      shape_1.4.6        
+[10] ggforce_0.4.1       metR_0.13.0         scico_1.3.1        
+[13] patchwork_1.1.2     collapse_1.8.9      forcats_0.5.2      
+[16] stringr_1.5.0       dplyr_1.1.3         purrr_1.0.2        
+[19] readr_2.1.3         tidyr_1.3.0         tibble_3.2.1       
+[22] ggplot2_3.4.4       tidyverse_1.3.2     workflowr_1.7.0    
 
 loaded via a namespace (and not attached):
  [1] googledrive_2.0.0       ellipsis_0.3.2          class_7.3-20           
  [4] rprojroot_2.0.3         fs_1.5.2                rstudioapi_0.15.0      
  [7] proxy_0.4-27            farver_2.1.1            bit64_4.0.5            
-[10] fansi_1.0.3             lubridate_1.9.0         xml2_1.3.3             
-[13] codetools_0.2-18        cachem_1.0.6            knitr_1.41             
-[16] polyclip_1.10-4         jsonlite_1.8.3          gsw_1.1-1              
-[19] broom_1.0.5             dbplyr_2.2.1            compiler_4.2.2         
-[22] httr_1.4.4              backports_1.4.1         assertthat_0.2.1       
-[25] fastmap_1.1.0           gargle_1.2.1            cli_3.6.1              
-[28] later_1.3.0             tweenr_2.0.2            htmltools_0.5.3        
-[31] tools_4.2.2             rnaturalearthdata_0.1.0 gtable_0.3.1           
-[34] glue_1.6.2              Rcpp_1.0.11             cellranger_1.1.0       
-[37] jquerylib_0.1.4         vctrs_0.6.4             xfun_0.35              
-[40] ps_1.7.2                rvest_1.0.3             timechange_0.1.1       
-[43] lifecycle_1.0.3         googlesheets4_1.0.1     oce_1.7-10             
-[46] getPass_0.2-2           MASS_7.3-58.1           scales_1.2.1           
-[49] vroom_1.6.0             hms_1.1.2               promises_1.2.0.1       
-[52] parallel_4.2.2          yaml_2.3.6              memoise_2.0.1          
-[55] sass_0.4.4              stringi_1.7.8           highr_0.9              
-[58] e1071_1.7-12            checkmate_2.1.0         rlang_1.1.1            
-[61] pkgconfig_2.0.3         systemfonts_1.0.4       evaluate_0.18          
-[64] lattice_0.20-45         SolveSAPHE_2.1.0        bit_4.0.5              
-[67] processx_3.8.0          tidyselect_1.2.0        seacarb_3.3.1          
-[70] magrittr_2.0.3          R6_2.5.1                generics_0.1.3         
-[73] DBI_1.1.3               pillar_1.9.0            haven_2.5.1            
-[76] whisker_0.4             withr_2.5.0             units_0.8-0            
-[79] sp_1.5-1                modelr_0.1.10           crayon_1.5.2           
-[82] KernSmooth_2.23-20      utf8_1.2.2              tzdb_0.3.0             
-[85] rmarkdown_2.18          grid_4.2.2              readxl_1.4.1           
-[88] data.table_1.14.6       callr_3.7.3             git2r_0.30.1           
-[91] reprex_2.0.2            digest_0.6.30           classInt_0.4-8         
-[94] httpuv_1.6.6            textshaping_0.3.6       munsell_0.5.0          
-[97] viridisLite_0.4.1       bslib_0.4.1            </code></pre>
+[10] fansi_1.0.3             xml2_1.3.3              codetools_0.2-18       
+[13] cachem_1.0.6            knitr_1.41              polyclip_1.10-4        
+[16] jsonlite_1.8.3          gsw_1.1-1               broom_1.0.5            
+[19] dbplyr_2.2.1            compiler_4.2.2          httr_1.4.4             
+[22] backports_1.4.1         assertthat_0.2.1        fastmap_1.1.0          
+[25] gargle_1.2.1            cli_3.6.1               later_1.3.0            
+[28] tweenr_2.0.2            htmltools_0.5.3         tools_4.2.2            
+[31] rnaturalearthdata_0.1.0 gtable_0.3.1            glue_1.6.2             
+[34] Rcpp_1.0.11             cellranger_1.1.0        jquerylib_0.1.4        
+[37] vctrs_0.6.4             xfun_0.35               ps_1.7.2               
+[40] rvest_1.0.3             lifecycle_1.0.3         googlesheets4_1.0.1    
+[43] oce_1.7-10              getPass_0.2-2           MASS_7.3-58.1          
+[46] scales_1.2.1            vroom_1.6.0             hms_1.1.2              
+[49] promises_1.2.0.1        parallel_4.2.2          yaml_2.3.6             
+[52] memoise_2.0.1           sass_0.4.4              stringi_1.7.8          
+[55] highr_0.9               e1071_1.7-12            checkmate_2.1.0        
+[58] rlang_1.1.1             pkgconfig_2.0.3         systemfonts_1.0.4      
+[61] evaluate_0.18           lattice_0.20-45         SolveSAPHE_2.1.0       
+[64] labeling_0.4.2          bit_4.0.5               processx_3.8.0         
+[67] tidyselect_1.2.0        seacarb_3.3.1           magrittr_2.0.3         
+[70] R6_2.5.1                generics_0.1.3          DBI_1.1.3              
+[73] pillar_1.9.0            haven_2.5.1             whisker_0.4            
+[76] withr_2.5.0             units_0.8-0             sp_1.5-1               
+[79] modelr_0.1.10           crayon_1.5.2            KernSmooth_2.23-20     
+[82] utf8_1.2.2              tzdb_0.3.0              rmarkdown_2.18         
+[85] grid_4.2.2              readxl_1.4.1            data.table_1.14.6      
+[88] callr_3.7.3             git2r_0.30.1            reprex_2.0.2           
+[91] digest_0.6.30           classInt_0.4-8          httpuv_1.6.6           
+[94] textshaping_0.3.6       munsell_0.5.0           viridisLite_0.4.1      
+[97] bslib_0.4.1            </code></pre>
+</div>
 </div>
 </div>
 
