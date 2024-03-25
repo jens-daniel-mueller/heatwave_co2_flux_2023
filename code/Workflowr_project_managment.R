@@ -145,9 +145,11 @@ republish = TRUE)
 
 wflow_publish(here::here("analysis",
                          c(
-                           "pco2_product_synopsis.Rmd"
+                           "CMEMS.Rmd",
+                           "SOM_FFN.Rmd",
+                           "OceanSODA.Rmd"
                          )),
-              message = "CMEMS included")
+              message = "new figure aspect ratio")
 
 
 
