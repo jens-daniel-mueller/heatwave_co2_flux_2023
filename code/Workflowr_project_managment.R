@@ -139,7 +139,7 @@ wflow_publish(here::here(
     "pco2_product_synopsis.Rmd"
   )
 ),
-message = "new figure aspect ratios",
+message = "rebuild entire website",
 republish = TRUE)
 
 
