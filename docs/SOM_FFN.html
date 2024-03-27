@@ -415,7 +415,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">SOM_FFN</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">25 March, 2024</h4>
+<h4 class="date">27 March, 2024</h4>
 
 </div>
 
@@ -444,7 +444,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-03-25
+<strong>Last updated:</strong> 2024-03-27
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -576,15 +576,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treebe31dbdc974dea4c02e0a2c2c8a98cb7028a7dd5targetblankbe31dbda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree04839cce16d0f31c425dabac1137af5b8f3afaf8targetblank04839cca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/be31dbdc974dea4c02e0a2c2c8a98cb7028a7dd5" target="_blank">be31dbd</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/04839cce16d0f31c425dabac1137af5b8f3afaf8" target="_blank">04839cc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treebe31dbdc974dea4c02e0a2c2c8a98cb7028a7dd5targetblankbe31dbda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree04839cce16d0f31c425dabac1137af5b8f3afaf8targetblank04839cca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -594,7 +594,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/be31dbdc974dea4c02e0a2c2c8a98cb7028a7dd5" target="_blank">be31dbd</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/04839cce16d0f31c425dabac1137af5b8f3afaf8" target="_blank">04839cc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -614,6 +614,7 @@ Ignored files:
     Ignored:    data/input/
 
 Unstaged changes:
+    Modified:   analysis/child/pCO2_product_analysis.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -660,6 +661,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/04839cce16d0f31c425dabac1137af5b8f3afaf8/analysis/SOM_FFN.Rmd" target="_blank">04839cc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-27
+</td>
+<td>
+input variables added
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/6bb7ce2e7abee83652f74aaae04403d9430fd1f2/docs/SOM_FFN.html" target="_blank">6bb7ce2</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-03-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1133,21 +1168,44 @@ print(nc)</code></pre>
       path_pCO2_products,
       &quot;VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc&quot;
     ),
-    var = c(&quot;dco2&quot;, &quot;atm_co2&quot;, &quot;sol&quot;, &quot;kw&quot;, &quot;spco2_smoothed&quot;, &quot;fgco2_smoothed&quot;),
+    var = c(&quot;dco2&quot;, &quot;sol&quot;, &quot;kw&quot;, &quot;spco2_smoothed&quot;, &quot;fgco2_smoothed&quot;),
     ignore_bounds = TRUE,
     make_units = FALSE
   )
 
+pco2_product_input &lt;-
+  read_ncdf(
+    paste0(
+      path_pCO2_products,
+      &quot;VLIZ-SOM_FFN/VLIZ-SOM_FFN_inputs.nc&quot;
+    ),
+    # var = c(&quot;dco2&quot;, &quot;atm_co2&quot;, &quot;sol&quot;, &quot;kw&quot;, &quot;spco2_smoothed&quot;, &quot;fgco2_smoothed&quot;),
+    ignore_bounds = TRUE,
+    make_units = FALSE
+  )
+
+pco2_product &lt;- c(pco2_product, pco2_product_input)
+rm(pco2_product_input)
+  
 pco2_product &lt;- pco2_product %&gt;%
   as_tibble()
 
 pco2_product &lt;-
   pco2_product %&gt;%
-  rename(spco2 = spco2_smoothed, fgco2 = fgco2_smoothed)
+  rename(spco2 = spco2_smoothed,
+         fgco2 = fgco2_smoothed,
+         salinity = sss,
+         temperature = sst)
 
 pco2_product &lt;-
   pco2_product %&gt;%
-  mutate(across(dco2:fgco2, ~ replace(., . &gt;= 1e+19, NA)))
+  mutate(across(-c(lon, lat, time), ~ replace(., . &gt;= 1e+19, NA)))
+
+pco2_product &lt;-
+  pco2_product %&gt;%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
 
 pco2_product &lt;-
   pco2_product %&gt;%
@@ -1157,7 +1215,9 @@ pco2_product &lt;-
 
 pco2_product &lt;-
   pco2_product %&gt;% 
-  mutate(lon = if_else(lon &lt; 20, lon + 360, lon))</code></pre>
+  mutate(lon = if_else(lon &lt; 20, lon + 360, lon),
+         chl = 10^chl,
+         wind = sqrt(wind))</code></pre>
 <pre class="r"><code>pCO2productanalysis &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
@@ -1408,6 +1468,13 @@ extrapolated to 2023.</p>
     # i_contour_level_abs &lt;- 2200
   }
   
+  if (i_name == &quot;wind&quot;) {
+    i_legend_title &lt;- &quot;Wind &lt;br&gt;(m sec&lt;sup&gt;-1&lt;/sup&gt;)&quot;
+    # i_breaks &lt;- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level &lt;- 50
+    # i_contour_level_abs &lt;- 2200
+  }
+  
   all_labels_breaks &lt;- lst(i_legend_title,
                            # i_breaks,
                            # i_contour_level,
@@ -1436,7 +1503,8 @@ x_axis_labels &lt;-
     &quot;salinity&quot; = labels_breaks(&quot;salinity&quot;)$i_legend_title,
     &quot;chl&quot; = labels_breaks(&quot;chl&quot;)$i_legend_title,
     &quot;mld&quot; = labels_breaks(&quot;mld&quot;)$i_legend_title,
-    &quot;press&quot; = labels_breaks(&quot;press&quot;)$i_legend_title
+    &quot;press&quot; = labels_breaks(&quot;press&quot;)$i_legend_title,
+    &quot;wind&quot; = labels_breaks(&quot;wind&quot;)$i_legend_title
   )</code></pre>
 </div>
 <div id="preprocessing" class="section level1">
@@ -1771,20 +1839,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 2023,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;% 
-  # head(1) %&gt;%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = value)) +
-         labs(title = &quot;Annual mean 2023&quot;) +
-         scale_fill_divergent(
-           name = labels_breaks(.x %&gt;% distinct(name))) +
-         theme(legend.title = element_markdown())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[5]]</code></pre>
 <p><img src="figure/SOM_FFN.Rmd/2023_annual_mean_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_annual_mean_maps-5">
@@ -1846,7 +1902,7 @@ jens-daniel-mueller
 </div>
 </div>
 <pre><code>
-[[2]]</code></pre>
+[[6]]</code></pre>
 <p><img src="figure/SOM_FFN.Rmd/2023_annual_mean_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_annual_mean_maps-6">
@@ -1907,6 +1963,33 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_annual_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_annual_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
+  filter(year == 2023,
+         name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;% 
+  # head(1) %&gt;%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = value)) +
+         labs(title = &quot;Annual mean 2023&quot;) +
+         scale_fill_divergent(
+           name = labels_breaks(.x %&gt;% distinct(name))) +
+         theme(legend.title = element_markdown())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_annual_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="trends" class="section level3">
 <h3>Trends</h3>
@@ -2368,6 +2451,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_annual_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_annual_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_annual_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomaly" class="section level3">
 <h3>2023 anomaly</h3>
@@ -2754,6 +2852,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_annual_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_annual_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_annual_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;SOM_FFN&quot;,&quot;_anomaly_map_annual.csv&quot;))</code></pre>
@@ -3045,21 +3158,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 2023,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = value)) +
-      labs(title = &quot;Monthly means 2023&quot;) +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      facet_wrap( ~ month, ncol = 2)
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[5]]</code></pre>
 <p><img src="figure/SOM_FFN.Rmd/2023_monthly_mean_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_monthly_mean_maps-5">
@@ -3121,7 +3221,7 @@ jens-daniel-mueller
 </div>
 </div>
 <pre><code>
-[[2]]</code></pre>
+[[6]]</code></pre>
 <p><img src="figure/SOM_FFN.Rmd/2023_monthly_mean_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_monthly_mean_maps-6">
@@ -3182,6 +3282,34 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_monthly_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
+  filter(year == 2023,
+         name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title = &quot;Monthly means 2023&quot;) +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/2023_monthly_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="trends-1" class="section level3">
 <h3>Trends</h3>
@@ -3644,6 +3772,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_monthly_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/change_1990_2023_monthly_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomaly-1" class="section level3">
 <h3>2023 anomaly</h3>
@@ -4031,6 +4174,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_monthly_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomaly_2023_monthly_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;SOM_FFN&quot;,&quot;_anomaly_map_monthly.csv&quot;))</code></pre>
@@ -4329,22 +4487,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_hovmoeller_monthly_annual %&gt;%
-  filter(name %in% name_divergent) %&gt;% 
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ ggplot(data = .x,
-             aes(year, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      coord_cartesian(expand = 0) +
-      labs(title = &quot;Annual means&quot;,
-           y = &quot;Latitude&quot;) +
-      theme(axis.title.x = element_blank())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[5]]</code></pre>
 <p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_annual_absolute-5">
@@ -4406,7 +4550,7 @@ jens-daniel-mueller
 </div>
 </div>
 <pre><code>
-[[2]]</code></pre>
+[[6]]</code></pre>
 <p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_annual_absolute-6">
@@ -4467,6 +4611,35 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_hovmoeller_monthly_annual %&gt;%
+  filter(name %in% name_divergent) %&gt;% 
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      coord_cartesian(expand = 0) +
+      labs(title = &quot;Annual means&quot;,
+           y = &quot;Latitude&quot;) +
+      theme(axis.title.x = element_blank())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-11.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomalies" class="section level3">
 <h3>Anomalies</h3>
@@ -4862,6 +5035,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_anomaly-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_anomaly-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_anomaly-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_anomaly-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_annual_anomaly-11.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="monthly-means-1" class="section level2">
@@ -5152,22 +5340,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_hovmoeller_monthly %&gt;%
-  filter(name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ ggplot(data = .x,
-             aes(decimal, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      labs(title = &quot;Monthly means&quot;,
-           y = &quot;Latitude&quot;) +
-      coord_cartesian(expand = 0) +
-      theme(axis.title.x = element_blank())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[5]]</code></pre>
 <p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_absolute-5">
@@ -5229,7 +5403,7 @@ jens-daniel-mueller
 </div>
 </div>
 <pre><code>
-[[2]]</code></pre>
+[[6]]</code></pre>
 <p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_absolute-6">
@@ -5290,6 +5464,35 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_hovmoeller_monthly %&gt;%
+  filter(name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(decimal, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      labs(title = &quot;Monthly means&quot;,
+           y = &quot;Latitude&quot;) +
+      coord_cartesian(expand = 0) +
+      theme(axis.title.x = element_blank())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-11.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomalies-1" class="section level3">
 <h3>Anomalies</h3>
@@ -5689,6 +5892,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies-11.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;SOM_FFN&quot;,&quot;_anomaly_hovmoeller_monthly.csv&quot;))</code></pre>
 </div>
@@ -6086,6 +6304,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies_recent_years-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies_recent_years-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies_recent_years-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies_recent_years-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/hovmoeller_monthly_anomalies_recent_years-11.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
@@ -11676,6 +11909,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[6]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_biome_monthly-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_biome_monthly-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_biome_monthly-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_biome_monthly-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
   filter(biome %in% super_biomes) %&gt;%
   pivot_longer(-c(year, month, biome, fgco2_int))  %&gt;%
@@ -12102,6 +12350,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[6]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_super_biome_monthly-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_super_biome_monthly-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_super_biome_monthly-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_super_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_absolute_super_biome_monthly-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
   pivot_longer(-c(month, biome, year)) %&gt;%
   write_csv(paste0(
@@ -12559,6 +12822,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[6]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_realtive_to_spread_monthly-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_realtive_to_spread_monthly-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_realtive_to_spread_monthly-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_realtive_to_spread_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/SOM_FFN.Rmd/anomalies_correlation_realtive_to_spread_monthly-10.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -12597,7 +12875,7 @@ other attached packages:
 [19] patchwork_1.1.2     collapse_1.8.9      forcats_0.5.2      
 [22] stringr_1.5.0       dplyr_1.1.3         purrr_1.0.2        
 [25] readr_2.1.3         tidyr_1.3.0         tibble_3.2.1       
-[28] ggplot2_3.4.4       tidyverse_1.3.2     workflowr_1.7.0    
+[28] ggplot2_3.4.4       tidyverse_1.3.2    
 
 loaded via a namespace (and not attached):
   [1] googledrive_2.0.0       ellipsis_0.3.2          class_7.3-20           
@@ -12606,36 +12884,35 @@ loaded via a namespace (and not attached):
  [10] farver_2.1.1            bit64_4.0.5             fansi_1.0.3            
  [13] xml2_1.3.3              splines_4.2.2           codetools_0.2-18       
  [16] cachem_1.0.6            knitr_1.41              polyclip_1.10-4        
- [19] jsonlite_1.8.3          gsw_1.1-1               dbplyr_2.2.1           
- [22] compiler_4.2.2          httr_1.4.4              backports_1.4.1        
- [25] Matrix_1.5-3            assertthat_0.2.1        fastmap_1.1.0          
- [28] gargle_1.2.1            cli_3.6.1               later_1.3.0            
- [31] tweenr_2.0.2            htmltools_0.5.3         tools_4.2.2            
- [34] rnaturalearthdata_0.1.0 gtable_0.3.1            glue_1.6.2             
- [37] Rcpp_1.0.11             RNetCDF_2.6-1           cellranger_1.1.0       
- [40] jquerylib_0.1.4         vctrs_0.6.4             nlme_3.1-160           
- [43] lwgeom_0.2-10           xfun_0.35               ps_1.7.2               
+ [19] jsonlite_1.8.3          workflowr_1.7.0         gsw_1.1-1              
+ [22] dbplyr_2.2.1            compiler_4.2.2          httr_1.4.4             
+ [25] backports_1.4.1         Matrix_1.5-3            assertthat_0.2.1       
+ [28] fastmap_1.1.0           gargle_1.2.1            cli_3.6.1              
+ [31] later_1.3.0             tweenr_2.0.2            htmltools_0.5.3        
+ [34] tools_4.2.2             gtable_0.3.1            glue_1.6.2             
+ [37] rnaturalearthdata_0.1.0 Rcpp_1.0.11             RNetCDF_2.6-1          
+ [40] cellranger_1.1.0        jquerylib_0.1.4         vctrs_0.6.4            
+ [43] nlme_3.1-160            lwgeom_0.2-10           xfun_0.35              
  [46] rvest_1.0.3             ncmeta_0.3.5            lifecycle_1.0.3        
- [49] googlesheets4_1.0.1     oce_1.7-10              getPass_0.2-2          
- [52] MASS_7.3-58.1           scales_1.2.1            vroom_1.6.0            
- [55] hms_1.1.2               promises_1.2.0.1        parallel_4.2.2         
- [58] RColorBrewer_1.1-3      yaml_2.3.6              memoise_2.0.1          
- [61] sass_0.4.4              stringi_1.7.8           highr_0.9              
- [64] e1071_1.7-12            checkmate_2.1.0         commonmark_1.8.1       
- [67] rlang_1.1.1             pkgconfig_2.0.3         systemfonts_1.0.4      
- [70] evaluate_0.18           lattice_0.20-45         SolveSAPHE_2.1.0       
- [73] labeling_0.4.2          bit_4.0.5               processx_3.8.0         
- [76] tidyselect_1.2.0        here_1.0.1              seacarb_3.3.1          
- [79] magrittr_2.0.3          R6_2.5.1                generics_0.1.3         
- [82] DBI_1.1.3               mgcv_1.8-41             pillar_1.9.0           
- [85] haven_2.5.1             whisker_0.4             withr_2.5.0            
- [88] units_0.8-0             sp_1.5-1                modelr_0.1.10          
- [91] crayon_1.5.2            KernSmooth_2.23-20      utf8_1.2.2             
- [94] tzdb_0.3.0              rmarkdown_2.18          grid_4.2.2             
- [97] readxl_1.4.1            data.table_1.14.6       callr_3.7.3            
-[100] git2r_0.30.1            reprex_2.0.2            digest_0.6.30          
-[103] classInt_0.4-8          httpuv_1.6.6            textshaping_0.3.6      
-[106] munsell_0.5.0           viridisLite_0.4.1       bslib_0.4.1            </code></pre>
+ [49] googlesheets4_1.0.1     oce_1.7-10              MASS_7.3-58.1          
+ [52] scales_1.2.1            vroom_1.6.0             hms_1.1.2              
+ [55] promises_1.2.0.1        parallel_4.2.2          RColorBrewer_1.1-3     
+ [58] yaml_2.3.6              memoise_2.0.1           sass_0.4.4             
+ [61] stringi_1.7.8           highr_0.9               e1071_1.7-12           
+ [64] checkmate_2.1.0         commonmark_1.8.1        rlang_1.1.1            
+ [67] pkgconfig_2.0.3         systemfonts_1.0.4       evaluate_0.18          
+ [70] lattice_0.20-45         SolveSAPHE_2.1.0        labeling_0.4.2         
+ [73] bit_4.0.5               tidyselect_1.2.0        here_1.0.1             
+ [76] seacarb_3.3.1           magrittr_2.0.3          R6_2.5.1               
+ [79] generics_0.1.3          DBI_1.1.3               mgcv_1.8-41            
+ [82] pillar_1.9.0            haven_2.5.1             whisker_0.4            
+ [85] withr_2.5.0             units_0.8-0             sp_1.5-1               
+ [88] modelr_0.1.10           crayon_1.5.2            KernSmooth_2.23-20     
+ [91] utf8_1.2.2              tzdb_0.3.0              rmarkdown_2.18         
+ [94] grid_4.2.2              readxl_1.4.1            data.table_1.14.6      
+ [97] git2r_0.30.1            reprex_2.0.2            digest_0.6.30          
+[100] classInt_0.4-8          httpuv_1.6.6            textshaping_0.3.6      
+[103] munsell_0.5.0           viridisLite_0.4.1       bslib_0.4.1            </code></pre>
 </div>
 </div>
 </div>
