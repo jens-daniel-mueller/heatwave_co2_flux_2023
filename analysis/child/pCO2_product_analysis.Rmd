@@ -12,7 +12,7 @@ library(ggtext)
 
 ```{r analysis_settings}
 
-name_quadratic_fit <- c("atm_co2", "spco2", "sfco2")
+name_quadratic_fit <- c("atm_co2", "atm_fco2", "spco2", "sfco2")
 
 start_year <- 1990
 
@@ -188,6 +188,13 @@ labels_breaks <- function(i_name) {
     # i_contour_level_abs <- 2200
   }
   
+  if (i_name == "atm_fco2") {
+    i_legend_title <- "fCO<sub>2,atm</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
   if (i_name == "sol") {
     i_legend_title <- "CO<sub>2</sub> solubility<br>(mol m<sup>-3</sup> µatm<sup>-1</sup>)"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
@@ -252,14 +259,14 @@ labels_breaks <- function(i_name) {
   }
   
   if (i_name == "chl") {
-    i_legend_title <- "Chl-a<br>(mg m<sup>-3</sup>)"
+    i_legend_title <- "lg(Chl-a)<br>(lg(mg m<sup>-3</sup>))"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
   }
   
   if (i_name == "mld") {
-    i_legend_title <- "MLD<br>(m)"
+    i_legend_title <- "lg(MLD)<br>(lg(m))"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
@@ -267,6 +274,13 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "press") {
     i_legend_title <- "pressure<sub>atm</sub><br>(unit?)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "wind") {
+    i_legend_title <- "Wind <br>(m sec<sup>-1</sup>)"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
@@ -300,7 +314,8 @@ x_axis_labels <-
     "salinity" = labels_breaks("salinity")$i_legend_title,
     "chl" = labels_breaks("chl")$i_legend_title,
     "mld" = labels_breaks("mld")$i_legend_title,
-    "press" = labels_breaks("press")$i_legend_title
+    "press" = labels_breaks("press")$i_legend_title,
+    "wind" = labels_breaks("wind")$i_legend_title
   )
 
 

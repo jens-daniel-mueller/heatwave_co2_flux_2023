@@ -144,10 +144,9 @@ super_biomes <-
 
 ```{r core_variables_for_analysis}
 
-name_core <- c("fgco2", "sol", "spco2", "kw", "fgco2_int", "fgco2_hov")
+name_core <- c("fgco2", "fgco2_int", "fgco2_hov", "spco2", "sfco2", "wind", "temperature", "kw", "sol")
 
 ```
-
 
 ```{r define_labels_and_breaks_OIA_variables_change}
 
@@ -169,6 +168,13 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "atm_co2") {
     i_legend_title <- "pCO<sub>2,atm</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "atm_fco2") {
+    i_legend_title <- "fCO<sub>2,atm</sub><br>(µatm)"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
@@ -238,14 +244,14 @@ labels_breaks <- function(i_name) {
   }
   
   if (i_name == "chl") {
-    i_legend_title <- "Chl-a<br>(mg m<sup>-3</sup>)"
+    i_legend_title <- "lg(Chl-a)<br>(lg(mg m<sup>-3</sup>))"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
   }
   
   if (i_name == "mld") {
-    i_legend_title <- "MLD<br>(m)"
+    i_legend_title <- "lg(MLD)<br>(lg(m))"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
@@ -253,6 +259,13 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "press") {
     i_legend_title <- "pressure<sub>atm</sub><br>(unit?)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "wind") {
+    i_legend_title <- "Wind <br>(m sec<sup>-1</sup>)"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
@@ -286,7 +299,8 @@ x_axis_labels <-
     "salinity" = labels_breaks("salinity")$i_legend_title,
     "chl" = labels_breaks("chl")$i_legend_title,
     "mld" = labels_breaks("mld")$i_legend_title,
-    "press" = labels_breaks("press")$i_legend_title
+    "press" = labels_breaks("press")$i_legend_title,
+    "wind" = labels_breaks("wind")$i_legend_title
   )
 
 
@@ -305,12 +319,12 @@ Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 
 ### 2023 anomaly
 
-```{r anomaly_2023_annual_mean_maps, fig.asp=1}
+```{r anomaly_2023_annual_mean_maps, fig.asp=1.5}
 
 pco2_product_coarse_annual_regression %>%
   filter(name %in% name_core) %>%
   group_split(name) %>%
-  # head(1) %>%
+  # head(7) %>%
   map(
     ~ map +
       geom_tile(data = .x,
@@ -396,7 +410,7 @@ Anomalies are presented relative to the predicted annual mean of each year, henc
 
 ### Annual mean trends
 
-```{r anomalies_from_annual_mean_trends_overview, fig.asp=1}
+```{r anomalies_from_annual_mean_trends_overview, fig.asp=1.2}
 
 pco2_product_annual_detrended %>% 
   filter(biome %in% "Global",
@@ -430,7 +444,7 @@ pco2_product_annual_detrended %>%
 ```
 
 
-```{r anomalies_from_annual_mean_trends_key_biomes_super, fig.asp=1}
+```{r anomalies_from_annual_mean_trends_key_biomes_super, fig.asp=1.2}
 
 pco2_product_annual_detrended %>%
   filter(biome %in% super_biomes,
@@ -474,7 +488,7 @@ pco2_product_annual_detrended %>%
 ```
 
 
-```{r anomalies_from_annual_mean_trends_key_biomes, fig.asp=1}
+```{r anomalies_from_annual_mean_trends_key_biomes, fig.asp=1.2}
 
 pco2_product_annual_detrended %>%
   filter(biome %in% key_biomes,
