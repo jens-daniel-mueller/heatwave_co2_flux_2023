@@ -144,9 +144,40 @@ super_biomes <-
 
 ```{r core_variables_for_analysis}
 
-name_core <- c("fgco2", "fgco2_int", "fgco2_hov", "spco2", "sfco2", "wind", "temperature", "kw", "sol")
+name_core <- c("fgco2", "fgco2_int", "fgco2_hov",
+               "spco2", "sfco2",
+               "atm_co2", "atm_fco2",
+               "dco2", "dfco2",
+               "wind", "kw",
+               "temperature", "sol")
 
 ```
+
+```{r order_variable_names}
+
+
+pco2_product_annual_detrended <- pco2_product_annual_detrended %>%
+  mutate(name = factor(name, levels = name_core))
+
+pco2_product_annual_regression <- pco2_product_annual_regression %>%
+  mutate(name = factor(name, levels = name_core))
+
+pco2_product_coarse_annual_regression <-
+  pco2_product_coarse_annual_regression %>%
+  mutate(name = factor(name, levels = name_core))
+
+pco2_product_coarse_monthly_regression <-
+  pco2_product_coarse_monthly_regression %>%
+  mutate(name = factor(name, levels = name_core))
+
+pco2_product_hovmoeller_monthly_regression <-
+  pco2_product_hovmoeller_monthly_regression %>%
+  mutate(name = factor(name, levels = name_core))
+
+
+```
+
+
 
 ```{r define_labels_and_breaks_OIA_variables_change}
 
@@ -322,9 +353,10 @@ Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 ```{r anomaly_2023_annual_mean_maps, fig.asp=1.5}
 
 pco2_product_coarse_annual_regression %>%
+  # filter(name %in% "atm_fco2") %>%
   filter(name %in% name_core) %>%
   group_split(name) %>%
-  # head(7) %>%
+  # head(1) %>%
   map(
     ~ map +
       geom_tile(data = .x,
@@ -410,7 +442,7 @@ Anomalies are presented relative to the predicted annual mean of each year, henc
 
 ### Annual mean trends
 
-```{r anomalies_from_annual_mean_trends_overview, fig.asp=1.2}
+```{r anomalies_from_annual_mean_trends_overview, fig.asp=1.5}
 
 pco2_product_annual_detrended %>% 
   filter(biome %in% "Global",
@@ -444,7 +476,7 @@ pco2_product_annual_detrended %>%
 ```
 
 
-```{r anomalies_from_annual_mean_trends_key_biomes_super, fig.asp=1.2}
+```{r anomalies_from_annual_mean_trends_key_biomes_super, fig.asp=1.5}
 
 pco2_product_annual_detrended %>%
   filter(biome %in% super_biomes,
@@ -488,7 +520,7 @@ pco2_product_annual_detrended %>%
 ```
 
 
-```{r anomalies_from_annual_mean_trends_key_biomes, fig.asp=1.2}
+```{r anomalies_from_annual_mean_trends_key_biomes, fig.asp=1.5}
 
 pco2_product_annual_detrended %>%
   filter(biome %in% key_biomes,
