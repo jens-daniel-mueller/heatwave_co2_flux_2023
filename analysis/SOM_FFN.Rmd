@@ -45,6 +45,12 @@ nc <-
 
 nc <-
   nc_open(paste0(
+    path_pCO2_products,
+    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_inputs.nc"
+  ))
+
+nc <-
+  nc_open(paste0(
     path_OceanSODA,
     "fgco2_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
   ))
@@ -64,7 +70,7 @@ pco2_product <-
       path_pCO2_products,
       "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
     ),
-    var = c("dco2", "sol", "kw", "spco2_smoothed", "fgco2_smoothed"),
+    var = c("dco2", "atm_co2", "sol", "kw", "spco2_smoothed", "fgco2_smoothed"),
     ignore_bounds = TRUE,
     make_units = FALSE
   )
@@ -75,7 +81,7 @@ pco2_product_input <-
       path_pCO2_products,
       "VLIZ-SOM_FFN/VLIZ-SOM_FFN_inputs.nc"
     ),
-    # var = c("dco2", "atm_co2", "sol", "kw", "spco2_smoothed", "fgco2_smoothed"),
+    var = c("sst", "sss", "chl", "wind"),
     ignore_bounds = TRUE,
     make_units = FALSE
   )
@@ -112,7 +118,6 @@ pco2_product <-
 pco2_product <-
   pco2_product %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon),
-         chl = 10^chl,
          wind = sqrt(wind))
 
 ```

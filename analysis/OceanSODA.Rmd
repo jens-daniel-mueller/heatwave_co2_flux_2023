@@ -99,7 +99,7 @@ rm(pco2_product)
 OceanSODA_files <- list.files(path = path_OceanSODA)
 
 OceanSODA_files <-
-  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|spco2|temp|sal|sol"))]
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|spco2|sfco2|temp|sal|sol"))]
 
 for (i_OceanSODA_files in OceanSODA_files) {
   
@@ -144,8 +144,9 @@ pco2_product <-
   mutate(lon = if_else(lon < 20, lon + 360, lon),
          fgco2 = fgco2 * 1e-3 * 365,
          sol = sol * 1e-3,
-         mld = 10^mld,
-         chl_filled = 10^chl_filled,
+         atm_fco2 = sfco2 - dfco2,
+         # mld = 10^mld,
+         # chl_filled = 10^chl_filled,
          kw = kw * 1e-2 * 24 * 365) %>% 
   rename(chl = chl_filled)
 
