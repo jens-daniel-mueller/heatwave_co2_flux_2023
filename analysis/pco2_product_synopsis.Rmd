@@ -353,19 +353,21 @@ Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 ```{r anomaly_2023_annual_mean_maps, fig.asp=1.5}
 
 pco2_product_coarse_annual_regression %>%
-  # filter(name %in% "atm_fco2") %>%
   filter(name %in% name_core) %>%
   group_split(name) %>%
-  # head(1) %>%
+  head(1) %>%
   map(
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
       labs(title =  "2023 anomaly") +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_divergent(
+        name = labels_breaks(.x %>% distinct(name))
+      ) +
       theme(legend.title = element_markdown()) +
-      facet_wrap( ~ product, ncol = 1)
+      facet_wrap(~ product, ncol = 1)
   )
+
 
 ```
 
