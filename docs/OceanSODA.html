@@ -576,15 +576,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree67814893b4653d86b78ef16b85fd2f3133631331targetblank6781489a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree67538ab5b5439ff0ac09126329cffd013ea5a340targetblank67538aba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/67814893b4653d86b78ef16b85fd2f3133631331" target="_blank">6781489</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/67538ab5b5439ff0ac09126329cffd013ea5a340" target="_blank">67538ab</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree67814893b4653d86b78ef16b85fd2f3133631331targetblank6781489a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree67538ab5b5439ff0ac09126329cffd013ea5a340targetblank67538aba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -594,7 +594,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/67814893b4653d86b78ef16b85fd2f3133631331" target="_blank">6781489</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/67538ab5b5439ff0ac09126329cffd013ea5a340" target="_blank">67538ab</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -664,6 +664,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/67538ab5b5439ff0ac09126329cffd013ea5a340/analysis/OceanSODA.Rmd" target="_blank">67538ab</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+<td>
+anomaly year 2022
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/OceanSODA.html" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1600,7 +1634,7 @@ pco2_product &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
     product_name = &quot;OceanSODA&quot;,
-    year_anom = 2023
+    year_anom = 2022
   )</code></pre>
 </div>
 <div id="analysis-settings" class="section level1">
@@ -1635,7 +1669,7 @@ regression models and compare the fitted to the actual value.</p>
 <p>We use linear regression models for all parameters, except for `,
 which are approximated with quadratic fits.</p>
 <p>The regression models are fitted to data from the period `, and
-extrapolated to 2023.</p>
+extrapolated to 2022.</p>
 <pre class="r"><code>anomaly_determination &lt;- function(df,...) {
   
   group_by &lt;- quos(...)
@@ -1646,7 +1680,7 @@ extrapolated to 2023.</p>
   
   df_lm &lt;-
     df %&gt;%
-    filter(year &lt; 2023,
+    filter(year &lt; 2022,
            !(name %in% name_quadratic_fit)) %&gt;%
     nest(data = -c(name, !!!group_by)) %&gt;%
     mutate(
@@ -1663,11 +1697,11 @@ extrapolated to 2023.</p>
         select(name, !!!group_by, term, estimate) %&gt;%
         pivot_wider(names_from = term,
                     values_from = estimate) %&gt;%
-        mutate(fit = `(Intercept)` + year * 2023) %&gt;%
+        mutate(fit = `(Intercept)` + year * 2022) %&gt;%
         select(name, !!!group_by, fit) %&gt;%
-        mutate(year = 2023),
+        mutate(year = 2022),
       df %&gt;%
-        filter(year == 2023,
+        filter(year == 2022,
                !(name %in% name_quadratic_fit))
     ) %&gt;%
     mutate(resid = value - fit)
@@ -1687,7 +1721,7 @@ extrapolated to 2023.</p>
   
   df_quadratic &lt;-
     df %&gt;%
-    filter(year &lt; 2023,
+    filter(year &lt; 2022,
            name %in% name_quadratic_fit) %&gt;%
     nest(data = -c(name, !!!group_by)) %&gt;%
     mutate(
@@ -1704,11 +1738,11 @@ extrapolated to 2023.</p>
         select(name, !!!group_by, term, estimate) %&gt;%
         pivot_wider(names_from = term,
                     values_from = estimate) %&gt;%
-        mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %&gt;%
+        mutate(fit = `(Intercept)` + year * 2022 + `I(year^2)` * 2022 ^ 2) %&gt;%
         select(name, !!!group_by, fit) %&gt;%
-        mutate(year = 2023),
+        mutate(year = 2022),
       df %&gt;%
-        filter(year == 2023,
+        filter(year == 2022,
                name %in% name_quadratic_fit)
     ) %&gt;%
     mutate(resid = value - fit)
@@ -1911,13 +1945,13 @@ pco2_product &lt;-
 </div>
 <div id="maps" class="section level1">
 <h1>Maps</h1>
-<p>The following maps show the absolute state of each variable in 2023
+<p>The following maps show the absolute state of each variable in 2022
 as provided through the pCO2 product, the change in that variable from
-1990 to 2023, as well es the anomalies in 2023. Changes and anomalies
+1990 to 2022, as well es the anomalies in 2022. Changes and anomalies
 are determined based on the predicted value of a linear regression model
-fit to the data from 1990 to 2022.</p>
+fit to the data from 1990 to 2021.</p>
 <p>Maps are first presented as annual means, and than as monthly means.
-Note that the 2023 predictions for the monthly maps are done
+Note that the 2022 predictions for the monthly maps are done
 individually for each month, such the mean seasonal anomaly from the
 annual mean is removed.</p>
 <p>Note: The increase the computational speed, I regridded all maps to
@@ -1928,7 +1962,7 @@ annual mean is removed.</p>
 
 pco2_product_coarse &lt;-
   pco2_product_coarse %&gt;%
-  select(-c(lon, lat, time, biome)) %&gt;% 
+  select(-c(lon, lat, time, biome)) %&gt;%
   group_by(year, month, lon_grid, lat_grid) %&gt;%
   summarise(across(-area,
                    ~ weighted.mean(., area))) %&gt;%
@@ -1943,7 +1977,7 @@ pco2_product_coarse &lt;-
 <div id="annual-means" class="section level2">
 <h2>Annual means</h2>
 <div id="absolute" class="section level3">
-<h3>2023 absolute</h3>
+<h3>2022 absolute</h3>
 <pre class="r"><code>pco2_product_coarse_annual &lt;-
   pco2_product_coarse %&gt;%
   select(-month) %&gt;% 
@@ -1966,7 +2000,7 @@ pco2_product_coarse_annual_regression &lt;-
   drop_na()
 
 pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 2023,
+  filter(year == 2022,
          !(name %in% name_divergent)) %&gt;%
   group_split(name) %&gt;%
   # head(1) %&gt;%
@@ -1974,7 +2008,7 @@ pco2_product_coarse_annual_regression %&gt;%
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = value)) +
-      labs(title = paste(&quot;Annual mean&quot;, 2023)) +
+      labs(title = paste(&quot;Annual mean&quot;, 2022)) +
       scale_fill_viridis_c(name = labels_breaks(.x %&gt;% distinct(name))) +
       theme(legend.title = element_markdown())
   )</code></pre>
@@ -2378,14 +2412,14 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 2023,
+  filter(year == 2022,
          name %in% name_divergent) %&gt;%
   group_split(name) %&gt;% 
   # head(1) %&gt;%
   map( ~ map +
          geom_tile(data = .x,
                    aes(lon, lat, fill = value)) +
-         labs(title = paste(&quot;Annual mean&quot;, 2023)) +
+         labs(title = paste(&quot;Annual mean&quot;, 2022)) +
          scale_fill_divergent(
            name = labels_breaks(.x %&gt;% distinct(name))) +
          theme(legend.title = element_markdown())
@@ -2455,95 +2489,958 @@ jens-daniel-mueller
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-1">
+Past versions of change_1990_annomaly_year_annual_mean_maps-1.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-1.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-2">
+Past versions of change_1990_annomaly_year_annual_mean_maps-2.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-2.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-3">
+Past versions of change_1990_annomaly_year_annual_mean_maps-3.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-3.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[4]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-4">
+Past versions of change_1990_annomaly_year_annual_mean_maps-4.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-4.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-5">
+Past versions of change_1990_annomaly_year_annual_mean_maps-5.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-5.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[6]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-6">
+Past versions of change_1990_annomaly_year_annual_mean_maps-6.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-6.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-7">
+Past versions of change_1990_annomaly_year_annual_mean_maps-7.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-7.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[8]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-8">
+Past versions of change_1990_annomaly_year_annual_mean_maps-8.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-8.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[9]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-9">
+Past versions of change_1990_annomaly_year_annual_mean_maps-9.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-9.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[10]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-10">
+Past versions of change_1990_annomaly_year_annual_mean_maps-10.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-10.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[11]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-11">
+Past versions of change_1990_annomaly_year_annual_mean_maps-11.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-11.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[12]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_annomaly_year_annual_mean_maps-12">
+Past versions of change_1990_annomaly_year_annual_mean_maps-12.png
+</button>
+</p>
+<div id="fig-change_1990_annomaly_year_annual_mean_maps-12"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-12.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="anomaly" class="section level3">
-<h3>2023 anomaly</h3>
+<h3>2022 anomaly</h3>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 2023) %&gt;%
+  filter(year == 2022) %&gt;%
   group_split(name) %&gt;% 
   # head(1) %&gt;%
   map( ~ map +
          geom_tile(data = .x,
                    aes(lon, lat, fill = resid)) +
-         labs(title =  paste(2023,&quot;anomaly&quot;)) +
+         labs(title =  paste(2022,&quot;anomaly&quot;)) +
          scale_fill_divergent(
            name = labels_breaks(.x %&gt;% distinct(name))) +
          theme(legend.title = element_markdown())
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-1">
+Past versions of anomaly_anomaly_year_annual_mean_maps-1.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-2">
+Past versions of anomaly_anomaly_year_annual_mean_maps-2.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-3">
+Past versions of anomaly_anomaly_year_annual_mean_maps-3.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-3.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[4]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-4">
+Past versions of anomaly_anomaly_year_annual_mean_maps-4.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-4.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-5">
+Past versions of anomaly_anomaly_year_annual_mean_maps-5.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-5.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[6]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-6">
+Past versions of anomaly_anomaly_year_annual_mean_maps-6.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-6.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-7">
+Past versions of anomaly_anomaly_year_annual_mean_maps-7.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-7.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[8]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-8">
+Past versions of anomaly_anomaly_year_annual_mean_maps-8.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-8.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[9]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-9">
+Past versions of anomaly_anomaly_year_annual_mean_maps-9.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-9.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[10]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-10">
+Past versions of anomaly_anomaly_year_annual_mean_maps-10.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-10.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[11]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-11">
+Past versions of anomaly_anomaly_year_annual_mean_maps-11.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-11.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 2023) %&gt;%
+  filter(year == 2022) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;OceanSODA&quot;,&quot;_anomaly_map_annual.csv&quot;))</code></pre>
 </div>
 </div>
 <div id="monthly-means" class="section level2">
 <h2>Monthly means</h2>
 <div id="absolute-1" class="section level3">
-<h3>2023 absolute</h3>
+<h3>2022 absolute</h3>
 <pre class="r"><code>pco2_product_coarse_monthly &lt;-
   pco2_product_coarse %&gt;%
   group_by(year, month, lon, lat) %&gt;%
@@ -2566,7 +3463,7 @@ pco2_product_coarse_monthly_regression &lt;-
 
 
 pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 2023,
+  filter(year == 2022,
          !(name %in% name_divergent)) %&gt;%
   group_split(name) %&gt;%
   # head(1) %&gt;%
@@ -2574,42 +3471,412 @@ pco2_product_coarse_monthly_regression %&gt;%
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = value)) +
-      labs(title = paste(&quot;Monthly means&quot;, 2023)) +
+      labs(title = paste(&quot;Monthly means&quot;, 2022)) +
       scale_fill_viridis_c(name = labels_breaks(.x %&gt;% distinct(name))) +
       theme(legend.title = element_markdown()) +
       facet_wrap( ~ month, ncol = 2)
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-1">
+Past versions of anomaly_year_monthly_mean_maps-1.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-1.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-2">
+Past versions of anomaly_year_monthly_mean_maps-2.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-2.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-3">
+Past versions of anomaly_year_monthly_mean_maps-3.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-3.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[4]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-4">
+Past versions of anomaly_year_monthly_mean_maps-4.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-4.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-5">
+Past versions of anomaly_year_monthly_mean_maps-5.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-5.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[6]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-6">
+Past versions of anomaly_year_monthly_mean_maps-6.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-6.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-7">
+Past versions of anomaly_year_monthly_mean_maps-7.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-7.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[8]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-8">
+Past versions of anomaly_year_monthly_mean_maps-8.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-8.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[9]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-9">
+Past versions of anomaly_year_monthly_mean_maps-9.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-9.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[10]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-10">
+Past versions of anomaly_year_monthly_mean_maps-10.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-10.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 2023,
+  filter(year == 2022,
          name %in% name_divergent) %&gt;%
   group_split(name) %&gt;%
   # head(1) %&gt;%
@@ -2617,13 +3884,50 @@ pco2_product_coarse_monthly_regression %&gt;%
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = value)) +
-      labs(title = paste(&quot;Monthly means&quot;, 2023)) +
+      labs(title = paste(&quot;Monthly means&quot;, 2022)) +
       scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
       theme(legend.title = element_markdown()) +
       facet_wrap( ~ month, ncol = 2)
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_monthly_mean_maps-11">
+Past versions of anomaly_year_monthly_mean_maps-11.png
+</button>
+</p>
+<div id="fig-anomaly_year_monthly_mean_maps-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_year_monthly_mean_maps-11.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="trends-1" class="section level3">
 <h3>Trends</h3>
@@ -2651,89 +3955,954 @@ pco2_product_coarse_monthly_regression %&gt;%
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-1">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-1.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-1.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-2">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-2.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-2.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-3">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-3.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-3.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[4]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-4">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-4.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-4.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-5">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-5.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-5.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[6]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-6">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-6.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-6.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-7">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-7.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-7.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[8]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-8">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-8.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-8.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[9]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-9">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-9.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-9.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[10]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-10">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-10.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-10.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[11]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-11">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-11.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-11.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[12]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-change_1990_anomaly_year_monthly_mean_maps-12">
+Past versions of change_1990_anomaly_year_monthly_mean_maps-12.png
+</button>
+</p>
+<div id="fig-change_1990_anomaly_year_monthly_mean_maps-12"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/change_1990_anomaly_year_monthly_mean_maps-12.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="anomaly-1" class="section level3">
-<h3>2023 anomaly</h3>
+<h3>2022 anomaly</h3>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 2023) %&gt;%
+  filter(year == 2022) %&gt;%
   group_split(name) %&gt;%
   # head(1) %&gt;%
   map(
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
-      labs(title = paste(2023, &quot;anomaly&quot;)) +
+      labs(title = paste(2022, &quot;anomaly&quot;)) +
       scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
       theme(legend.title = element_markdown()) +
       facet_wrap( ~ month, ncol = 2)
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-1">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-1.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-1.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[2]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-2">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-2.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-2.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[3]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-3">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-3.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-3.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[4]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-4">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-4.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-4.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-5">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-5.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-5.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[6]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-6">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-6.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-6.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[7]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-7">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-7.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-7.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[8]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-8">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-8.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-8.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[9]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-9">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-9.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-9.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[10]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-10">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-10.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-10"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-10.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[11]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_monthly_mean_maps-11">
+Past versions of anomaly_anomaly_year_monthly_mean_maps-11.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_monthly_mean_maps-11"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_monthly_mean_maps-11.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 2023) %&gt;%
+  filter(year == 2022) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;OceanSODA&quot;,&quot;_anomaly_map_monthly.csv&quot;))</code></pre>
 </div>
 </div>
@@ -2742,7 +4911,7 @@ pco2_product_coarse_monthly_regression %&gt;%
 <h1>Hovmoeller plots</h1>
 <p>The following Hovmoeller plots show the value of each variable as
 provided through the pCO2 product, as well as the anomalies from the
-prediction of a linear/quadratic fit to the data from 1990 to 2022.</p>
+prediction of a linear/quadratic fit to the data from 1990 to 2021.</p>
 <p>Hovmoeller plots are first presented as annual means, and than as
 monthly means. Note that the predictions for the monthly Hovmoeller
 plots are done individually for each month, such the mean seasonal
@@ -8380,7 +10549,7 @@ jens-daniel-mueller
 <p>The following plots show biome- or global- averaged/integrated values
 of each variable as provided through the pCO2 product, as well as the
 anomalies from the prediction of a linear/quadratic fit to the data from
-1990 to 2022.</p>
+1990 to 2021.</p>
 <p>Anomalies are first presented relative to the predicted annual mean
 of each year, hence preserving the seasonality. Furthermore, anomalies
 are presented relative to the predicted monthly mean values, such that
@@ -8469,11 +10638,11 @@ fig.height &lt;- (fig.height + 2) * 0.1</code></pre>
 <pre class="r"><code>pco2_product_monthly %&gt;%
   filter(biome %in% &quot;Global&quot;) %&gt;%
   ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -8667,11 +10836,11 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_monthly %&gt;%
   filter(biome %in% key_biomes) %&gt;%
   ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -8777,11 +10946,11 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_monthly %&gt;%
   filter(biome %in% super_biomes) %&gt;%
   ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -8905,12 +11074,12 @@ jens-daniel-mueller
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
-      geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &lt; 2022-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %&gt;% filter(year &gt;= 2023-1),
+        data = . %&gt;% filter(between(year, 2022-1, 2022)),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -9731,12 +11900,12 @@ jens-daniel-mueller
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
-      geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &lt; 2022-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %&gt;% filter(year &gt;= 2023-1),
+        data = . %&gt;% filter(between(year, 2022-1, 2022)),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -10041,17 +12210,18 @@ jens-daniel-mueller
   ungroup()
   
 pco2_product_annual %&gt;% 
-  filter(biome %in% &quot;Global&quot;) %&gt;%
+  filter(biome %in% &quot;Global&quot;,
+         year &lt;= 2022) %&gt;%
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point() +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2023,
+  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
               fullrange = TRUE,
               aes(col = &quot;linear&quot;),
               se = FALSE) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2023,
+  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
                                   name %in% name_quadratic_fit),
               method = &quot;lm&quot;,
               fullrange = TRUE,
@@ -10060,7 +12230,7 @@ pco2_product_annual %&gt;%
               se = FALSE) +
   scale_color_brewer(
     palette = &quot;Set1&quot;,
-    name = paste(&quot;Regression fit\nprior&quot;, 2023)) +
+    name = paste(&quot;Regression fit\nprior&quot;, 2022)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Annual mean trends | Global&quot;) +
   facet_wrap(name ~ .,
@@ -10097,6 +12267,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/annual_mean_trends-1.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/6343e593a892df7b6ea05ea7849c0e91f32ed76d/docs/figure/OceanSODA.Rmd/annual_mean_trends-1.png" target="_blank">6343e59</a>
@@ -10245,17 +12426,18 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_annual %&gt;% 
-  filter(biome %in% key_biomes) %&gt;%
+  filter(biome %in% key_biomes,
+         year &lt;= 2022) %&gt;%
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point(size = 0.2) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2023,
+  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
               fullrange = TRUE,
               aes(col = &quot;linear&quot;),
               se = FALSE) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2023,
+  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
                                   name %in% name_quadratic_fit),
               method = &quot;lm&quot;,
               fullrange = TRUE,
@@ -10264,7 +12446,7 @@ jens-daniel-mueller
               se = FALSE) +
   scale_color_brewer(
     palette = &quot;Set1&quot;,
-    name = paste(&quot;Regression fit\nprior&quot;, 2023)) +
+    name = paste(&quot;Regression fit\nprior&quot;, 2022)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Annual mean trends | Selected biomes&quot;) +
   facet_grid(name ~ biome,
@@ -10300,6 +12482,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/annual_mean_trends-2.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/6343e593a892df7b6ea05ea7849c0e91f32ed76d/docs/figure/OceanSODA.Rmd/annual_mean_trends-2.png" target="_blank">6343e59</a>
@@ -10437,17 +12630,18 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_annual %&gt;% 
-  filter(biome %in% super_biomes) %&gt;%
+  filter(biome %in% super_biomes,
+         year &lt;= 2022) %&gt;%
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point(size = 0.2) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2023,
+  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
               fullrange = TRUE,
               aes(col = &quot;linear&quot;),
               se = FALSE) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2023,
+  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
                                   name %in% name_quadratic_fit),
               method = &quot;lm&quot;,
               fullrange = TRUE,
@@ -10456,7 +12650,7 @@ jens-daniel-mueller
               se = FALSE) +
   scale_color_brewer(
     palette = &quot;Set1&quot;,
-    name = paste(&quot;Regression fit\nprior&quot;, 2023)) +
+    name = paste(&quot;Regression fit\nprior&quot;, 2022)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Annual mean trends | Selected super biomes&quot;) +
   facet_grid(name ~ biome,
@@ -10492,6 +12686,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/annual_mean_trends-3.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/6343e593a892df7b6ea05ea7849c0e91f32ed76d/docs/figure/OceanSODA.Rmd/annual_mean_trends-3.png" target="_blank">6343e59</a>
@@ -10660,12 +12865,12 @@ pco2_product_annual_regression %&gt;%
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_point(data = . %&gt;% filter(year &lt; 2022-1),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
   new_scale_fill() +
-  geom_point(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_point(data = . %&gt;% filter(between(year, 2022-1, 2022)),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -10871,12 +13076,12 @@ jens-daniel-mueller
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_point(data = . %&gt;% filter(year &lt; 2022-1),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
   new_scale_fill() +
-  geom_point(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_point(data = . %&gt;% filter(between(year, 2022-1, 2022)),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -11070,12 +13275,12 @@ jens-daniel-mueller
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_point(data = . %&gt;% filter(year &lt; 2022-1),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
   new_scale_fill() +
-  geom_point(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_point(data = . %&gt;% filter(between(year, 2022-1, 2022)),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -11191,12 +13396,12 @@ jens-daniel-mueller
   filter(biome != &quot;global&quot;) %&gt;%
   ggplot(aes(biome, resid)) +
   geom_hline(yintercept = 0) +
-  geom_jitter(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_jitter(data = . %&gt;% filter(year &lt; 2022-1),
              aes(fill = year),
              shape = 21, width = 0.2) +
   scale_fill_grayC() +
   new_scale_fill() +
-  geom_point(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_point(data = . %&gt;% filter(between(year, 2022-1, 2022)),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -11318,11 +13523,11 @@ jens-daniel-mueller
 pco2_product_annual_detrended %&gt;% 
   filter(biome %in% &quot;Global&quot;) %&gt;%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -11516,11 +13721,11 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_annual_detrended %&gt;% 
   filter(biome %in% key_biomes) %&gt;%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -11703,11 +13908,11 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_annual_detrended %&gt;% 
   filter(biome %in% super_biomes) %&gt;%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -11828,12 +14033,12 @@ jens-daniel-mueller
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &lt; 2022-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %&gt;% filter(year &gt;= 2023-1),
+        data = . %&gt;% filter(between(year, 2022-1, 2022)),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -12653,12 +14858,12 @@ jens-daniel-mueller
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &lt; 2022-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %&gt;% filter(year &gt;= 2023-1),
+        data = . %&gt;% filter(between(year, 2022-1, 2022)),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -12958,17 +15163,18 @@ jens-daniel-mueller
 <div id="monthly-mean-trends" class="section level3">
 <h3>Monthly mean trends</h3>
 <pre class="r"><code>pco2_product_monthly %&gt;% 
-  filter(biome %in% &quot;Global&quot;) %&gt;%
+  filter(biome %in% &quot;Global&quot;,
+         year &lt;= 2022) %&gt;%
   mutate(month = as.factor(month)) %&gt;% 
   ggplot(aes(year, value, col = month)) +
   # geom_point() +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2023,
+  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
               se = FALSE,
               fullrange = TRUE) +
   geom_smooth(
-    data = . %&gt;% filter(year &lt; 2023,
+    data = . %&gt;% filter(year &lt; 2022,
                         name %in% name_quadratic_fit),
     method = &quot;lm&quot;,
     fullrange = TRUE,
@@ -12976,7 +15182,7 @@ jens-daniel-mueller
     se = FALSE
   ) +
   scale_color_scico_d(palette = &quot;romaO&quot;, 
-    name = paste(&quot;Regression fit\n prior&quot;, 2023)) +
+    name = paste(&quot;Regression fit\n prior&quot;, 2022)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Monthly mean trends | Global&quot;) +
   facet_wrap(name ~ .,
@@ -13161,17 +15367,18 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_monthly %&gt;% 
-  filter(biome %in% key_biomes) %&gt;%
+  filter(biome %in% key_biomes,
+         year &lt;= 2022) %&gt;%
   mutate(month = as.factor(month)) %&gt;% 
   ggplot(aes(year, value, col = month)) +
   # geom_point() +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2023,
+  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
               fullrange = TRUE,
               se = FALSE) +
   geom_smooth(
-    data = . %&gt;% filter(year &lt; 2023,
+    data = . %&gt;% filter(year &lt; 2022,
                         name %in% name_quadratic_fit),
     method = &quot;lm&quot;,
     fullrange = TRUE,
@@ -13179,7 +15386,7 @@ jens-daniel-mueller
     se = FALSE
   ) +
   scale_color_scico_d(palette = &quot;romaO&quot;,
-    name = paste(&quot;Regression fit\n prior&quot;, 2023)) +
+    name = paste(&quot;Regression fit\n prior&quot;, 2022)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Monthly mean trends | Selected biomes&quot;) +
   facet_grid(name ~ biome,
@@ -13366,14 +15573,14 @@ pco2_product_monthly_regression %&gt;%
       geom_hline(yintercept = 0) +
       geom_path() +
       geom_point(
-        data = . %&gt;% filter(year &lt; 2023-1),
+        data = . %&gt;% filter(year &lt; 2022-1),
         aes(fill = year),
         shape = 21
       ) +
       scale_fill_grayC() +
       new_scale_fill() +
       geom_point(
-        data = . %&gt;% filter(year &gt;= 2023-1),
+        data = . %&gt;% filter(between(year, 2022-1, 2022)),
         aes(fill = as.factor(year)),
         shape = 21,
         size = 2
@@ -13582,14 +15789,14 @@ jens-daniel-mueller
       geom_hline(yintercept = 0) +
       geom_path() +
       geom_point(
-        data = . %&gt;% filter(year &lt; 2023-1),
+        data = . %&gt;% filter(year &lt; 2022-1),
         aes(fill = year),
         shape = 21
       ) +
       scale_fill_grayC() +
       new_scale_fill() +
       geom_point(
-        data = . %&gt;% filter(year &gt;= 2023-1),
+        data = . %&gt;% filter(between(year, 2022-1, 2022)),
         aes(fill = as.factor(year)),
         shape = 21,
         size = 2
@@ -13795,11 +16002,11 @@ jens-daniel-mueller
 pco2_product_monthly_detrended %&gt;% 
   filter(biome %in% &quot;Global&quot;) %&gt;%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -13995,11 +16202,11 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_monthly_detrended %&gt;% 
   filter(biome %in% key_biomes) %&gt;%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -14183,11 +16390,11 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_monthly_detrended %&gt;% 
   filter(biome %in% super_biomes) %&gt;%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -14309,12 +16516,12 @@ jens-daniel-mueller
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &lt; 2022-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %&gt;% filter(year &gt;= 2023-1),
+        data = . %&gt;% filter(between(year, 2022-1, 2022)),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -15134,12 +17341,12 @@ jens-daniel-mueller
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %&gt;% filter(year &lt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &lt; 2022-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %&gt;% filter(year &gt;= 2023-1),
+        data = . %&gt;% filter(between(year, 2022-1, 2022)),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -15445,7 +17652,7 @@ anomalies of the means/integrals of each other variable.</p>
 Due to the different flux magnitudes, we need to plot the globally and
 biome-integrated fluxes separately. Secondly, we normalize the anomalies
 to the monthly spread (expressed as standard deviation) of the anomalies
-from 1990 to 2022.</p>
+from 1990 to 2021.</p>
 <div id="annual-anomalies" class="section level2">
 <h2>Annual anomalies</h2>
 <div id="absolute-4" class="section level3">
@@ -15457,20 +17664,20 @@ from 1990 to 2022.</p>
   pivot_longer(-c(year, biome, fgco2_int))  %&gt;%
   ggplot(aes(value, fgco2_int)) +
   geom_hline(yintercept = 0) +
-  geom_point(data = . %&gt;% filter(year &lt; 2023),
+  geom_point(data = . %&gt;% filter(year &lt; 2022),
              aes(fill = year),
              shape = 21) +
   geom_smooth(
-    data = . %&gt;% filter(year &lt; 2023),
+    data = . %&gt;% filter(year &lt; 2022),
     method = &quot;lm&quot;,
     se = FALSE,
     fullrange = TRUE,
-    aes(col = paste(&quot;Regression fit\n prior&quot;, 2023))
+    aes(col = paste(&quot;Regression fit\n prior&quot;, 2022))
   ) +
   scale_color_grey() +
   scale_fill_grayC()+
   new_scale_fill() +
-  geom_point(data = . %&gt;% filter(year &gt;= 2023-1),
+  geom_point(data = . %&gt;% filter(between(year, 2022-1, 2022)),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
@@ -15517,6 +17724,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7f4baee1adbd8a6f02e675d655748dee724a554a/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_global_annual-1.png" target="_blank">7f4baee</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/6343e593a892df7b6ea05ea7849c0e91f32ed76d/docs/figure/OceanSODA.Rmd/anomalies_correlation_absolute_global_annual-1.png" target="_blank">6343e59</a>
@@ -15616,11 +17834,11 @@ pco2_product_monthly_detrended_anomaly %&gt;%
   pivot_longer(-c(year, month, biome, fgco2_int))  %&gt;%
   ggplot(aes(value, fgco2_int)) +
   geom_hline(yintercept = 0) +
-  geom_point(data = . %&gt;% filter(year &lt; 2023),
+  geom_point(data = . %&gt;% filter(year &lt; 2022),
              aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
              alpha = 0.2) +
   geom_smooth(
-    data = . %&gt;% filter(year &lt; 2023),
+    data = . %&gt;% filter(year &lt; 2022),
     aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
     method = &quot;lm&quot;,
     se = FALSE,
@@ -15628,20 +17846,20 @@ pco2_product_monthly_detrended_anomaly %&gt;%
   )  +
   scale_color_grey(name = &quot;&quot;) +
   new_scale_color() +
-  geom_path(data = . %&gt;% filter(year &gt; 2023-1),
+  geom_path(data = . %&gt;% filter(year &gt; 2022-1),
             aes(col = as.factor(month), group = 1))  +
-  geom_point(data = . %&gt;% filter(year &gt; 2023-1),
+  geom_point(data = . %&gt;% filter(year &gt; 2022-1),
              aes(fill =  as.factor(month)),
              shape = 21,
              size = 3)  +
   scale_color_scico_d(palette = &quot;buda&quot;,
                      guide = guide_legend(reverse = TRUE,
                                           order = 1),
-                     name = paste(&quot;Month\nof&quot;, 2023)) +
+                     name = paste(&quot;Month\nof&quot;, 2022)) +
   scale_fill_scico_d(palette = &quot;buda&quot;,
                      guide = guide_legend(reverse = TRUE,
                                           order = 1),
-                     name = paste(&quot;Month\nof&quot;, 2023)) +
+                     name = paste(&quot;Month\nof&quot;, 2022)) +
   labs(title = &quot;Globally integrated fluxes&quot;,
        y = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title) +
   facet_wrap(
@@ -15773,12 +17991,12 @@ jens-daniel-mueller
              aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %&gt;% filter(year &lt; 2023),
+        data = . %&gt;% filter(year &lt; 2022),
         aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
         alpha = 0.2
       ) +
       geom_smooth(
-        data = . %&gt;% filter(year &lt; 2023),
+        data = . %&gt;% filter(year &lt; 2022),
         aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
         method = &quot;lm&quot;,
         se = FALSE,
@@ -15786,10 +18004,10 @@ jens-daniel-mueller
       )  +
       scale_color_grey(name = &quot;&quot;) +
       new_scale_color() +
-      geom_path(data = . %&gt;% filter(year &gt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &gt; 2022-1),
                 aes(col = as.factor(month), group = 1))  +
       geom_point(
-        data = . %&gt;% filter(year &gt; 2023-1),
+        data = . %&gt;% filter(year &gt; 2022-1),
         aes(fill = as.factor(month)),
         shape = 21,
         size = 3
@@ -15798,13 +18016,13 @@ jens-daniel-mueller
         palette = &quot;buda&quot;,
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = paste(&quot;Month\nof&quot;, 2023)
+        name = paste(&quot;Month\nof&quot;, 2022)
       ) +
       scale_fill_scico_d(
         palette = &quot;buda&quot;,
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = paste(&quot;Month\nof&quot;, 2023)
+        name = paste(&quot;Month\nof&quot;, 2022)
       ) +
       facet_wrap( ~ biome, ncol = 3, scales = &quot;free&quot;) +
       labs(
@@ -16770,12 +18988,12 @@ jens-daniel-mueller
              aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %&gt;% filter(year &lt; 2023),
+        data = . %&gt;% filter(year &lt; 2022),
         aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
         alpha = 0.2
       ) +
       geom_smooth(
-        data = . %&gt;% filter(year &lt; 2023),
+        data = . %&gt;% filter(year &lt; 2022),
         aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
         method = &quot;lm&quot;,
         se = FALSE,
@@ -16783,10 +19001,10 @@ jens-daniel-mueller
       )  +
       scale_color_grey(name = &quot;&quot;) +
       new_scale_color() +
-      geom_path(data = . %&gt;% filter(year &gt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &gt; 2022-1),
                 aes(col = as.factor(month), group = 1))  +
       geom_point(
-        data = . %&gt;% filter(year &gt; 2023-1),
+        data = . %&gt;% filter(year &gt; 2022-1),
         aes(fill = as.factor(month)),
         shape = 21,
         size = 3
@@ -16795,13 +19013,13 @@ jens-daniel-mueller
         palette = &quot;buda&quot;,
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = paste(&quot;Month\nof&quot;, 2023)
+        name = paste(&quot;Month\nof&quot;, 2022)
       ) +
       scale_fill_scico_d(
         palette = &quot;buda&quot;,
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = paste(&quot;Month\nof&quot;, 2023)
+        name = paste(&quot;Month\nof&quot;, 2022)
       ) +
       facet_wrap( ~ biome, ncol = 3, scales = &quot;free_x&quot;) +
       labs(
@@ -17682,7 +19900,7 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly_spread &lt;-
   pco2_product_monthly_detrended_anomaly %&gt;%
   pivot_longer(-c(month, biome, year)) %&gt;%
-  filter(year &lt; 2023) %&gt;%
+  filter(year &lt; 2022) %&gt;%
   group_by(month, biome, name) %&gt;%
   summarise(spread = sd(value, na.rm = TRUE)) %&gt;%
   ungroup()
@@ -17714,12 +19932,12 @@ pco2_product_monthly_detrended_anomaly_relative %&gt;%
       geom_vline(xintercept = 0) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %&gt;% filter(year &lt; 2023),
+        data = . %&gt;% filter(year &lt; 2022),
         aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
         alpha = 0.2
       ) +
       geom_smooth(
-        data = . %&gt;% filter(year &lt; 2023),
+        data = . %&gt;% filter(year &lt; 2022),
         aes(col = paste(min(year), max(year), sep = &quot;-&quot;)),
         method = &quot;lm&quot;,
         se = FALSE,
@@ -17727,10 +19945,10 @@ pco2_product_monthly_detrended_anomaly_relative %&gt;%
       )  +
       scale_color_grey(name = &quot;&quot;) +
       new_scale_color() +
-      geom_path(data = . %&gt;% filter(year &gt; 2023-1),
+      geom_path(data = . %&gt;% filter(year &gt; 2022-1),
                 aes(col = as.factor(month), group = 1))  +
       geom_point(
-        data = . %&gt;% filter(year &gt; 2023-1),
+        data = . %&gt;% filter(year &gt; 2022-1),
         aes(fill = as.factor(month)),
         shape = 21,
         size = 3
@@ -17739,13 +19957,13 @@ pco2_product_monthly_detrended_anomaly_relative %&gt;%
         palette = &quot;buda&quot;,
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = paste(&quot;Month\nof&quot;, 2023)
+        name = paste(&quot;Month\nof&quot;, 2022)
       ) +
       scale_fill_scico_d(
         palette = &quot;buda&quot;,
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = paste(&quot;Month\nof&quot;, 2023)
+        name = paste(&quot;Month\nof&quot;, 2022)
       ) +
       facet_wrap( ~ biome, ncol = 3) +
       coord_fixed() +
