@@ -1,0 +1,168 @@
+---
+title: "OceanSODA"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r parent, child = "/nfs/kryo/work/jenmueller/emlr_cant/utilities/setup.Rmd"}
+# this chunk runs the code stored in setup.Rmd
+# if required, please refer to instructions given here:
+# https://jdblischak.github.io/workflowr/articles/wflow-07-common-code.html
+```
+
+```{r load_libraries_read_data, include = FALSE}
+
+library(stars)
+library(lubridate)
+
+```
+
+# Read data
+
+```{r define_paths}
+
+path_pCO2_products <-
+  "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/"
+
+path_OceanSODA <-
+  "/nfs/kryo/work/gregorl/projects/OceanSODA-ETHZ/releases/v2023-full_carbonate_system/OceanSODA_ETHZ_HRLR-v2023.01-co2fluxvars-netCDF/"
+
+
+```
+
+
+```{r read_nc_metadata, eval=FALSE}
+
+library(ncdf4)
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
+  ))
+
+nc <-
+  nc_open(paste0(
+    path_OceanSODA,
+    "kw_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
+  ))
+
+print(nc)
+
+```
+
+
+```{r read_OceanSODA}
+
+OceanSODA_files <- list.files(path = path_OceanSODA)
+
+OceanSODA_files <-
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("mld|press|chl"))]
+
+for (i_OceanSODA_files in OceanSODA_files) {
+  
+  # i_OceanSODA_files <- OceanSODA_files[2]
+  
+  i_pco2_product <-
+    read_ncdf(paste0(path_OceanSODA,
+                     i_OceanSODA_files),
+              make_units = FALSE,
+              ignore_bounds = TRUE)
+  
+  if (exists("pco2_product")) {
+    pco2_product <-
+      c(pco2_product,
+                i_pco2_product)
+  }
+  
+  if (!exists("pco2_product")) {
+    pco2_product <- i_pco2_product
+  }
+  
+}
+
+rm(OceanSODA_files, i_OceanSODA_files, i_pco2_product)
+
+pco2_product <- pco2_product %>%
+  as_tibble()
+pco2_product_temp <- pco2_product
+rm(pco2_product)
+
+# pco2_product_temp %>%
+#   # mutate(chl_filled = 10^chl_filled) %>%
+#   # filter(chl_filled < 5) %>%
+#   ggplot(aes(chl_filled)) +
+#   geom_histogram()
+
+OceanSODA_files <- list.files(path = path_OceanSODA)
+
+OceanSODA_files <-
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2|fgco2_O|kw|spco2|sfco2|temp|sal|sol"))]
+
+for (i_OceanSODA_files in OceanSODA_files) {
+  
+  # i_OceanSODA_files <- OceanSODA_files[2]
+  
+  i_pco2_product <-
+    read_ncdf(paste0(path_OceanSODA,
+                     i_OceanSODA_files),
+              make_units = FALSE,
+              ignore_bounds = TRUE)
+  
+  if (exists("pco2_product")) {
+    pco2_product <-
+      c(pco2_product,
+                i_pco2_product)
+  }
+  
+  if (!exists("pco2_product")) {
+    pco2_product <- i_pco2_product
+  }
+  
+}
+
+rm(OceanSODA_files, i_OceanSODA_files, i_pco2_product)
+# rm(pco2_product)
+
+pco2_product <- pco2_product %>%
+  as_tibble()
+
+pco2_product <-
+  full_join(pco2_product, pco2_product_temp)
+rm(pco2_product_temp)
+
+pco2_product <-
+  pco2_product %>%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
+
+pco2_product <-
+  pco2_product %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon),
+         fgco2 = fgco2 * 1e-3 * 365,
+         sol = sol * 1e-3,
+         atm_fco2 = sfco2 - dfco2,
+         # mld = 10^mld,
+         # chl_filled = 10^chl_filled,
+         kw = kw * 1e-2 * 24 * 365) %>% 
+  rename(chl = chl_filled)
+
+```
+
+
+```{r source_pCO2_product_analysis_child}
+
+pCO2productanalysis <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "OceanSODA",
+    year_anom = 2023
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis))`
