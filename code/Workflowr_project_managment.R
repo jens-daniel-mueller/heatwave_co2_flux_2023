@@ -130,25 +130,29 @@ wflow_publish(here::here(
   "analysis",
   c(
     "index.Rmd",
+    "CMEMS_2022.Rmd",
+    "SOM_FFN_2022.Rmd",
+    "OceanSODA_2022.Rmd",
+    "pco2_product_synopsis_2022.Rmd",
+    "CMEMS_2023.Rmd",
+    "SOM_FFN_2023.Rmd",
+    "OceanSODA_2023.Rmd",
+    "pco2_product_synopsis_2023.Rmd",
     "biomes.Rmd",
     "mhw_stats.Rmd",
-    "atm_co2.Rmd",
-    "CMEMS.Rmd",
-    "SOM_FFN.Rmd",
-    "OceanSODA.Rmd",
-    "pco2_product_synopsis.Rmd"
+    "atm_co2.Rmd"
   )
 ),
-message = "rebuild entire website",
+message = "rebuild entire website incl 2022 anomalies",
 republish = TRUE)
 
 
 wflow_publish(here::here("analysis",
                          c(
-                           "SOM_FFN.Rmd",
-                           "pco2_product_synopsis.Rmd"
+                           # "pco2_product_synopsis_2022.Rmd",
+                           "pco2_product_synopsis_2023.Rmd"
                          )),
-              message = "new ouput variables (v2) from peter")
+              message = "trend maps included")
 
 
 

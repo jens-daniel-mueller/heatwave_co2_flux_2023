@@ -50,7 +50,7 @@ For the detection of anomalies at any point in time and space, we fit regression
 
 We use linear regression models for all parameters, except for `r print(name_quadratic_fit)``, which are approximated with quadratic fits.
 
-The regression models are fitted to data from the period `r print(paste(start_year, "- 2022"))``, and extrapolated to 2023.
+The regression models are fitted to data from the period `r print(paste(start_year, "-", {{year_anom}}-1))``, and extrapolated to {{year_anom}}.
 
 
 ```{r anomaly_detection_function_nested}
@@ -65,7 +65,7 @@ anomaly_determination <- function(df,...) {
   
   df_lm <-
     df %>%
-    filter(year <= 2022,
+    filter(year < {{year_anom}},
            !(name %in% name_quadratic_fit)) %>%
     nest(data = -c(name, !!!group_by)) %>%
     mutate(
@@ -75,18 +75,18 @@ anomaly_determination <- function(df,...) {
     )
   
   
-  df_lm_2023 <-
+  df_lm_year_anom <-
     full_join(
       df_lm %>%
         unnest(tidied) %>%
         select(name, !!!group_by, term, estimate) %>%
         pivot_wider(names_from = term,
                     values_from = estimate) %>%
-        mutate(fit = `(Intercept)` + year * 2023) %>%
+        mutate(fit = `(Intercept)` + year * {{year_anom}}) %>%
         select(name, !!!group_by, fit) %>%
-        mutate(year = 2023),
+        mutate(year = {{year_anom}}),
       df %>%
-        filter(year == 2023,
+        filter(year == {{year_anom}},
                !(name %in% name_quadratic_fit))
     ) %>%
     mutate(resid = value - fit)
@@ -97,16 +97,16 @@ anomaly_determination <- function(df,...) {
       df_lm %>%
         unnest(augmented) %>%
         select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
-      df_lm_2023
+      df_lm_year_anom
     )
   
-  rm(df_lm_2023)
+  rm(df_lm_year_anom)
   
   # Quadratic regression models
   
   df_quadratic <-
     df %>%
-    filter(year <= 2022,
+    filter(year < {{year_anom}},
            name %in% name_quadratic_fit) %>%
     nest(data = -c(name, !!!group_by)) %>%
     mutate(
@@ -116,18 +116,18 @@ anomaly_determination <- function(df,...) {
     )
   
   
-  df_quadratic_2023 <-
+  df_quadratic_year_anom <-
     full_join(
       df_quadratic %>%
         unnest(tidied) %>%
         select(name, !!!group_by, term, estimate) %>%
         pivot_wider(names_from = term,
                     values_from = estimate) %>%
-        mutate(fit = `(Intercept)` + year * 2023 + `I(year^2)` * 2023 ^ 2) %>%
+        mutate(fit = `(Intercept)` + year * {{year_anom}} + `I(year^2)` * {{year_anom}} ^ 2) %>%
         select(name, !!!group_by, fit) %>%
-        mutate(year = 2023),
+        mutate(year = {{year_anom}}),
       df %>%
-        filter(year == 2023,
+        filter(year == {{year_anom}},
                name %in% name_quadratic_fit)
     ) %>%
     mutate(resid = value - fit)
@@ -138,10 +138,10 @@ anomaly_determination <- function(df,...) {
       df_quadratic %>%
         unnest(augmented) %>%
         select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
-      df_quadratic_2023
+      df_quadratic_year_anom
     )
   
-  rm(df_quadratic_2023)
+  rm(df_quadratic_year_anom)
   
   # Join linear and quadratic regression results
   
@@ -350,9 +350,9 @@ pco2_product <-
 
 # Maps
 
-The following maps show the absolute state of each variable in 2023 as provided through the pCO2 product, the change in that variable from 1990 to 2023, as well es the anomalies in 2023. Changes and anomalies are determined based on the predicted value of a linear regression model fit to the data from 1990 to 2022.
+The following maps show the absolute state of each variable in {{year_anom}} as provided through the pCO2 product, the change in that variable from 1990 to {{year_anom}}, as well es the anomalies in {{year_anom}}. Changes and anomalies are determined based on the predicted value of a linear regression model fit to the data from 1990 to `r {{year_anom}}-1`.
 
-Maps are first presented as annual means, and than as monthly means. Note that the 2023 predictions for the monthly maps are done individually for each month, such the mean seasonal anomaly from the annual mean is removed.
+Maps are first presented as annual means, and than as monthly means. Note that the {{year_anom}} predictions for the monthly maps are done individually for each month, such the mean seasonal anomaly from the annual mean is removed.
 
 Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 
@@ -364,7 +364,7 @@ pco2_product_coarse <-
 
 pco2_product_coarse <-
   pco2_product_coarse %>%
-  select(-c(lon, lat, time, biome)) %>% 
+  select(-c(lon, lat, time, biome)) %>%
   group_by(year, month, lon_grid, lat_grid) %>%
   summarise(across(-area,
                    ~ weighted.mean(., area))) %>%
@@ -383,9 +383,9 @@ pco2_product_coarse <-
 
 ## Annual means
 
-### 2023 absolute
+### {{year_anom}} absolute
 
-```{r 2023_annual_mean_maps, fig.asp=0.5}
+```{r anomaly_year_annual_mean_maps, fig.asp=0.5}
 
 
 pco2_product_coarse_annual <-
@@ -410,7 +410,7 @@ pco2_product_coarse_annual_regression <-
   drop_na()
 
 pco2_product_coarse_annual_regression %>%
-  filter(year == 2023,
+  filter(year == {{year_anom}},
          !(name %in% name_divergent)) %>%
   group_split(name) %>%
   # head(1) %>%
@@ -418,20 +418,20 @@ pco2_product_coarse_annual_regression %>%
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = value)) +
-      labs(title = "Annual mean 2023") +
+      labs(title = paste("Annual mean", {{year_anom}})) +
       scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
       theme(legend.title = element_markdown())
   )
 
 pco2_product_coarse_annual_regression %>%
-  filter(year == 2023,
+  filter(year == {{year_anom}},
          name %in% name_divergent) %>%
   group_split(name) %>% 
   # head(1) %>%
   map( ~ map +
          geom_tile(data = .x,
                    aes(lon, lat, fill = value)) +
-         labs(title = "Annual mean 2023") +
+         labs(title = paste("Annual mean", {{year_anom}})) +
          scale_fill_divergent(
            name = labels_breaks(.x %>% distinct(name))) +
          theme(legend.title = element_markdown())
@@ -441,13 +441,16 @@ pco2_product_coarse_annual_regression %>%
 
 ### Trends
 
-```{r change_1990_2023_annual_mean_maps, fig.asp=0.5}
+```{r change_1990_annomaly_year_annual_mean_maps, fig.asp=0.5}
 
 
-pco2_product_coarse_annual_regression %>%
+pco2_product_coarse_annual_regression <-
+  pco2_product_coarse_annual_regression %>%
   group_by(name) %>%
   filter(year %in% c(min(year), max(year))) %>%
-  ungroup() %>%
+  ungroup()
+
+pco2_product_coarse_annual_regression %>%
   select(-c(value, resid)) %>%
   arrange(year) %>%
   group_by(lon, lat, name) %>%
@@ -468,18 +471,18 @@ pco2_product_coarse_annual_regression %>%
 
 ```
 
-### 2023 anomaly
+### {{year_anom}} anomaly
 
-```{r anomaly_2023_annual_mean_maps, fig.asp=0.5}
+```{r anomaly_anomaly_year_annual_mean_maps, fig.asp=0.5}
 
 pco2_product_coarse_annual_regression %>%
-  filter(year == 2023) %>%
+  filter(year == {{year_anom}}) %>%
   group_split(name) %>% 
   # head(1) %>%
   map( ~ map +
          geom_tile(data = .x,
                    aes(lon, lat, fill = resid)) +
-         labs(title =  "2023 anomaly") +
+         labs(title =  paste({{year_anom}},"anomaly")) +
          scale_fill_divergent(
            name = labels_breaks(.x %>% distinct(name))) +
          theme(legend.title = element_markdown())
@@ -488,11 +491,10 @@ pco2_product_coarse_annual_regression %>%
 ```
 
 
-```{r write_anomaly_2023_annual_mean_maps}
+```{r write_anomaly_anomaly_year_annual_mean_maps}
 
 pco2_product_coarse_annual_regression %>%
-  filter(year == 2023) %>%
-  write_csv(paste0("../data/","{{product_name}}","_anomaly_map_annual.csv"))
+  write_csv(paste0("../data/","{{product_name}}","_","{{year_anom}}","_anomaly_map_annual.csv"))
 
 ```
 
@@ -501,9 +503,9 @@ pco2_product_coarse_annual_regression %>%
 
 ## Monthly means
 
-### 2023 absolute
+### {{year_anom}} absolute
 
-```{r 2023_monthly_mean_maps, fig.asp=1.8}
+```{r anomaly_year_monthly_mean_maps, fig.asp=1.8}
 
 pco2_product_coarse_monthly <-
   pco2_product_coarse %>%
@@ -527,7 +529,7 @@ pco2_product_coarse_monthly_regression <-
 
 
 pco2_product_coarse_monthly_regression %>%
-  filter(year == 2023,
+  filter(year == {{year_anom}},
          !(name %in% name_divergent)) %>%
   group_split(name) %>%
   # head(1) %>%
@@ -535,14 +537,14 @@ pco2_product_coarse_monthly_regression %>%
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = value)) +
-      labs(title = "Monthly means 2023") +
+      labs(title = paste("Monthly means", {{year_anom}})) +
       scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
       theme(legend.title = element_markdown()) +
       facet_wrap( ~ month, ncol = 2)
   )
 
 pco2_product_coarse_monthly_regression %>%
-  filter(year == 2023,
+  filter(year == {{year_anom}},
          name %in% name_divergent) %>%
   group_split(name) %>%
   # head(1) %>%
@@ -550,7 +552,7 @@ pco2_product_coarse_monthly_regression %>%
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = value)) +
-      labs(title = "Monthly means 2023") +
+      labs(title = paste("Monthly means", {{year_anom}})) +
       scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
       theme(legend.title = element_markdown()) +
       facet_wrap( ~ month, ncol = 2)
@@ -560,7 +562,7 @@ pco2_product_coarse_monthly_regression %>%
 
 ### Trends
 
-```{r change_1990_2023_monthly_mean_maps, fig.asp=1.8}
+```{r change_1990_anomaly_year_monthly_mean_maps, fig.asp=1.8}
 
 pco2_product_coarse_monthly_regression %>%
   group_by(name) %>%
@@ -587,19 +589,19 @@ pco2_product_coarse_monthly_regression %>%
 
 ```
 
-### 2023 anomaly
+### {{year_anom}} anomaly
 
-```{r anomaly_2023_monthly_mean_maps, fig.asp=1.8}
+```{r anomaly_anomaly_year_monthly_mean_maps, fig.asp=1.8}
 
 pco2_product_coarse_monthly_regression %>%
-  filter(year == 2023) %>%
+  filter(year == {{year_anom}}) %>%
   group_split(name) %>%
   # head(1) %>%
   map(
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
-      labs(title = "2023 anomaly") +
+      labs(title = paste({{year_anom}}, "anomaly")) +
       scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
       theme(legend.title = element_markdown()) +
       facet_wrap( ~ month, ncol = 2)
@@ -608,11 +610,11 @@ pco2_product_coarse_monthly_regression %>%
 ```
 
 
-```{r write_anomaly_2023_monthly_mean_maps}
+```{r write_anomaly_anomaly_year_monthly_mean_maps}
 
 pco2_product_coarse_monthly_regression %>%
-  filter(year == 2023) %>%
-  write_csv(paste0("../data/","{{product_name}}","_anomaly_map_monthly.csv"))
+  filter(year == {{year_anom}}) %>%
+  write_csv(paste0("../data/","{{product_name}}","_","{{year_anom}}","_anomaly_map_monthly.csv"))
 
 ```
 
@@ -621,7 +623,7 @@ pco2_product_coarse_monthly_regression %>%
 # Hovmoeller plots
 
 
-The following Hovmoeller plots show the value of each variable as provided through the pCO2 product, as well as the anomalies from the prediction of a linear/quadratic fit to the data from 1990 to 2022.
+The following Hovmoeller plots show the value of each variable as provided through the pCO2 product, as well as the anomalies from the prediction of a linear/quadratic fit to the data from 1990 to `r {{year_anom}}-1`.
 
 Hovmoeller plots are first presented as annual means, and than as monthly means. Note that the predictions for the monthly Hovmoeller plots are done individually for each month, such the mean seasonal anomaly from the annual mean is removed.
 
@@ -816,7 +818,7 @@ pco2_product_hovmoeller_monthly_regression %>%
 ```{r write_hovmoeller_monthly_anomalies}
 
 pco2_product_hovmoeller_monthly_regression %>%
-  write_csv(paste0("../data/","{{product_name}}","_anomaly_hovmoeller_monthly.csv"))
+  write_csv(paste0("../data/","{{product_name}}","_","{{year_anom}}","_anomaly_hovmoeller_monthly.csv"))
 
 ```
 
@@ -847,7 +849,7 @@ pco2_product_hovmoeller_monthly_regression %>%
 
 # Regional means and integrals
 
-The following plots show biome- or global- averaged/integrated values of each variable as provided through the pCO2 product, as well as the anomalies from the prediction of a linear/quadratic fit to the data from 1990 to 2022.
+The following plots show biome- or global- averaged/integrated values of each variable as provided through the pCO2 product, as well as the anomalies from the prediction of a linear/quadratic fit to the data from 1990 to `r {{year_anom}}-1`.
 
 Anomalies are first presented relative to the predicted annual mean of each year, hence preserving the seasonality. Furthermore, anomalies are presented relative to the predicted monthly mean values, such that the mean seasonality is removed.
 
@@ -952,11 +954,11 @@ fig.height <- (fig.height + 2) * 0.1
 pco2_product_monthly %>%
   filter(biome %in% "Global") %>%
   ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -985,11 +987,11 @@ pco2_product_monthly %>%
 pco2_product_monthly %>%
   filter(biome %in% key_biomes) %>%
   ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -1017,11 +1019,11 @@ pco2_product_monthly %>%
 pco2_product_monthly %>%
   filter(biome %in% super_biomes) %>%
   ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -1056,12 +1058,12 @@ pco2_product_monthly %>%
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < 2022),
+      geom_path(data = . %>% filter(year < {{year_anom}}-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %>% filter(year >= 2022),
+        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -1099,12 +1101,12 @@ pco2_product_monthly %>%
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < 2022),
+      geom_path(data = . %>% filter(year < {{year_anom}}-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %>% filter(year >= 2022),
+        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -1144,17 +1146,18 @@ pco2_product_annual <-
   ungroup()
   
 pco2_product_annual %>% 
-  filter(biome %in% "Global") %>%
+  filter(biome %in% "Global",
+         year <= {{year_anom}}) %>%
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point() +
-  geom_smooth(data = . %>% filter(year <= 2022,
+  geom_smooth(data = . %>% filter(year < {{year_anom}},
                                   !(name %in% name_quadratic_fit)),
               method = "lm",
               fullrange = TRUE,
               aes(col = "linear"),
               se = FALSE) +
-  geom_smooth(data = . %>% filter(year <= 2022,
+  geom_smooth(data = . %>% filter(year < {{year_anom}},
                                   name %in% name_quadratic_fit),
               method = "lm",
               fullrange = TRUE,
@@ -1163,7 +1166,7 @@ pco2_product_annual %>%
               se = FALSE) +
   scale_color_brewer(
     palette = "Set1",
-    name = "Regression fit\n prior 2023") +
+    name = paste("Regression fit\nprior", {{year_anom}})) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = "Annual mean trends | Global") +
   facet_wrap(name ~ .,
@@ -1180,17 +1183,18 @@ pco2_product_annual %>%
   
 
 pco2_product_annual %>% 
-  filter(biome %in% key_biomes) %>%
+  filter(biome %in% key_biomes,
+         year <= {{year_anom}}) %>%
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point(size = 0.2) +
-  geom_smooth(data = . %>% filter(year <= 2022,
+  geom_smooth(data = . %>% filter(year < {{year_anom}},
                                   !(name %in% name_quadratic_fit)),
               method = "lm",
               fullrange = TRUE,
               aes(col = "linear"),
               se = FALSE) +
-  geom_smooth(data = . %>% filter(year <= 2022,
+  geom_smooth(data = . %>% filter(year < {{year_anom}},
                                   name %in% name_quadratic_fit),
               method = "lm",
               fullrange = TRUE,
@@ -1199,7 +1203,7 @@ pco2_product_annual %>%
               se = FALSE) +
   scale_color_brewer(
     palette = "Set1",
-    name = "Regression fit\n prior 2023") +
+    name = paste("Regression fit\nprior", {{year_anom}})) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = "Annual mean trends | Selected biomes") +
   facet_grid(name ~ biome,
@@ -1214,17 +1218,18 @@ pco2_product_annual %>%
   )
 
 pco2_product_annual %>% 
-  filter(biome %in% super_biomes) %>%
+  filter(biome %in% super_biomes,
+         year <= {{year_anom}}) %>%
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point(size = 0.2) +
-  geom_smooth(data = . %>% filter(year <= 2022,
+  geom_smooth(data = . %>% filter(year < {{year_anom}},
                                   !(name %in% name_quadratic_fit)),
               method = "lm",
               fullrange = TRUE,
               aes(col = "linear"),
               se = FALSE) +
-  geom_smooth(data = . %>% filter(year <= 2022,
+  geom_smooth(data = . %>% filter(year < {{year_anom}},
                                   name %in% name_quadratic_fit),
               method = "lm",
               fullrange = TRUE,
@@ -1233,7 +1238,7 @@ pco2_product_annual %>%
               se = FALSE) +
   scale_color_brewer(
     palette = "Set1",
-    name = "Regression fit\n prior 2023") +
+    name = paste("Regression fit\nprior", {{year_anom}})) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = "Annual mean trends | Selected super biomes") +
   facet_grid(name ~ biome,
@@ -1257,12 +1262,12 @@ pco2_product_annual_regression %>%
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %>% filter(year < 2022),
+  geom_point(data = . %>% filter(year < {{year_anom}}-1),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
   new_scale_fill() +
-  geom_point(data = . %>% filter(year >= 2022),
+  geom_point(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c("orange", "red"),
@@ -1289,12 +1294,12 @@ pco2_product_annual_regression %>%
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %>% filter(year < 2022),
+  geom_point(data = . %>% filter(year < {{year_anom}}-1),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
   new_scale_fill() +
-  geom_point(data = . %>% filter(year >= 2022),
+  geom_point(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c("orange", "red"),
@@ -1319,12 +1324,12 @@ pco2_product_annual_regression %>%
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %>% filter(year < 2022),
+  geom_point(data = . %>% filter(year < {{year_anom}}-1),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
   new_scale_fill() +
-  geom_point(data = . %>% filter(year >= 2022),
+  geom_point(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c("orange", "red"),
@@ -1348,12 +1353,12 @@ pco2_product_annual_regression %>%
   filter(biome != "global") %>%
   ggplot(aes(biome, resid)) +
   geom_hline(yintercept = 0) +
-  geom_jitter(data = . %>% filter(year < 2022),
+  geom_jitter(data = . %>% filter(year < {{year_anom}}-1),
              aes(fill = year),
              shape = 21, width = 0.2) +
   scale_fill_grayC() +
   new_scale_fill() +
-  geom_point(data = . %>% filter(year >= 2022),
+  geom_point(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c("orange", "red"),
@@ -1380,7 +1385,7 @@ pco2_product_annual_regression %>%
 ```{r write_biome_annual_regression}
 
 pco2_product_annual_regression %>%
-  write_csv(paste0("../data/","{{product_name}}","_biome_annual_regression.csv"))
+  write_csv(paste0("../data/","{{product_name}}","_","{{year_anom}}","_biome_annual_regression.csv"))
 
 ```
 
@@ -1397,11 +1402,11 @@ pco2_product_annual_detrended <-
 pco2_product_annual_detrended %>% 
   filter(biome %in% "Global") %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -1425,11 +1430,11 @@ pco2_product_annual_detrended %>%
 pco2_product_annual_detrended %>% 
   filter(biome %in% key_biomes) %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -1453,11 +1458,11 @@ pco2_product_annual_detrended %>%
 pco2_product_annual_detrended %>% 
   filter(biome %in% super_biomes) %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -1490,12 +1495,12 @@ pco2_product_annual_detrended %>%
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < 2022),
+      geom_path(data = . %>% filter(year < {{year_anom}}-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %>% filter(year >= 2022),
+        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -1535,12 +1540,12 @@ pco2_product_annual_detrended %>%
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < 2022),
+      geom_path(data = . %>% filter(year < {{year_anom}}-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %>% filter(year >= 2022),
+        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -1575,7 +1580,7 @@ pco2_product_annual_detrended %>%
 ```{r write_biome_annual_detrended}
 
 pco2_product_annual_detrended %>%
-  write_csv(paste0("../data/","{{product_name}}","_biome_annual_detrended.csv"))
+  write_csv(paste0("../data/","{{product_name}}","_","{{year_anom}}","_biome_annual_detrended.csv"))
 
 ```
 
@@ -1586,17 +1591,18 @@ pco2_product_annual_detrended %>%
 ```{r monthly_mean_trends, fig.asp=fig.height}
 
 pco2_product_monthly %>% 
-  filter(biome %in% "Global") %>%
+  filter(biome %in% "Global",
+         year <= {{year_anom}}) %>%
   mutate(month = as.factor(month)) %>% 
   ggplot(aes(year, value, col = month)) +
   # geom_point() +
-  geom_smooth(data = . %>% filter(year <= 2022,
+  geom_smooth(data = . %>% filter(year < {{year_anom}},
                                   !(name %in% name_quadratic_fit)),
               method = "lm",
               se = FALSE,
               fullrange = TRUE) +
   geom_smooth(
-    data = . %>% filter(year <= 2022,
+    data = . %>% filter(year < {{year_anom}},
                         name %in% name_quadratic_fit),
     method = "lm",
     fullrange = TRUE,
@@ -1604,7 +1610,7 @@ pco2_product_monthly %>%
     se = FALSE
   ) +
   scale_color_scico_d(palette = "romaO", 
-    name = "Regression fit\n prior 2023") +
+    name = paste("Regression fit\n prior", {{year_anom}})) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = "Monthly mean trends | Global") +
   facet_wrap(name ~ .,
@@ -1620,17 +1626,18 @@ pco2_product_monthly %>%
   )
 
 pco2_product_monthly %>% 
-  filter(biome %in% key_biomes) %>%
+  filter(biome %in% key_biomes,
+         year <= {{year_anom}}) %>%
   mutate(month = as.factor(month)) %>% 
   ggplot(aes(year, value, col = month)) +
   # geom_point() +
-  geom_smooth(data = . %>% filter(year <= 2022,
+  geom_smooth(data = . %>% filter(year < {{year_anom}},
                                   !(name %in% name_quadratic_fit)),
               method = "lm",
               fullrange = TRUE,
               se = FALSE) +
   geom_smooth(
-    data = . %>% filter(year <= 2022,
+    data = . %>% filter(year < {{year_anom}},
                         name %in% name_quadratic_fit),
     method = "lm",
     fullrange = TRUE,
@@ -1638,7 +1645,7 @@ pco2_product_monthly %>%
     se = FALSE
   ) +
   scale_color_scico_d(palette = "romaO",
-    name = "Regression fit\n prior 2023") +
+    name = paste("Regression fit\n prior", {{year_anom}})) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = "Monthly mean trends | Selected biomes") +
   facet_grid(name ~ biome,
@@ -1667,14 +1674,14 @@ pco2_product_monthly_regression %>%
       geom_hline(yintercept = 0) +
       geom_path() +
       geom_point(
-        data = . %>% filter(year < 2022),
+        data = . %>% filter(year < {{year_anom}}-1),
         aes(fill = year),
         shape = 21
       ) +
       scale_fill_grayC() +
       new_scale_fill() +
       geom_point(
-        data = . %>% filter(year >= 2022),
+        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
         aes(fill = as.factor(year)),
         shape = 21,
         size = 2
@@ -1713,14 +1720,14 @@ pco2_product_monthly_regression %>%
       geom_hline(yintercept = 0) +
       geom_path() +
       geom_point(
-        data = . %>% filter(year < 2022),
+        data = . %>% filter(year < {{year_anom}}-1),
         aes(fill = year),
         shape = 21
       ) +
       scale_fill_grayC() +
       new_scale_fill() +
       geom_point(
-        data = . %>% filter(year >= 2022),
+        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
         aes(fill = as.factor(year)),
         shape = 21,
         size = 2
@@ -1763,11 +1770,11 @@ pco2_product_monthly_detrended <-
 pco2_product_monthly_detrended %>% 
   filter(biome %in% "Global") %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -1793,11 +1800,11 @@ pco2_product_monthly_detrended %>%
 pco2_product_monthly_detrended %>% 
   filter(biome %in% key_biomes) %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -1822,11 +1829,11 @@ pco2_product_monthly_detrended %>%
 pco2_product_monthly_detrended %>% 
   filter(biome %in% super_biomes) %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < 2022),
+  geom_path(data = . %>% filter(year < {{year_anom}}-1),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
-  geom_path(data = . %>% filter(year >= 2022),
+  geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = as.factor(year)),
             linewidth = 1) +
   scale_color_manual(values = c("orange", "red"),
@@ -1860,12 +1867,12 @@ pco2_product_monthly_detrended %>%
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < 2022),
+      geom_path(data = . %>% filter(year < {{year_anom}}-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %>% filter(year >= 2022),
+        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -1904,12 +1911,12 @@ pco2_product_monthly_detrended %>%
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < 2022),
+      geom_path(data = . %>% filter(year < {{year_anom}}-1),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
       geom_path(
-        data = . %>% filter(year >= 2022),
+        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
         aes(col = as.factor(year)),
         linewidth = 1
       ) +
@@ -1944,7 +1951,7 @@ pco2_product_monthly_detrended %>%
 
 The following plots aim to unravel the correlation between biome- or globally- integrated monthly flux anomalies and the corresponding anomalies of the means/integrals of each other variable.
 
-Anomalies are first presented are first presented in absolute units. Due to the different flux magnitudes, we need to plot the globally and biome-integrated fluxes separately. Secondly, we normalize the anomalies to the monthly spread (expressed as standard deviation) of the anomalies from 1990 to 2022.
+Anomalies are first presented are first presented in absolute units. Due to the different flux magnitudes, we need to plot the globally and biome-integrated fluxes separately. Secondly, we normalize the anomalies to the monthly spread (expressed as standard deviation) of the anomalies from 1990 to `r {{year_anom}}-1`.
 
 ## Annual anomalies
 
@@ -1959,20 +1966,20 @@ pco2_product_annual_regression %>%
   pivot_longer(-c(year, biome, fgco2_int))  %>%
   ggplot(aes(value, fgco2_int)) +
   geom_hline(yintercept = 0) +
-  geom_point(data = . %>% filter(year <= 2022),
+  geom_point(data = . %>% filter(year < {{year_anom}}),
              aes(fill = year),
              shape = 21) +
   geom_smooth(
-    data = . %>% filter(year <= 2022),
+    data = . %>% filter(year < {{year_anom}}),
     method = "lm",
     se = FALSE,
     fullrange = TRUE,
-    aes(col = "Regression fit\n prior 2023")
+    aes(col = paste("Regression fit\n prior", {{year_anom}}))
   ) +
   scale_color_grey() +
   scale_fill_grayC()+
   new_scale_fill() +
-  geom_point(data = . %>% filter(year >= 2022),
+  geom_point(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
              aes(fill = as.factor(year)),
              shape = 21, size = 2)  +
   scale_fill_manual(values = c("orange", "red"),
@@ -2018,11 +2025,11 @@ pco2_product_monthly_detrended_anomaly %>%
   pivot_longer(-c(year, month, biome, fgco2_int))  %>%
   ggplot(aes(value, fgco2_int)) +
   geom_hline(yintercept = 0) +
-  geom_point(data = . %>% filter(year <= 2022),
+  geom_point(data = . %>% filter(year < {{year_anom}}),
              aes(col = paste(min(year), max(year), sep = "-")),
              alpha = 0.2) +
   geom_smooth(
-    data = . %>% filter(year <= 2022),
+    data = . %>% filter(year < {{year_anom}}),
     aes(col = paste(min(year), max(year), sep = "-")),
     method = "lm",
     se = FALSE,
@@ -2030,20 +2037,20 @@ pco2_product_monthly_detrended_anomaly %>%
   )  +
   scale_color_grey(name = "") +
   new_scale_color() +
-  geom_path(data = . %>% filter(year > 2022),
+  geom_path(data = . %>% filter(year > {{year_anom}}-1),
             aes(col = as.factor(month), group = 1))  +
-  geom_point(data = . %>% filter(year > 2022),
+  geom_point(data = . %>% filter(year > {{year_anom}}-1),
              aes(fill =  as.factor(month)),
              shape = 21,
              size = 3)  +
   scale_color_scico_d(palette = "buda",
                      guide = guide_legend(reverse = TRUE,
                                           order = 1),
-                     name = "Month\nof 2023") +
+                     name = paste("Month\nof", {{year_anom}})) +
   scale_fill_scico_d(palette = "buda",
                      guide = guide_legend(reverse = TRUE,
                                           order = 1),
-                     name = "Month\nof 2023") +
+                     name = paste("Month\nof", {{year_anom}})) +
   labs(title = "Globally integrated fluxes",
        y = labels_breaks("fgco2_int")$i_legend_title) +
   facet_wrap(
@@ -2076,12 +2083,12 @@ pco2_product_monthly_detrended_anomaly %>%
              aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %>% filter(year <= 2022),
+        data = . %>% filter(year < {{year_anom}}),
         aes(col = paste(min(year), max(year), sep = "-")),
         alpha = 0.2
       ) +
       geom_smooth(
-        data = . %>% filter(year <= 2022),
+        data = . %>% filter(year < {{year_anom}}),
         aes(col = paste(min(year), max(year), sep = "-")),
         method = "lm",
         se = FALSE,
@@ -2089,10 +2096,10 @@ pco2_product_monthly_detrended_anomaly %>%
       )  +
       scale_color_grey(name = "") +
       new_scale_color() +
-      geom_path(data = . %>% filter(year > 2022),
+      geom_path(data = . %>% filter(year > {{year_anom}}-1),
                 aes(col = as.factor(month), group = 1))  +
       geom_point(
-        data = . %>% filter(year > 2022),
+        data = . %>% filter(year > {{year_anom}}-1),
         aes(fill = as.factor(month)),
         shape = 21,
         size = 3
@@ -2101,13 +2108,13 @@ pco2_product_monthly_detrended_anomaly %>%
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "Month\nof 2023"
+        name = paste("Month\nof", {{year_anom}})
       ) +
       scale_fill_scico_d(
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "Month\nof 2023"
+        name = paste("Month\nof", {{year_anom}})
       ) +
       facet_wrap( ~ biome, ncol = 3, scales = "free") +
       labs(
@@ -2134,12 +2141,12 @@ pco2_product_monthly_detrended_anomaly %>%
              aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %>% filter(year <= 2022),
+        data = . %>% filter(year < {{year_anom}}),
         aes(col = paste(min(year), max(year), sep = "-")),
         alpha = 0.2
       ) +
       geom_smooth(
-        data = . %>% filter(year <= 2022),
+        data = . %>% filter(year < {{year_anom}}),
         aes(col = paste(min(year), max(year), sep = "-")),
         method = "lm",
         se = FALSE,
@@ -2147,10 +2154,10 @@ pco2_product_monthly_detrended_anomaly %>%
       )  +
       scale_color_grey(name = "") +
       new_scale_color() +
-      geom_path(data = . %>% filter(year > 2022),
+      geom_path(data = . %>% filter(year > {{year_anom}}-1),
                 aes(col = as.factor(month), group = 1))  +
       geom_point(
-        data = . %>% filter(year > 2022),
+        data = . %>% filter(year > {{year_anom}}-1),
         aes(fill = as.factor(month)),
         shape = 21,
         size = 3
@@ -2159,13 +2166,13 @@ pco2_product_monthly_detrended_anomaly %>%
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "Month\nof 2023"
+        name = paste("Month\nof", {{year_anom}})
       ) +
       scale_fill_scico_d(
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "Month\nof 2023"
+        name = paste("Month\nof", {{year_anom}})
       ) +
       facet_wrap( ~ biome, ncol = 3, scales = "free_x") +
       labs(
@@ -2187,7 +2194,7 @@ pco2_product_monthly_detrended_anomaly %>%
   pivot_longer(-c(month, biome, year)) %>%
   write_csv(paste0(
     "../data/",
-    "{{product_name}}",
+    "{{product_name}}","_","{{year_anom}}",
     "_biome_monthly_detrended_anomaly.csv"
   ))
 
@@ -2202,7 +2209,7 @@ pco2_product_monthly_detrended_anomaly %>%
 pco2_product_monthly_detrended_anomaly_spread <-
   pco2_product_monthly_detrended_anomaly %>%
   pivot_longer(-c(month, biome, year)) %>%
-  filter(year < 2023) %>%
+  filter(year < {{year_anom}}) %>%
   group_by(month, biome, name) %>%
   summarise(spread = sd(value, na.rm = TRUE)) %>%
   ungroup()
@@ -2234,12 +2241,12 @@ pco2_product_monthly_detrended_anomaly_relative %>%
       geom_vline(xintercept = 0) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %>% filter(year <= 2022),
+        data = . %>% filter(year < {{year_anom}}),
         aes(col = paste(min(year), max(year), sep = "-")),
         alpha = 0.2
       ) +
       geom_smooth(
-        data = . %>% filter(year <= 2022),
+        data = . %>% filter(year < {{year_anom}}),
         aes(col = paste(min(year), max(year), sep = "-")),
         method = "lm",
         se = FALSE,
@@ -2247,10 +2254,10 @@ pco2_product_monthly_detrended_anomaly_relative %>%
       )  +
       scale_color_grey(name = "") +
       new_scale_color() +
-      geom_path(data = . %>% filter(year > 2022),
+      geom_path(data = . %>% filter(year > {{year_anom}}-1),
                 aes(col = as.factor(month), group = 1))  +
       geom_point(
-        data = . %>% filter(year > 2022),
+        data = . %>% filter(year > {{year_anom}}-1),
         aes(fill = as.factor(month)),
         shape = 21,
         size = 3
@@ -2259,13 +2266,13 @@ pco2_product_monthly_detrended_anomaly_relative %>%
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "Month\nof 2023"
+        name = paste("Month\nof", {{year_anom}})
       ) +
       scale_fill_scico_d(
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "Month\nof 2023"
+        name = paste("Month\nof", {{year_anom}})
       ) +
       facet_wrap( ~ biome, ncol = 3) +
       coord_fixed() +
