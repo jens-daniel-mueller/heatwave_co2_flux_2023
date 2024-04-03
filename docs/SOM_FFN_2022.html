@@ -427,7 +427,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">SOM_FFN</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">02 April, 2024</h4>
+<h4 class="date">03 April, 2024</h4>
 
 </div>
 
@@ -456,7 +456,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-04-02
+<strong>Last updated:</strong> 2024-04-03
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -588,15 +588,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treeb84678b674e9daf6a41deccf18d11d5e8caeb43etargetblankb84678ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree53c89bd7a854fb6a5fc1b4aad5a5daab4f292bb3targetblank53c89bda">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/b84678b674e9daf6a41deccf18d11d5e8caeb43e" target="_blank">b84678b</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/53c89bd7a854fb6a5fc1b4aad5a5daab4f292bb3" target="_blank">53c89bd</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treeb84678b674e9daf6a41deccf18d11d5e8caeb43etargetblankb84678ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree53c89bd7a854fb6a5fc1b4aad5a5daab4f292bb3targetblank53c89bda"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -606,7 +606,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/b84678b674e9daf6a41deccf18d11d5e8caeb43e" target="_blank">b84678b</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/53c89bd7a854fb6a5fc1b4aad5a5daab4f292bb3" target="_blank">53c89bd</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -624,12 +624,6 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/input/
-
-Untracked files:
-    Untracked:  analysis/CMEMS_2023.Rmd
-    Untracked:  analysis/OceanSODA_2023.Rmd
-    Untracked:  analysis/SOM_FFN_2023.Rmd
-    Untracked:  analysis/pco2_product_synopsis_2023.Rmd
 
 Unstaged changes:
     Deleted:    analysis/CMEMS.Rmd
@@ -684,6 +678,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/8a318af351854dee6c70c917782fa3f2b6007947/docs/SOM_FFN_2022.html" target="_blank">8a318af</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1702,10 +1713,13 @@ jens-daniel-mueller
 </div>
 <div id="trends" class="section level3">
 <h3>Trends</h3>
-<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
+<pre class="r"><code>pco2_product_coarse_annual_regression &lt;-
+  pco2_product_coarse_annual_regression %&gt;%
   group_by(name) %&gt;%
   filter(year %in% c(min(year), max(year))) %&gt;%
-  ungroup() %&gt;%
+  ungroup()
+
+pco2_product_coarse_annual_regression %&gt;%
   select(-c(value, resid)) %&gt;%
   arrange(year) %&gt;%
   group_by(lon, lat, name) %&gt;%
@@ -2547,7 +2561,6 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 2022) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;SOM_FFN&quot;,&quot;_&quot;,&quot;2022&quot;,&quot;_anomaly_map_annual.csv&quot;))</code></pre>
 </div>
 </div>
