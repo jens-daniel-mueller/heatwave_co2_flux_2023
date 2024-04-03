@@ -588,15 +588,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree9d258b543cb6ecbb4d97324451c08c72010b41eftargetblank9d258b5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treec0c49cfc447642674c218b2bf14167eb32c57735targetblankc0c49cfa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/9d258b543cb6ecbb4d97324451c08c72010b41ef" target="_blank">9d258b5</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/c0c49cfc447642674c218b2bf14167eb32c57735" target="_blank">c0c49cf</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree9d258b543cb6ecbb4d97324451c08c72010b41eftargetblank9d258b5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treec0c49cfc447642674c218b2bf14167eb32c57735targetblankc0c49cfa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -606,7 +606,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/9d258b543cb6ecbb4d97324451c08c72010b41ef" target="_blank">9d258b5</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/c0c49cfc447642674c218b2bf14167eb32c57735" target="_blank">c0c49cf</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -625,8 +625,12 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/input/
 
+Untracked files:
+    Untracked:  analysis/child/pCO2_product_preprocessing.Rmd
+
 Unstaged changes:
     Modified:   analysis/_site.yml
+    Modified:   analysis/child/pCO2_product_analysis.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -673,6 +677,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c0c49cfc447642674c218b2bf14167eb32c57735/analysis/CMEMS_2022.Rmd" target="_blank">c0c49cf</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-03
+</td>
+<td>
+split preprocessing and analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/40cb15830ed33204d0d3bbe70f22d81f21d96181/docs/CMEMS_2022.html" target="_blank">40cb158</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -930,12 +968,8 @@ pco2_product &lt;-
 pco2_product &lt;-
   pco2_product %&gt;% 
   filter(year &lt;= 2023)</code></pre>
-<pre class="r"><code>pCO2productanalysis &lt;-
-  knitr::knit_expand(
-    file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
-    product_name = &quot;CMEMS&quot;,
-    year_anom = 2022
-  )</code></pre>
+<pre class="r"><code>pCO2_product_preprocessing &lt;-
+  knitr::knit_expand(file = here::here(&quot;analysis/child/pCO2_product_preprocessing.Rmd&quot;))</code></pre>
 </div>
 <div id="analysis-settings" class="section level1">
 <h1>Analysis settings</h1>
@@ -961,116 +995,6 @@ super_biome_mask &lt;-
 
 biome_mask &lt;-
   read_rds(&quot;../data/biome_mask.rds&quot;)</code></pre>
-</div>
-<div id="anomaly-detection" class="section level1">
-<h1>Anomaly detection</h1>
-<p>For the detection of anomalies at any point in time and space, we fit
-regression models and compare the fitted to the actual value.</p>
-<p>We use linear regression models for all parameters, except for `,
-which are approximated with quadratic fits.</p>
-<p>The regression models are fitted to data from the period `, and
-extrapolated to 2022.</p>
-<pre class="r"><code>anomaly_determination &lt;- function(df,...) {
-  
-  group_by &lt;- quos(...)
-  # group_by &lt;- quos(lon, lat)
-  # df &lt;- pco2_product_coarse_annual
-  
-  # Linear regression models
-  
-  df_lm &lt;-
-    df %&gt;%
-    filter(year &lt; 2022,
-           !(name %in% name_quadratic_fit)) %&gt;%
-    nest(data = -c(name, !!!group_by)) %&gt;%
-    mutate(
-      fit = map(data, ~ lm(value ~ year, data = .x)),
-      tidied = map(fit, tidy),
-      augmented = map(fit, augment)
-    )
-  
-  
-  df_lm_year_anom &lt;-
-    full_join(
-      df_lm %&gt;%
-        unnest(tidied) %&gt;%
-        select(name, !!!group_by, term, estimate) %&gt;%
-        pivot_wider(names_from = term,
-                    values_from = estimate) %&gt;%
-        mutate(fit = `(Intercept)` + year * 2022) %&gt;%
-        select(name, !!!group_by, fit) %&gt;%
-        mutate(year = 2022),
-      df %&gt;%
-        filter(year == 2022,
-               !(name %in% name_quadratic_fit))
-    ) %&gt;%
-    mutate(resid = value - fit)
-  
-  
-  df_lm &lt;-
-    bind_rows(
-      df_lm %&gt;%
-        unnest(augmented) %&gt;%
-        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
-      df_lm_year_anom
-    )
-  
-  rm(df_lm_year_anom)
-  
-  # Quadratic regression models
-  
-  df_quadratic &lt;-
-    df %&gt;%
-    filter(year &lt; 2022,
-           name %in% name_quadratic_fit) %&gt;%
-    nest(data = -c(name, !!!group_by)) %&gt;%
-    mutate(
-      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
-      tidied = map(fit, tidy),
-      augmented = map(fit, augment)
-    )
-  
-  
-  df_quadratic_year_anom &lt;-
-    full_join(
-      df_quadratic %&gt;%
-        unnest(tidied) %&gt;%
-        select(name, !!!group_by, term, estimate) %&gt;%
-        pivot_wider(names_from = term,
-                    values_from = estimate) %&gt;%
-        mutate(fit = `(Intercept)` + year * 2022 + `I(year^2)` * 2022 ^ 2) %&gt;%
-        select(name, !!!group_by, fit) %&gt;%
-        mutate(year = 2022),
-      df %&gt;%
-        filter(year == 2022,
-               name %in% name_quadratic_fit)
-    ) %&gt;%
-    mutate(resid = value - fit)
-  
-  
-  df_quadratic &lt;-
-    bind_rows(
-      df_quadratic %&gt;%
-        unnest(augmented) %&gt;%
-        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
-      df_quadratic_year_anom
-    )
-  
-  rm(df_quadratic_year_anom)
-  
-  # Join linear and quadratic regression results
-  
-  df_regression &lt;-
-    bind_rows(df_lm,
-              df_quadratic)
-  
-  rm(df_lm,
-     df_quadratic)
-  
-  
-  return(df_regression)
-  
-}</code></pre>
 </div>
 <div id="define-labels-and-breaks" class="section level1">
 <h1>Define labels and breaks</h1>
@@ -1242,6 +1166,122 @@ pco2_product &lt;-
   pco2_product %&gt;%
   mutate(across(-c(lat, lon, time, area, year, month, biome), 
                 ~ if_else(is.na(biome), NA, .)))</code></pre>
+<pre class="r"><code>pCO2_product_analysis &lt;-
+  knitr::knit_expand(
+    file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
+    product_name = &quot;CMEMS&quot;,
+    year_anom = 2022
+  )</code></pre>
+</div>
+<div id="anomaly-detection" class="section level1">
+<h1>Anomaly detection</h1>
+<p>For the detection of anomalies at any point in time and space, we fit
+regression models and compare the fitted to the actual value.</p>
+<p>We use linear regression models for all parameters, except for `,
+which are approximated with quadratic fits.</p>
+<p>The regression models are fitted to data from the period `, and
+extrapolated to 2022.</p>
+<pre class="r"><code>anomaly_determination &lt;- function(df,...) {
+  
+  group_by &lt;- quos(...)
+  # group_by &lt;- quos(lon, lat)
+  # df &lt;- pco2_product_coarse_annual
+  
+  # Linear regression models
+  
+  df_lm &lt;-
+    df %&gt;%
+    filter(year &lt; 2022,
+           !(name %in% name_quadratic_fit)) %&gt;%
+    nest(data = -c(name, !!!group_by)) %&gt;%
+    mutate(
+      fit = map(data, ~ lm(value ~ year, data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment)
+    )
+  
+  
+  df_lm_year_anom &lt;-
+    full_join(
+      df_lm %&gt;%
+        unnest(tidied) %&gt;%
+        select(name, !!!group_by, term, estimate) %&gt;%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %&gt;%
+        mutate(fit = `(Intercept)` + year * 2022) %&gt;%
+        select(name, !!!group_by, fit) %&gt;%
+        mutate(year = 2022),
+      df %&gt;%
+        filter(year == 2022,
+               !(name %in% name_quadratic_fit))
+    ) %&gt;%
+    mutate(resid = value - fit)
+  
+  
+  df_lm &lt;-
+    bind_rows(
+      df_lm %&gt;%
+        unnest(augmented) %&gt;%
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
+      df_lm_year_anom
+    )
+  
+  rm(df_lm_year_anom)
+  
+  # Quadratic regression models
+  
+  df_quadratic &lt;-
+    df %&gt;%
+    filter(year &lt; 2022,
+           name %in% name_quadratic_fit) %&gt;%
+    nest(data = -c(name, !!!group_by)) %&gt;%
+    mutate(
+      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
+      tidied = map(fit, tidy),
+      augmented = map(fit, augment)
+    )
+  
+  
+  df_quadratic_year_anom &lt;-
+    full_join(
+      df_quadratic %&gt;%
+        unnest(tidied) %&gt;%
+        select(name, !!!group_by, term, estimate) %&gt;%
+        pivot_wider(names_from = term,
+                    values_from = estimate) %&gt;%
+        mutate(fit = `(Intercept)` + year * 2022 + `I(year^2)` * 2022 ^ 2) %&gt;%
+        select(name, !!!group_by, fit) %&gt;%
+        mutate(year = 2022),
+      df %&gt;%
+        filter(year == 2022,
+               name %in% name_quadratic_fit)
+    ) %&gt;%
+    mutate(resid = value - fit)
+  
+  
+  df_quadratic &lt;-
+    bind_rows(
+      df_quadratic %&gt;%
+        unnest(augmented) %&gt;%
+        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
+      df_quadratic_year_anom
+    )
+  
+  rm(df_quadratic_year_anom)
+  
+  # Join linear and quadratic regression results
+  
+  df_regression &lt;-
+    bind_rows(df_lm,
+              df_quadratic)
+  
+  rm(df_lm,
+     df_quadratic)
+  
+  
+  return(df_regression)
+  
+}</code></pre>
 </div>
 <div id="maps" class="section level1">
 <h1>Maps</h1>
@@ -5824,7 +5864,7 @@ other attached packages:
 [19] patchwork_1.1.2     collapse_1.8.9      forcats_0.5.2      
 [22] stringr_1.5.0       dplyr_1.1.3         purrr_1.0.2        
 [25] readr_2.1.3         tidyr_1.3.0         tibble_3.2.1       
-[28] ggplot2_3.4.4       tidyverse_1.3.2     workflowr_1.7.0    
+[28] ggplot2_3.4.4       tidyverse_1.3.2    
 
 loaded via a namespace (and not attached):
   [1] googledrive_2.0.0       ellipsis_0.3.2          class_7.3-20           
@@ -5833,36 +5873,35 @@ loaded via a namespace (and not attached):
  [10] farver_2.1.1            bit64_4.0.5             fansi_1.0.3            
  [13] xml2_1.3.3              splines_4.2.2           codetools_0.2-18       
  [16] cachem_1.0.6            knitr_1.41              polyclip_1.10-4        
- [19] jsonlite_1.8.3          gsw_1.1-1               dbplyr_2.2.1           
- [22] compiler_4.2.2          httr_1.4.4              backports_1.4.1        
- [25] Matrix_1.5-3            assertthat_0.2.1        fastmap_1.1.0          
- [28] gargle_1.2.1            cli_3.6.1               later_1.3.0            
- [31] tweenr_2.0.2            htmltools_0.5.3         tools_4.2.2            
- [34] rnaturalearthdata_0.1.0 gtable_0.3.1            glue_1.6.2             
- [37] Rcpp_1.0.11             cellranger_1.1.0        jquerylib_0.1.4        
- [40] vctrs_0.6.4             nlme_3.1-160            lwgeom_0.2-10          
- [43] xfun_0.35               ps_1.7.2                rvest_1.0.3            
+ [19] jsonlite_1.8.3          workflowr_1.7.0         gsw_1.1-1              
+ [22] dbplyr_2.2.1            compiler_4.2.2          httr_1.4.4             
+ [25] backports_1.4.1         Matrix_1.5-3            assertthat_0.2.1       
+ [28] fastmap_1.1.0           gargle_1.2.1            cli_3.6.1              
+ [31] later_1.3.0             tweenr_2.0.2            htmltools_0.5.3        
+ [34] tools_4.2.2             gtable_0.3.1            glue_1.6.2             
+ [37] rnaturalearthdata_0.1.0 Rcpp_1.0.11             cellranger_1.1.0       
+ [40] jquerylib_0.1.4         vctrs_0.6.4             nlme_3.1-160           
+ [43] lwgeom_0.2-10           xfun_0.35               rvest_1.0.3            
  [46] lifecycle_1.0.3         googlesheets4_1.0.1     oce_1.7-10             
- [49] getPass_0.2-2           MASS_7.3-58.1           scales_1.2.1           
- [52] vroom_1.6.0             hms_1.1.2               promises_1.2.0.1       
- [55] parallel_4.2.2          RColorBrewer_1.1-3      yaml_2.3.6             
- [58] memoise_2.0.1           sass_0.4.4              stringi_1.7.8          
- [61] highr_0.9               e1071_1.7-12            checkmate_2.1.0        
- [64] commonmark_1.8.1        rlang_1.1.1             pkgconfig_2.0.3        
- [67] systemfonts_1.0.4       evaluate_0.18           lattice_0.20-45        
- [70] SolveSAPHE_2.1.0        labeling_0.4.2          bit_4.0.5              
- [73] processx_3.8.0          tidyselect_1.2.0        here_1.0.1             
- [76] seacarb_3.3.1           magrittr_2.0.3          R6_2.5.1               
- [79] generics_0.1.3          DBI_1.1.3               mgcv_1.8-41            
- [82] pillar_1.9.0            haven_2.5.1             whisker_0.4            
- [85] withr_2.5.0             units_0.8-0             sp_1.5-1               
- [88] modelr_0.1.10           crayon_1.5.2            KernSmooth_2.23-20     
- [91] utf8_1.2.2              tzdb_0.3.0              rmarkdown_2.18         
- [94] grid_4.2.2              readxl_1.4.1            data.table_1.14.6      
- [97] callr_3.7.3             git2r_0.30.1            reprex_2.0.2           
-[100] digest_0.6.30           classInt_0.4-8          httpuv_1.6.6           
-[103] textshaping_0.3.6       munsell_0.5.0           viridisLite_0.4.1      
-[106] bslib_0.4.1            </code></pre>
+ [49] MASS_7.3-58.1           scales_1.2.1            vroom_1.6.0            
+ [52] hms_1.1.2               promises_1.2.0.1        parallel_4.2.2         
+ [55] RColorBrewer_1.1-3      yaml_2.3.6              memoise_2.0.1          
+ [58] sass_0.4.4              stringi_1.7.8           highr_0.9              
+ [61] e1071_1.7-12            checkmate_2.1.0         commonmark_1.8.1       
+ [64] rlang_1.1.1             pkgconfig_2.0.3         systemfonts_1.0.4      
+ [67] evaluate_0.18           lattice_0.20-45         SolveSAPHE_2.1.0       
+ [70] labeling_0.4.2          bit_4.0.5               tidyselect_1.2.0       
+ [73] here_1.0.1              seacarb_3.3.1           magrittr_2.0.3         
+ [76] R6_2.5.1                generics_0.1.3          DBI_1.1.3              
+ [79] mgcv_1.8-41             pillar_1.9.0            haven_2.5.1            
+ [82] whisker_0.4             withr_2.5.0             units_0.8-0            
+ [85] sp_1.5-1                modelr_0.1.10           crayon_1.5.2           
+ [88] KernSmooth_2.23-20      utf8_1.2.2              tzdb_0.3.0             
+ [91] rmarkdown_2.18          grid_4.2.2              readxl_1.4.1           
+ [94] data.table_1.14.6       git2r_0.30.1            reprex_2.0.2           
+ [97] digest_0.6.30           classInt_0.4-8          httpuv_1.6.6           
+[100] textshaping_0.3.6       munsell_0.5.0           viridisLite_0.4.1      
+[103] bslib_0.4.1            </code></pre>
 </div>
 </div>
 </div>
