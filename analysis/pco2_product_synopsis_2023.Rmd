@@ -359,7 +359,8 @@ Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 ```{r anomaly_2023_annual_mean_maps, fig.asp=1.5}
 
 pco2_product_coarse_annual_regression %>%
-  filter(name %in% name_core) %>%
+  filter(name %in% name_core,
+         year == year_anom) %>%
   group_split(name) %>%
   # head(1) %>%
   map(
@@ -380,7 +381,7 @@ pco2_product_coarse_annual_regression %>%
 
 ### Trends
 
-```{r change_1990_annomaly_year_annual_mean_maps, fig.asp=1.5, eval=FALSE}
+```{r change_1990_annomaly_year_annual_mean_maps, fig.asp=1.5}
 
 pco2_product_coarse_annual_regression %>%
   filter(name %in% name_core) %>% 
@@ -395,7 +396,7 @@ pco2_product_coarse_annual_regression %>%
   ungroup() %>%
   filter(!is.na(change)) %>% 
   group_split(name) %>%
-  head(1) %>%
+  # head(1) %>%
   map(
     ~ map +
       geom_tile(data = .x,
@@ -407,7 +408,6 @@ pco2_product_coarse_annual_regression %>%
   )
 
 ```
-
 
 
 ## Monthly means
