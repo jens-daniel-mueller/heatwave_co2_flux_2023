@@ -123,9 +123,19 @@ pco2_product <-
 ```
 
 
+```{r source_pCO2_product_preprocessing_child}
+
+pCO2_product_preprocessing <-
+  knitr::knit_expand(file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"))
+
+```
+
+
+`r knitr::knit(text = unlist(pCO2_product_preprocessing))`
+
 ```{r source_pCO2_product_analysis_child}
 
-pCO2productanalysis <-
+pCO2_product_analysis <-
   knitr::knit_expand(
     file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
     product_name = "CMEMS",
@@ -136,4 +146,4 @@ pCO2productanalysis <-
 ```
 
 
-`r knitr::knit(text = unlist(pCO2productanalysis))`
+`r knitr::knit(text = unlist(pCO2_product_analysis))`
