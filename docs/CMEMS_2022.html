@@ -427,7 +427,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">CMEMS</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">03 April, 2024</h4>
+<h4 class="date">04 April, 2024</h4>
 
 </div>
 
@@ -456,7 +456,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-04-03
+<strong>Last updated:</strong> 2024-04-04
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -588,15 +588,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treebb710b1cca99b6c6133fdca4e0383c9ec838049etargetblankbb710b1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree346dd1f172469b7816c31d27953955702d2f8b9atargetblank346dd1fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/bb710b1cca99b6c6133fdca4e0383c9ec838049e" target="_blank">bb710b1</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/346dd1f172469b7816c31d27953955702d2f8b9a" target="_blank">346dd1f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treebb710b1cca99b6c6133fdca4e0383c9ec838049etargetblankbb710b1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree346dd1f172469b7816c31d27953955702d2f8b9atargetblank346dd1fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -606,7 +606,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/bb710b1cca99b6c6133fdca4e0383c9ec838049e" target="_blank">bb710b1</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/346dd1f172469b7816c31d27953955702d2f8b9a" target="_blank">346dd1f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -677,6 +677,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/346dd1f172469b7816c31d27953955702d2f8b9a/docs/CMEMS_2022.html" target="_blank">346dd1f</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1005,16 +1022,10 @@ pco2_product &lt;-
 <pre class="r"><code>pCO2_product_preprocessing &lt;-
   knitr::knit_expand(file = here::here(&quot;analysis/child/pCO2_product_preprocessing.Rmd&quot;))</code></pre>
 </div>
-<div id="analysis-settings" class="section level1">
-<h1>Analysis settings</h1>
-<pre class="r"><code>name_quadratic_fit &lt;- c(&quot;atm_co2&quot;, &quot;atm_fco2&quot;, &quot;spco2&quot;, &quot;sfco2&quot;)
-
-start_year &lt;- 1990
-
-name_divergent &lt;- c(&quot;dco2&quot;, &quot;fgco2&quot;, &quot;fgco2_hov&quot;, &quot;fgco2_int&quot;)</code></pre>
-</div>
-<div id="load-masks" class="section level1">
-<h1>Load masks</h1>
+<div id="preprocessing" class="section level1">
+<h1>Preprocessing</h1>
+<div id="load-masks" class="section level2">
+<h2>Load masks</h2>
 <pre class="r"><code>map &lt;-
   read_rds(&quot;../data/map.rds&quot;)
 
@@ -1030,8 +1041,8 @@ super_biome_mask &lt;-
 biome_mask &lt;-
   read_rds(&quot;../data/biome_mask.rds&quot;)</code></pre>
 </div>
-<div id="define-labels-and-breaks" class="section level1">
-<h1>Define labels and breaks</h1>
+<div id="define-labels-and-breaks" class="section level2">
+<h2>Define labels and breaks</h2>
 <pre class="r"><code>labels_breaks &lt;- function(i_name) {
   
   if (i_name == &quot;dco2&quot;) {
@@ -1185,8 +1196,16 @@ x_axis_labels &lt;-
     &quot;wind&quot; = labels_breaks(&quot;wind&quot;)$i_legend_title
   )</code></pre>
 </div>
-<div id="preprocessing" class="section level1">
-<h1>Preprocessing</h1>
+<div id="analysis-settings" class="section level2">
+<h2>Analysis settings</h2>
+<pre class="r"><code>name_quadratic_fit &lt;- c(&quot;atm_co2&quot;, &quot;atm_fco2&quot;, &quot;spco2&quot;, &quot;sfco2&quot;)
+
+start_year &lt;- 1990
+
+name_divergent &lt;- c(&quot;dco2&quot;, &quot;fgco2&quot;, &quot;fgco2_hov&quot;, &quot;fgco2_int&quot;)</code></pre>
+</div>
+<div id="data-preprocessing" class="section level2">
+<h2>Data preprocessing</h2>
 <pre class="r"><code>pco2_product &lt;-
   pco2_product %&gt;%
   filter(year &gt;= start_year)</code></pre>
@@ -1200,9 +1219,10 @@ pco2_product &lt;-
   pco2_product %&gt;%
   mutate(across(-c(lat, lon, time, area, year, month, biome), 
                 ~ if_else(is.na(biome), NA, .)))</code></pre>
-<pre class="r"><code>pco2_product_coarse &lt;-
-  m_grid_horizontal_coarse(pco2_product)
+<pre class="r"><code># apply coarse grid
 
+pco2_product_coarse &lt;-
+  m_grid_horizontal_coarse(pco2_product)
 
 pco2_product_coarse &lt;-
   pco2_product_coarse %&gt;%
@@ -1219,6 +1239,8 @@ pco2_product_coarse &lt;-
   drop_na() %&gt;%
   pivot_wider()
 
+# compute annual means
+
 pco2_product_coarse_annual &lt;-
   pco2_product_coarse %&gt;%
   select(-month) %&gt;% 
@@ -1231,7 +1253,7 @@ pco2_product_coarse_annual &lt;-
   pco2_product_coarse_annual %&gt;% 
   pivot_longer(-c(year, lon, lat))
 
-
+## compute monthly means
 
 pco2_product_coarse_monthly &lt;-
   pco2_product_coarse %&gt;%
@@ -1243,17 +1265,89 @@ pco2_product_coarse_monthly &lt;-
 pco2_product_coarse_monthly &lt;-
   pco2_product_coarse_monthly %&gt;% 
   pivot_longer(-c(year, month, lon, lat))</code></pre>
+<pre class="r"><code>pco2_product_monthly_global &lt;-
+  pco2_product %&gt;%
+  filter(!is.na(fgco2)) %&gt;% 
+  select(-c(lon, lat, year, month, biome)) %&gt;% 
+  group_by(time) %&gt;%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
+  ungroup()
+
+pco2_product_monthly_biome &lt;-
+  pco2_product %&gt;%
+  filter(!is.na(fgco2)) %&gt;% 
+  select(-c(lon, lat, year, month)) %&gt;% 
+  group_by(time, biome) %&gt;%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
+  ungroup()
+
+pco2_product_monthly_biome_super &lt;-
+  pco2_product %&gt;%
+  filter(!is.na(fgco2)) %&gt;% 
+  mutate(
+    biome = case_when(
+      str_detect(biome, &quot;NA-&quot;) ~ &quot;North Atlantic&quot;,
+      str_detect(biome, &quot;NP-&quot;) ~ &quot;North Pacific&quot;,
+      str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
+      TRUE ~ &quot;other&quot;
+    )
+  ) %&gt;%
+  filter(biome != &quot;other&quot;) %&gt;%
+  select(-c(lon, lat, year, month)) %&gt;%
+  group_by(time, biome) %&gt;%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
+  ungroup()
+
+pco2_product_monthly &lt;-
+  bind_rows(pco2_product_monthly_global %&gt;%
+              mutate(biome = &quot;Global&quot;),
+            pco2_product_monthly_biome,
+            pco2_product_monthly_biome_super)
+
+rm(
+  pco2_product_monthly_global,
+  pco2_product_monthly_biome,
+  pco2_product_monthly_biome_super
+)
+
+
+pco2_product_monthly &lt;-
+  pco2_product_monthly %&gt;% 
+  filter(!is.na(biome))
+
+pco2_product_monthly &lt;-
+  pco2_product_monthly %&gt;%
+  rename(fgco2_int = fgco2)
+
+pco2_product_monthly &lt;-
+  pco2_product_monthly %&gt;%
+  mutate(year = year(time),
+         month = month(time),
+         .after = time)
+
+pco2_product_monthly &lt;-
+  pco2_product_monthly %&gt;%
+  pivot_longer(-c(time, year, month, biome))</code></pre>
 </div>
-<div id="hovmoeller-plots" class="section level1">
-<h1>Hovmoeller plots</h1>
+</div>
+<div id="absolute-values" class="section level1">
+<h1>Absolute values</h1>
+<div id="hovmoeller-plots" class="section level2">
+<h2>Hovmoeller plots</h2>
 <p>The following Hovmoeller plots show the value of each variable as
-provided through the pCO2 product.</p>
-<p>Hovmoeller plots are first presented as annual means, and than as
-monthly means.</p>
-<div id="annual-means" class="section level2">
-<h2>Annual means</h2>
-<div id="absolute" class="section level3">
-<h3>Absolute</h3>
+provided through the pCO2 product. Hovmoeller plots are first presented
+as annual means, and than as monthly means.</p>
+<div id="annual-means" class="section level3">
+<h3>Annual means</h3>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_annual &lt;-
   pco2_product %&gt;%
   select(-c(lon, time, month, biome)) %&gt;%
@@ -1380,11 +1474,8 @@ jens-daniel-mueller
 </div>
 </div>
 </div>
-</div>
-<div id="monthly-means" class="section level2">
-<h2>Monthly means</h2>
-<div id="absolute-1" class="section level3">
-<h3>Absolute</h3>
+<div id="monthly-means" class="section level3">
+<h3>Monthly means</h3>
 <pre class="r"><code>pco2_product_hovmoeller_monthly &lt;-
   pco2_product %&gt;%
   select(-c(lon, time, biome)) %&gt;%
@@ -1515,78 +1606,6 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_monthly_global &lt;-
-  pco2_product %&gt;%
-  filter(!is.na(fgco2)) %&gt;% 
-  select(-c(lon, lat, year, month, biome)) %&gt;% 
-  group_by(time) %&gt;%
-  summarise(across(-c(fgco2, area),
-                   ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2,
-                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
-  ungroup()
-
-pco2_product_monthly_biome &lt;-
-  pco2_product %&gt;%
-  filter(!is.na(fgco2)) %&gt;% 
-  select(-c(lon, lat, year, month)) %&gt;% 
-  group_by(time, biome) %&gt;%
-  summarise(across(-c(fgco2, area),
-                   ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2,
-                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
-  ungroup()
-
-pco2_product_monthly_biome_super &lt;-
-  pco2_product %&gt;%
-  filter(!is.na(fgco2)) %&gt;% 
-  mutate(
-    biome = case_when(
-      str_detect(biome, &quot;NA-&quot;) ~ &quot;North Atlantic&quot;,
-      str_detect(biome, &quot;NP-&quot;) ~ &quot;North Pacific&quot;,
-      str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
-      TRUE ~ &quot;other&quot;
-    )
-  ) %&gt;%
-  filter(biome != &quot;other&quot;) %&gt;%
-  select(-c(lon, lat, year, month)) %&gt;%
-  group_by(time, biome) %&gt;%
-  summarise(across(-c(fgco2, area),
-                   ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2,
-                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
-  ungroup()
-
-pco2_product_monthly &lt;-
-  bind_rows(pco2_product_monthly_global %&gt;%
-              mutate(biome = &quot;Global&quot;),
-            pco2_product_monthly_biome,
-            pco2_product_monthly_biome_super)
-
-rm(
-  pco2_product_monthly_global,
-  pco2_product_monthly_biome,
-  pco2_product_monthly_biome_super
-)
-
-
-pco2_product_monthly &lt;-
-  pco2_product_monthly %&gt;% 
-  filter(!is.na(biome))
-
-pco2_product_monthly &lt;-
-  pco2_product_monthly %&gt;%
-  rename(fgco2_int = fgco2)
-
-pco2_product_monthly &lt;-
-  pco2_product_monthly %&gt;%
-  mutate(year = year(time),
-         month = month(time),
-         .after = time)
-
-pco2_product_monthly &lt;-
-  pco2_product_monthly %&gt;%
-  pivot_longer(-c(time, year, month, biome))</code></pre>
 <pre class="r"><code>pCO2_product_analysis &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
@@ -1596,14 +1615,15 @@ pco2_product_monthly &lt;-
 </div>
 </div>
 </div>
-<div id="anomaly-detection" class="section level1">
-<h1>Anomaly detection</h1>
+<div id="anomalies" class="section level1">
+<h1>2022 anomalies</h1>
+<div id="detection" class="section level2">
+<h2>Detection</h2>
 <p>For the detection of anomalies at any point in time and space, we fit
 regression models and compare the fitted to the actual value.</p>
-<p>We use linear regression models for all parameters, except for `,
+<p>We use linear regression models for all parameters, except for ,
 which are approximated with quadratic fits.</p>
-<p>The regression models are fitted to data from the period `, and
-extrapolated to 2022.</p>
+<p>The regression models are fitted to all data since , except 2022.</p>
 <pre class="r"><code>anomaly_determination &lt;- function(df,...) {
   
   group_by &lt;- quos(...)
@@ -1614,7 +1634,7 @@ extrapolated to 2022.</p>
   
   df_lm &lt;-
     df %&gt;%
-    filter(year &lt; 2022,
+    filter(year != 2022,
            !(name %in% name_quadratic_fit)) %&gt;%
     nest(data = -c(name, !!!group_by)) %&gt;%
     mutate(
@@ -1655,7 +1675,7 @@ extrapolated to 2022.</p>
   
   df_quadratic &lt;-
     df %&gt;%
-    filter(year &lt; 2022,
+    filter(year != 2022,
            name %in% name_quadratic_fit) %&gt;%
     nest(data = -c(name, !!!group_by)) %&gt;%
     mutate(
@@ -1706,6 +1726,7 @@ extrapolated to 2022.</p>
   
 }</code></pre>
 </div>
+</div>
 <div id="maps" class="section level1">
 <h1>Maps</h1>
 <p>The following maps show the absolute state of each variable in 2022
@@ -1721,7 +1742,7 @@ annual mean is removed.</p>
 5X5° grid.</p>
 <div id="annual-means-1" class="section level2">
 <h2>Annual means</h2>
-<div id="absolute-2" class="section level3">
+<div id="absolute" class="section level3">
 <h3>2022 absolute</h3>
 <pre class="r"><code>pco2_product_coarse_annual_regression &lt;-
   pco2_product_coarse_annual %&gt;%
@@ -1959,92 +1980,14 @@ jens-daniel-mueller
            name = labels_breaks(.x %&gt;% distinct(name))) +
          theme(legend.title = element_markdown())
   )</code></pre>
-<pre><code>[[1]]</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-1">
-Past versions of anomaly_anomaly_year_annual_mean_maps-1.png
-</button>
-</p>
-<div id="fig-anomaly_anomaly_year_annual_mean_maps-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[2]]</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-2">
-Past versions of anomaly_anomaly_year_annual_mean_maps-2.png
-</button>
-</p>
-<div id="fig-anomaly_anomaly_year_annual_mean_maps-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<pre><code>list()</code></pre>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;CMEMS&quot;,&quot;_&quot;,&quot;2022&quot;,&quot;_anomaly_map_annual.csv&quot;))</code></pre>
 </div>
 </div>
 <div id="monthly-means-1" class="section level2">
 <h2>Monthly means</h2>
-<div id="absolute-3" class="section level3">
+<div id="absolute-1" class="section level3">
 <h3>2022 absolute</h3>
 <pre class="r"><code>pco2_product_coarse_monthly_regression &lt;-
   pco2_product_coarse_monthly %&gt;%
@@ -2372,13 +2315,13 @@ jens-daniel-mueller
 <div id="hovmoeller-plots-1" class="section level1">
 <h1>Hovmoeller plots</h1>
 <p>The following Hovmoeller plots show the anomalies from the prediction
-of a linear/quadratic fit to the data from 1990 to 2021.</p>
+of the linear/quadratic fits.</p>
 <p>Hovmoeller plots are first presented as annual means, and than as
 monthly means. Note that the predictions for the monthly Hovmoeller
 plots are done individually for each month, such the mean seasonal
 anomaly from the annual mean is removed.</p>
-<div id="anomalies" class="section level3">
-<h3>Anomalies</h3>
+<div id="annual-mean-anomalies" class="section level2">
+<h2>Annual mean anomalies</h2>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_annual_regression &lt;-
   pco2_product_hovmoeller_monthly_annual %&gt;%
   anomaly_determination(lat) %&gt;% 
@@ -2480,10 +2423,8 @@ jens-daniel-mueller
 </div>
 </div>
 </div>
-<div id="monthly-means-2" class="section level2">
-<h2>Monthly means</h2>
-<div id="anomalies-1" class="section level3">
-<h3>Anomalies</h3>
+<div id="monthly-mean-anomalies" class="section level2">
+<h2>Monthly mean anomalies</h2>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_regression &lt;-
   pco2_product_hovmoeller_monthly %&gt;%
   select(-c(decimal)) %&gt;% 
@@ -2590,9 +2531,8 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;CMEMS&quot;,&quot;_&quot;,&quot;2022&quot;,&quot;_anomaly_hovmoeller_monthly.csv&quot;))</code></pre>
-</div>
-<div id="two-year-anomalies" class="section level3">
-<h3>Two year anomalies</h3>
+<div id="three-recent-years" class="section level3">
+<h3>Three recent years</h3>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_regression %&gt;%
   filter(between(year, 2022-2, 2022)) %&gt;%
   group_split(name) %&gt;%
@@ -2716,18 +2656,17 @@ jens-daniel-mueller
 </div>
 <div id="regional-means-and-integrals" class="section level1">
 <h1>Regional means and integrals</h1>
-<p>The following plots show biome- or global- averaged/integrated values
+<p>The following plots show regionally averaged (or integrated) values
 of each variable as provided through the pCO2 product, as well as the
-anomalies from the prediction of a linear/quadratic fit to the data from
-1990 to 2021.</p>
+anomalies from the prediction of a linear/quadratic fit.</p>
 <p>Anomalies are first presented relative to the predicted annual mean
 of each year, hence preserving the seasonality. Furthermore, anomalies
 are presented relative to the predicted monthly mean values, such that
 the mean seasonality is removed.</p>
-<div id="absolute-values" class="section level2">
+<div id="absolute-values-1" class="section level2">
 <h2>Absolute values</h2>
-<div id="overview" class="section level3">
-<h3>Overview</h3>
+<div id="global" class="section level3">
+<h3>Global</h3>
 <pre class="r"><code>fig.height &lt;- pco2_product_monthly %&gt;% 
   distinct(name) %&gt;% 
   nrow()
@@ -2736,7 +2675,7 @@ fig.height &lt;- (fig.height + 2) * 0.1</code></pre>
 <pre class="r"><code>pco2_product_monthly %&gt;%
   filter(biome %in% &quot;Global&quot;) %&gt;%
   ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
+  geom_path(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
@@ -2760,49 +2699,14 @@ fig.height &lt;- (fig.height + 2) * 0.1</code></pre>
     legend.title = element_blank(),
     axis.title.y = element_blank()
   )</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/absolute_global_means_and_integrals_overview-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_global_means_and_integrals_overview-1">
-Past versions of absolute_global_means_and_integrals_overview-1.png
-</button>
-</p>
-<div id="fig-absolute_global_means_and_integrals_overview-1"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/absolute_global_means_and_integrals_overview-1.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
+<p><img src="figure/CMEMS_2022.Rmd/absolute_global_means_and_integrals_global-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-</div>
+<div id="selected-biomes" class="section level3">
+<h3>Selected biomes</h3>
 <pre class="r"><code>pco2_product_monthly %&gt;%
   filter(biome %in% key_biomes) %&gt;%
   ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
+  geom_path(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
@@ -2866,82 +2770,13 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_monthly %&gt;%
-  filter(biome %in% super_biomes) %&gt;%
-  ggplot(aes(month, value, group = as.factor(year))) +
-  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
-            aes(col = year)) +
-  scale_color_grayC() +
-  new_scale_color() +
-  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
-            aes(col = as.factor(year)),
-            linewidth = 1) +
-  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
-                     guide = guide_legend(reverse = TRUE,
-                                          order = 1)) +
-  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-  labs(title = &quot;Absolute values | Selected super biomes&quot;) +
-  facet_grid(name ~ biome,
-             scales = &quot;free_y&quot;,
-             labeller = labeller(name = x_axis_labels),
-             switch = &quot;y&quot;) +
-  theme(
-    strip.text.y.left = element_markdown(),
-    strip.placement = &quot;outside&quot;,
-    strip.background.y = element_blank(),
-    legend.title = element_blank(),
-    axis.title.y = element_blank()
-  )</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/absolute_biome_means_and_integrals_overview_biomes_super-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_biome_means_and_integrals_overview_biomes_super-1">
-Past versions of
-absolute_biome_means_and_integrals_overview_biomes_super-1.png
-</button>
-</p>
-<div id="fig-absolute_biome_means_and_integrals_overview_biomes_super-1"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/absolute_biome_means_and_integrals_overview_biomes_super-1.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="selected-biomes" class="section level3">
-<h3>Selected biomes</h3>
-<pre class="r"><code>pco2_product_monthly %&gt;%
   filter(biome %in% key_biomes) %&gt;%
   group_split(biome) %&gt;%
   # head(1) %&gt;%
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
-      geom_path(data = . %&gt;% filter(year &lt; 2022-1),
+      geom_path(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
@@ -3179,12 +3014,78 @@ jens-daniel-mueller
 <h3>Super biomes</h3>
 <pre class="r"><code>pco2_product_monthly %&gt;%
   filter(biome %in% super_biomes) %&gt;%
+  ggplot(aes(month, value, group = as.factor(year))) +
+  geom_path(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = &quot;Absolute values | Selected super biomes&quot;) +
+  facet_grid(name ~ biome,
+             scales = &quot;free_y&quot;,
+             labeller = labeller(name = x_axis_labels),
+             switch = &quot;y&quot;) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank()
+  )</code></pre>
+<p><img src="figure/CMEMS_2022.Rmd/absolute_biome_means_and_integrals_overview_biomes_super-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_biome_means_and_integrals_overview_biomes_super-1">
+Past versions of
+absolute_biome_means_and_integrals_overview_biomes_super-1.png
+</button>
+</p>
+<div id="fig-absolute_biome_means_and_integrals_overview_biomes_super-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/absolute_biome_means_and_integrals_overview_biomes_super-1.png" target="_blank">9198fc3</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>pco2_product_monthly %&gt;%
+  filter(biome %in% super_biomes) %&gt;%
   group_split(biome) %&gt;%
   # head(1) %&gt;%
   map(
     ~ ggplot(data = .x,
              aes(month, value, group = as.factor(year))) +
-      geom_path(data = . %&gt;% filter(year &lt; 2022-1),
+      geom_path(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
@@ -3340,7 +3241,7 @@ jens-daniel-mueller
 </div>
 </div>
 </div>
-<div id="anomalies-2" class="section level2">
+<div id="anomalies-1" class="section level2">
 <h2>Anomalies</h2>
 <div id="annual-mean-trends" class="section level3">
 <h3>Annual mean trends</h3>
@@ -3356,13 +3257,13 @@ pco2_product_annual %&gt;%
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point() +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
+  geom_smooth(data = . %&gt;% filter(year != 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
               fullrange = TRUE,
               aes(col = &quot;linear&quot;),
               se = FALSE) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
+  geom_smooth(data = . %&gt;% filter(year != 2022,
                                   name %in% name_quadratic_fit),
               method = &quot;lm&quot;,
               fullrange = TRUE,
@@ -3371,7 +3272,7 @@ pco2_product_annual %&gt;%
               se = FALSE) +
   scale_color_brewer(
     palette = &quot;Set1&quot;,
-    name = paste(&quot;Regression fit\nprior&quot;, 2022)) +
+    name = paste(&quot;Regression fit\nexcl.&quot;, 2022)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Annual mean trends | Global&quot;) +
   facet_wrap(name ~ .,
@@ -3429,13 +3330,13 @@ jens-daniel-mueller
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point(size = 0.2) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
+  geom_smooth(data = . %&gt;% filter(year != 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
               fullrange = TRUE,
               aes(col = &quot;linear&quot;),
               se = FALSE) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
+  geom_smooth(data = . %&gt;% filter(year != 2022,
                                   name %in% name_quadratic_fit),
               method = &quot;lm&quot;,
               fullrange = TRUE,
@@ -3444,7 +3345,7 @@ jens-daniel-mueller
               se = FALSE) +
   scale_color_brewer(
     palette = &quot;Set1&quot;,
-    name = paste(&quot;Regression fit\nprior&quot;, 2022)) +
+    name = paste(&quot;Regression fit\nexcl.&quot;, 2022)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Annual mean trends | Selected biomes&quot;) +
   facet_grid(name ~ biome,
@@ -3501,13 +3402,13 @@ jens-daniel-mueller
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point(size = 0.2) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
+  geom_smooth(data = . %&gt;% filter(year != 2022,
                                   !(name %in% name_quadratic_fit)),
               method = &quot;lm&quot;,
               fullrange = TRUE,
               aes(col = &quot;linear&quot;),
               se = FALSE) +
-  geom_smooth(data = . %&gt;% filter(year &lt; 2022,
+  geom_smooth(data = . %&gt;% filter(year != 2022,
                                   name %in% name_quadratic_fit),
               method = &quot;lm&quot;,
               fullrange = TRUE,
@@ -3516,7 +3417,7 @@ jens-daniel-mueller
               se = FALSE) +
   scale_color_brewer(
     palette = &quot;Set1&quot;,
-    name = paste(&quot;Regression fit\nprior&quot;, 2022)) +
+    name = paste(&quot;Regression fit\nexcl.&quot;, 2022)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
   labs(title = &quot;Annual mean trends | Selected super biomes&quot;) +
   facet_grid(name ~ biome,
@@ -3577,7 +3478,7 @@ pco2_product_annual_regression %&gt;%
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %&gt;% filter(year &lt; 2022-1),
+  geom_point(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
@@ -3645,7 +3546,7 @@ jens-daniel-mueller
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %&gt;% filter(year &lt; 2022-1),
+  geom_point(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
@@ -3712,7 +3613,7 @@ jens-daniel-mueller
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  geom_point(data = . %&gt;% filter(year &lt; 2022-1),
+  geom_point(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
              aes(fill = year),
              shape = 21) +
   scale_fill_grayC() +
@@ -3778,7 +3679,7 @@ jens-daniel-mueller
   filter(biome != &quot;global&quot;) %&gt;%
   ggplot(aes(biome, resid)) +
   geom_hline(yintercept = 0) +
-  geom_jitter(data = . %&gt;% filter(year &lt; 2022-1),
+  geom_jitter(data = . %&gt;% filter(!between(year, 2022-1, 2022)),
              aes(fill = year),
              shape = 21, width = 0.2) +
   scale_fill_grayC() +
@@ -4770,6 +4671,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+</div>
+<div id="global-1" class="section level3">
+<h3>Global</h3>
 <pre class="r"><code>pco2_product_monthly_detrended &lt;-
   full_join(pco2_product_monthly,
             pco2_product_monthly_regression %&gt;% select(-c(value, resid, time))) %&gt;%
@@ -4804,45 +4708,7 @@ pco2_product_monthly_detrended %&gt;%
     axis.title.y = element_blank(),
     legend.title = element_blank()
   )</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_overview-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_from_monthly_mean_trends_overview-1">
-Past versions of anomalies_from_monthly_mean_trends_overview-1.png
-</button>
-</p>
-<div id="fig-anomalies_from_monthly_mean_trends_overview-1"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_overview-1.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_global-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended %&gt;% 
   filter(biome %in% key_biomes) %&gt;%
   ggplot(aes(month, resid, group = as.factor(year))) +
@@ -4871,45 +4737,7 @@ jens-daniel-mueller
     axis.title.y = element_blank(),
     legend.title = element_blank()
   )</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_overview-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_from_monthly_mean_trends_overview-2">
-Past versions of anomalies_from_monthly_mean_trends_overview-2.png
-</button>
-</p>
-<div id="fig-anomalies_from_monthly_mean_trends_overview-2"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_overview-2.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_global-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended %&gt;% 
   filter(biome %in% super_biomes) %&gt;%
   ggplot(aes(month, resid, group = as.factor(year))) +
@@ -4938,45 +4766,39 @@ jens-daniel-mueller
     axis.title.y = element_blank(),
     legend.title = element_blank()
   )</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_overview-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_from_monthly_mean_trends_overview-3">
-Past versions of anomalies_from_monthly_mean_trends_overview-3.png
-</button>
-</p>
-<div id="fig-anomalies_from_monthly_mean_trends_overview-3"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_overview-3.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
+<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_global-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-</div>
+<div id="selected-biomes-1" class="section level3">
+<h3>Selected biomes</h3>
+<pre class="r"><code>pco2_product_monthly_detrended %&gt;% 
+  filter(biome %in% key_biomes) %&gt;%
+  ggplot(aes(month, resid, group = as.factor(year))) +
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = &quot;Anomalies from predicted monthly mean | Selected biomes&quot;) +
+  facet_grid(
+    name ~ biome,
+    scales = &quot;free_y&quot;,
+    labeller = labeller(name = x_axis_labels),
+    switch = &quot;y&quot;
+  ) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    axis.title.y = element_blank(),
+    legend.title = element_blank()
+  )</code></pre>
+<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended %&gt;%
   filter(biome %in% key_biomes) %&gt;%
   group_split(biome) %&gt;%
@@ -5219,6 +5041,38 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+</div>
+<div id="super-biomes-1" class="section level3">
+<h3>Super biomes</h3>
+<pre class="r"><code>pco2_product_monthly_detrended %&gt;% 
+  filter(biome %in% super_biomes) %&gt;%
+  ggplot(aes(month, resid, group = as.factor(year))) +
+  geom_path(data = . %&gt;% filter(year &lt; 2022-1),
+            aes(col = year)) +
+  scale_color_grayC() +
+  new_scale_color() +
+  geom_path(data = . %&gt;% filter(between(year, 2022-1, 2022)),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_color_manual(values = c(&quot;orange&quot;, &quot;red&quot;),
+                     guide = guide_legend(reverse = TRUE,
+                                          order = 1)) +
+  scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
+  labs(title = &quot;Anomalies from predicted monthly mean | Selected super biomes&quot;) +
+  facet_grid(
+    name ~ biome,
+    scales = &quot;free_y&quot;,
+    labeller = labeller(name = x_axis_labels),
+    switch = &quot;y&quot;
+  ) +
+  theme(
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    axis.title.y = element_blank(),
+    legend.title = element_blank()
+  )</code></pre>
+<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended %&gt;%
   filter(biome %in% super_biomes) %&gt;%
   group_split(biome) %&gt;%
@@ -5258,146 +5112,29 @@ jens-daniel-mueller
       )
   )</code></pre>
 <pre><code>[[1]]</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_from_monthly_mean_trends_key_biomes_super-1">
-Past versions of
-anomalies_from_monthly_mean_trends_key_biomes_super-1.png
-</button>
-</p>
-<div id="fig-anomalies_from_monthly_mean_trends_key_biomes_super-1"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-1.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_biomes_super-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[2]]</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_from_monthly_mean_trends_key_biomes_super-2">
-Past versions of
-anomalies_from_monthly_mean_trends_key_biomes_super-2.png
-</button>
-</p>
-<div id="fig-anomalies_from_monthly_mean_trends_key_biomes_super-2"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-2.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_biomes_super-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
 [[3]]</code></pre>
-<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_from_monthly_mean_trends_key_biomes_super-3">
-Past versions of
-anomalies_from_monthly_mean_trends_key_biomes_super-3.png
-</button>
-</p>
-<div id="fig-anomalies_from_monthly_mean_trends_key_biomes_super-3"
-class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9198fc3907257ec54eaf8cf06186cf1bb60589b6/docs/figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_key_biomes_super-3.png" target="_blank">9198fc3</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/CMEMS_2022.Rmd/anomalies_from_monthly_mean_trends_biomes_super-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
 <div id="flux-anomaly-correlation" class="section level1">
 <h1>Flux anomaly correlation</h1>
-<p>The following plots aim to unravel the correlation between biome- or
-globally- integrated monthly flux anomalies and the corresponding
-anomalies of the means/integrals of each other variable.</p>
+<p>The following plots aim to unravel the correlation between regionally
+integrated monthly flux anomalies and the corresponding anomalies of the
+means/integrals of each other variable.</p>
 <p>Anomalies are first presented are first presented in absolute units.
-Due to the different flux magnitudes, we need to plot the globally and
-biome-integrated fluxes separately. Secondly, we normalize the anomalies
-to the monthly spread (expressed as standard deviation) of the anomalies
-from 1990 to 2021.</p>
+Due to the different flux magnitudes, we need to plot integrated fluxes
+separately for each region. Secondly, we normalize the monthly anomalies
+to the spread (expressed as standard deviation) of the residuals from
+the fit.</p>
 <div id="annual-anomalies" class="section level2">
 <h2>Annual anomalies</h2>
-<div id="absolute-4" class="section level3">
+<div id="absolute-2" class="section level3">
 <h3>Absolute</h3>
 <pre class="r"><code>pco2_product_annual_regression %&gt;%
   filter(biome == &quot;Global&quot;) %&gt;%
@@ -5485,7 +5222,7 @@ jens-daniel-mueller
 </div>
 <div id="monthly-anomalies" class="section level2">
 <h2>Monthly anomalies</h2>
-<div id="absolute-5" class="section level3">
+<div id="absolute-3" class="section level3">
 <h3>Absolute</h3>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly &lt;-
   pco2_product_monthly_detrended %&gt;%
