@@ -1,0 +1,180 @@
+---
+title: "SOM_FFN"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r parent, child = "/nfs/kryo/work/jenmueller/emlr_cant/utilities/setup.Rmd"}
+# this chunk runs the code stored in setup.Rmd
+# if required, please refer to instructions given here:
+# https://jdblischak.github.io/workflowr/articles/wflow-07-common-code.html
+```
+
+```{r load_libraries_read_data, include = FALSE}
+
+library(stars)
+library(lubridate)
+
+```
+
+# Read data
+
+```{r define_paths}
+
+path_pCO2_products <-
+  "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/"
+
+path_OceanSODA <-
+  "/nfs/kryo/work/gregorl/projects/OceanSODA-ETHZ/releases/v2023-full_carbonate_system/OceanSODA_ETHZ_HRLR-v2023.01-co2fluxvars-netCDF/"
+
+
+```
+
+
+```{r read_nc_metadata, eval=FALSE}
+
+library(ncdf4)
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
+  ))
+
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_inputs.nc"
+  ))
+
+nc <-
+  nc_open(paste0(
+    path_OceanSODA,
+    "fgco2_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
+  ))
+
+print(nc)
+
+```
+
+
+```{r read_VLIZ_SOM_FFN}
+
+print("VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc")
+
+pco2_product <-
+  read_ncdf(
+    paste0(
+      path_pCO2_products,
+      "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
+    ),
+    var = c("dco2", "atm_co2", "sol", "kw", "spco2_smoothed", "fgco2_smoothed"),
+    ignore_bounds = TRUE,
+    make_units = FALSE
+  )
+
+pco2_product_input <-
+  read_ncdf(
+    paste0(
+      path_pCO2_products,
+      "VLIZ-SOM_FFN/VLIZ-SOM_FFN_inputs.nc"
+    ),
+    var = c("sst", "sss", "chl", "wind"),
+    ignore_bounds = TRUE,
+    make_units = FALSE
+  )
+
+pco2_product <- c(pco2_product, pco2_product_input)
+rm(pco2_product_input)
+  
+pco2_product <- pco2_product %>%
+  as_tibble()
+
+pco2_product <-
+  pco2_product %>%
+  rename(spco2 = spco2_smoothed,
+         fgco2 = fgco2_smoothed,
+         salinity = sss,
+         temperature = sst)
+
+pco2_product <-
+  pco2_product %>%
+  mutate(across(-c(lon, lat, time), ~ replace(., . >= 1e+19, NA)))
+
+pco2_product <-
+  pco2_product %>%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
+
+pco2_product <-
+  pco2_product %>%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
+
+pco2_product <-
+  pco2_product %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon),
+         wind = sqrt(wind))
+
+```
+
+
+
+```{r source_pCO2_product_preprocessing_child}
+
+pCO2_product_preprocessing <-
+  knitr::knit_expand(file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"))
+
+```
+
+
+`r knitr::knit(text = unlist(pCO2_product_preprocessing))`
+
+
+```{r source_pCO2_product_analysis_child_2023}
+
+pCO2productanalysis <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "SOM_FFN",
+    year_anom = 2023
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis))`
+
+
+```{r source_pCO2_product_analysis_child_2022}
+
+pCO2productanalysis <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "SOM_FFN",
+    year_anom = 2022
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis))`
+
+
+```{r source_pCO2_product_analysis_child_1998}
+
+pCO2productanalysis <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "SOM_FFN",
+    year_anom = 1998
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis))`
