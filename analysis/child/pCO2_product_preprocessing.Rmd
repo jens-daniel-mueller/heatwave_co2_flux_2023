@@ -1,0 +1,513 @@
+# Preprocessing
+
+```{r load_libraries_specific, include = FALSE}
+
+library(ggnewscale)
+library(khroma)
+library(broom)
+library(scico)
+library(ggtext)
+
+```
+
+## Load masks
+
+```{r mask_and_map}
+
+biome_mask <-
+  read_rds(here::here("data/biome_mask.rds"))
+
+map <-
+  read_rds(here::here("data/map.rds"))
+
+key_biomes <-
+  read_rds(here::here("data/key_biomes.rds"))
+
+super_biomes <-
+  read_rds(here::here("data/super_biomes.rds"))
+
+super_biome_mask <-
+  read_rds(here::here("data/super_biome_mask.rds"))
+
+# biome_mask <-
+#   read_rds("../data/biome_mask.rds")
+# 
+# map <-
+#   read_rds("../data/map.rds")
+# 
+# key_biomes <-
+#   read_rds("../data/key_biomes.rds")
+# 
+# super_biomes <-
+#   read_rds("../data/super_biomes.rds")
+# 
+# super_biome_mask <-
+#   read_rds("../data/super_biome_mask.rds")
+# 
+# biome_mask <-
+#   read_rds("../data/biome_mask.rds")
+
+
+```
+
+
+## Define labels and breaks
+
+
+```{r define_labels_and_breaks_OIA_variables_change}
+
+labels_breaks <- function(i_name) {
+  
+  if (i_name == "dco2") {
+    i_legend_title <- "ΔpCO<sub>2</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "dfco2") {
+    i_legend_title <- "ΔfCO<sub>2</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "atm_co2") {
+    i_legend_title <- "pCO<sub>2,atm</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "atm_fco2") {
+    i_legend_title <- "fCO<sub>2,atm</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "sol") {
+    i_legend_title <- "CO<sub>2</sub> solubility<br>(mol m<sup>-3</sup> µatm<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "kw") {
+    i_legend_title <- "K<sub>w</sub><br>(m yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "spco2") {
+    i_legend_title <- "pCO<sub>2,ocean</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "sfco2") {
+    i_legend_title <- "fCO<sub>2,ocean</sub><br>(µatm)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "fgco2") {
+    i_legend_title <- "FCO<sub>2</sub><br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "fgco2_hov") {
+    i_legend_title <- "FCO<sub>2</sub><br>(PgC deg<sup>-1</sup> yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "fgco2_int") {
+    i_legend_title <- "FCO<sub>2</sub><br>(PgC yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "temperature") {
+    i_legend_title <- "SST<br>(°C)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "salinity") {
+    i_legend_title <- "SSS"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "chl") {
+    i_legend_title <- "lg(Chl-a)<br>(lg(mg m<sup>-3</sup>))"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "mld") {
+    i_legend_title <- "lg(MLD)<br>(lg(m))"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "press") {
+    i_legend_title <- "pressure<sub>atm</sub><br>(unit?)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "wind") {
+    i_legend_title <- "Wind <br>(m sec<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  all_labels_breaks <- lst(i_legend_title,
+                           # i_breaks,
+                           # i_contour_level,
+                           # i_contour_level_abs
+                           )
+  
+  return(all_labels_breaks)
+  
+}
+
+
+# labels_breaks("fgco2")
+
+x_axis_labels <-
+  c(
+    "dco2" = labels_breaks("dco2")$i_legend_title,
+    "dfco2" = labels_breaks("dfco2")$i_legend_title,
+    "atm_co2" = labels_breaks("atm_co2")$i_legend_title,
+    "sol" = labels_breaks("sol")$i_legend_title,
+    "kw" = labels_breaks("kw")$i_legend_title,
+    "spco2" = labels_breaks("spco2")$i_legend_title,
+    "sfco2" = labels_breaks("sfco2")$i_legend_title,
+    "fgco2_hov" = labels_breaks("fgco2_hov")$i_legend_title,
+    "fgco2_int" = labels_breaks("fgco2_int")$i_legend_title,
+    "temperature" = labels_breaks("temperature")$i_legend_title,
+    "salinity" = labels_breaks("salinity")$i_legend_title,
+    "chl" = labels_breaks("chl")$i_legend_title,
+    "mld" = labels_breaks("mld")$i_legend_title,
+    "press" = labels_breaks("press")$i_legend_title,
+    "wind" = labels_breaks("wind")$i_legend_title
+  )
+
+
+```
+
+
+## Analysis settings
+
+```{r analysis_settings}
+
+name_quadratic_fit <- c("atm_co2", "atm_fco2", "spco2", "sfco2")
+
+start_year <- 1990
+
+name_divergent <- c("dco2", "fgco2", "fgco2_hov", "fgco2_int")
+
+```
+
+
+## Data preprocessing
+
+```{r temporal_boundaries}
+
+pco2_product <-
+  pco2_product %>%
+  filter(year >= start_year)
+
+```
+
+
+```{r biome_mask}
+
+pco2_product <-
+  full_join(pco2_product,
+            biome_mask)
+
+# set all values outside biome mask to NA
+
+pco2_product <-
+  pco2_product %>%
+  mutate(across(-c(lat, lon, time, area, year, month, biome), 
+                ~ if_else(is.na(biome), NA, .)))
+
+```
+
+
+```{r compute_coarse_resolution_maps}
+
+# apply coarse grid
+
+pco2_product_coarse <-
+  m_grid_horizontal_coarse(pco2_product)
+
+pco2_product_coarse <-
+  pco2_product_coarse %>%
+  select(-c(lon, lat, time, biome)) %>%
+  group_by(year, month, lon_grid, lat_grid) %>%
+  summarise(across(-area,
+                   ~ weighted.mean(., area))) %>%
+  ungroup() %>%
+  rename(lon = lon_grid, lat = lat_grid)
+
+pco2_product_coarse <-
+  pco2_product_coarse %>%
+  pivot_longer(-c(year, month, lon, lat)) %>% 
+  drop_na() %>%
+  pivot_wider()
+
+# compute annual means
+
+pco2_product_coarse_annual <-
+  pco2_product_coarse %>%
+  select(-month) %>% 
+  group_by(year, lon, lat) %>%
+  summarise(across(where(is.numeric),
+                   ~ mean(.))) %>%
+  ungroup()
+
+pco2_product_coarse_annual <-
+  pco2_product_coarse_annual %>% 
+  pivot_longer(-c(year, lon, lat))
+
+## compute monthly means
+
+pco2_product_coarse_monthly <-
+  pco2_product_coarse %>%
+  group_by(year, month, lon, lat) %>%
+  summarise(across(where(is.numeric),
+                   ~ mean(.))) %>%
+  ungroup()
+
+pco2_product_coarse_monthly <-
+  pco2_product_coarse_monthly %>% 
+  pivot_longer(-c(year, month, lon, lat))
+
+
+```
+
+
+
+```{r compute_global_means_and_integrals}
+
+pco2_product_monthly_global <-
+  pco2_product %>%
+  filter(!is.na(fgco2)) %>% 
+  select(-c(lon, lat, year, month, biome)) %>% 
+  group_by(time) %>%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
+  ungroup()
+
+pco2_product_monthly_biome <-
+  pco2_product %>%
+  filter(!is.na(fgco2)) %>% 
+  select(-c(lon, lat, year, month)) %>% 
+  group_by(time, biome) %>%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
+  ungroup()
+
+pco2_product_monthly_biome_super <-
+  pco2_product %>%
+  filter(!is.na(fgco2)) %>% 
+  mutate(
+    biome = case_when(
+      str_detect(biome, "NA-") ~ "North Atlantic",
+      str_detect(biome, "NP-") ~ "North Pacific",
+      str_detect(biome, "SO-") ~ "Southern Ocean",
+      TRUE ~ "other"
+    )
+  ) %>%
+  filter(biome != "other") %>%
+  select(-c(lon, lat, year, month)) %>%
+  group_by(time, biome) %>%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
+  ungroup()
+
+pco2_product_monthly <-
+  bind_rows(pco2_product_monthly_global %>%
+              mutate(biome = "Global"),
+            pco2_product_monthly_biome,
+            pco2_product_monthly_biome_super)
+
+rm(
+  pco2_product_monthly_global,
+  pco2_product_monthly_biome,
+  pco2_product_monthly_biome_super
+)
+
+
+pco2_product_monthly <-
+  pco2_product_monthly %>% 
+  filter(!is.na(biome))
+
+pco2_product_monthly <-
+  pco2_product_monthly %>%
+  rename(fgco2_int = fgco2)
+
+pco2_product_monthly <-
+  pco2_product_monthly %>%
+  mutate(year = year(time),
+         month = month(time),
+         .after = time)
+
+pco2_product_monthly <-
+  pco2_product_monthly %>%
+  pivot_longer(-c(time, year, month, biome))
+
+
+```
+
+
+
+
+# Absolute values
+
+## Hovmoeller plots
+
+The following Hovmoeller plots show the value of each variable as provided through the pCO2 product. Hovmoeller plots are first presented as annual means, and than as monthly means.
+
+### Annual means
+
+```{r hovmoeller_annual_absolute, fig.asp=0.5}
+
+pco2_product_hovmoeller_monthly_annual <-
+  pco2_product %>%
+  select(-c(lon, time, month, biome)) %>%
+  group_by(year, lat) %>%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
+  ungroup() %>%
+  rename(fgco2_hov = fgco2) %>% 
+  filter(fgco2_hov != 0)
+
+pco2_product_hovmoeller_monthly_annual <-
+  pco2_product_hovmoeller_monthly_annual %>%
+  pivot_longer(-c(year, lat)) %>% 
+  drop_na()
+
+pco2_product_hovmoeller_monthly_annual %>%
+  filter(!(name %in% name_divergent)) %>% 
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      coord_cartesian(expand = 0) +
+      labs(title = "Annual means",
+           y = "Latitude") +
+      theme(axis.title.x = element_blank())
+  )
+
+pco2_product_hovmoeller_monthly_annual %>%
+  filter(name %in% name_divergent) %>% 
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      coord_cartesian(expand = 0) +
+      labs(title = "Annual means",
+           y = "Latitude") +
+      theme(axis.title.x = element_blank())
+  )
+
+
+```
+
+
+### Monthly means
+
+```{r hovmoeller_monthly_absolute, fig.asp=0.5}
+
+pco2_product_hovmoeller_monthly <-
+  pco2_product %>%
+  select(-c(lon, time, biome)) %>%
+  group_by(year, month, lat) %>%
+  summarise(across(-c(fgco2, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(fgco2,
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
+  ungroup() %>%
+  rename(fgco2_hov = fgco2) %>% 
+  filter(fgco2_hov != 0)
+
+
+pco2_product_hovmoeller_monthly <-
+  pco2_product_hovmoeller_monthly %>%
+  pivot_longer(-c(year, month, lat)) %>% 
+  drop_na()
+
+pco2_product_hovmoeller_monthly <-
+  pco2_product_hovmoeller_monthly %>% 
+  mutate(decimal = year + (month-1) / 12)
+
+pco2_product_hovmoeller_monthly %>%
+  filter(!(name %in% name_divergent)) %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(decimal, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      labs(title = "Monthly means",
+           y = "Latitude") +
+      coord_cartesian(expand = 0) +
+      theme(axis.title.x = element_blank())
+  )
+
+pco2_product_hovmoeller_monthly %>%
+  filter(name %in% name_divergent) %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(decimal, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      labs(title = "Monthly means",
+           y = "Latitude") +
+      coord_cartesian(expand = 0) +
+      theme(axis.title.x = element_blank())
+  )
+
+
+```

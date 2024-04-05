@@ -130,29 +130,26 @@ wflow_publish(here::here(
   "analysis",
   c(
     "index.Rmd",
-    "CMEMS_2022.Rmd",
-    "SOM_FFN_2022.Rmd",
-    "OceanSODA_2022.Rmd",
+    "pco2_product_synopsis_1998.Rmd",
     "pco2_product_synopsis_2022.Rmd",
-    "CMEMS_2023.Rmd",
-    "SOM_FFN_2023.Rmd",
-    "OceanSODA_2023.Rmd",
     "pco2_product_synopsis_2023.Rmd",
+    "CMEMS.Rmd",
+    "SOM_FFN.Rmd",
+    "OceanSODA.Rmd",
     "biomes.Rmd",
     "mhw_stats.Rmd",
     "atm_co2.Rmd"
   )
 ),
-message = "rebuild entire website incl 2022 anomalies",
+message = "rebuild entire website with individual anomaly years",
 republish = TRUE)
 
 
 wflow_publish(here::here("analysis",
                          c(
-                           # "pco2_product_synopsis_2022.Rmd",
-                           "pco2_product_synopsis_2023.Rmd"
+                           "CMEMS_2022.Rmd"
                          )),
-              message = "trend maps included")
+              message = "improved 1998 anomaly")
 
 
 
