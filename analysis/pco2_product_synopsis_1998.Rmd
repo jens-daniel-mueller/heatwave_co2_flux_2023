@@ -144,8 +144,6 @@ super_biomes <-
 
 ```
 
-
-
 # Define labels and breaks
 
 ```{r core_variables_for_analysis}
@@ -487,7 +485,7 @@ pco2_product_annual_detrended %>%
   filter(biome %in% "Global",
          name %in% name_core) %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
-  geom_path(data = . %>% filter(year < year_anom-1),
+  geom_path(data = . %>% filter(!between(year, year_anom-1, year_anom)),
             aes(col = year)) +
   scale_color_grayC() +
   new_scale_color() +
@@ -525,7 +523,7 @@ pco2_product_annual_detrended %>%
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < year_anom - 1),
+      geom_path(data = . %>% filter(!between(year, year_anom-1, year_anom)),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
@@ -569,7 +567,7 @@ pco2_product_annual_detrended %>%
   map(
     ~ ggplot(data = .x,
              aes(month, resid, group = as.factor(year))) +
-      geom_path(data = . %>% filter(year < year_anom - 1),
+      geom_path(data = . %>% filter(!between(year, year_anom-1, year_anom)),
                 aes(col = year)) +
       scale_color_grayC() +
       new_scale_color() +
@@ -663,16 +661,16 @@ pco2_product_annual_regression %>%
              aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %>% filter(year < year_anom),
+        data = . %>% filter(year != year_anom),
         aes(fill = year),
         shape = 21
       ) +
       geom_smooth(
-        data = . %>% filter(year < year_anom),
+        data = . %>% filter(year != year_anom),
         method = "lm",
         se = FALSE,
         fullrange = TRUE,
-        aes(col = paste("Regression fit\nprior", year_anom))
+        aes(col = paste("Regression fit\nexcl.", year_anom))
       ) +
       scale_color_grey() +
       scale_fill_grayC() +
@@ -718,16 +716,16 @@ pco2_product_annual_regression %>%
              aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %>% filter(year < year_anom),
+        data = . %>% filter(year != year_anom),
         aes(fill = year),
         shape = 21
       ) +
       geom_smooth(
-        data = . %>% filter(year < year_anom),
+        data = . %>% filter(year != year_anom),
         method = "lm",
         se = FALSE,
         fullrange = TRUE,
-        aes(col = paste("Regression fit\nprior", year_anom))
+        aes(col = paste("Regression fit\nexcl.", year_anom))
       ) +
       scale_color_grey() +
       scale_fill_grayC() +
@@ -773,16 +771,16 @@ pco2_product_annual_regression %>%
              aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %>% filter(year < year_anom),
+        data = . %>% filter(year != year_anom),
         aes(fill = year),
         shape = 21
       ) +
       geom_smooth(
-        data = . %>% filter(year < year_anom),
+        data = . %>% filter(year != year_anom),
         method = "lm",
         se = FALSE,
         fullrange = TRUE,
-        aes(col = paste("Regression fit\nprior", year_anom))
+        aes(col = paste("Regression fit\nexcl.", year_anom))
       ) +
       scale_color_grey() +
       scale_fill_grayC() +
