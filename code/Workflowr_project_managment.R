@@ -145,11 +145,17 @@ message = "rebuild entire website with individual anomaly years",
 republish = TRUE)
 
 
-wflow_publish(here::here("analysis",
-                         c(
-                           "CMEMS_2022.Rmd"
-                         )),
-              message = "improved 1998 anomaly")
+wflow_publish(here::here(
+  "analysis",
+  c(
+    "SOM_FFN.Rmd",
+    "OceanSODA.Rmd",
+    "pco2_product_synopsis_1998.Rmd",
+    "pco2_product_synopsis_2022.Rmd",
+    "pco2_product_synopsis_2023.Rmd"
+  )
+),
+message = "fixed anomaly maps")
 
 
 

@@ -181,11 +181,12 @@ pco2_product_coarse_annual_regression %>%
 pco2_product_coarse_annual_regression <-
   pco2_product_coarse_annual_regression %>%
   group_by(name) %>%
-  filter(year %in% c(min(year), max(year))) %>%
+  filter(year %in% c(min(year), max(year), {{year_anom}})) %>%
   ungroup()
 
 pco2_product_coarse_annual_regression %>%
   select(-c(value, resid)) %>%
+  filter(year %in% c(min(year), max(year))) %>%
   arrange(year) %>%
   group_by(lon, lat, name) %>%
   mutate(change = fit - lag(fit),
