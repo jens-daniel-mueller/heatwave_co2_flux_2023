@@ -53,10 +53,56 @@ nc <-
     "CO2_fluxes/fluxCO2_model_v2022_r100_202402.nc"
   ))
 
+nc <-
+  nc_open("/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/cmems_ffnn/v2020/v2020.nc")
+
 print(nc)
+
+ncatt_get(nc, varid = "time")
+ncvar_get(nc, varid = "time")
 
 ```
 
+
+```{r read_CMEMS_other_versions, eval=FALSE}
+
+
+pco2_product <-
+  read_stars(
+    "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/cmems_ffnn/v2021/v2021.nc",
+    make_units = FALSE,
+    ignore_bounds = TRUE
+  )
+
+pco2_product <-
+  read_stars(
+    "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/cmems_ffnn/v2023/dataset-carbon-rep-monthly_20221215T0000Z_P20230821T1545Z.nc",
+    make_units = FALSE,
+    ignore_bounds = TRUE
+  )
+  
+pco2_product <- pco2_product %>%
+  as_tibble()
+
+
+pco2_product %>%
+  distinct(time) %>% 
+  pull() %>% 
+  max()
+
+pco2_product %>%
+  drop_na() %>%
+  units::drop_units() %>% 
+  group_by(x, y) %>%
+  summarise(fgco2 = mean(fgco2)) %>%
+  ungroup() %>%
+  ggplot(aes(x, y, fill = fgco2)) +
+  geom_raster() +
+  coord_quickmap() +
+  scale_fill_continuous_divergingx()
+
+
+```
 
 ```{r read_CMEMS}
 
