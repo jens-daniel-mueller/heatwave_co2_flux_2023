@@ -421,7 +421,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">OceanSODA</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">05 April, 2024</h4>
+<h4 class="date">10 April, 2024</h4>
 
 </div>
 
@@ -450,7 +450,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-04-05
+<strong>Last updated:</strong> 2024-04-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -582,15 +582,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree07ccdb0f2e49e4d2ae60ef28bd2c129e7575fa38targetblank07ccdb0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree6220616b6770690d73ce9a233b063251c94fceeatargetblank6220616a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/07ccdb0f2e49e4d2ae60ef28bd2c129e7575fa38" target="_blank">07ccdb0</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/6220616b6770690d73ce9a233b063251c94fceea" target="_blank">6220616</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree07ccdb0f2e49e4d2ae60ef28bd2c129e7575fa38targetblank07ccdb0a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree6220616b6770690d73ce9a233b063251c94fceeatargetblank6220616a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -600,7 +600,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/07ccdb0f2e49e4d2ae60ef28bd2c129e7575fa38" target="_blank">07ccdb0</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/6220616b6770690d73ce9a233b063251c94fceea" target="_blank">6220616</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -619,8 +619,12 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/input/
 
+Untracked files:
+    Untracked:  analysis/child/pCO2_product_synopsis.Rmd
+
 Unstaged changes:
-    Modified:   analysis/child/pCO2_product_analysis.Rmd
+    Modified:   analysis/child/pCO2_product_preprocessing.Rmd
+    Modified:   analysis/mhw_stats.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -667,6 +671,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/6220616b6770690d73ce9a233b063251c94fceea/analysis/OceanSODA.Rmd" target="_blank">6220616</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-10
+</td>
+<td>
+rebuild with correct anomaly year output
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/OceanSODA.html" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1738,25 +1776,7 @@ super_biomes &lt;-
   read_rds(here::here(&quot;data/super_biomes.rds&quot;))
 
 super_biome_mask &lt;-
-  read_rds(here::here(&quot;data/super_biome_mask.rds&quot;))
-
-# biome_mask &lt;-
-#   read_rds(&quot;../data/biome_mask.rds&quot;)
-# 
-# map &lt;-
-#   read_rds(&quot;../data/map.rds&quot;)
-# 
-# key_biomes &lt;-
-#   read_rds(&quot;../data/key_biomes.rds&quot;)
-# 
-# super_biomes &lt;-
-#   read_rds(&quot;../data/super_biomes.rds&quot;)
-# 
-# super_biome_mask &lt;-
-#   read_rds(&quot;../data/super_biome_mask.rds&quot;)
-# 
-# biome_mask &lt;-
-#   read_rds(&quot;../data/biome_mask.rds&quot;)</code></pre>
+  read_rds(here::here(&quot;data/super_biome_mask.rds&quot;))</code></pre>
 </div>
 <div id="define-labels-and-breaks" class="section level2">
 <h2>Define labels and breaks</h2>
@@ -1936,6 +1956,9 @@ pco2_product &lt;-
   pco2_product %&gt;%
   mutate(across(-c(lat, lon, time, area, year, month, biome), 
                 ~ if_else(is.na(biome), NA, .)))</code></pre>
+</div>
+<div id="compuations" class="section level2">
+<h2>Compuations</h2>
 <pre class="r"><code># apply coarse grid
 
 pco2_product_coarse &lt;-
@@ -2003,6 +2026,7 @@ pco2_product_monthly_biome &lt;-
             across(fgco2,
                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %&gt;%
   ungroup()
+
 
 pco2_product_monthly_biome_super &lt;-
   pco2_product %&gt;%
@@ -4399,7 +4423,7 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pCO2productanalysis &lt;-
+<pre class="r"><code>pCO2productanalysis_2023 &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
     product_name = &quot;OceanSODA&quot;,
@@ -5374,6 +5398,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-2.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-2.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -5435,6 +5470,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-3.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-3.png" target="_blank">c9d994c</a>
@@ -5500,6 +5546,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-4.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-4.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -5561,6 +5618,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-5.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-5.png" target="_blank">c9d994c</a>
@@ -5626,6 +5694,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-6.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-6.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -5676,6 +5755,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-7.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-7.png" target="_blank">c9d994c</a>
@@ -5741,6 +5831,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-8.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-8.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -5804,6 +5905,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-9.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-9.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -5865,6 +5977,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-10.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-10.png" target="_blank">c9d994c</a>
@@ -5943,6 +6066,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -6003,6 +6137,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" target="_blank">c9d994c</a>
@@ -6067,6 +6212,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-3.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-3.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -6127,6 +6283,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-4.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-4.png" target="_blank">c9d994c</a>
@@ -6191,6 +6358,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-5.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-5.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -6251,6 +6429,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-6.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-6.png" target="_blank">c9d994c</a>
@@ -6315,6 +6504,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-7.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-7.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -6375,6 +6575,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-8.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-8.png" target="_blank">c9d994c</a>
@@ -6439,6 +6650,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-9.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-9.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -6501,6 +6723,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-10.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-10.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -6561,6 +6794,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-11.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-11.png" target="_blank">c9d994c</a>
@@ -24189,7 +24433,7 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pCO2productanalysis &lt;-
+<pre class="r"><code>pCO2productanalysis_2022 &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
     product_name = &quot;OceanSODA&quot;,
@@ -25164,6 +25408,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-2.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-2.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -25225,6 +25480,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-3.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-3.png" target="_blank">c9d994c</a>
@@ -25290,6 +25556,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-4.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-4.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -25351,6 +25628,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-5.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-5.png" target="_blank">c9d994c</a>
@@ -25416,6 +25704,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-6.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-6.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -25466,6 +25765,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-7.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-7.png" target="_blank">c9d994c</a>
@@ -25531,6 +25841,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-8.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-8.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -25594,6 +25915,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-9.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-9.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -25655,6 +25987,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-10.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-10.png" target="_blank">c9d994c</a>
@@ -25733,6 +26076,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -25793,6 +26147,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" target="_blank">c9d994c</a>
@@ -25857,6 +26222,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-3.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-3.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -25917,6 +26293,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-4.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-4.png" target="_blank">c9d994c</a>
@@ -25981,6 +26368,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-5.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-5.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -26041,6 +26439,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-6.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-6.png" target="_blank">c9d994c</a>
@@ -26105,6 +26514,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-7.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-7.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -26165,6 +26585,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-8.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-8.png" target="_blank">c9d994c</a>
@@ -26229,6 +26660,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-9.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-9.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -26291,6 +26733,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-10.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-10.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -26351,6 +26804,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-11.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-11.png" target="_blank">c9d994c</a>
@@ -44020,7 +44484,7 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pCO2productanalysis &lt;-
+<pre class="r"><code>pCO2productanalysis_1998 &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
     product_name = &quot;OceanSODA&quot;,
@@ -45035,6 +45499,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-2.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-2.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -45096,6 +45571,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-3.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-3.png" target="_blank">c9d994c</a>
@@ -45161,6 +45647,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-4.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-4.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -45222,6 +45719,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-5.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-5.png" target="_blank">c9d994c</a>
@@ -45287,6 +45795,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-6.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-6.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -45337,6 +45856,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-7.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-7.png" target="_blank">c9d994c</a>
@@ -45402,6 +45932,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-8.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-8.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -45465,6 +46006,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-9.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-9.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -45526,6 +46078,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-10.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/change_1990_annomaly_year_annual_mean_maps-10.png" target="_blank">c9d994c</a>
@@ -45604,6 +46167,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-1.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -45664,6 +46238,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-2.png" target="_blank">c9d994c</a>
@@ -45728,6 +46313,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-3.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-3.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -45788,6 +46384,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-4.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-4.png" target="_blank">c9d994c</a>
@@ -45852,6 +46459,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-5.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-5.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -45912,6 +46530,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-6.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-6.png" target="_blank">c9d994c</a>
@@ -45976,6 +46605,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-7.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-7.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -46036,6 +46676,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-8.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-8.png" target="_blank">c9d994c</a>
@@ -46100,6 +46751,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-9.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-9.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -46160,6 +46822,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-10.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-10.png" target="_blank">c9d994c</a>
@@ -46224,6 +46897,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-11.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c9d994ca6984d512279f0ad2be8b9e7ab804ee15/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-11.png" target="_blank">c9d994c</a>
 </td>
 <td>
@@ -46262,6 +46946,43 @@ jens-daniel-mueller
 <pre><code>
 [[12]]</code></pre>
 <p><img src="figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_anomaly_year_annual_mean_maps-12">
+Past versions of anomaly_anomaly_year_annual_mean_maps-12.png
+</button>
+</p>
+<div id="fig-anomaly_anomaly_year_annual_mean_maps-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/2793f67eb86f79f1ce522cbc06b2fbbea734eaea/docs/figure/OceanSODA.Rmd/anomaly_anomaly_year_annual_mean_maps-12.png" target="_blank">2793f67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;OceanSODA&quot;,&quot;_&quot;,&quot;1998&quot;,&quot;_anomaly_map_annual.csv&quot;))</code></pre>
 </div>
