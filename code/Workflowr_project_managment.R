@@ -130,15 +130,15 @@ wflow_publish(here::here(
   "analysis",
   c(
     "index.Rmd",
-    "pco2_product_synopsis_1998.Rmd",
-    "pco2_product_synopsis_2022.Rmd",
-    "pco2_product_synopsis_2023.Rmd",
+    "biomes.Rmd",
+    "mhw_stats.Rmd",
+    "atm_co2.Rmd",
     "CMEMS.Rmd",
     "SOM_FFN.Rmd",
     "OceanSODA.Rmd",
-    "biomes.Rmd",
-    "mhw_stats.Rmd",
-    "atm_co2.Rmd"
+    "pco2_product_synopsis_1998.Rmd",
+    "pco2_product_synopsis_2016.Rmd",
+    "pco2_product_synopsis_2023.Rmd"
   )
 ),
 message = "rebuild entire website with individual anomaly years",
@@ -148,12 +148,12 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "CMEMS.Rmd",
-    "SOM_FFN.Rmd",
-    "OceanSODA.Rmd"
+    "pco2_product_synopsis_1998.Rmd",
+    "pco2_product_synopsis_2016.Rmd",
+    "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "fixed anomaly year output")
+message = "synopsis with 2016 instead of 2022")
 
 
 
