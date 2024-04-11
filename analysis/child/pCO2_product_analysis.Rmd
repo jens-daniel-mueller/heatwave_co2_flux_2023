@@ -131,8 +131,7 @@ Note: The increase the computational speed, I regridded all maps to 5X5° grid.
 
 ### {{year_anom}} absolute
 
-```{r anomaly_year_annual_mean_maps, fig.asp=0.5}
-
+```{r {{year_anom}}_annual_mean_maps, fig.asp=0.5}
 
 pco2_product_coarse_annual_regression <-
   pco2_product_coarse_annual %>%
@@ -175,7 +174,7 @@ pco2_product_coarse_annual_regression %>%
 
 ### Trends
 
-```{r change_1990_annomaly_year_annual_mean_maps, fig.asp=0.5}
+```{r {{year_anom}}_change_annual_mean_maps, fig.asp=0.5}
 
 
 pco2_product_coarse_annual_regression <-
@@ -208,7 +207,7 @@ pco2_product_coarse_annual_regression %>%
 
 ### {{year_anom}} anomaly
 
-```{r anomaly_anomaly_year_annual_mean_maps, fig.asp=0.5}
+```{r {{year_anom}}_anomaly_annual_mean_maps, fig.asp=0.5}
 
 pco2_product_coarse_annual_regression %>%
   filter(year == {{year_anom}}) %>%
@@ -240,7 +239,7 @@ pco2_product_coarse_annual_regression %>%
 
 ### {{year_anom}} absolute
 
-```{r anomaly_year_monthly_mean_maps, fig.asp=1.6}
+```{r {{year_anom}}_monthly_mean_maps, fig.asp=1.6}
 
 pco2_product_coarse_monthly_regression <-
   pco2_product_coarse_monthly %>%
@@ -286,7 +285,7 @@ pco2_product_coarse_monthly_regression %>%
 
 ### Trends
 
-```{r change_1990_anomaly_year_monthly_mean_maps, fig.asp=1.6}
+```{r {{year_anom}}_change_monthly_mean_maps, fig.asp=1.6}
 
 pco2_product_coarse_monthly_regression %>%
   group_by(name) %>%
@@ -315,7 +314,7 @@ pco2_product_coarse_monthly_regression %>%
 
 ### {{year_anom}} anomaly
 
-```{r anomaly_anomaly_year_monthly_mean_maps, fig.asp=1.6}
+```{r {{year_anom}}_anomaly_monthly_mean_maps, fig.asp=1.6}
 
 pco2_product_coarse_monthly_regression %>%
   filter(year == {{year_anom}}) %>%
@@ -352,7 +351,7 @@ Hovmoeller plots are first presented as annual means, and than as monthly means.
 
 ## {{year_anom}} annual anomalies
 
-```{r hovmoeller_annual_anomaly, fig.asp=0.5}
+```{r {{year_anom}}_hovmoeller_annual_anomaly, fig.asp=0.5}
 
 pco2_product_hovmoeller_monthly_annual_regression <-
   pco2_product_hovmoeller_monthly_annual %>%
@@ -382,7 +381,7 @@ pco2_product_hovmoeller_monthly_annual_regression %>%
 
 ## {{year_anom}} monthly anomalies
 
-```{r hovmoeller_monthly_anomalies, fig.asp=0.5}
+```{r {{year_anom}}_hovmoeller_monthly_anomalies, fig.asp=0.5}
 
 pco2_product_hovmoeller_monthly_regression <-
   pco2_product_hovmoeller_monthly %>%
@@ -426,7 +425,7 @@ pco2_product_hovmoeller_monthly_regression %>%
 
 ### Three years prior {{year_anom}}
 
-```{r hovmoeller_monthly_anomalies_recent_years, fig.asp=0.5}
+```{r {{year_anom}}_hovmoeller_monthly_anomalies_recent_years, fig.asp=0.5}
 
 pco2_product_hovmoeller_monthly_regression %>%
   filter(between(year, {{year_anom}}-2, {{year_anom}})) %>%
@@ -470,7 +469,7 @@ fig.height <- (fig.height + 2) * 0.1
 
 
 
-```{r absolute_global_means_and_integrals_global, fig.asp=fig.height}
+```{r {{year_anom}}_absolute_means_and_integrals_global, fig.asp=fig.height}
 
 pco2_product_monthly %>%
   filter(biome %in% "Global") %>%
@@ -505,7 +504,7 @@ pco2_product_monthly %>%
 
 ### Selected biomes
 
-```{r absolute_biome_means_and_integrals_overview_biomes, fig.asp=fig.height}
+```{r {{year_anom}}_absolute_means_and_integrals_overview_biomes, fig.asp=fig.height}
 
 pco2_product_monthly %>%
   filter(biome %in% key_biomes) %>%
@@ -538,7 +537,7 @@ pco2_product_monthly %>%
 ```
 
 
-```{r absolute_global_means_and_integrals_key_biomes, fig.asp=fig.height}
+```{r {{year_anom}}_absolute_means_and_integrals_key_biomes, fig.asp=fig.height}
 
 pco2_product_monthly %>%
   filter(biome %in% key_biomes) %>%
@@ -582,7 +581,7 @@ pco2_product_monthly %>%
 ### Super biomes
 
 
-```{r absolute_biome_means_and_integrals_overview_biomes_super, fig.asp=fig.height}
+```{r {{year_anom}}_absolute_means_and_integrals_overview_biomes_super, fig.asp=fig.height}
 
 pco2_product_monthly %>%
   filter(biome %in% super_biomes) %>%
@@ -615,7 +614,7 @@ pco2_product_monthly %>%
 ```
 
 
-```{r absolute_global_means_and_integrals_key_biomes_super, fig.asp=fig.height}
+```{r {{year_anom}}_absolute_means_and_integrals_key_biomes_super, fig.asp=fig.height}
 
 pco2_product_monthly %>%
   filter(biome %in% super_biomes) %>%
@@ -660,7 +659,7 @@ pco2_product_monthly %>%
 
 ### Annual mean trends
 
-```{r annual_mean_trends, fig.asp=fig.height}
+```{r {{year_anom}}_annual_mean_trends, fig.asp=fig.height}
 
 pco2_product_annual <-
   pco2_product_monthly %>%
@@ -919,7 +918,7 @@ pco2_product_annual_regression %>%
 
 
 
-```{r anomalies_from_annual_mean_trends_overview, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_from_annual_mean_trends_overview, fig.asp=fig.height}
 
 
 pco2_product_annual_detrended <-
@@ -1014,7 +1013,7 @@ pco2_product_annual_detrended %>%
 ```
 
 
-```{r anomalies_from_annual_mean_trends_key_biomes, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_from_annual_mean_trends_key_biomes, fig.asp=fig.height}
 
 pco2_product_annual_detrended %>%
   filter(biome %in% key_biomes) %>%
@@ -1059,7 +1058,7 @@ pco2_product_annual_detrended %>%
 ```
 
 
-```{r anomalies_from_annual_mean_trends_key_biomes_super, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_from_annual_mean_trends_key_biomes_super, fig.asp=fig.height}
 
 pco2_product_annual_detrended %>%
   filter(biome %in% super_biomes) %>%
@@ -1116,7 +1115,7 @@ pco2_product_annual_detrended %>%
 
 ### Monthly mean trends
 
-```{r monthly_mean_trends, fig.asp=fig.height}
+```{r {{year_anom}}_monthly_mean_trends, fig.asp=fig.height}
 
 pco2_product_monthly %>% 
   filter(biome %in% "Global") %>%
@@ -1286,7 +1285,7 @@ pco2_product_monthly_regression %>%
 
 ### Global
 
-```{r anomalies_from_monthly_mean_trends_global, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_from_monthly_mean_trends_global, fig.asp=fig.height}
 
 
 pco2_product_monthly_detrended <-
@@ -1386,7 +1385,7 @@ pco2_product_monthly_detrended %>%
 
 ### Selected biomes
 
-```{r anomalies_from_monthly_mean_trends__key_biomes_overview, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_from_monthly_mean_trends__key_biomes_overview, fig.asp=fig.height}
 
 pco2_product_monthly_detrended %>% 
   filter(biome %in% key_biomes) %>%
@@ -1420,7 +1419,7 @@ pco2_product_monthly_detrended %>%
 ```
 
 
-```{r anomalies_from_monthly_mean_trends_key_biomes, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_from_monthly_mean_trends_key_biomes, fig.asp=fig.height}
 
 pco2_product_monthly_detrended %>%
   filter(biome %in% key_biomes) %>%
@@ -1466,7 +1465,7 @@ pco2_product_monthly_detrended %>%
 
 ### Super biomes
 
-```{r anomalies_from_monthly_mean_trends_biomes_super_overview, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_from_monthly_mean_trends_biomes_super_overview, fig.asp=fig.height}
 
 
 pco2_product_monthly_detrended %>% 
@@ -1501,7 +1500,7 @@ pco2_product_monthly_detrended %>%
 ```
 
 
-```{r anomalies_from_monthly_mean_trends_biomes_super, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_from_monthly_mean_trends_biomes_super, fig.asp=fig.height}
 
 pco2_product_monthly_detrended %>%
   filter(biome %in% super_biomes) %>%
@@ -1556,7 +1555,7 @@ Anomalies are first presented are first presented in absolute units. Due to the 
 
 ### Absolute
 
-```{r anomalies_correlation_absolute_global_annual, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_correlation_absolute_global_annual, fig.asp=fig.height}
 
 pco2_product_annual_regression %>%
   filter(biome == "Global") %>%
@@ -1609,7 +1608,7 @@ pco2_product_annual_regression %>%
 
 ### Absolute
 
-```{r anomalies_correlation_absolute_global_monthly, fig.asp=fig.height}
+```{r {{year_anom}}_anomalies_correlation_absolute_global_monthly, fig.asp=fig.height}
 
 
 pco2_product_monthly_detrended_anomaly <-
@@ -1670,7 +1669,7 @@ pco2_product_monthly_detrended_anomaly %>%
 
 ```
 
-```{r anomalies_correlation_absolute_biome_monthly, fig.asp=1.8}
+```{r {{year_anom}}_anomalies_correlation_absolute_biome_monthly, fig.asp=1.8}
 
 pco2_product_monthly_detrended_anomaly %>%
   filter(!(biome %in% c(super_biomes, "Global"))) %>%
@@ -1728,7 +1727,7 @@ pco2_product_monthly_detrended_anomaly %>%
 
 ```
 
-```{r anomalies_correlation_absolute_super_biome_monthly, fig.asp=0.5}
+```{r {{year_anom}}_anomalies_correlation_absolute_super_biome_monthly, fig.asp=0.5}
 
 pco2_product_monthly_detrended_anomaly %>%
   filter(biome %in% super_biomes) %>%
@@ -1802,7 +1801,7 @@ pco2_product_monthly_detrended_anomaly %>%
 
 ### Relative to spread
 
-```{r anomalies_correlation_realtive_to_spread_monthly, fig.asp=2}
+```{r {{year_anom}}_anomalies_correlation_realtive_to_spread_monthly, fig.asp=2}
 
 
 pco2_product_monthly_detrended_anomaly_spread <-

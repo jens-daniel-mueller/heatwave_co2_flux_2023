@@ -148,14 +148,12 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
+    "CMEMS.Rmd",
     "SOM_FFN.Rmd",
-    "OceanSODA.Rmd",
-    "pco2_product_synopsis_1998.Rmd",
-    "pco2_product_synopsis_2022.Rmd",
-    "pco2_product_synopsis_2023.Rmd"
+    "OceanSODA.Rmd"
   )
 ),
-message = "fixed anomaly maps")
+message = "fixed anomaly year output")
 
 
 

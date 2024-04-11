@@ -16,6 +16,7 @@ editor_options:
 ```{r load_libraries_specific, include = FALSE}
 
 library(lubridate)
+library(stars)
 
 ```
 
@@ -25,19 +26,19 @@ library(lubridate)
 ```{r mask_and_map}
 
 map <-
-  read_rds("../data/map.rds")
+  read_rds(here::here("data/map.rds"))
 
 key_biomes <-
-  read_rds("../data/key_biomes.rds")
+  read_rds(here::here("data/key_biomes.rds"))
 
 super_biomes <-
-  read_rds("../data/super_biomes.rds")
+  read_rds(here::here("data/super_biomes.rds"))
 
 super_biome_mask <-
-  read_rds("../data/super_biome_mask.rds")
+  read_rds(here::here("data/super_biome_mask.rds"))
 
 biome_mask <-
-  read_rds("../data/biome_mask.rds")
+  read_rds(here::here("data/biome_mask.rds"))
 
 
 ```
@@ -48,7 +49,7 @@ biome_mask <-
 
 ```{r read_data}
 
-MHW_cat_pixel_2023 <- read_rds("../data/MHW_cat_pixel_2023.Rds")
+MHW_cat_pixel_2023 <- read_rds(here::here("data/MHW_cat_pixel_2023.Rds"))
 
 MHW_cat_pixel_2023 <-
   MHW_cat_pixel_2023 %>%
@@ -56,9 +57,9 @@ MHW_cat_pixel_2023 <-
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
 
-# MHW_cat_daily_2023 <- read_rds("../data/MHW_cat_daily_2023.Rds")
+# MHW_cat_daily_2023 <- read_rds(here::here("/data/MHW_cat_daily_2023.Rds")
 
-cat.clim.files <- list.files("../data/input/MHW_2023",
+cat.clim.files <- list.files(here::here("data/input/MHW_2023"),
                              full.names = TRUE)
 
 cat.clim <- cat.clim.files %>%
@@ -77,6 +78,13 @@ cat.clim <-
          month = month(time))
 
 ```
+
+```{r mhw_output_directory}
+
+path_out <- "/net/kryo/work/datasets/gridded/ocean/2d/obs/mhw"
+
+```
+
 
 # MHW maps
 
@@ -102,6 +110,55 @@ map +
   facet_wrap( ~ time, ncol = 1)
 
 ```
+
+
+
+```{r write_output_mhw_raw_2023, eval=FALSE}
+
+
+cat.clim <-
+  cat.clim %>%
+  as_tibble() %>%
+  select(-c(event_no, mday, month))
+  
+cat.clim %>% 
+  write_csv(paste0(path_out,"/2023_mhw_raw.csv"))
+
+
+cat.clim <-
+  cat.clim %>%
+  mutate(lon = if_else(lon > 180,
+                       lon - 360,
+                       lon))
+  
+# convert from tibble to stars object
+
+cat.clim_stars <- st_as_stars(
+  cat.clim,
+  dims = c("lon", "lat", "time")
+)
+
+# assign coordinate system to horizontal (lon, lat) coordinates
+# st_crs(cat.clim_stars) <- "+proj=longlat"
+st_crs(cat.clim_stars) <- st_crs(4326)
+
+# plot variable per depth level
+ggplot() +
+  geom_stars(data = cat.clim_stars %>% slice(time,1:2),
+             aes(fill = category)) +
+  scale_fill_manual(values = fillColCat,
+                    name = "MHW category") +
+  facet_wrap(~ time)
+
+
+file_out <- paste0(path_out,"/2023_mhw_raw.nc")
+
+# write stars object to .nc file
+cat.clim_stars %>%
+  write_mdim(file_out)
+
+```
+
 
 ## Days per category
 
@@ -159,6 +216,83 @@ map +
 
 
 ```
+
+```{r write_output_mhw_stats_2023, eval=FALSE}
+
+cat.clim.stats.all <-
+  cat.clim.stats.all %>%
+  select(-n) %>%
+  mutate(lon = if_else(lon > 180,
+                       lon - 360,
+                       lon))
+  
+cat.clim.stats.all %>%
+  write_csv(paste0(path_out, "/2023_mhw_days_cumulative_threshold.csv"))
+
+
+
+# convert from tibble to stars object
+
+cat.clim.stats.all_stars <- st_as_stars(
+  cat.clim.stats.all %>% rename(mhw_days = n_cum),
+  dims = c("lon", "lat", "category")
+)
+
+# assign coordinate system to horizontal (lon, lat) coordinates
+# st_crs(cat.clim.stats.all_stars) <- "+proj=longlat"
+st_crs(cat.clim.stats.all_stars) <- st_crs(4326)
+
+# plot variable per depth level
+ggplot() +
+  geom_stars(data = cat.clim.stats.all_stars) +
+  facet_wrap( ~ category) +
+  scale_fill_viridis_c(
+    option = "magma",
+    direction = -1,
+    limits = c(0, 365),
+    name = "Days"
+  )
+
+
+file_out <- paste0(path_out, "/2023_mhw_days_cumulative_threshold.nc")
+
+# write stars object to .nc file
+cat.clim.stats.all_stars %>%
+  write_mdim(file_out)
+
+
+
+# reopen .nc file with all available stars functions
+cat.clim.stats.all_read_ncdf <-
+  read_ncdf(file_out)
+cat.clim.stats.all_read_mdim <-
+  read_mdim(file_out)
+
+# plot variable in object reopened
+
+ggplot() +
+  geom_stars(data = cat.clim.stats.all_read_ncdf) +
+  facet_wrap( ~ category) +
+  scale_fill_viridis_c(
+    option = "magma",
+    direction = -1,
+    limits = c(0, 365),
+    name = "Days"
+  )
+
+ggplot() +
+  geom_stars(data = cat.clim.stats.all_read_mdim) +
+  facet_wrap( ~ category) +
+  scale_fill_viridis_c(
+    option = "magma",
+    direction = -1,
+    limits = c(0, 365),
+    name = "Days"
+  )
+
+```
+
+
 
 ## Annual mean intensity
 
