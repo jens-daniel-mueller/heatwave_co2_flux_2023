@@ -97,14 +97,14 @@ pco2_product_annual_detrended <-
 
 ```
 
-```{r read_biome_monthly_detrended_anomaly, eval=FALSE}
+```{r read_biome_monthly_detrended_anomaly}
 
 files <- list.files(here::here("data/"),
                     pattern = paste0({{year_anom}},"_biome_monthly_detrended_anomaly.csv"),
                     full.names = TRUE)
 
 pco2_product_monthly_detrended_anomaly <-
-  read_csv(files[1],
+  read_csv(files,
            id = "product")
 
 pco2_product_monthly_detrended_anomaly <-
@@ -169,6 +169,11 @@ pco2_product_coarse_monthly_regression <-
 
 pco2_product_hovmoeller_monthly_regression <-
   pco2_product_hovmoeller_monthly_regression %>%
+  mutate(name = factor(name, levels = name_core)) %>% 
+  filter(!is.na(name))
+
+pco2_product_monthly_detrended_anomaly <-
+  pco2_product_monthly_detrended_anomaly %>%
   mutate(name = factor(name, levels = name_core)) %>% 
   filter(!is.na(name))
 
@@ -970,24 +975,27 @@ pco2_product_annual_regression %>%
 
 ### Absolute
 
-```{r anomalies_correlation_absolute_monthly_biome_key, fig.asp=1.5, eval=FALSE}
+```{r anomalies_correlation_absolute_monthly_global, fig.asp=0.5}
 
+# pco2_product_monthly_detrended_anomaly_test <-
 pco2_product_monthly_detrended_anomaly %>%
-  filter(biome %in% super_biomes) %>%
-  pivot_longer(-c(year, month, biome, fgco2_int))  %>%
+  filter(biome == "Global") %>%
+  pivot_wider() %>%
+  pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
+  filter(!is.na(value)) %>% 
   group_split(name) %>%
-  head(1) %>%
+  head(1) %>% 
   map(
     ~ ggplot(data = .x,
              aes(value, fgco2_int)) +
       geom_hline(yintercept = 0) +
       geom_point(
-        data = . %>% filter(year < {{year_anom}}),
+        data = . %>% filter(year != {{year_anom}}),
         aes(col = paste(min(year), max(year), sep = "-")),
         alpha = 0.2
       ) +
       geom_smooth(
-        data = . %>% filter(year < {{year_anom}}),
+        data = . %>% filter(year != {{year_anom}}),
         aes(col = paste(min(year), max(year), sep = "-")),
         method = "lm",
         se = FALSE,
@@ -995,11 +1003,11 @@ pco2_product_monthly_detrended_anomaly %>%
       )  +
       scale_color_grey(name = "") +
       new_scale_color() +
-      geom_path(data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
-                aes(col = as.factor(month), group = 1))  +
+      geom_path(data = . %>% filter(year == {{year_anom}}),
+      aes(col = as.factor(month), group = 1))  +
       geom_point(
-        data = . %>% filter(between(year, {{year_anom}}-1, {{year_anom}})),
-        aes(fill = as.factor(month)),
+        data = . %>% filter(year == {{year_anom}}),
+        aes(fill =  as.factor(month)),
         shape = 21,
         size = 3
       )  +
@@ -1007,23 +1015,158 @@ pco2_product_monthly_detrended_anomaly %>%
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "Month\nof 2023"
+        name = paste("Month\nof", {{year_anom}})
       ) +
       scale_fill_scico_d(
         palette = "buda",
         guide = guide_legend(reverse = TRUE,
                              order = 1),
-        name = "Month\nof 2023"
+        name = paste("Month\nof", {{year_anom}})
       ) +
-      facet_wrap( ~ biome, ncol = 3, scales = "free_x") +
       labs(
-        title = "Super biome integrated fluxes",
         y = labels_breaks("fgco2_int")$i_legend_title,
-        x = labels_breaks(.x %>% distinct(name))$i_legend_title
+        x = labels_breaks(unique(.x$name))$i_legend_title
       ) +
-      theme(axis.title.x = element_markdown(),
-            axis.title.y = element_markdown())
+      facet_grid(biome ~ product,
+                 scales = "free_y") +
+      theme(
+        axis.title.x = element_markdown(),
+        axis.title.y = element_markdown()
+      )
   )
+
+
+```
+
+
+
+```{r anomalies_correlation_absolute_monthly_biomes_super, fig.asp=1, eval=FALSE}
+
+pco2_product_monthly_detrended_anomaly %>%
+  filter(biome %in% super_biomes) %>%
+  pivot_wider() %>%
+  pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
+  group_split(name) %>%
+  # head(1) %>% 
+  map(
+    ~ ggplot(data = .x,
+             aes(value, fgco2_int)) +
+      geom_hline(yintercept = 0) +
+      geom_point(
+        data = . %>% filter(year != {{year_anom}}),
+        aes(col = paste(min(year), max(year), sep = "-")),
+        alpha = 0.2
+      ) +
+      geom_smooth(
+        data = . %>% filter(year != {{year_anom}}),
+        aes(col = paste(min(year), max(year), sep = "-")),
+        method = "lm",
+        se = FALSE,
+        fullrange = TRUE
+      )  +
+      scale_color_grey(name = "") +
+      new_scale_color() +
+      geom_path(data = . %>% filter(year == {{year_anom}}),
+      aes(col = as.factor(month), group = 1))  +
+      geom_point(
+        data = . %>% filter(year == {{year_anom}}),
+        aes(fill =  as.factor(month)),
+        shape = 21,
+        size = 3
+      )  +
+      scale_color_scico_d(
+        palette = "buda",
+        guide = guide_legend(reverse = TRUE,
+                             order = 1),
+        name = paste("Month\nof", {
+          {
+            year_anom
+          }
+        })
+      ) +
+      scale_fill_scico_d(
+        palette = "buda",
+        guide = guide_legend(reverse = TRUE,
+                             order = 1),
+        name = paste("Month\nof", {{year_anom}})
+      ) +
+      labs(
+        y = labels_breaks("fgco2_int")$i_legend_title,
+        x = labels_breaks(unique(.x$name))$i_legend_title
+      ) +
+      facet_grid(biome ~ product,
+                 scales = "free_y") +
+      theme(
+        axis.title.x = element_markdown(),
+        axis.title.y = element_markdown()
+      )
+  )
+
+
+```
+
+```{r anomalies_correlation_absolute_monthly_biomes_key, fig.asp=1.5, eval=FALSE}
+
+pco2_product_monthly_detrended_anomaly %>%
+  filter(biome %in% key_biomes) %>%
+  pivot_wider() %>%
+  pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x,
+             aes(value, fgco2_int)) +
+      geom_hline(yintercept = 0) +
+      geom_point(
+        data = . %>% filter(year != {{year_anom}}),
+        aes(col = paste(min(year), max(year), sep = "-")),
+        alpha = 0.2
+      ) +
+      geom_smooth(
+        data = . %>% filter(year != {{year_anom}}),
+        aes(col = paste(min(year), max(year), sep = "-")),
+        method = "lm",
+        se = FALSE,
+        fullrange = TRUE
+      )  +
+      scale_color_grey(name = "") +
+      new_scale_color() +
+      geom_path(data = . %>% filter(year == {{year_anom}}),
+      aes(col = as.factor(month), group = 1))  +
+      geom_point(
+        data = . %>% filter(year == {{year_anom}}),
+        aes(fill =  as.factor(month)),
+        shape = 21,
+        size = 3
+      )  +
+      scale_color_scico_d(
+        palette = "buda",
+        guide = guide_legend(reverse = TRUE,
+                             order = 1),
+        name = paste("Month\nof", {
+          {
+            year_anom
+          }
+        })
+      ) +
+      scale_fill_scico_d(
+        palette = "buda",
+        guide = guide_legend(reverse = TRUE,
+                             order = 1),
+        name = paste("Month\nof", {{year_anom}})
+      ) +
+      labs(
+        y = labels_breaks("fgco2_int")$i_legend_title,
+        x = labels_breaks(unique(.x$name))$i_legend_title
+      ) +
+      facet_grid(biome ~ product,
+                 scales = "free_y") +
+      theme(
+        axis.title.x = element_markdown(),
+        axis.title.y = element_markdown()
+      )
+  )
+
 
 ```
 

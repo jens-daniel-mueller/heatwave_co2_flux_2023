@@ -148,13 +148,12 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "OceanSODA.Rmd",
     "pco2_product_synopsis_1998.Rmd",
     "pco2_product_synopsis_2016.Rmd",
     "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "incl atm fCO2 label")
+message = "incl monthly anomaly correlation")
 
 
 
