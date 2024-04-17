@@ -91,7 +91,9 @@ pco2_product <-
   mutate(fgco2 = fgco2 * 60 * 60 * 24 * 365,
          kw = kw * 100 * 24 * 365,
          sol = sol * 1e-3,
-         chl = log10(chl))
+         chl = log10(chl),
+         mld = log10(mld))
+
 
 # pco2_product %>%
 #   ggplot(aes(sol)) +
@@ -111,6 +113,13 @@ pco2_product <-
   mutate(area = earth_surf(lat, lon),
          year = year(time),
          month = month(time))
+
+# pco2_product %>% 
+#   filter(year == 2023,
+#          month %in% c(11,12)) %>% 
+#   ggplot(aes(lon, lat, fill = fgco2)) +
+#   geom_tile() +
+#   facet_wrap(~ month)
 
 pco2_product <-
   pco2_product %>% 

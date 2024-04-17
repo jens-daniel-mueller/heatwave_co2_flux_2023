@@ -52,6 +52,113 @@ atm_co2 %>%
 
 ```
 
+
+```{r xco2_mbl_NOAA, eval=FALSE}
+
+co2_surface <- read_table(here::here("data/input/atm_co2/co2_GHGreference.767706493_surface.txt"), 
+    col_names = FALSE, skip = 76)
+
+co2_surface <-
+  co2_surface[c(1, seq(2, 83, 2))]
+
+names(co2_surface) <- c("time",
+                        as.character(seq(-1, 1, 0.05)))
+
+# conversion to degrees latitude
+# 180/pi * asin(-1)
+
+co2_surface <-
+  co2_surface %>%
+  pivot_longer(-time,
+               names_to = "lat",
+               values_to = "xco2")
+
+co2_surface <-
+  co2_surface %>%
+  mutate(lat = as.numeric(lat))
+
+co2_surface %>% 
+  filter(time > 2010) %>% 
+  ggplot(aes(time, lat, fill = xco2)) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "magma") +
+  # scale_y_continuous(sec.axis = sec_axis(~ sin(.))) +
+  coord_cartesian(expand = 0)
+
+
+
+surface_mbl <- read_table("data/input/atm_co2/surface.mbl.co2", 
+    col_names = FALSE)
+
+names(surface_mbl) <- c("time",
+                        as.character(seq(-1, 1, 0.05)))
+
+# conversion to degrees latitude
+# 180/pi * asin
+
+surface_mbl <-
+  surface_mbl %>%
+  pivot_longer(-time,
+               names_to = "lat",
+               values_to = "xco2")
+
+surface_mbl <-
+  surface_mbl %>%
+  mutate(lat = as.numeric(lat))
+
+surface_mbl %>% 
+  filter(time > 2010) %>% 
+  ggplot(aes(time, lat, fill = xco2)) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "magma") +
+  coord_cartesian(expand = 0)
+
+co2_merge <- 
+bind_rows(co2_surface %>% mutate(product = "website"),
+          surface_mbl %>% mutate(product = "preliminary"))
+
+co2_merge %>%
+  filter(time > 2010) %>%
+  ggplot(aes(time, lat, fill = xco2)) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "magma") +
+  coord_cartesian(expand = 0) +
+  facet_wrap(~ product, ncol = 1)
+
+library(colorspace)
+
+co2_merge_delta <-
+co2_merge %>%
+  pivot_wider(names_from = product,
+              values_from = xco2) %>% 
+  mutate(delta_xco2 = preliminary - website) %>% 
+  filter(!is.na(delta_xco2))
+
+co2_merge_delta %>% 
+  filter(time > 2010) %>%
+  ggplot(aes(time, lat, fill = delta_xco2)) +
+  geom_tile() +
+  scale_fill_divergent() +
+  scale_x_continuous(breaks = seq(1900,2100,5)) +
+  coord_cartesian(expand = 0)
+
+library(khroma)
+co2_merge_delta %>%
+  mutate(lat = cut(lat,sin(c(-90,seq(-75,75,30),90)/180*pi))) %>% 
+  group_by(lat, time) %>%
+  summarise(delta_xco2 = mean(delta_xco2, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  # filter(time > 2010) %>%
+  ggplot(aes(time, delta_xco2, col = lat)) +
+  geom_path() +
+  scale_color_bright() +
+  coord_cartesian(expand = 0)
+
+
+```
+
+
+
 ```{r plot_time_series}
 
 atm_co2 %>% 
