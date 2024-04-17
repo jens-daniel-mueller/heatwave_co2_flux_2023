@@ -603,15 +603,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree6b3a08052f3532b49456471da210c485447f0e8etargetblank6b3a080a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree20624c0eb204472577b340dd2890617ddd26ce5etargetblank20624c0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/6b3a08052f3532b49456471da210c485447f0e8e" target="_blank">6b3a080</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/20624c0eb204472577b340dd2890617ddd26ce5e" target="_blank">20624c0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree6b3a08052f3532b49456471da210c485447f0e8etargetblank6b3a080a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree20624c0eb204472577b340dd2890617ddd26ce5etargetblank20624c0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -621,7 +621,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/6b3a08052f3532b49456471da210c485447f0e8e" target="_blank">6b3a080</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/20624c0eb204472577b340dd2890617ddd26ce5e" target="_blank">20624c0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -641,8 +641,6 @@ Ignored files:
     Ignored:    data/
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
-    Modified:   analysis/child/pCO2_product_synopsis.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -689,6 +687,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/20624c0eb204472577b340dd2890617ddd26ce5e/analysis/NRT_fco2residual.Rmd" target="_blank">20624c0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+<td>
+rebuild with corrected NRT units
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/NRT_fco2residual.html" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -931,8 +963,9 @@ pco2_product &lt;-
 
 pco2_product &lt;-
   pco2_product %&gt;%
-  mutate(fgco2 = fgco2 * 60 * 60 * 24 * 365,
-         kw = kw * 100 * 24 * 365,
+  mutate(fgco2 = fgco2 * 60 * 60 * 24 * 365 * 1e-14,
+         dfco2 = sfco2 - atm_fco2,
+         kw = kw * 1e-2 * 24 * 365,
          sol = sol * 1e-3,
          chl = log10(chl),
          mld = log10(mld))
@@ -1501,6 +1534,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/hovmoeller_annual_absolute-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/hovmoeller_annual_absolute-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -1685,22 +1729,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_hovmoeller_monthly_annual %&gt;%
-  filter(name %in% name_divergent) %&gt;% 
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ ggplot(data = .x,
-             aes(year, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      coord_cartesian(expand = 0) +
-      labs(title = &quot;Annual means&quot;,
-           y = &quot;Latitude&quot;) +
-      theme(axis.title.x = element_blank())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[9]]</code></pre>
 <p><img src="figure/NRT_fco2residual.Rmd/hovmoeller_annual_absolute-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_annual_absolute-9">
@@ -1750,6 +1780,23 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_hovmoeller_monthly_annual %&gt;%
+  filter(name %in% name_divergent) %&gt;% 
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(year, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      coord_cartesian(expand = 0) +
+      labs(title = &quot;Annual means&quot;,
+           y = &quot;Latitude&quot;) +
+      theme(axis.title.x = element_blank())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/hovmoeller_annual_absolute-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="monthly-means" class="section level3">
 <h3>Monthly means</h3>
@@ -1958,6 +2005,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/hovmoeller_monthly_absolute-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/hovmoeller_monthly_absolute-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -2142,22 +2200,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_hovmoeller_monthly %&gt;%
-  filter(name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ ggplot(data = .x,
-             aes(decimal, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      labs(title = &quot;Monthly means&quot;,
-           y = &quot;Latitude&quot;) +
-      coord_cartesian(expand = 0) +
-      theme(axis.title.x = element_blank())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[9]]</code></pre>
 <p><img src="figure/NRT_fco2residual.Rmd/hovmoeller_monthly_absolute-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hovmoeller_monthly_absolute-9">
@@ -2207,6 +2251,23 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_hovmoeller_monthly %&gt;%
+  filter(name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ ggplot(data = .x,
+             aes(decimal, lat, fill = value)) +
+      geom_raster() +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      labs(title = &quot;Monthly means&quot;,
+           y = &quot;Latitude&quot;) +
+      coord_cartesian(expand = 0) +
+      theme(axis.title.x = element_blank())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/hovmoeller_monthly_absolute-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pCO2productanalysis_2023 &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
@@ -2497,6 +2558,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_maps-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_maps-3.png" target="_blank">3bd3bfb</a>
@@ -2802,6 +2874,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_change_annual_mean_maps-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_change_annual_mean_maps-3.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -3076,6 +3159,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomaly_annual_mean_maps-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_anomaly_annual_mean_maps-3.png" target="_blank">3bd3bfb</a>
@@ -3411,6 +3505,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_maps-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_maps-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -3595,21 +3700,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 2023,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = value)) +
-      labs(title = paste(&quot;Monthly means&quot;, 2023)) +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      facet_wrap( ~ month, ncol = 2)
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[9]]</code></pre>
 <p><img src="figure/NRT_fco2residual.Rmd/2023_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_monthly_mean_maps-9">
@@ -3659,6 +3751,22 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
+  filter(year == 2023,
+         name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title = paste(&quot;Monthly means&quot;, 2023)) +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="trends-1" class="section level3">
 <h3>Trends</h3>
@@ -3903,6 +4011,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_change_monthly_mean_maps-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_change_monthly_mean_maps-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -4087,6 +4206,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_change_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomaly-1" class="section level3">
 <h3>2023 anomaly</h3>
@@ -4322,6 +4444,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomaly_monthly_mean_maps-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_anomaly_monthly_mean_maps-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -4506,6 +4639,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_anomaly_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;NRT_fco2residual&quot;,&quot;_&quot;,&quot;2023&quot;,&quot;_anomaly_map_monthly.csv&quot;))</code></pre>
@@ -4762,6 +4898,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_hovmoeller_annual_anomaly-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_hovmoeller_annual_anomaly-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -4946,6 +5093,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_hovmoeller_annual_anomaly-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="monthly-anomalies" class="section level2">
 <h2>2023 monthly anomalies</h2>
@@ -5193,6 +5343,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_hovmoeller_monthly_anomalies-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_hovmoeller_monthly_anomalies-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -5377,6 +5538,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_hovmoeller_monthly_anomalies-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;NRT_fco2residual&quot;,&quot;_&quot;,&quot;2023&quot;,&quot;_anomaly_hovmoeller_monthly.csv&quot;))</code></pre>
 <div id="three-years-prior-2023" class="section level3">
@@ -5620,6 +5784,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -5808,6 +5983,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
@@ -5880,6 +6058,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_global-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_global-1.png" target="_blank">741ee62</a>
@@ -5959,6 +6148,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">741ee62</a>
@@ -6048,6 +6248,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -6098,6 +6309,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-2.png" target="_blank">741ee62</a>
@@ -6152,6 +6374,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -6204,6 +6437,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -6254,6 +6498,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes-5.png" target="_blank">741ee62</a>
@@ -6334,6 +6589,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_overview_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_overview_biomes_super-1.png" target="_blank">741ee62</a>
@@ -6424,6 +6690,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -6477,6 +6754,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -6528,6 +6816,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_absolute_means_and_integrals_key_biomes_super-3.png" target="_blank">741ee62</a>
@@ -6627,6 +6926,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -6710,6 +7020,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-2.png" target="_blank">741ee62</a>
@@ -6797,6 +7118,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -6881,6 +7213,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -6957,6 +7300,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-5.png" target="_blank">741ee62</a>
@@ -7037,6 +7391,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-6.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-6.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -7112,6 +7477,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-7.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_annual_mean_trends-7.png" target="_blank">741ee62</a>
@@ -7198,6 +7574,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -7275,6 +7662,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -7350,6 +7748,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_overview-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_overview-3.png" target="_blank">741ee62</a>
@@ -7441,6 +7850,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -7491,6 +7911,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">741ee62</a>
@@ -7545,6 +7976,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -7597,6 +8039,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -7647,6 +8100,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-5.png" target="_blank">741ee62</a>
@@ -7739,6 +8203,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -7792,6 +8267,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -7843,6 +8329,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-3.png" target="_blank">741ee62</a>
@@ -7932,6 +8429,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_trends-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_trends-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -8011,6 +8519,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_trends-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_trends-2.png" target="_blank">741ee62</a>
@@ -8113,6 +8632,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_trends-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_trends-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -8207,6 +8737,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_trends-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_monthly_mean_trends-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -8294,6 +8835,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -8372,6 +8924,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -8448,6 +9011,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_global-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_global-3.png" target="_blank">741ee62</a>
@@ -8531,6 +9105,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">741ee62</a>
@@ -8623,6 +9208,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -8674,6 +9270,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">741ee62</a>
@@ -8729,6 +9336,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -8782,6 +9400,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -8833,6 +9462,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-5.png" target="_blank">741ee62</a>
@@ -8916,6 +9556,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" target="_blank">741ee62</a>
@@ -9008,6 +9659,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -9061,6 +9723,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -9112,6 +9785,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-3.png" target="_blank">741ee62</a>
@@ -9224,6 +9908,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_global_annual-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_global_annual-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -9333,6 +10028,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">741ee62</a>
@@ -9594,6 +10300,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -9826,6 +10543,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
   filter(biome %in% super_biomes) %&gt;%
   pivot_longer(-c(year, month, biome, fgco2_int))  %&gt;%
@@ -10065,6 +10785,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -10301,6 +11032,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
   pivot_longer(-c(month, biome, year)) %&gt;%
   write_csv(paste0(
@@ -10554,6 +11288,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -10735,6 +11480,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pCO2productanalysis_2016 &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
@@ -11067,6 +11815,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_maps-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_maps-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -11251,20 +12010,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 2016,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;% 
-  # head(1) %&gt;%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = value)) +
-         labs(title = paste(&quot;Annual mean&quot;, 2016)) +
-         scale_fill_divergent(
-           name = labels_breaks(.x %&gt;% distinct(name))) +
-         theme(legend.title = element_markdown())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[9]]</code></pre>
 <p><img src="figure/NRT_fco2residual.Rmd/2016_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2016_annual_mean_maps-9">
@@ -11314,6 +12061,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
+  filter(year == 2016,
+         name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;% 
+  # head(1) %&gt;%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = value)) +
+         labs(title = paste(&quot;Annual mean&quot;, 2016)) +
+         scale_fill_divergent(
+           name = labels_breaks(.x %&gt;% distinct(name))) +
+         theme(legend.title = element_markdown())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="trends-2" class="section level3">
 <h3>Trends</h3>
@@ -11468,6 +12230,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_change_annual_mean_maps-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_change_annual_mean_maps-3.png" target="_blank">3bd3bfb</a>
@@ -11837,6 +12610,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomaly_annual_mean_maps-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_anomaly_annual_mean_maps-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -12021,6 +12805,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_anomaly_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;NRT_fco2residual&quot;,&quot;_&quot;,&quot;2016&quot;,&quot;_anomaly_map_annual.csv&quot;))</code></pre>
 </div>
@@ -12221,6 +13008,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_maps-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_maps-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -12405,21 +13203,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 2016,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = value)) +
-      labs(title = paste(&quot;Monthly means&quot;, 2016)) +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      facet_wrap( ~ month, ncol = 2)
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[9]]</code></pre>
 <p><img src="figure/NRT_fco2residual.Rmd/2016_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2016_monthly_mean_maps-9">
@@ -12469,6 +13254,22 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
+  filter(year == 2016,
+         name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title = paste(&quot;Monthly means&quot;, 2016)) +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="trends-3" class="section level3">
 <h3>Trends</h3>
@@ -12713,6 +13514,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_change_monthly_mean_maps-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_change_monthly_mean_maps-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -12897,6 +13709,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_change_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomaly-3" class="section level3">
 <h3>2016 anomaly</h3>
@@ -13132,6 +13947,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomaly_monthly_mean_maps-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_anomaly_monthly_mean_maps-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -13316,6 +14142,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_anomaly_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
   filter(year == 2016) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;NRT_fco2residual&quot;,&quot;_&quot;,&quot;2016&quot;,&quot;_anomaly_map_monthly.csv&quot;))</code></pre>
@@ -13572,6 +14401,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_hovmoeller_annual_anomaly-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_hovmoeller_annual_anomaly-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -13756,6 +14596,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_hovmoeller_annual_anomaly-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="monthly-anomalies-2" class="section level2">
 <h2>2016 monthly anomalies</h2>
@@ -14003,6 +14846,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_hovmoeller_monthly_anomalies-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_hovmoeller_monthly_anomalies-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -14187,6 +15041,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_hovmoeller_monthly_anomalies-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;NRT_fco2residual&quot;,&quot;_&quot;,&quot;2016&quot;,&quot;_anomaly_hovmoeller_monthly.csv&quot;))</code></pre>
 <div id="three-years-prior-2016" class="section level3">
@@ -14430,6 +15287,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -14618,6 +15486,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_hovmoeller_monthly_anomalies_recent_years-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
@@ -14690,6 +15561,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_global-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_global-1.png" target="_blank">741ee62</a>
@@ -14769,6 +15651,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">741ee62</a>
@@ -14858,6 +15751,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -14908,6 +15812,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-2.png" target="_blank">741ee62</a>
@@ -14962,6 +15877,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -15014,6 +15940,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -15064,6 +16001,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes-5.png" target="_blank">741ee62</a>
@@ -15144,6 +16092,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_overview_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_overview_biomes_super-1.png" target="_blank">741ee62</a>
@@ -15234,6 +16193,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -15287,6 +16257,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -15338,6 +16319,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_absolute_means_and_integrals_key_biomes_super-3.png" target="_blank">741ee62</a>
@@ -15437,6 +16429,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -15520,6 +16523,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-2.png" target="_blank">741ee62</a>
@@ -15607,6 +16621,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -15691,6 +16716,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -15767,6 +16803,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-5.png" target="_blank">741ee62</a>
@@ -15847,6 +16894,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-6.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-6.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -15922,6 +16980,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-7.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_annual_mean_trends-7.png" target="_blank">741ee62</a>
@@ -16008,6 +17077,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -16085,6 +17165,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -16160,6 +17251,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_overview-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_overview-3.png" target="_blank">741ee62</a>
@@ -16251,6 +17353,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -16301,6 +17414,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">741ee62</a>
@@ -16355,6 +17479,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -16407,6 +17542,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -16457,6 +17603,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes-5.png" target="_blank">741ee62</a>
@@ -16549,6 +17706,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -16602,6 +17770,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -16653,6 +17832,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_annual_mean_trends_key_biomes_super-3.png" target="_blank">741ee62</a>
@@ -16742,6 +17932,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_trends-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_trends-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -16821,6 +18022,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_trends-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_trends-2.png" target="_blank">741ee62</a>
@@ -16923,6 +18135,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_trends-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_trends-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17017,6 +18240,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_trends-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_monthly_mean_trends-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17104,6 +18338,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17182,6 +18427,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17258,6 +18514,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_global-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_global-3.png" target="_blank">741ee62</a>
@@ -17341,6 +18608,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">741ee62</a>
@@ -17433,6 +18711,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17484,6 +18773,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">741ee62</a>
@@ -17539,6 +18839,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17592,6 +18903,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17643,6 +18965,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_key_biomes-5.png" target="_blank">741ee62</a>
@@ -17726,6 +19059,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" target="_blank">741ee62</a>
@@ -17818,6 +19162,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17871,6 +19226,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -17922,6 +19288,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_from_monthly_mean_trends_biomes_super-3.png" target="_blank">741ee62</a>
@@ -18034,6 +19411,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_global_annual-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_global_annual-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -18143,6 +19531,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">741ee62</a>
@@ -18404,6 +19803,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -18636,6 +20046,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
   filter(biome %in% super_biomes) %&gt;%
   pivot_longer(-c(year, month, biome, fgco2_int))  %&gt;%
@@ -18875,6 +20288,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -19111,6 +20535,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_absolute_super_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
   pivot_longer(-c(month, biome, year)) %&gt;%
   write_csv(paste0(
@@ -19364,6 +20791,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -19545,6 +20983,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/2016_anomalies_correlation_realtive_to_spread_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pCO2productanalysis_1998 &lt;-
   knitr::knit_expand(
     file = here::here(&quot;analysis/child/pCO2_product_analysis.Rmd&quot;),
@@ -19877,6 +21318,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_maps-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_maps-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -20061,20 +21513,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
-  filter(year == 1998,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;% 
-  # head(1) %&gt;%
-  map( ~ map +
-         geom_tile(data = .x,
-                   aes(lon, lat, fill = value)) +
-         labs(title = paste(&quot;Annual mean&quot;, 1998)) +
-         scale_fill_divergent(
-           name = labels_breaks(.x %&gt;% distinct(name))) +
-         theme(legend.title = element_markdown())
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[9]]</code></pre>
 <p><img src="figure/NRT_fco2residual.Rmd/1998_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-1998_annual_mean_maps-9">
@@ -20124,6 +21564,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
+  filter(year == 1998,
+         name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;% 
+  # head(1) %&gt;%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = value)) +
+         labs(title = paste(&quot;Annual mean&quot;, 1998)) +
+         scale_fill_divergent(
+           name = labels_breaks(.x %&gt;% distinct(name))) +
+         theme(legend.title = element_markdown())
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="trends-4" class="section level3">
 <h3>Trends</h3>
@@ -20278,6 +21733,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_change_annual_mean_maps-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_change_annual_mean_maps-3.png" target="_blank">3bd3bfb</a>
@@ -20647,6 +22113,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomaly_annual_mean_maps-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_anomaly_annual_mean_maps-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -20831,6 +22308,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_anomaly_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_annual_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;NRT_fco2residual&quot;,&quot;_&quot;,&quot;1998&quot;,&quot;_anomaly_map_annual.csv&quot;))</code></pre>
 </div>
@@ -21031,6 +22511,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_maps-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_maps-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -21215,21 +22706,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
-  filter(year == 1998,
-         name %in% name_divergent) %&gt;%
-  group_split(name) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = value)) +
-      labs(title = paste(&quot;Monthly means&quot;, 1998)) +
-      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      facet_wrap( ~ month, ncol = 2)
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[9]]</code></pre>
 <p><img src="figure/NRT_fco2residual.Rmd/1998_monthly_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-1998_monthly_mean_maps-9">
@@ -21279,6 +22757,22 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
+  filter(year == 1998,
+         name %in% name_divergent) %&gt;%
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title = paste(&quot;Monthly means&quot;, 1998)) +
+      scale_fill_divergent(name = labels_breaks(.x %&gt;% distinct(name))) +
+      theme(legend.title = element_markdown()) +
+      facet_wrap( ~ month, ncol = 2)
+  )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="trends-5" class="section level3">
 <h3>Trends</h3>
@@ -21523,6 +23017,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_change_monthly_mean_maps-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_change_monthly_mean_maps-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -21707,6 +23212,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_change_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="anomaly-5" class="section level3">
 <h3>1998 anomaly</h3>
@@ -21942,6 +23450,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomaly_monthly_mean_maps-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_anomaly_monthly_mean_maps-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -22126,6 +23645,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_anomaly_monthly_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_coarse_monthly_regression %&gt;%
   filter(year == 1998) %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;NRT_fco2residual&quot;,&quot;_&quot;,&quot;1998&quot;,&quot;_anomaly_map_monthly.csv&quot;))</code></pre>
@@ -22382,6 +23904,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_hovmoeller_annual_anomaly-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_hovmoeller_annual_anomaly-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -22566,6 +24099,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_hovmoeller_annual_anomaly-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="monthly-anomalies-4" class="section level2">
 <h2>1998 monthly anomalies</h2>
@@ -22813,6 +24349,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_hovmoeller_monthly_anomalies-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_hovmoeller_monthly_anomalies-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -22997,6 +24544,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_hovmoeller_monthly_anomalies-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;NRT_fco2residual&quot;,&quot;_&quot;,&quot;1998&quot;,&quot;_anomaly_hovmoeller_monthly.csv&quot;))</code></pre>
 <div id="three-years-prior-1998" class="section level3">
@@ -23240,6 +24790,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -23428,6 +24989,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_hovmoeller_monthly_anomalies_recent_years-10.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
@@ -23500,6 +25064,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_global-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_global-1.png" target="_blank">741ee62</a>
@@ -23579,6 +25154,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">741ee62</a>
@@ -23668,6 +25254,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -23718,6 +25315,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-2.png" target="_blank">741ee62</a>
@@ -23772,6 +25380,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -23824,6 +25443,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -23874,6 +25504,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes-5.png" target="_blank">741ee62</a>
@@ -23954,6 +25595,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_overview_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_overview_biomes_super-1.png" target="_blank">741ee62</a>
@@ -24044,6 +25696,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -24097,6 +25760,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -24148,6 +25822,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_absolute_means_and_integrals_key_biomes_super-3.png" target="_blank">741ee62</a>
@@ -24247,6 +25932,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -24330,6 +26026,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-2.png" target="_blank">741ee62</a>
@@ -24417,6 +26124,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -24501,6 +26219,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -24577,6 +26306,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-5.png" target="_blank">741ee62</a>
@@ -24657,6 +26397,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-6.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-6.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -24732,6 +26483,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-7.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_annual_mean_trends-7.png" target="_blank">741ee62</a>
@@ -24818,6 +26580,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -24895,6 +26668,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -24970,6 +26754,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_overview-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_overview-3.png" target="_blank">741ee62</a>
@@ -25061,6 +26856,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25111,6 +26917,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">741ee62</a>
@@ -25165,6 +26982,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25217,6 +27045,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25267,6 +27106,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes-5.png" target="_blank">741ee62</a>
@@ -25359,6 +27209,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25412,6 +27273,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25463,6 +27335,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_annual_mean_trends_key_biomes_super-3.png" target="_blank">741ee62</a>
@@ -25552,6 +27435,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_trends-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_trends-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25631,6 +27525,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_trends-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_trends-2.png" target="_blank">741ee62</a>
@@ -25733,6 +27638,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_trends-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_trends-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25827,6 +27743,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_trends-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_monthly_mean_trends-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25914,6 +27841,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -25992,6 +27930,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -26068,6 +28017,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_global-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_global-3.png" target="_blank">741ee62</a>
@@ -26151,6 +28111,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">741ee62</a>
@@ -26243,6 +28214,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -26294,6 +28276,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">741ee62</a>
@@ -26349,6 +28342,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -26402,6 +28406,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -26453,6 +28468,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-5.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_key_biomes-5.png" target="_blank">741ee62</a>
@@ -26536,6 +28562,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" target="_blank">741ee62</a>
@@ -26628,6 +28665,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_biomes_super-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_biomes_super-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -26681,6 +28729,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_biomes_super-2.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_biomes_super-2.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -26732,6 +28791,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_biomes_super-3.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_from_monthly_mean_trends_biomes_super-3.png" target="_blank">741ee62</a>
@@ -26844,6 +28914,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_global_annual-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_global_annual-1.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -26953,6 +29034,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">741ee62</a>
@@ -27214,6 +29306,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -27446,6 +29549,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
   filter(biome %in% super_biomes) %&gt;%
   pivot_longer(-c(year, month, biome, fgco2_int))  %&gt;%
@@ -27685,6 +29791,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/741ee6220e14c41fdfe728468088dce9167d1a9f/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">741ee62</a>
 </td>
 <td>
@@ -27921,6 +30038,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_absolute_super_biome_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_monthly_detrended_anomaly %&gt;%
   pivot_longer(-c(month, biome, year)) %&gt;%
   write_csv(paste0(
@@ -28174,6 +30294,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ce4e2a6e6ff13c1751d268906062441fad0e1cc9/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">ce4e2a6</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/3bd3bfb5cc5c97acb3fdf5745679913b4549d40d/docs/figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">3bd3bfb</a>
 </td>
 <td>
@@ -28355,6 +30486,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/NRT_fco2residual.Rmd/1998_anomalies_correlation_realtive_to_spread_monthly-9.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
