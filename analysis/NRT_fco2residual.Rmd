@@ -1,0 +1,162 @@
+---
+title: "NRT_fco2residual"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r parent, child = "/nfs/kryo/work/jenmueller/emlr_cant/utilities/setup.Rmd"}
+# this chunk runs the code stored in setup.Rmd
+# if required, please refer to instructions given here:
+# https://jdblischak.github.io/workflowr/articles/wflow-07-common-code.html
+```
+
+```{r load_libraries_read_data, include = FALSE}
+
+library(stars)
+library(lubridate)
+
+```
+
+# Read data
+
+```{r define_paths}
+
+path_pCO2_products <-
+  "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/"
+
+path_NRT_fco2residual <-
+  "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/NRT_fco2residual_mckinley/"
+
+
+```
+
+
+```{r read_nc_metadata, eval=FALSE}
+
+library(ncdf4)
+
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
+  ))
+
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_inputs.nc"
+  ))
+
+nc <-
+  nc_open(paste0(
+    path_NRT_fco2residual,
+    "NRT_fco2residual_mckinley_16april2024_v2.nc"
+  ))
+
+print(nc)
+
+```
+
+
+```{r read_NRT_fco2residual_mckinley}
+
+print("NRT_fco2residual_mckinley_16april2024_v2.nc")
+
+pco2_product <-
+  read_ncdf(
+    paste0(
+      path_NRT_fco2residual,
+      "NRT_fco2residual_mckinley_16april2024_v2.nc"
+    ),
+    make_units = FALSE
+  )
+
+pco2_product <- pco2_product %>%
+  as_tibble()
+
+pco2_product <-
+  pco2_product %>%
+  rename(lon = xlon,
+         lat = ylat,
+         atm_fco2 = fco2atm,
+         sol = alpha,
+         salinity = sos,
+         temperature = tos)
+
+# pco2_product %>%
+#   filter(mld < 50) %>%
+#   ggplot(aes(mld)) +
+#   geom_histogram()
+
+pco2_product <-
+  pco2_product %>%
+  mutate(across(mld, ~ replace(., . == 0, NA)))
+
+pco2_product <-
+  pco2_product %>%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
+
+pco2_product <-
+  pco2_product %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+```
+
+
+
+```{r source_pCO2_product_preprocessing_child}
+
+pCO2_product_preprocessing <-
+  knitr::knit_expand(file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"))
+
+```
+
+
+`r knitr::knit(text = unlist(pCO2_product_preprocessing))`
+
+```{r source_pCO2_product_analysis_child_2023}
+
+pCO2productanalysis_2023 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "SOM_FFN",
+    year_anom = 2023
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis_2023))`
+
+```{r source_pCO2_product_analysis_child_2016}
+
+pCO2productanalysis_2016 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "SOM_FFN",
+    year_anom = 2016
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis_2016))`
+
+```{r source_pCO2_product_analysis_child_1998}
+
+pCO2productanalysis_1998 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "SOM_FFN",
+    year_anom = 1998
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis_1998))`
