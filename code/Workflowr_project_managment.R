@@ -132,28 +132,30 @@ wflow_publish(here::here(
     "index.Rmd",
     "biomes.Rmd",
     "mhw_stats.Rmd",
+    "pco2_product_synopsis_1998.Rmd",
+    "pco2_product_synopsis_2016.Rmd",
+    "pco2_product_synopsis_2023.Rmd",
+    "ETHZ_CESM.Rmd",
+    "FESOM_REcoM.Rmd",
+    "Synopsis.Rmd",
     "atm_co2.Rmd",
     "CMEMS.Rmd",
     "SOM_FFN.Rmd",
     "OceanSODA.Rmd",
-    "pco2_product_synopsis_1998.Rmd",
-    "pco2_product_synopsis_2016.Rmd",
-    "pco2_product_synopsis_2023.Rmd"
+    "NRT_fco2residual.Rmd"
   )
 ),
-message = "rebuild entire website with individual anomaly years",
+message = "rebuild entire website with NRT_fco2residual",
 republish = TRUE)
 
 
 wflow_publish(here::here(
   "analysis",
   c(
-    "pco2_product_synopsis_1998.Rmd",
-    "pco2_product_synopsis_2016.Rmd",
     "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "incl monthly anomaly correlation")
+message = "NRT_fco2residual included")
 
 
 
