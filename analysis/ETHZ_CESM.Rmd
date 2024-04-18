@@ -20,4 +20,123 @@ library(lubridate)
 
 ```
 
-# TBD
+# Read data
+
+```{r define_paths}
+
+path_pCO2_products <-
+  "/net/kryo/work/loher/CESM_output/GlobalMarineHeatwaves/"
+
+```
+
+
+```{r read_nc_metadata, eval=FALSE}
+
+library(ncdf4)
+
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "Heatwaves_RunA.nc"
+  ))
+
+print(nc)
+
+```
+
+
+```{r read_ETHZ_CESM}
+
+print("Heatwaves_RunA.nc")
+
+pco2_product <-
+  read_ncdf(
+    paste0(
+      path_pCO2_products,
+      "Heatwaves_RunA.nc"
+    ),
+    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld", "u", "v"),
+    make_units = FALSE
+  )
+
+pco2_product <- pco2_product %>%
+  as_tibble()
+
+
+pco2_product <-
+  pco2_product %>%
+  rename(chl = chlos,
+         kw = Kw,
+         salinity = sos,
+         temperature = tos)
+
+
+pco2_product <-
+  pco2_product %>%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
+
+pco2_product <-
+  pco2_product %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon),
+         chl = if_else(chl > 0, log10(chl), 0),
+         mld = log10(mld),
+         wind = sqrt(u^2 + v^2)) %>% 
+  select(-c(u,v))
+
+```
+
+
+
+```{r source_pCO2_product_preprocessing_child}
+
+pCO2_product_preprocessing <-
+  knitr::knit_expand(file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"))
+
+```
+
+
+`r knitr::knit(text = unlist(pCO2_product_preprocessing))`
+
+```{r source_pCO2_product_analysis_child_2023}
+
+pCO2productanalysis_2023 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "ETHZ_CESM",
+    year_anom = 2023
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis_2023))`
+
+```{r source_pCO2_product_analysis_child_2016}
+
+pCO2productanalysis_2016 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "ETHZ_CESM",
+    year_anom = 2016
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis_2016))`
+
+```{r source_pCO2_product_analysis_child_1998}
+
+pCO2productanalysis_1998 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "ETHZ_CESM",
+    year_anom = 1998
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2productanalysis_1998))`
