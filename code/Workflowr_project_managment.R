@@ -152,10 +152,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "pco2_product_synopsis_2023.Rmd"
+    "ETHZ_CESM.Rmd"
   )
 ),
-message = "NRT_fco2residual included")
+message = "unit fixes ETHZ CESM")
 
 
 
