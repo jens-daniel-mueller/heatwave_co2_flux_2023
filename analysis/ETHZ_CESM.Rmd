@@ -55,7 +55,7 @@ pco2_product <-
       path_pCO2_products,
       "Heatwaves_RunA.nc"
     ),
-    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld", "u", "v"),
+    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld"),
     make_units = FALSE
   )
 
@@ -83,9 +83,7 @@ pco2_product <-
          chl = if_else(chl > 0, log10(chl * 10^6), 0),
          kw = kw *60 *60 *24 *365,
          mld = log10(mld),
-         wind = sqrt(u^2 + v^2),
-         fgco2 = -fgco2 *60 *60 *24 *365)%>% 
-  select(-c(u,v))
+         fgco2 = -fgco2 *60 *60 *24 *365)
 
 ```
 
