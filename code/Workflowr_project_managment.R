@@ -130,14 +130,13 @@ wflow_publish(here::here(
   "analysis",
   c(
     "index.Rmd",
+    "ETHZ_CESM.Rmd",
     "biomes.Rmd",
     "mhw_stats.Rmd",
     "pco2_product_synopsis_1998.Rmd",
     "pco2_product_synopsis_2016.Rmd",
     "pco2_product_synopsis_2023.Rmd",
-    "ETHZ_CESM.Rmd",
     "FESOM_REcoM.Rmd",
-    "Synopsis.Rmd",
     "atm_co2.Rmd",
     "CMEMS.Rmd",
     "SOM_FFN.Rmd",
@@ -145,17 +144,18 @@ wflow_publish(here::here(
     "NRT_fco2residual.Rmd"
   )
 ),
-message = "rebuild entire website with NRT_fco2residual",
+message = "rebuild entire website with joint synopsis",
 republish = TRUE)
 
 
 wflow_publish(here::here(
   "analysis",
   c(
-    "ETHZ_CESM.Rmd"
+    "pco2_product_synopsis_2023.Rmd",
+    "pco2_product_synopsis_2016.Rmd"
   )
 ),
-message = "unit fixes ETHZ CESM")
+message = "include CESM ETHZ")
 
 
 
