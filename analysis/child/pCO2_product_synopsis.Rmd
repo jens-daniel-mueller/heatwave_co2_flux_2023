@@ -138,8 +138,8 @@ name_core <- c("fgco2", "fgco2_int", "fgco2_hov",
                "spco2", "sfco2",
                "atm_co2", "atm_fco2",
                "dco2", "dfco2",
-               "wind", "kw",
-               "temperature", "sol")
+               "kw",
+               "temperature")
 
 ```
 
@@ -437,7 +437,7 @@ cowplot::plot_grid(
 pco2_product_coarse_annual_regression %>%
   filter(year == {{year_anom}}) %>%
   group_split(name) %>%
-  head(1) %>%
+  # head(1) %>%
   map(
     ~ map +
       geom_tile(data = .x,
