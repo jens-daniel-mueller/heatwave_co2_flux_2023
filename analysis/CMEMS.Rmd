@@ -74,15 +74,30 @@ ncvar_get(nc, varid = "time")
 
 CMEMS_files <- list.files(path = path_CMEMS)
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("fuCO2_clim"))]
+
+
+# CMEMS_files <- str_remove(CMEMS_files, ".nc")
+# CMEMS_files_dates <- str_sub(CMEMS_files, start = -6)
+# CMEMS_files_names <- str_sub(CMEMS_files, end = -8)
+# CMEMS_files_names <- str_remove(CMEMS_files_names, "_r100")
+# CMEMS_files <- bind_cols(file_name_variable = CMEMS_files_names, file_name_date = CMEMS_files_dates)
+# library(lubridate)
+# CMEMS_files <- CMEMS_files %>%
+#   mutate(date = ym(file_name_date))
+# CMEMS_files %>% 
+#   filter(year(date) >= 2023) %>% 
+#   ggplot(aes(file_name_date, file_name_variable)) +
+#   geom_point()
+
+
+
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("UV"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Ps"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Sea_Ice"))]
 print(CMEMS_files, max = 5000)
 
 file_names <- str_split(CMEMS_files, "_", simplify = TRUE)[,1] %>% unique()
-# n_var <- length(file_names) - 1
-# CMEMS_files <- CMEMS_files[c(1,470*1:n_var,470*1:n_var+1, 3215)]
-# CMEMS_files <- sort(CMEMS_files)
+
 
 for (i_file_name in file_names) {
   # i_file_name <- file_names[1]
@@ -95,7 +110,7 @@ for (i_file_name in file_names) {
   }
   
   for (i_name in CMEMS_files_var) {
-    # i_name <- CMEMS_files_var[1]
+    # i_name <- CMEMS_files_var[466]
     # print(i_name)
     
     library(ncdf4)
@@ -117,10 +132,21 @@ for (i_file_name in file_names) {
       pco2_product_var <- i_pco2_product_var
     }
     
+    # ggplot() +
+    #   geom_stars(data = pco2_product_var) +
+    #   scale_fill_viridis_c(trans = "log10", na.value = "red") +
+    #   facet_wrap(~ time)
+    
+    
   }
   
   pco2_product_var <- pco2_product_var %>%
   as_tibble()
+  
+  # ggplot() +
+  #   geom_raster(data = pco2_product_var, aes(lon, lat, fill = CHL)) +
+  #   scale_fill_viridis_c(trans = "log10", na.value = "red") +
+  #   facet_wrap( ~ time)
   
   if (exists("pco2_product")) {
     pco2_product <-
@@ -147,16 +173,19 @@ pco2_product <-
   pco2_product %>%
   rename(chl = CHL,
          mld = MLD,
+         atm_co2 = CO2,
          fgco2 = fCO2_mean,
          salinity = SSS,
-         temperature = SST,
-         fice = SI_fraction)
+         temperature = SST)
 
 pco2_product <-
   pco2_product %>%
-  mutate(area = earth_surf(lat, lon),
-         year = year(time),
-         month = month(time))
+  mutate(
+    area = earth_surf(lat, lon),
+    year = year(time),
+    month = month(time),
+    time = ymd(paste(year, month, "15", sep = "-"))
+  )
 
 pco2_product <-
   pco2_product %>% 
@@ -164,6 +193,15 @@ pco2_product <-
          fgco2 = -fgco2,
          chl = log10(chl),
          mld = log10(mld))
+
+# ggplot() +
+#   geom_raster(data = pco2_product %>%
+#                 filter(year == 2023,
+#                        month %in% c(9,10),
+#                        !is.na(chl)),
+#               aes(lon, lat, fill = chl)) +
+#   scale_fill_viridis_c(na.value = "red") +
+#   facet_wrap(~ month)
 
 pco2_product <-
   pco2_product %>% 
