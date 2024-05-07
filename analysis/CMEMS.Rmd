@@ -27,7 +27,7 @@ library(lubridate)
 path_pCO2_products <-
   "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/"
 
-path_CMEMS <- paste0(path_pCO2_products, "cmems_ffnn/v2022/r100/")
+path_CMEMS <- paste0(path_pCO2_products, "cmems_ffnn/v2023/r100_regridded/")
 
 ```
 
@@ -54,6 +54,12 @@ nc <-
   ))
 
 nc <-
+  nc_open(paste0(
+    path_CMEMS,
+    "SSH_r100_199205.nc"
+  ))
+
+nc <-
   nc_open("/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/cmems_ffnn/v2020/v2020.nc")
 
 print(nc)
@@ -64,47 +70,109 @@ ncvar_get(nc, varid = "time")
 ```
 
 
-```{r read_CMEMS_other_versions, eval=FALSE}
+```{r read_CMEMS}
 
+CMEMS_files <- list.files(path = path_CMEMS)
+CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("fuCO2_clim"))]
+CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("UV"))]
+CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Ps"))]
+print(CMEMS_files, max = 5000)
 
-pco2_product <-
-  read_stars(
-    "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/cmems_ffnn/v2021/v2021.nc",
-    make_units = FALSE,
-    ignore_bounds = TRUE
-  )
+file_names <- str_split(CMEMS_files, "_", simplify = TRUE)[,1] %>% unique()
+# n_var <- length(file_names) - 1
+# CMEMS_files <- CMEMS_files[c(1,470*1:n_var,470*1:n_var+1, 3215)]
+# CMEMS_files <- sort(CMEMS_files)
 
-pco2_product <-
-  read_stars(
-    "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/cmems_ffnn/v2023/dataset-carbon-rep-monthly_20221215T0000Z_P20230821T1545Z.nc",
-    make_units = FALSE,
-    ignore_bounds = TRUE
-  )
+for (i_file_name in file_names) {
+  # i_file_name <- file_names[1]
+  CMEMS_files_var <-
+    CMEMS_files[CMEMS_files %>% str_detect(i_file_name)]
   
-pco2_product <- pco2_product %>%
+  if(i_file_name == "xCO2"){
+  CMEMS_files_var <-
+    CMEMS_files_var[!CMEMS_files_var %>% str_detect("fluxCO2")]
+  }
+  
+  for (i_name in CMEMS_files_var) {
+    # i_name <- CMEMS_files_var[1]
+    print(i_name)
+    
+    library(ncdf4)
+    nc <- nc_open(paste0(path_CMEMS, i_name))
+    var_name <- names(nc$var)[1]
+    
+    i_pco2_product_var <-
+      read_ncdf(paste0(path_CMEMS, i_name),
+                make_units = FALSE,
+                var = var_name)
+    
+    if (exists("pco2_product_var")) {
+      pco2_product_var <-
+        c(pco2_product_var,
+          i_pco2_product_var)
+    }
+    
+    if (!exists("pco2_product_var")) {
+      pco2_product_var <- i_pco2_product_var
+    }
+    
+  }
+  
+  pco2_product_var <- pco2_product_var %>%
   as_tibble()
+  
+  if (exists("pco2_product")) {
+    pco2_product <-
+      full_join(pco2_product,
+                pco2_product_var)
+  }
+  
+  if (!exists("pco2_product")) {
+    pco2_product <- pco2_product_var
+  }
+  
+  rm(pco2_product_var)
+  
+}
 
+rm(i_pco2_product_var,
+   nc, var_name,
+   i_file_name, file_names,
+   i_name, CMEMS_files_var,
+   CMEMS_files)
+# rm(pco2_product)
 
-pco2_product %>%
-  distinct(time) %>% 
-  pull() %>% 
-  max()
+pco2_product <-
+  pco2_product %>%
+  rename(chl = CHL,
+         mld = MLD,
+         sfco2 = CO2,
+         fgco2 = fCO2_mean,
+         salinity = SSS,
+         temperature = SST,
+         fice = SI_fraction)
 
-pco2_product %>%
-  drop_na() %>%
-  units::drop_units() %>% 
-  group_by(x, y) %>%
-  summarise(fgco2 = mean(fgco2)) %>%
-  ungroup() %>%
-  ggplot(aes(x, y, fill = fgco2)) +
-  geom_raster() +
-  coord_quickmap() +
-  scale_fill_continuous_divergingx()
+pco2_product <-
+  pco2_product %>%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
 
+pco2_product <-
+  pco2_product %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon),
+         fgco2 = -fgco2,
+         chl = log10(chl),
+         mld = log10(mld))
+
+pco2_product <-
+  pco2_product %>% 
+  filter(year <= 2023)
 
 ```
 
-```{r read_CMEMS}
+
+```{r read_CMEMS_old, eval=FALSE}
 
 names <- c("CO2_fluxes", "CO2_fugacity")
 
