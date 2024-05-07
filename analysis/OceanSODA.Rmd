@@ -102,7 +102,45 @@ rm(pco2_product)
 OceanSODA_files <- list.files(path = path_OceanSODA)
 
 OceanSODA_files <-
-  OceanSODA_files[OceanSODA_files %>% str_detect(c("fgco2_O|kw|spco2|temp|sal|sol"))]
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("fgco2_O|kw|spco2|sal|sol"))]
+
+for (i_OceanSODA_files in OceanSODA_files) {
+  
+  # i_OceanSODA_files <- OceanSODA_files[2]
+  
+  i_pco2_product <-
+    read_ncdf(paste0(path_OceanSODA,
+                     i_OceanSODA_files),
+              make_units = FALSE,
+              ignore_bounds = TRUE)
+  
+  if (exists("pco2_product")) {
+    pco2_product <-
+      c(pco2_product,
+                i_pco2_product)
+  }
+  
+  if (!exists("pco2_product")) {
+    pco2_product <- i_pco2_product
+  }
+  
+}
+
+rm(OceanSODA_files, i_OceanSODA_files, i_pco2_product)
+# rm(pco2_product)
+
+pco2_product <- pco2_product %>%
+  as_tibble()
+
+pco2_product_temp <-
+  full_join(pco2_product, pco2_product_temp)
+rm(pco2_product)
+
+
+OceanSODA_files <- list.files(path = path_OceanSODA)
+
+OceanSODA_files <-
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("dfco2_Oc|sfco2_Oc|sst"))]
 
 for (i_OceanSODA_files in OceanSODA_files) {
   
@@ -136,6 +174,8 @@ pco2_product <-
   full_join(pco2_product, pco2_product_temp)
 rm(pco2_product_temp)
 
+
+
 pco2_product <-
   pco2_product %>%
   mutate(area = earth_surf(lat, lon),
@@ -143,15 +183,24 @@ pco2_product <-
          month = month(time))
 
 pco2_product <-
-  pco2_product %>% 
-  mutate(lon = if_else(lon < 20, lon + 360, lon),
-         fgco2 = fgco2 * 1e-3 * 365,
-         sol = sol * 1e-3,
-         # atm_fco2 = sfco2 - dfco2,
-         # mld = 10^mld,
-         # chl_filled = 10^chl_filled,
-         kw = kw * 1e-2 * 24 * 365) %>% 
-  rename(chl = chl_filled)
+  pco2_product %>%
+  rename(chl = chl_filled,
+         dfco2 = dfco2_avg,
+         sfco2 = sfco2_avg,
+         temperature = sst) %>%
+  mutate(
+    lon = if_else(lon < 20, lon + 360, lon),
+    fgco2 = fgco2 * 1e-3 * 365,
+    sol = sol * 1e-3,
+    atm_fco2 = sfco2 - dfco2,
+    # mld = 10^mld,
+    # chl_filled = 10^chl_filled,
+    kw = kw * 1e-2 * 24 * 365
+  )
+
+pco2_product <-
+  pco2_product %>%
+  filter(year <= 2023)
 
 ```
 
