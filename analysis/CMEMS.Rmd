@@ -76,6 +76,7 @@ CMEMS_files <- list.files(path = path_CMEMS)
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("fuCO2_clim"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("UV"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Ps"))]
+CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Sea_Ice"))]
 print(CMEMS_files, max = 5000)
 
 file_names <- str_split(CMEMS_files, "_", simplify = TRUE)[,1] %>% unique()
@@ -95,7 +96,7 @@ for (i_file_name in file_names) {
   
   for (i_name in CMEMS_files_var) {
     # i_name <- CMEMS_files_var[1]
-    print(i_name)
+    # print(i_name)
     
     library(ncdf4)
     nc <- nc_open(paste0(path_CMEMS, i_name))
@@ -146,7 +147,6 @@ pco2_product <-
   pco2_product %>%
   rename(chl = CHL,
          mld = MLD,
-         sfco2 = CO2,
          fgco2 = fCO2_mean,
          salinity = SSS,
          temperature = SST,
