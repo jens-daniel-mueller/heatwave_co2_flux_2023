@@ -94,13 +94,13 @@ CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("fuCO2_clim"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("UV"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Ps"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Sea_Ice"))]
-print(CMEMS_files, max = 5000)
+# print(CMEMS_files, max = 5000)
 
 file_names <- str_split(CMEMS_files, "_", simplify = TRUE)[,1] %>% unique()
 
 
 for (i_file_name in file_names) {
-  # i_file_name <- file_names[1]
+  # i_file_name <- file_names[6]
   CMEMS_files_var <-
     CMEMS_files[CMEMS_files %>% str_detect(i_file_name)]
   
@@ -110,6 +110,7 @@ for (i_file_name in file_names) {
   }
   
   for (i_name in CMEMS_files_var) {
+    # i_name <- CMEMS_files_var[465]
     # i_name <- CMEMS_files_var[466]
     # print(i_name)
     
@@ -142,6 +143,15 @@ for (i_file_name in file_names) {
   
   pco2_product_var <- pco2_product_var %>%
   as_tibble()
+  
+  pco2_product_var <-
+    pco2_product_var %>%
+    mutate(
+      area = earth_surf(lat, lon),
+      year = year(time),
+      month = month(time),
+      time = ymd(paste(year, month, "15", sep = "-"))
+    )
   
   # ggplot() +
   #   geom_raster(data = pco2_product_var, aes(lon, lat, fill = CHL)) +
@@ -179,29 +189,29 @@ pco2_product <-
          temperature = SST)
 
 pco2_product <-
-  pco2_product %>%
-  mutate(
-    area = earth_surf(lat, lon),
-    year = year(time),
-    month = month(time),
-    time = ymd(paste(year, month, "15", sep = "-"))
-  )
-
-pco2_product <-
   pco2_product %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon),
          fgco2 = -fgco2,
          chl = log10(chl),
          mld = log10(mld))
 
+pco2_product <-
+  pco2_product %>% 
+  mutate(temperature = if_else(
+    year == 2023 & month >=10,
+    temperature - 273.15,
+    temperature
+  ))
+
+
+
 # ggplot() +
 #   geom_raster(data = pco2_product %>%
 #                 filter(year == 2023,
-#                        month %in% c(9,10),
-#                        !is.na(chl)),
+#                        month %in% 9:10),
 #               aes(lon, lat, fill = chl)) +
 #   scale_fill_viridis_c(na.value = "red") +
-#   facet_wrap(~ month)
+#   facet_wrap( ~ month)
 
 pco2_product <-
   pco2_product %>% 
