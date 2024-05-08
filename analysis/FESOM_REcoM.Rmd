@@ -39,7 +39,7 @@ library(ncdf4)
 nc <-
   nc_open(paste0(
     path_FESOM,
-    "fgco2_FESOM2_REcoM_A_1_gr_1980-2023_v20220716.nc"
+    "alpha_FESOM2_REcoM_A_1_gr_1980-2023_v20220716.nc"
   ))
 
 print(nc)
@@ -104,7 +104,11 @@ pco2_product <-
          temperature = tos) %>%
   mutate(
     lon = if_else(lon < 20, lon + 360, lon),
-    fgco2 = fgco2 * 60 * 60 * 24 * 365,
+    chl = log10(chl * 1e6),
+    kw = kw * 60 * 60 * 24 * 365,
+    mld = log10(-mld),
+    sol = sol * 1.025e3 * 1e-6,
+    fgco2 = -fgco2 * 60 * 60 * 24 * 365
   )
 
 pco2_product <-
