@@ -9,7 +9,7 @@ We use linear regression models for all parameters, except for `r print(name_qua
 The regression models are fitted to all data since `r print(paste(start_year))`, except {{year_anom}}.
 
 
-```{r anomaly_detection_function_nested}
+```{r anomaly_detection_regression}
 
 anomaly_determination <- function(df,...) {
   
@@ -114,6 +114,41 @@ anomaly_determination <- function(df,...) {
   
   
   return(df_regression)
+  
+}
+
+```
+
+```{r anomaly_detection_recent_climatology, eval=FALSE}
+
+anomaly_determination <- function(df,...) {
+  
+  group_by <- quos(...)
+  # group_by <- quos(biome)
+  # group_by <- quos(lon, lat)
+  # df <- pco2_product_coarse_annual
+  
+  # Climatoligcal mean
+  
+  df_mean <-
+    df %>%
+    filter(year < {{year_anom}},
+           year >= {{year_anom}}-5) %>%
+    group_by(name, !!!group_by) %>%
+    summarize(
+      fit = mean(value, na.rm = TRUE)
+    ) %>% 
+    ungroup()
+  
+  
+  df_mean <-
+    full_join(
+      df_mean,
+      df
+    ) %>%
+    mutate(resid = value - fit)
+  
+  return(df_mean)
   
 }
 

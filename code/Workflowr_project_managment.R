@@ -151,10 +151,13 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "FESOM_REcoM.Rmd"
+    "SOM_FFN.Rmd",
+    "pco2_product_synopsis_1998.Rmd",
+    "pco2_product_synopsis_2016.Rmd",
+    "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "2016 and 1998 included")
+message = "revert to linear regression baseline, update synopsis")
 
 
 
