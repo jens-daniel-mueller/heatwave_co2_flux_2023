@@ -151,13 +151,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "OceanSODA.Rmd"
-    # "pco2_product_synopsis_1998.Rmd",
-    # "pco2_product_synopsis_2016.Rmd",
-    # "pco2_product_synopsis_2023.Rmd"
+    "FESOM_REcoM.Rmd"
   )
 ),
-message = "two missing variables added")
+message = "2016 and 1998 included")
 
 
 
