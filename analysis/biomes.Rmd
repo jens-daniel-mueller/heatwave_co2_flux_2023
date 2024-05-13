@@ -67,7 +67,7 @@ map <- ggplot(land_mask,
   geom_tile(fill = "grey80") +
   scale_y_continuous(breaks = seq(-60,60,30)) +
   scale_x_continuous(breaks = seq(0,360,60)) +
-  coord_quickmap(expand = 0, ylim = c(-80, 80)) +
+  coord_quickmap(expand = 0, ylim = c(-60, 80)) +
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank())
@@ -75,7 +75,7 @@ map <- ggplot(land_mask,
 map
 
 map %>%
-  write_rds("../data/map.rds")
+  write_rds(paste0("../data/","map.rds"))
 
 ```
 
@@ -122,8 +122,8 @@ biome_mask <- biome_mask  %>%
     # biome == "arctic_3" ~ "NA-ICE",
     # biome == "arctic_4" ~ "Barents",
     # str_detect(biome, "arctic") ~ "Arctic",
-    biome == "southern_1" ~ "SO-STSS",
-    biome == "southern_2" ~ "SO-SPSS",
+    # biome == "southern_1" ~ "SO-STSS",
+    # biome == "southern_2" ~ "SO-SPSS",
     # biome == "southern_3" ~ "SO-ICE",
     TRUE ~ "other"
   ))
@@ -167,12 +167,10 @@ Following key biomes are highlighted throughout the analysis.
 
 ```{r key_biomes, fig.asp=0.5}
 
-key_biomes <- c("global",
-                "NA-SPSS",
+key_biomes <- c("NA-SPSS",
                 "NA-STPS",
                 "NP-SPSS",
-                "PEQU-E",
-                "SO-SPSS")
+                "PEQU-E")
 
 key_biomes %>% 
   write_rds("../data/key_biomes.rds")
@@ -206,7 +204,7 @@ super_biome_mask <- biome_mask  %>%
     biome = case_when(
       str_detect(biome, "NA-") ~ "North Atlantic",
       str_detect(biome, "NP-") ~ "North Pacific",
-      str_detect(biome, "SO-") ~ "Southern Ocean",
+      # str_detect(biome, "SO-") ~ "Southern Ocean",
       TRUE ~ "other"
     )
   )
