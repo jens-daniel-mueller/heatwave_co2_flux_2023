@@ -151,13 +151,15 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
+    "CMEMS.Rmd",
+    "OceanSODA.Rmd",
+    "NRT_fco2residual.Rmd",
+    "ETHZ_CESM.Rmd",
     "SOM_FFN.Rmd",
-    "pco2_product_synopsis_1998.Rmd",
-    "pco2_product_synopsis_2016.Rmd",
-    "pco2_product_synopsis_2023.Rmd"
+    "FESOM_REcoM.Rmd"
   )
 ),
-message = "revert to linear regression baseline, update synopsis")
+message = "pco2 to fco2 conversions, changed output files")
 
 
 
