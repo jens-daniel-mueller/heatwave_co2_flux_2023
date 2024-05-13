@@ -405,12 +405,6 @@ div.tocify {
     <li>
       <a href="pco2_product_synopsis_2023.html">Synopsis 2023</a>
     </li>
-    <li>
-      <a href="pco2_product_synopsis_2016.html">Synopsis 2016</a>
-    </li>
-    <li>
-      <a href="pco2_product_synopsis_1998.html">Synopsis 1998</a>
-    </li>
   </ul>
 </li>
       </ul>
@@ -448,7 +442,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Biome mask</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">22 April, 2024</h4>
+<h4 class="date">13 May, 2024</h4>
 
 </div>
 
@@ -477,7 +471,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-04-22
+<strong>Last updated:</strong> 2024-05-13
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -609,15 +603,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree9d4a3e1d38c75a7ac98073e741789397a1a66503targetblank9d4a3e1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treeaeaee8235a1d567957b9218c91f9ec5f1898e88btargetblankaeaee82a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/9d4a3e1d38c75a7ac98073e741789397a1a66503" target="_blank">9d4a3e1</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/aeaee8235a1d567957b9218c91f9ec5f1898e88b" target="_blank">aeaee82</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree9d4a3e1d38c75a7ac98073e741789397a1a66503targetblank9d4a3e1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treeaeaee8235a1d567957b9218c91f9ec5f1898e88btargetblankaeaee82a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -627,7 +621,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/9d4a3e1d38c75a7ac98073e741789397a1a66503" target="_blank">9d4a3e1</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/aeaee8235a1d567957b9218c91f9ec5f1898e88b" target="_blank">aeaee82</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -647,9 +641,10 @@ Ignored files:
     Ignored:    data/
 
 Unstaged changes:
-    Deleted:    analysis/Synopsis.Rmd
     Modified:   analysis/_site.yml
     Modified:   analysis/child/pCO2_product_synopsis.Rmd
+    Deleted:    analysis/pco2_product_synopsis_1998.Rmd
+    Deleted:    analysis/pco2_product_synopsis_2016.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -695,6 +690,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/aeaee8235a1d567957b9218c91f9ec5f1898e88b/analysis/biomes.Rmd" target="_blank">aeaee82</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-13
+</td>
+<td>
+rebuild entire website with focus on extended NH
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/7f9c68770b1868e4e74c9e477e82a1e40a249b3c/docs/biomes.html" target="_blank">7f9c687</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-04-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1156,7 +1185,7 @@ map &lt;- ggplot(land_mask,
   geom_tile(fill = &quot;grey80&quot;) +
   scale_y_continuous(breaks = seq(-60,60,30)) +
   scale_x_continuous(breaks = seq(0,360,60)) +
-  coord_quickmap(expand = 0, ylim = c(-80, 80)) +
+  coord_quickmap(expand = 0, ylim = c(-60, 80)) +
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank())
@@ -1223,7 +1252,7 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>map %&gt;%
-  write_rds(&quot;../data/map.rds&quot;)</code></pre>
+  write_rds(paste0(&quot;../data/&quot;,&quot;map.rds&quot;))</code></pre>
 </div>
 <div id="global-ocean" class="section level1">
 <h1>Global ocean</h1>
@@ -1266,8 +1295,8 @@ biome_mask &lt;- biome_mask  %&gt;%
     # biome == &quot;arctic_3&quot; ~ &quot;NA-ICE&quot;,
     # biome == &quot;arctic_4&quot; ~ &quot;Barents&quot;,
     # str_detect(biome, &quot;arctic&quot;) ~ &quot;Arctic&quot;,
-    biome == &quot;southern_1&quot; ~ &quot;SO-STSS&quot;,
-    biome == &quot;southern_2&quot; ~ &quot;SO-SPSS&quot;,
+    # biome == &quot;southern_1&quot; ~ &quot;SO-STSS&quot;,
+    # biome == &quot;southern_2&quot; ~ &quot;SO-SPSS&quot;,
     # biome == &quot;southern_3&quot; ~ &quot;SO-ICE&quot;,
     TRUE ~ &quot;other&quot;
   ))
@@ -1553,78 +1582,14 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre><code>
-[[4]]</code></pre>
-<p><img src="figure/biomes.Rmd/all_biomes-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-all_biomes-4">
-Past versions of all_biomes-4.png
-</button>
-</p>
-<div id="fig-all_biomes-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dfcf790a86a302181fe4409f3cf43d90663c7ce1/docs/figure/biomes.Rmd/all_biomes-4.png" target="_blank">dfcf790</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-11
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d5075c588d630cd9be06fbf03b3555717e448af7/docs/figure/biomes.Rmd/all_biomes-4.png" target="_blank">d5075c5</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-04-11
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/78465dc423006b6e7ae7d54e8d0fb285b2d056ef/docs/figure/biomes.Rmd/all_biomes-4.png" target="_blank">78465dc</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-03-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
 </div>
 <div id="key-biomes" class="section level2">
 <h2>Key biomes</h2>
 <p>Following key biomes are highlighted throughout the analysis.</p>
-<pre class="r"><code>key_biomes &lt;- c(&quot;global&quot;,
-                &quot;NA-SPSS&quot;,
+<pre class="r"><code>key_biomes &lt;- c(&quot;NA-SPSS&quot;,
                 &quot;NA-STPS&quot;,
                 &quot;NP-SPSS&quot;,
-                &quot;PEQU-E&quot;,
-                &quot;SO-SPSS&quot;)
+                &quot;PEQU-E&quot;)
 
 key_biomes %&gt;% 
   write_rds(&quot;../data/key_biomes.rds&quot;)
@@ -1711,7 +1676,7 @@ super biomes.</p>
     biome = case_when(
       str_detect(biome, &quot;NA-&quot;) ~ &quot;North Atlantic&quot;,
       str_detect(biome, &quot;NP-&quot;) ~ &quot;North Pacific&quot;,
-      str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
+      # str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
       TRUE ~ &quot;other&quot;
     )
   )
