@@ -17,6 +17,7 @@ editor_options:
 
 library(stars)
 library(lubridate)
+library(seacarb)
 
 ```
 
@@ -25,7 +26,7 @@ library(lubridate)
 ```{r define_paths}
 
 path_pCO2_products <-
-  "/net/kryo/work/loher/CESM_output/GlobalMarineHeatwaves/"
+  "/net/kryo/work/loher/GlobalMarineHeatwaves/ETHZ_BEC/"
 
 ```
 
@@ -55,7 +56,7 @@ pco2_product <-
       path_pCO2_products,
       "Heatwaves_RunA.nc"
     ),
-    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld"),
+    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld", "pco2", "pco2atm", "patm", "alpha", "zos"),
     make_units = FALSE
   )
 
@@ -68,7 +69,10 @@ pco2_product <-
   rename(chl = chlos,
          kw = Kw,
          salinity = sos,
-         temperature = tos)
+         temperature = tos,
+         sol = alpha,
+         press = patm,
+         SSH = zos)
 
 
 pco2_product <-
@@ -83,7 +87,22 @@ pco2_product <-
          chl = if_else(chl > 0, log10(chl * 10^6), 0),
          kw = kw *60 *60 *24 *365,
          mld = log10(mld),
-         fgco2 = -fgco2 *60 *60 *24 *365)
+         fgco2 = -fgco2 *60 *60 *24 *365,
+         sol = sol * 1.025e3)
+
+pco2_product <-
+  pco2_product %>%
+  mutate(
+    sfco2 = p2fCO2(T = temperature,
+                   pCO2 = pco2),
+    atm_fco2 = p2fCO2(T = temperature,
+                      pCO2 = pco2atm),
+    dfco2 = sfco2 - atm_fco2
+  )
+
+pco2_product <-
+  pco2_product %>%
+  select(-c(pco2, pco2atm))
 
 ```
 
@@ -112,31 +131,3 @@ pCO2productanalysis_2023 <-
 ```
 
 `r knitr::knit(text = unlist(pCO2productanalysis_2023))`
-
-```{r source_pCO2_product_analysis_child_2016}
-
-pCO2productanalysis_2016 <-
-  knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
-    product_name = "ETHZ_CESM",
-    year_anom = 2016
-  )
-
-
-```
-
-`r knitr::knit(text = unlist(pCO2productanalysis_2016))`
-
-```{r source_pCO2_product_analysis_child_1998}
-
-pCO2productanalysis_1998 <-
-  knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
-    product_name = "ETHZ_CESM",
-    year_anom = 1998
-  )
-
-
-```
-
-`r knitr::knit(text = unlist(pCO2productanalysis_1998))`

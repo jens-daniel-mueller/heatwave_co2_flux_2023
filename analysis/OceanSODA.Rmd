@@ -31,7 +31,7 @@ path_pCO2_products <-
 #   "/nfs/kryo/work/gregorl/projects/OceanSODA-ETHZ/releases/v2023-full_carbonate_system/OceanSODA_ETHZ_HRLR-v2023.01-co2fluxvars-netCDF/"
 
 path_OceanSODA <-
-  "/home/alinesch/Data/OceanSODA-ETHZ/"
+  "/home/alinesch/Data/OceanSODA-ETHZ/predictor_output_flux_fields/"
 
 
 ```
@@ -102,7 +102,7 @@ rm(pco2_product)
 OceanSODA_files <- list.files(path = path_OceanSODA)
 
 OceanSODA_files <-
-  OceanSODA_files[OceanSODA_files %>% str_detect(c("fgco2_O|kw|spco2|sal|sol"))]
+  OceanSODA_files[OceanSODA_files %>% str_detect(c("fgco2_O|kw|sal|sol"))]
 
 for (i_OceanSODA_files in OceanSODA_files) {
   
@@ -230,30 +230,3 @@ pCO2productanalysis_2023 <-
 
 `r knitr::knit(text = unlist(pCO2productanalysis_2023))`
 
-```{r source_pCO2_product_analysis_child_2016}
-
-pCO2productanalysis_2016 <-
-  knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
-    product_name = "OceanSODA",
-    year_anom = 2016
-  )
-
-
-```
-
-`r knitr::knit(text = unlist(pCO2productanalysis_2016))`
-
-```{r source_pCO2_product_analysis_child_1998}
-
-pCO2productanalysis_1998 <-
-  knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
-    product_name = "OceanSODA",
-    year_anom = 1998
-  )
-
-
-```
-
-`r knitr::knit(text = unlist(pCO2productanalysis_1998))`

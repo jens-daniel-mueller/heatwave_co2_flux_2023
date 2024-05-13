@@ -17,6 +17,7 @@ editor_options:
 
 library(stars)
 library(lubridate)
+library(seacarb)
 
 ```
 
@@ -40,19 +41,7 @@ library(ncdf4)
 nc <-
   nc_open(paste0(
     path_pCO2_products,
-    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_vBAMS2024.nc"
-  ))
-
-nc <-
-  nc_open(paste0(
-    path_pCO2_products,
-    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_inputs.nc"
-  ))
-
-nc <-
-  nc_open(paste0(
-    path_OceanSODA,
-    "fgco2_OceanSODA_ETHZ_HR_LR-v2023.01-1982_2023.nc"
+    "VLIZ-SOM_FFN/VLIZ-SOM_FFN_predict.nc"
   ))
 
 print(nc)
@@ -110,15 +99,31 @@ pco2_product <-
          month = month(time))
 
 pco2_product <-
-  pco2_product %>%
-  mutate(area = earth_surf(lat, lon),
-         year = year(time),
-         month = month(time))
-
-pco2_product <-
   pco2_product %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon),
          wind = sqrt(wind))
+
+pco2_product <-
+  pco2_product %>%
+  mutate(
+    sfco2 = p2fCO2(T = temperature,
+                   pCO2 = spco2),
+    atm_fco2 = p2fCO2(T = temperature,
+                      pCO2 = atm_co2),
+    dfco2 = sfco2 - atm_fco2
+  )
+
+# pco2_product %>% 
+#   ggplot(aes(dco2-(spco2-atm_co2))) +
+#   geom_histogram()
+# 
+# pco2_product %>% 
+#   ggplot(aes(dfco2-(sfco2-atm_fco2))) +
+#   geom_histogram()
+
+pco2_product <-
+  pco2_product %>%
+  select(-c(dco2, atm_co2, spco2))
 
 ```
 
@@ -148,30 +153,3 @@ pCO2productanalysis_2023 <-
 
 `r knitr::knit(text = unlist(pCO2productanalysis_2023))`
 
-```{r source_pCO2_product_analysis_child_2016}
-
-pCO2productanalysis_2016 <-
-  knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
-    product_name = "SOM_FFN",
-    year_anom = 2016
-  )
-
-
-```
-
-`r knitr::knit(text = unlist(pCO2productanalysis_2016))`
-
-```{r source_pCO2_product_analysis_child_1998}
-
-pCO2productanalysis_1998 <-
-  knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
-    product_name = "SOM_FFN",
-    year_anom = 1998
-  )
-
-
-```
-
-`r knitr::knit(text = unlist(pCO2productanalysis_1998))`

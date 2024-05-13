@@ -17,6 +17,7 @@ editor_options:
 
 library(stars)
 library(lubridate)
+library(seacarb)
 
 ```
 
@@ -53,7 +54,7 @@ FESOM_files <- list.files(path = path_FESOM)
 
 FESOM_files <-
   FESOM_files[FESOM_files %>% str_detect(c(
-    "alpha|chlos|dpCO2s|fgco2|Kw|mld|pco2atm|pCO2s|sfco2|sos|tos"
+    "alpha|chlos|fgco2|Kw|mld|fCO2atm|sfco2|sos|tos"
   ))]
 
 for (i_FESOM_files in FESOM_files) {
@@ -96,10 +97,8 @@ pco2_product <-
   pco2_product %>%
   rename(sol = alpha,
          chl = chlos,
-         dco2 = dpCO2s,
          kw = Kw,
-         atm_co2 = pco2atm,
-         spco2 = pCO2s,
+         atm_fco2 = fCO2atm,
          salinity = sos,
          temperature = tos) %>%
   mutate(
@@ -108,7 +107,8 @@ pco2_product <-
     kw = kw * 60 * 60 * 24 * 365,
     mld = log10(-mld),
     sol = sol * 1.025e3 * 1e-6,
-    fgco2 = -fgco2 * 60 * 60 * 24 * 365
+    fgco2 = -fgco2 * 60 * 60 * 24 * 365,
+    dfco2 = sfco2 - atm_fco2
   )
 
 pco2_product <-
@@ -142,31 +142,3 @@ pCO2productanalysis_2023 <-
 ```
 
 `r knitr::knit(text = unlist(pCO2productanalysis_2023))`
-
-```{r source_pCO2_product_analysis_child_2016}
-
-pCO2productanalysis_2016 <-
-  knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
-    product_name = "FESOM-REcoM",
-    year_anom = 2016
-  )
-
-
-```
-
-`r knitr::knit(text = unlist(pCO2productanalysis_2016))`
-
-```{r source_pCO2_product_analysis_child_1998}
-
-pCO2productanalysis_1998 <-
-  knitr::knit_expand(
-    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
-    product_name = "FESOM-REcoM",
-    year_anom = 1998
-  )
-
-
-```
-
-`r knitr::knit(text = unlist(pCO2productanalysis_1998))`
