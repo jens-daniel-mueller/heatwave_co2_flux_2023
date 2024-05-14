@@ -130,21 +130,19 @@ wflow_publish(here::here(
   "analysis",
   c(
     "index.Rmd",
-    "ETHZ_CESM.Rmd",
     "biomes.Rmd",
     "mhw_stats.Rmd",
-    "pco2_product_synopsis_1998.Rmd",
-    "pco2_product_synopsis_2016.Rmd",
-    "pco2_product_synopsis_2023.Rmd",
-    "FESOM_REcoM.Rmd",
     "atm_co2.Rmd",
     "CMEMS.Rmd",
     "SOM_FFN.Rmd",
     "OceanSODA.Rmd",
-    "NRT_fco2residual.Rmd"
+    "NRT_fco2residual.Rmd",
+    "ETHZ_CESM.Rmd",
+    "FESOM_REcoM.Rmd",
+    "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "rebuild entire website with joint synopsis",
+message = "rebuild entire website with focus on extended NH",
 republish = TRUE)
 
 

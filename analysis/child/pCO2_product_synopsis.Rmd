@@ -98,22 +98,37 @@ pco2_product_annual_detrended <-
 
 ```
 
-```{r read_biome_monthly_detrended_anomaly}
+```{r read_biome_monthly_regression}
 
 files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_biome_monthly_detrended_anomaly.csv"),
+                    pattern = paste0({{year_anom}},"_biome_monthly_regression.csv"),
                     full.names = TRUE)
 
-pco2_product_monthly_detrended_anomaly <-
+pco2_product_monthly_regression <-
   read_csv(files,
            id = "product")
 
-pco2_product_monthly_detrended_anomaly <-
-  pco2_product_monthly_detrended_anomaly %>% 
+pco2_product_monthly_regression <-
+  pco2_product_monthly_regression %>% 
   mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
 
 ```
 
+```{r read_biome_monthly_detrended}
+
+files <- list.files(here::here("data/"),
+                    pattern = paste0({{year_anom}},"_biome_monthly_detrended.csv"),
+                    full.names = TRUE)
+
+pco2_product_monthly_detrended <-
+  read_csv(files,
+           id = "product")
+
+pco2_product_monthly_detrended <-
+  pco2_product_monthly_detrended %>% 
+  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
+
+```
 
 
 ```{r read_map}
@@ -150,14 +165,6 @@ name_core <- c("fgco2", "fgco2_int", "fgco2_hov",
 #   print(n=50)
 
 
-pco2_product_annual_detrended <- pco2_product_annual_detrended %>%
-  mutate(name = factor(name, levels = name_core)) %>% 
-  filter(!is.na(name))
-
-pco2_product_annual_regression <- pco2_product_annual_regression %>%
-  mutate(name = factor(name, levels = name_core)) %>% 
-  filter(!is.na(name))
-
 pco2_product_coarse_annual_regression <-
   pco2_product_coarse_annual_regression %>%
   mutate(name = factor(name, levels = name_core)) %>% 
@@ -173,8 +180,21 @@ pco2_product_hovmoeller_monthly_regression <-
   mutate(name = factor(name, levels = name_core)) %>% 
   filter(!is.na(name))
 
-pco2_product_monthly_detrended_anomaly <-
-  pco2_product_monthly_detrended_anomaly %>%
+
+pco2_product_annual_detrended <- pco2_product_annual_detrended %>%
+  mutate(name = factor(name, levels = name_core)) %>% 
+  filter(!is.na(name))
+
+pco2_product_annual_regression <- pco2_product_annual_regression %>%
+  mutate(name = factor(name, levels = name_core)) %>% 
+  filter(!is.na(name))
+
+
+pco2_product_monthly_detrended <- pco2_product_monthly_detrended %>%
+  mutate(name = factor(name, levels = name_core)) %>% 
+  filter(!is.na(name))
+
+pco2_product_monthly_regression <- pco2_product_monthly_regression %>%
   mutate(name = factor(name, levels = name_core)) %>% 
   filter(!is.na(name))
 
@@ -915,10 +935,10 @@ pco2_product_annual_detrended %>%
 
 ```{r anomalies_from_monthly_mean_trends_overview, fig.asp=1.5}
 
-pco2_product_monthly_detrended_anomaly %>% 
+pco2_product_monthly_detrended %>% 
   filter(biome %in% "Global",
          name %in% name_core) %>%
-  ggplot(aes(month, value, group = as.factor(year))) +
+  ggplot(aes(month, resid, group = as.factor(year))) +
   geom_path(data = . %>% filter(!between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = year)) +
   scale_color_grayC() +
@@ -948,14 +968,14 @@ pco2_product_monthly_detrended_anomaly %>%
 
 ```{r anomalies_from_monthly_mean_trends_key_biomes_super, fig.asp=1.5}
 
-pco2_product_monthly_detrended_anomaly %>%
+pco2_product_monthly_detrended %>%
   filter(biome %in% super_biomes,
          name %in% name_core) %>%
   group_split(biome) %>%
   # head(1) %>%
   map(
     ~ ggplot(data = .x,
-             aes(month, value, group = as.factor(year))) +
+             aes(month, resid, group = as.factor(year))) +
       geom_path(data = . %>% filter(!between(year, {{year_anom}}-1, {{year_anom}})),
                 aes(col = year)) +
       scale_color_grayC() +
@@ -991,14 +1011,14 @@ pco2_product_monthly_detrended_anomaly %>%
 
 ```{r anomalies_from_monthly_mean_trends_key_biomes, fig.asp=1.5}
 
-pco2_product_monthly_detrended_anomaly %>%
+pco2_product_monthly_detrended %>%
   filter(biome %in% key_biomes,
          name %in% name_core) %>%
   group_split(biome) %>%
   # head(1) %>%
   map(
     ~ ggplot(data = .x,
-             aes(month, value, group = as.factor(year))) +
+             aes(month, resid, group = as.factor(year))) +
       geom_path(data = . %>% filter(!between(year, {{year_anom}}-1, {{year_anom}})),
                 aes(col = year)) +
       scale_color_grayC() +
@@ -1218,12 +1238,13 @@ pco2_product_annual_regression %>%
 ```{r anomalies_correlation_absolute_monthly_global, fig.asp=0.7}
 
 
-pco2_product_monthly_detrended_anomaly %>%
+pco2_product_monthly_detrended %>%
   filter(biome == "Global") %>%
-  pivot_wider() %>%
+  select(-c(time, fit, value)) %>% 
+  pivot_wider(values_from = resid) %>%
   pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
   group_split(name) %>%
-  # head(6) %>% 
+  # head(1) %>%
   map(
     ~ ggplot(data = .x,
              aes(value, fgco2_int)) +
@@ -1281,12 +1302,13 @@ pco2_product_monthly_detrended_anomaly %>%
 ```{r anomalies_correlation_absolute_monthly_biomes_super, fig.asp=0.9}
 
 
-pco2_product_monthly_detrended_anomaly %>%
+pco2_product_monthly_detrended %>%
   filter(biome %in% super_biomes) %>%
-  pivot_wider() %>%
+  select(-c(time, fit, value)) %>% 
+  pivot_wider(values_from = resid) %>%
   pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
   group_split(name) %>%
-  # head(6) %>% 
+  # head(1) %>%
   map(
     ~ ggplot(data = .x,
              aes(value, fgco2_int)) +
@@ -1344,12 +1366,13 @@ pco2_product_monthly_detrended_anomaly %>%
 ```{r anomalies_correlation_absolute_monthly_biomes_key, fig.asp=1.2}
 
 
-pco2_product_monthly_detrended_anomaly %>%
+pco2_product_monthly_detrended %>%
   filter(biome %in% key_biomes) %>%
-  pivot_wider() %>%
+  select(-c(time, fit, value)) %>% 
+  pivot_wider(values_from = resid) %>%
   pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
   group_split(name) %>%
-  # head(6) %>% 
+  # head(1) %>%
   map(
     ~ ggplot(data = .x,
              aes(value, fgco2_int)) +
@@ -1405,7 +1428,7 @@ pco2_product_monthly_detrended_anomaly %>%
 
 # pCO2 decomposition
 
-```{r pCO2_decomposition, eval=FALSE}
+```{r pCO2_decomposition}
 
 pco2_product_decomposition <-
   pco2_product_annual_detrended %>%
