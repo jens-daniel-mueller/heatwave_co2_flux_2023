@@ -149,15 +149,15 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "CMEMS.Rmd",
+    "SOM_FFN.Rmd",
     "OceanSODA.Rmd",
     "NRT_fco2residual.Rmd",
     "ETHZ_CESM.Rmd",
-    "SOM_FFN.Rmd",
-    "FESOM_REcoM.Rmd"
+    "FESOM_REcoM.Rmd",
+    "CMEMS.Rmd"
   )
 ),
-message = "pco2 to fco2 conversions, changed output files")
+message = "kw K0 product included, mean flux densities computed")
 
 
 

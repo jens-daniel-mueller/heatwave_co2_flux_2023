@@ -73,14 +73,21 @@ labels_breaks <- function(i_name) {
   }
   
   if (i_name == "sol") {
-    i_legend_title <- "CO<sub>2</sub> solubility<br>(mol m<sup>-3</sup> µatm<sup>-1</sup>)"
+    i_legend_title <- "K<sub>0</sub><br>(mol m<sup>-3</sup> µatm<sup>-1</sup>)"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
   }
   
   if (i_name == "kw") {
-    i_legend_title <- "K<sub>w</sub><br>(m yr<sup>-1</sup>)"
+    i_legend_title <- "k<sub>w</sub><br>(m yr<sup>-1</sup>)"
+    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
+    # i_contour_level <- 50
+    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "kw_sol") {
+    i_legend_title <- "k<sub>w</sub> K<sub>0</sub><br>(mol yr<sup>-1</sup> m<sup>-2</sup> µatm<sup>-1</sup>)"
     # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
     # i_contour_level <- 50
     # i_contour_level_abs <- 2200
@@ -198,6 +205,7 @@ x_axis_labels <-
     "atm_fco2" = labels_breaks("atm_fco2")$i_legend_title,
     "sol" = labels_breaks("sol")$i_legend_title,
     "kw" = labels_breaks("kw")$i_legend_title,
+    "kw_sol" = labels_breaks("kw_sol")$i_legend_title,
     "spco2" = labels_breaks("spco2")$i_legend_title,
     "sfco2" = labels_breaks("sfco2")$i_legend_title,
     "fgco2_hov" = labels_breaks("fgco2_hov")$i_legend_title,
@@ -316,22 +324,24 @@ pco2_product_coarse_monthly <-
 pco2_product_monthly_global <-
   pco2_product %>%
   filter(!is.na(fgco2)) %>% 
+  mutate(fgco2_int = fgco2) %>% 
   select(-c(lon, lat, year, month, biome)) %>% 
   group_by(time) %>%
-  summarise(across(-c(fgco2, area),
+  summarise(across(-c(fgco2_int, area),
                    ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2,
+            across(fgco2_int,
                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup()
 
 pco2_product_monthly_biome <-
   pco2_product %>%
   filter(!is.na(fgco2)) %>% 
+  mutate(fgco2_int = fgco2) %>% 
   select(-c(lon, lat, year, month)) %>% 
   group_by(time, biome) %>%
-  summarise(across(-c(fgco2, area),
+  summarise(across(-c(fgco2_int, area),
                    ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2,
+            across(fgco2_int,
                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup()
 
@@ -339,6 +349,7 @@ pco2_product_monthly_biome <-
 pco2_product_monthly_biome_super <-
   pco2_product %>%
   filter(!is.na(fgco2)) %>% 
+  mutate(fgco2_int = fgco2) %>% 
   mutate(
     biome = case_when(
       str_detect(biome, "NA-") ~ "North Atlantic",
@@ -350,9 +361,9 @@ pco2_product_monthly_biome_super <-
   filter(biome != "other") %>%
   select(-c(lon, lat, year, month)) %>%
   group_by(time, biome) %>%
-  summarise(across(-c(fgco2, area),
+  summarise(across(-c(fgco2_int, area),
                    ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2,
+            across(fgco2_int,
                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup()
 
@@ -372,10 +383,6 @@ rm(
 pco2_product_monthly <-
   pco2_product_monthly %>% 
   filter(!is.na(biome))
-
-pco2_product_monthly <-
-  pco2_product_monthly %>%
-  rename(fgco2_int = fgco2)
 
 pco2_product_monthly <-
   pco2_product_monthly %>%
@@ -405,14 +412,15 @@ The following Hovmoeller plots show the value of each variable as provided throu
 
 pco2_product_hovmoeller_monthly_annual <-
   pco2_product %>%
+  mutate(fgco2_int = fgco2) %>% 
   select(-c(lon, time, month, biome)) %>%
   group_by(year, lat) %>%
-  summarise(across(-c(fgco2, area),
+  summarise(across(-c(fgco2_int, area),
                    ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2,
+            across(fgco2_int,
                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup() %>%
-  rename(fgco2_hov = fgco2) %>% 
+  rename(fgco2_hov = fgco2_int) %>% 
   filter(fgco2_hov != 0)
 
 pco2_product_hovmoeller_monthly_annual <-
@@ -462,14 +470,15 @@ pco2_product_hovmoeller_monthly_annual %>%
 
 pco2_product_hovmoeller_monthly <-
   pco2_product %>%
+  mutate(fgco2_int = fgco2) %>% 
   select(-c(lon, time, biome)) %>%
   group_by(year, month, lat) %>%
-  summarise(across(-c(fgco2, area),
+  summarise(across(-c(fgco2_int, area),
                    ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2,
+            across(fgco2_int,
                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup() %>%
-  rename(fgco2_hov = fgco2) %>% 
+  rename(fgco2_hov = fgco2_int) %>% 
   filter(fgco2_hov != 0)
 
 
