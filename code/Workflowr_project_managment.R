@@ -149,15 +149,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "SOM_FFN.Rmd",
-    "OceanSODA.Rmd",
-    "NRT_fco2residual.Rmd",
-    "ETHZ_CESM.Rmd",
-    "FESOM_REcoM.Rmd",
-    "CMEMS.Rmd"
+    "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "kw K0 product included, mean flux densities computed")
+message = "cross term in flux attribution")
 
 
 
