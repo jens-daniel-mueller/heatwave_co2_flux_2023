@@ -101,7 +101,7 @@ file_names <- str_split(CMEMS_files, "_", simplify = TRUE)[,1] %>% unique()
 
 
 for (i_file_name in file_names) {
-  # i_file_name <- file_names[6]
+  # i_file_name <- file_names[3]
   CMEMS_files_var <-
     CMEMS_files[CMEMS_files %>% str_detect(i_file_name)]
   
@@ -186,6 +186,7 @@ pco2_product <-
          mld = MLD,
          atm_co2 = CO2,
          fgco2 = fCO2_mean,
+         sfco2 = fuCO2_mean,
          salinity = SSS,
          temperature = SST)
 
@@ -222,8 +223,8 @@ pco2_product <-
   pco2_product %>%
   mutate(
     atm_fco2 = p2fCO2(T = temperature,
-                      pCO2 = atm_co2)
-    # dfco2 = sfco2 - atm_fco2
+                      pCO2 = atm_co2),
+    dfco2 = sfco2 - atm_fco2
   )
 
 pco2_product <-
