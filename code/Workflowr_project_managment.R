@@ -149,10 +149,15 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "pco2_product_synopsis_2023.Rmd"
+    "CMEMS.Rmd",
+    "SOM_FFN.Rmd",
+    "OceanSODA.Rmd",
+    "NRT_fco2residual.Rmd",
+    "ETHZ_CESM.Rmd",
+    "FESOM_REcoM.Rmd"
   )
 ),
-message = "cross term in flux attribution")
+message = "write monthly anomaly maps for all years")
 
 
 
