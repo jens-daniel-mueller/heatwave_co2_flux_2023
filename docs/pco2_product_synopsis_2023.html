@@ -603,15 +603,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree237e86191f53817771a9214776918edc425cfbc5targetblank237e861a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree7c08e1c37b5f5a67d8c1dae268910d7f21fd100dtargetblank7c08e1ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/237e86191f53817771a9214776918edc425cfbc5" target="_blank">237e861</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d" target="_blank">7c08e1c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree237e86191f53817771a9214776918edc425cfbc5targetblank237e861a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree7c08e1c37b5f5a67d8c1dae268910d7f21fd100dtargetblank7c08e1ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -621,7 +621,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/237e86191f53817771a9214776918edc425cfbc5" target="_blank">237e861</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d" target="_blank">7c08e1c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -689,6 +689,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/pco2_product_synopsis_2023.html" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1644,48 +1661,80 @@ biome_mask &lt;-
   )</code></pre>
 <pre class="r"><code>name_core &lt;- c(&quot;fgco2&quot;, &quot;fgco2_int&quot;, &quot;fgco2_hov&quot;,
                &quot;sfco2&quot;, &quot;atm_fco2&quot;, &quot;dfco2&quot;,
-               &quot;kw_sol&quot;, &quot;temperature&quot;)</code></pre>
+               &quot;kw_sol&quot;, &quot;temperature&quot;)
+
+
+all_product_list &lt;- c(&quot;OceanSODA&quot;,
+                      &quot;SOM_FFN&quot;,
+                      &quot;NRT_fco2residual&quot;,
+                      &quot;CMEMS&quot;,
+                      &quot;ETHZ_CESM&quot;,
+                      &quot;FESOM-REcoM&quot;)
+
+
+pco2_product_list &lt;- c(&quot;OceanSODA&quot;,
+                      &quot;SOM_FFN&quot;,
+                      &quot;NRT_fco2residual&quot;
+                      # &quot;CMEMS&quot;
+                      )</code></pre>
 <pre class="r"><code># pco2_product_annual_regression %&gt;%
 #   distinct(product,name) %&gt;%
 #   print(n=50)
 
-
 pco2_product_coarse_annual_regression &lt;-
   pco2_product_coarse_annual_regression %&gt;%
-  mutate(name = factor(name, levels = name_core)) %&gt;% 
+  mutate(
+    name = factor(name, levels = name_core),
+    product = factor(product, levels = all_product_list)
+  ) %&gt;%
   filter(!is.na(name))
 
 pco2_product_coarse_monthly_regression &lt;-
   pco2_product_coarse_monthly_regression %&gt;%
-  mutate(name = factor(name, levels = name_core)) %&gt;% 
+  mutate(
+    name = factor(name, levels = name_core),
+    product = factor(product, levels = all_product_list)
+  ) %&gt;%
   filter(!is.na(name))
 
 pco2_product_hovmoeller_monthly_regression &lt;-
   pco2_product_hovmoeller_monthly_regression %&gt;%
-  mutate(name = factor(name, levels = name_core)) %&gt;% 
+  mutate(
+    name = factor(name, levels = name_core),
+    product = factor(product, levels = all_product_list)
+  ) %&gt;%
   filter(!is.na(name))
 
 
 pco2_product_annual_detrended &lt;- pco2_product_annual_detrended %&gt;%
-  mutate(name = factor(name, levels = name_core)) %&gt;% 
+  mutate(
+    name = factor(name, levels = name_core),
+    product = factor(product, levels = all_product_list)
+  ) %&gt;%
   filter(!is.na(name))
 
 pco2_product_annual_regression &lt;- pco2_product_annual_regression %&gt;%
-  mutate(name = factor(name, levels = name_core)) %&gt;% 
+  mutate(
+    name = factor(name, levels = name_core),
+    product = factor(product, levels = all_product_list)
+  ) %&gt;%
   filter(!is.na(name))
 
 
 pco2_product_monthly_detrended &lt;- pco2_product_monthly_detrended %&gt;%
-  mutate(name = factor(name, levels = name_core)) %&gt;% 
+  mutate(
+    name = factor(name, levels = name_core),
+    product = factor(product, levels = all_product_list)
+  ) %&gt;%
   filter(!is.na(name))
 
-pco2_product_monthly_regression &lt;- pco2_product_monthly_regression %&gt;%
-  mutate(name = factor(name, levels = name_core)) %&gt;% 
+pco2_product_monthly_regression &lt;-
+  pco2_product_monthly_regression %&gt;%
+  mutate(
+    name = factor(name, levels = name_core),
+    product = factor(product, levels = all_product_list)
+  ) %&gt;%
   filter(!is.na(name))</code></pre>
-<pre class="r"><code>pco2_product_list &lt;- c(#&quot;CMEMS&quot;,
-                       &quot;NRT_fco2residual&quot;,
-                       &quot;OceanSODA&quot;,
-                       &quot;SOM_FFN&quot;)</code></pre>
 </div>
 <div id="define-labels-and-breaks" class="section level1">
 <h1>Define labels and breaks</h1>
@@ -1925,30 +1974,30 @@ x_axis_labels &lt;-
   # group_by &lt;- quos(lon, lat, month)
   # group_by &lt;- quos(biome, year, month)
   
-  pco2_product_decomposition &lt;-
+  pco2_product_biome_monthly_fCO2_decomposition &lt;-
     df %&gt;%
     filter(name %in% c(&quot;temperature&quot;, &quot;sfco2&quot;))
   
-  pco2_product_decomposition &lt;-
+  pco2_product_biome_monthly_fCO2_decomposition &lt;-
     inner_join(
-      pco2_product_decomposition %&gt;%
+      pco2_product_biome_monthly_fCO2_decomposition %&gt;%
         filter(name == &quot;temperature&quot;) %&gt;%
         select(-c(value, fit)) %&gt;%
         pivot_wider(values_from = resid),
-      pco2_product_decomposition %&gt;%
+      pco2_product_biome_monthly_fCO2_decomposition %&gt;%
         filter(name == &quot;sfco2&quot;) %&gt;%
         select(-c(value, resid)) %&gt;%
         pivot_wider(values_from = fit)
     )
   
-  pco2_product_decomposition &lt;-
-    pco2_product_decomposition %&gt;%
+  pco2_product_biome_monthly_fCO2_decomposition &lt;-
+    pco2_product_biome_monthly_fCO2_decomposition %&gt;%
     mutate(sfco2_therm = (sfco2 * exp(0.0423 * temperature)) - sfco2)
   
   
-  pco2_product_decomposition &lt;-
+  pco2_product_biome_monthly_fCO2_decomposition &lt;-
     inner_join(
-      pco2_product_decomposition,
+      pco2_product_biome_monthly_fCO2_decomposition,
       df %&gt;%
         filter(name %in% c(&quot;sfco2&quot;)) %&gt;%
         select(-c(value, fit, name)) %&gt;%
@@ -1956,12 +2005,12 @@ x_axis_labels &lt;-
     )
   
   
-  pco2_product_decomposition &lt;-
-    pco2_product_decomposition %&gt;%
+  pco2_product_biome_monthly_fCO2_decomposition &lt;-
+    pco2_product_biome_monthly_fCO2_decomposition %&gt;%
     mutate(sfco2_nontherm = sfco2_total - sfco2_therm)
   
-  pco2_product_decomposition &lt;-
-    pco2_product_decomposition %&gt;%
+  pco2_product_biome_monthly_fCO2_decomposition &lt;-
+    pco2_product_biome_monthly_fCO2_decomposition %&gt;%
     select(-c(temperature, sfco2)) %&gt;%
     pivot_longer(starts_with(&quot;sfco2&quot;),
                  values_to = &quot;resid&quot;)
@@ -5701,6 +5750,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/fCO2_decomposition_annual_maps-1.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/5af03d179d4b3f8c25b915f739c22a395dfbe2d9/docs/figure/pco2_product_synopsis_2023.Rmd/fCO2_decomposition_annual_maps-1.png" target="_blank">5af03d1</a>
 </td>
 <td>
@@ -6417,6 +6477,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual_maps-1.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a29d87054eb288e018fb8c429bcbb11572c8d5cb/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual_maps-1.png" target="_blank">a29d870</a>
@@ -10206,6 +10277,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/absolute_integrals_trends-1.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1eefab2bf60828b0a3e358f9fc901b98ab2a23fe/docs/figure/pco2_product_synopsis_2023.Rmd/absolute_integrals_trends-1.png" target="_blank">1eefab2</a>
@@ -20639,16 +20721,33 @@ jens-daniel-mueller
 </div>
 </div>
 </div>
-<div id="pco2-decomposition" class="section level2">
-<h2>pCO2 decomposition</h2>
-<pre class="r"><code>pco2_product_decomposition &lt;-
-  fco2_decomposition(pco2_product_annual_detrended %&gt;%
-                       select(-c(time)),
-                     biome, year, month)
+<div id="fco2-decomposition-2" class="section level2">
+<h2>fCO2 decomposition</h2>
+<pre class="r"><code># pco2_product_biome_monthly_fCO2_decomposition &lt;-
+#   fco2_decomposition(pco2_product_annual_detrended %&gt;%
+#                        select(-c(time)),
+#                      biome, year, month)
+
+
+pco2_product_biome_monthly_fCO2_decomposition &lt;-
+  full_join(pco2_product_coarse_monthly_fCO2_decomposition,
+            biome_mask,
+            relationship = &quot;many-to-many&quot;) %&gt;% 
+  group_by(product, year, month, biome, name) %&gt;% 
+  summarise(resid = mean(resid, na.rm = TRUE)) %&gt;% 
+  ungroup() %&gt;% 
+  drop_na()
+
+
+pco2_product_biome_annual_fCO2_decomposition &lt;-
+  pco2_product_biome_monthly_fCO2_decomposition %&gt;%
+  group_by(product, year, biome, name) %&gt;%
+  summarise(resid = mean(resid)) %&gt;%
+  ungroup()
 
 
 
-pco2_product_decomposition %&gt;%
+pco2_product_biome_monthly_fCO2_decomposition %&gt;%
   filter(biome %in% &quot;Global&quot;) %&gt;%
   group_split(biome) %&gt;%
   # head(1) %&gt;%
@@ -20728,8 +20827,17 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_decomposition %&gt;%
-  filter(biome %in% super_biomes) %&gt;%
+<pre class="r"><code># pco2_product_biome_monthly_fCO2_decomposition %&gt;%
+#   filter(biome %in% super_biomes) %&gt;%
+#   group_split(biome) %&gt;%
+#   # head(1) %&gt;%
+#   map(
+#     ~ p_season(df = .x,
+#                title  = paste(&quot;Anomalies from predicted monthly mean |&quot;, .x$biome))
+#   )
+
+pco2_product_biome_monthly_fCO2_decomposition %&gt;%
+  filter(biome %in% key_biomes) %&gt;%
   group_split(biome) %&gt;%
   # head(1) %&gt;%
   map(
@@ -20881,15 +20989,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_decomposition %&gt;%
-  filter(biome %in% key_biomes) %&gt;%
-  group_split(biome) %&gt;%
-  # head(1) %&gt;%
-  map(
-    ~ p_season(df = .x,
-               title  = paste(&quot;Anomalies from predicted monthly mean |&quot;, .x$biome))
-  )</code></pre>
-<pre><code>[[1]]</code></pre>
+<pre><code>
+[[3]]</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-4.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pCO2_decomposition-4">
@@ -20962,7 +21063,7 @@ jens-daniel-mueller
 </div>
 </div>
 <pre><code>
-[[2]]</code></pre>
+[[4]]</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pCO2_decomposition-5">
@@ -21011,130 +21112,6 @@ jens-daniel-mueller
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1e4c15396196e44002c0d41203989f4bcaa7fa41/docs/figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-5.png" target="_blank">1e4c153</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-05-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[3]]</code></pre>
-<p><img src="figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-6.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pCO2_decomposition-6">
-Past versions of pCO2_decomposition-6.png
-</button>
-</p>
-<div id="fig-pCO2_decomposition-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/5af03d179d4b3f8c25b915f739c22a395dfbe2d9/docs/figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-6.png" target="_blank">5af03d1</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-05-17
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-6.png" target="_blank">dbc1fc6</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-05-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1e4c15396196e44002c0d41203989f4bcaa7fa41/docs/figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-6.png" target="_blank">1e4c153</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-05-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre><code>
-[[4]]</code></pre>
-<p><img src="figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-7.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pCO2_decomposition-7">
-Past versions of pCO2_decomposition-7.png
-</button>
-</p>
-<div id="fig-pCO2_decomposition-7" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/5af03d179d4b3f8c25b915f739c22a395dfbe2d9/docs/figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-7.png" target="_blank">5af03d1</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-05-17
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-7.png" target="_blank">dbc1fc6</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2024-05-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1e4c15396196e44002c0d41203989f4bcaa7fa41/docs/figure/pco2_product_synopsis_2023.Rmd/pCO2_decomposition-7.png" target="_blank">1e4c153</a>
 </td>
 <td>
 jens-daniel-mueller
@@ -21247,6 +21224,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution-1.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution-1.png" target="_blank">dbc1fc6</a>
 </td>
 <td>
@@ -21353,6 +21341,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution-2.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution-2.png" target="_blank">dbc1fc6</a>
 </td>
 <td>
@@ -21455,6 +21454,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution-3.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b7d06893cf0b24d3c52dc80131766023bbc66880/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution-3.png" target="_blank">b7d0689</a>
 </td>
 <td>
@@ -21545,6 +21555,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-1.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-1.png" target="_blank">dbc1fc6</a>
@@ -21664,6 +21685,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-2.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-2.png" target="_blank">dbc1fc6</a>
 </td>
 <td>
@@ -21735,6 +21767,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-3.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-3.png" target="_blank">dbc1fc6</a>
@@ -21810,6 +21853,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-4.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-4.png" target="_blank">dbc1fc6</a>
 </td>
 <td>
@@ -21881,6 +21935,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-5.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_seasonal-5.png" target="_blank">dbc1fc6</a>
@@ -22008,6 +22073,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-1.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-1.png" target="_blank">dbc1fc6</a>
 </td>
 <td>
@@ -22119,6 +22195,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-2.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-2.png" target="_blank">dbc1fc6</a>
 </td>
 <td>
@@ -22190,6 +22277,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-3.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-3.png" target="_blank">dbc1fc6</a>
@@ -22265,6 +22363,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-4.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-4.png" target="_blank">dbc1fc6</a>
 </td>
 <td>
@@ -22336,6 +22445,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/7c08e1c37b5f5a67d8c1dae268910d7f21fd100d/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-5.png" target="_blank">7c08e1c</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/dbc1fc6e8730a4745aa20c254e69a16a9bbd733f/docs/figure/pco2_product_synopsis_2023.Rmd/flux_attribution_annual-5.png" target="_blank">dbc1fc6</a>
