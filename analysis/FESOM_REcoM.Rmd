@@ -40,7 +40,7 @@ library(ncdf4)
 nc <-
   nc_open(paste0(
     path_FESOM,
-    "alpha_FESOM2_REcoM_A_1_gr_1980-2023_v20220716.nc"
+    "no3_FESOM2_REcoM_A_1_gr_1980-2023_v20220716.nc"
   ))
 
 print(nc)
@@ -54,16 +54,22 @@ FESOM_files <- list.files(path = path_FESOM)
 
 FESOM_files <-
   FESOM_files[FESOM_files %>% str_detect(c(
-    "alpha|chlos|fgco2|Kw|mld|fCO2atm|sfco2|sos|tos"
+    "alpha|chlos|fgco2|Kw|mld|fCO2atm|sfco2|sos|tos|intpp"
   ))]
 
 for (i_FESOM_files in FESOM_files) {
   
-  # i_FESOM_files <- FESOM_files[1]
+  # i_FESOM_files <- FESOM_files[8]
   
   i_pco2_product <-
     read_ncdf(paste0(path_FESOM,
                      i_FESOM_files))
+  
+  # if(i_FESOM_files == "no3_FESOM2_REcoM_A_1_gr_1980-2023_v20220716.nc"){
+  #   i_pco2_product %>% 
+  #     filter(Depth == 2.5) %>% 
+  #     as.tibble()
+  # }
   
   if (exists("pco2_product")) {
     pco2_product <-
