@@ -18,6 +18,7 @@ editor_options:
 library(stars)
 library(lubridate)
 library(seacarb)
+library(collapse)
 
 ```
 
@@ -40,10 +41,88 @@ library(ncdf4)
 nc <-
   nc_open(paste0(
     path_FESOM,
-    "no3_FESOM2_REcoM_A_1_gr_1980-2023_v20220716.nc"
+    "dissic_FESOM2_REcoM_A_1_gr_1980-2023_v20220716.nc"
   ))
 
 print(nc)
+
+```
+
+
+```{r read_FESOM-REcoM_interior}
+
+FESOM_files <- list.files(path = path_FESOM)
+
+FESOM_files <-
+  FESOM_files[FESOM_files %>% str_detect(c(
+    "dissic_|no3|thetao"
+  ))]
+
+
+dates <- seq(ymd("1980-01-15"), ymd("2023-12-15"), "months")
+
+
+for (i_FESOM_files in FESOM_files) {
+  
+  # i_FESOM_files <- FESOM_files[1]
+  
+  i_pco2_product_interior <-
+    read_mdim(paste0(path_FESOM,
+                     i_FESOM_files))
+  
+  i_pco2_product_interior <-
+    i_pco2_product_interior %>%
+    filter(Depth <= 500)
+  
+  i_pco2_product_interior <- 
+    st_set_dimensions(i_pco2_product_interior, 4, values = dates, names = "time")
+
+  if (exists("pco2_product_interior")) {
+    pco2_product_interior <-
+      c(pco2_product_interior,
+                i_pco2_product_interior)
+  }
+  
+  if (!exists("pco2_product_interior")) {
+    pco2_product_interior <- i_pco2_product_interior
+  }
+  
+}
+
+rm(FESOM_files, i_FESOM_files, i_pco2_product_interior)
+# rm(pco2_product_interior)
+
+pco2_product_interior <- pco2_product_interior %>%
+  as_tibble()
+
+pco2_product_interior <- pco2_product_interior %>%
+  drop_na()
+gc()
+
+
+pco2_product_interior <-
+  pco2_product_interior %>%
+  rename(lat = Lat,
+         lon = Lon,
+         depth = Depth)
+
+pco2_product_interior <-
+  pco2_product_interior %>%
+  rename(temperature = thetao) %>%
+  mutate(
+    lon = if_else(lon < 20, lon + 360, lon),
+    no3 = no3 * 1.025e3,
+    dissic = dissic * 1.025e3
+  )
+gc()
+
+
+pco2_product_surf <-
+  pco2_product_interior %>%
+  filter(depth == min(depth))
+
+gc()
+
 
 ```
 
@@ -59,17 +138,14 @@ FESOM_files <-
 
 for (i_FESOM_files in FESOM_files) {
   
-  # i_FESOM_files <- FESOM_files[8]
+  # i_FESOM_files <- FESOM_files[1]
   
   i_pco2_product <-
     read_ncdf(paste0(path_FESOM,
                      i_FESOM_files))
   
-  # if(i_FESOM_files == "no3_FESOM2_REcoM_A_1_gr_1980-2023_v20220716.nc"){
-  #   i_pco2_product %>% 
-  #     filter(Depth == 2.5) %>% 
-  #     as.tibble()
-  # }
+  i_pco2_product <- 
+    st_set_dimensions(i_pco2_product, 3, values = dates, names = "time")
   
   if (exists("pco2_product")) {
     pco2_product <-
@@ -84,6 +160,7 @@ for (i_FESOM_files in FESOM_files) {
 }
 
 rm(FESOM_files, i_FESOM_files, i_pco2_product)
+# rm(pco2_product)
 
 pco2_product <- pco2_product %>%
   as_tibble()
@@ -92,11 +169,8 @@ pco2_product <- pco2_product %>%
 pco2_product <-
   pco2_product %>%
   rename(lat = Lat,
-         lon = Lon,
-         time = Time) %>% 
-  mutate(time = ymd("1980-01-15") + months(time - 0.5)) %>% 
-  mutate(area = earth_surf(lat, lon),
-         year = year(time),
+         lon = Lon) %>% 
+  mutate(year = year(time),
          month = month(time))
 
 pco2_product <-
@@ -121,9 +195,19 @@ pco2_product <-
   pco2_product %>% 
   mutate(kw_sol = kw * sol)
 
-pco2_product <-
-  pco2_product %>%
-  filter(year <= 2023)
+pco2_product <- 
+  full_join(pco2_product,
+            pco2_product_surf %>% select(-c(temperature, depth)))
+
+rm(pco2_product_surf)
+gc()
+
+# pco2_product %>% 
+#   filter(time == max(time)) %>% 
+#   select(lon, lat, temperature, sol, dissic) %>% 
+#   ggplot(aes(lon, lat, fill = sol)) +
+#   geom_tile() +
+#   scale_fill_viridis_c()
 
 ```
 
@@ -131,7 +215,8 @@ pco2_product <-
 ```{r source_pCO2_product_preprocessing_child}
 
 pCO2_product_preprocessing <-
-  knitr::knit_expand(file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"))
+  knitr::knit_expand(file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"),
+                     product_name = "FESOM-REcoM")
 
 ```
 
