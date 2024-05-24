@@ -76,9 +76,9 @@ pco2_product_interior <-
   pco2_product_interior %>%
   mutate(time = ymd_hms("1980-01-01 00:00:00") + days(time))
 
-pco2_product_interior <-
-  pco2_product_interior %>%
-  rename(temperature = thetao)
+# pco2_product_interior <-
+#   pco2_product_interior %>%
+#   rename(temperature = thetao)
 
 pco2_product_interior <-
   pco2_product_interior %>%
@@ -156,7 +156,7 @@ pco2_product <-
   mutate(lon = if_else(lon < 20, lon + 360, lon),
          chl = if_else(chl > 0, log10(chl * 10^6), 0),
          kw = kw *60 *60 *24 *365,
-         mld = log10(mld),
+         # mld = log10(mld),
          fgco2 = -fgco2 *60 *60 *24 *365,
          sol = sol * 1.025e3 * 1e-6,
          dissic = dissic * 1.025e3,

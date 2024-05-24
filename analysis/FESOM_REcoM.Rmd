@@ -55,7 +55,7 @@ FESOM_files <- list.files(path = path_FESOM)
 
 FESOM_files <-
   FESOM_files[FESOM_files %>% str_detect(c(
-    "dissic_|no3|thetao"
+    "dissic_|no3|thetao|talk_"
   ))]
 
 
@@ -108,11 +108,11 @@ pco2_product_interior <-
 
 pco2_product_interior <-
   pco2_product_interior %>%
-  rename(temperature = thetao) %>%
   mutate(
     lon = if_else(lon < 20, lon + 360, lon),
     no3 = no3 * 1.025e3,
-    dissic = dissic * 1.025e3
+    dissic = dissic * 1.025e3,
+    talk = talk * 1.025e3
   )
 gc()
 
@@ -133,7 +133,7 @@ FESOM_files <- list.files(path = path_FESOM)
 
 FESOM_files <-
   FESOM_files[FESOM_files %>% str_detect(c(
-    "alpha|chlos|fgco2|Kw|mld|fCO2atm|sfco2|sos|tos|intpp"
+    "alpha|chlos|fgco2|Kw|mld|fCO2atm|sfco2|sos|tos|intpp|dissicos|talkos"
   ))]
 
 for (i_FESOM_files in FESOM_files) {
@@ -180,15 +180,19 @@ pco2_product <-
          kw = Kw,
          atm_fco2 = fCO2atm,
          salinity = sos,
-         temperature = tos) %>%
+         temperature = tos,
+         dissic = dissicos,
+         talk = talkos) %>%
   mutate(
     lon = if_else(lon < 20, lon + 360, lon),
     chl = log10(chl * 1e6),
     kw = kw * 60 * 60 * 24 * 365,
-    mld = log10(-mld),
+    # mld = log10(-mld),
     sol = sol * 1.025e3 * 1e-6,
     fgco2 = -fgco2 * 60 * 60 * 24 * 365,
-    dfco2 = sfco2 - atm_fco2
+    dfco2 = sfco2 - atm_fco2,
+    dissic = dissic * 1.025e3,
+    talk = talk * 1.025e3
   )
 
 pco2_product <-
@@ -197,7 +201,7 @@ pco2_product <-
 
 pco2_product <- 
   full_join(pco2_product,
-            pco2_product_surf %>% select(-c(temperature, depth)))
+            pco2_product_surf %>% select(-c(depth, thetao, dissic, talk)))
 
 rm(pco2_product_surf)
 gc()
