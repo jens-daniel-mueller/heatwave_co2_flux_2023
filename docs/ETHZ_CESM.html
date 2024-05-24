@@ -603,15 +603,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treed02010588d3c3a6aed5495de963e8d04ad0053c1targetblankd020105a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree9918b19fea6af743c758e40108c4d149eda0b55atargetblank9918b19a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/d02010588d3c3a6aed5495de963e8d04ad0053c1" target="_blank">d020105</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/9918b19fea6af743c758e40108c4d149eda0b55a" target="_blank">9918b19</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treed02010588d3c3a6aed5495de963e8d04ad0053c1targetblankd020105a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree9918b19fea6af743c758e40108c4d149eda0b55atargetblank9918b19a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -621,7 +621,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/d02010588d3c3a6aed5495de963e8d04ad0053c1" target="_blank">d020105</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/9918b19fea6af743c758e40108c4d149eda0b55a" target="_blank">9918b19</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -687,6 +687,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9918b19fea6af743c758e40108c4d149eda0b55a/analysis/ETHZ_CESM.Rmd" target="_blank">9918b19</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-24
+</td>
+<td>
+talk united fixed
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/76276f40024508e1d5e6a3a8ecd1738a831f6cdc/docs/ETHZ_CESM.html" target="_blank">76276f4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1202,8 +1236,8 @@ pco2_product_interior &lt;-
 
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
-Ncells    2938037   157.0     5687307    303.8     3988528    213.1
-Vcells 6052291513 46175.4 24937067576 190254.8 31041220880 236825.8</code></pre>
+Ncells    2938048   157.0     5687295    303.8     3989120    213.1
+Vcells 6052291800 46175.4 24937067851 190254.8 31041221167 236825.8</code></pre>
 <pre class="r"><code>pco2_product_interior &lt;-
   pco2_product_interior %&gt;%
   mutate(time = ymd_hms(&quot;1980-01-01 00:00:00&quot;) + days(time))
@@ -1217,13 +1251,14 @@ pco2_product_interior &lt;-
   mutate(
     lon = if_else(lon &lt; 20, lon + 360, lon),
     dissic = dissic * 1.025e3,
+    talk = talk * 1.025e3,
     no3 = no3 * 1.025e3,
     o2 = o2 * 1.025e3
   )
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
-Ncells    2947273   157.5     5687307    303.8     3988528    213.1
-Vcells 6052312484 46175.5 19949654061 152203.8 31041220880 236825.8</code></pre>
+Ncells    2947284   157.5     5687295    303.8     3989120    213.1
+Vcells 6052312771 46175.5 19949654281 152203.8 31041221167 236825.8</code></pre>
 <pre class="r"><code># pco2_product_interior_sub &lt;-
 #   pco2_product_interior %&gt;%
 #   filter(time == max(time))
@@ -1709,8 +1744,8 @@ pco2_product_profiles &lt;-
 
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger     (Mb)    max used     (Mb)
-Ncells    3070067   164.0    52750177   2817.2    65937721   3521.5
-Vcells 4788001665 36529.6 15959723249 121763.1 31041220880 236825.8</code></pre>
+Ncells    3070073   164.0    52750121   2817.2    65937651   3521.5
+Vcells 4788001896 36529.6 15959723425 121763.1 31041221167 236825.8</code></pre>
 <pre class="r"><code>pco2_product_interior &lt;- 
   left_join(
     region_mask,
@@ -1734,8 +1769,8 @@ pco2_product_zonal_mean &lt;-
 
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger    (Mb)    max used     (Mb)
-Ncells    3070087   164.0    42200142  2253.8    65937721   3521.5
-Vcells 4523590270 34512.3 12767778600 97410.5 31041220880 236825.8</code></pre>
+Ncells    3070093   164.0    42200097  2253.8    65937651   3521.5
+Vcells 4523590501 34512.3 12767778740 97410.5 31041221167 236825.8</code></pre>
 <pre class="r"><code># pco2_product_zonal_mean %&gt;% 
 #   filter(region == &quot;atlantic&quot;,
 #          year == 2023,
@@ -1748,8 +1783,8 @@ Vcells 4523590270 34512.3 12767778600 97410.5 31041220880 236825.8</code></pre>
 rm(pco2_product_interior)
 gc()</code></pre>
 <pre><code>             used    (Mb)  gc trigger    (Mb)    max used     (Mb)
-Ncells    3070127   164.0    33760114  1803.0    65937721   3521.5
-Vcells 1445726498 11030.1 10214222880 77928.4 31041220880 236825.8</code></pre>
+Ncells    3070133   164.0    33760078  1803.0    65937651   3521.5
+Vcells 1445726729 11030.1 10214222992 77928.4 31041221167 236825.8</code></pre>
 </div>
 </div>
 <div id="absolute-values" class="section level1">
@@ -28285,6 +28320,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/76276f40024508e1d5e6a3a8ecd1738a831f6cdc/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_zonal_mean_sections_annual-4.png" target="_blank">76276f4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d3d3c448aa9c064f820ea35b9d54c7f781c95ed0/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_zonal_mean_sections_annual-4.png" target="_blank">d3d3c44</a>
 </td>
 <td>
@@ -28301,6 +28347,44 @@ jens-daniel-mueller
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/ETHZ_CESM.Rmd/2023_anomaly_zonal_mean_sections_annual-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_anomaly_zonal_mean_sections_annual-5">
+Past versions of 2023_anomaly_zonal_mean_sections_annual-5.png
+</button>
+</p>
+<div id="fig-2023_anomaly_zonal_mean_sections_annual-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/76276f40024508e1d5e6a3a8ecd1738a831f6cdc/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_zonal_mean_sections_annual-5.png" target="_blank">76276f4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pco2_product_zonal_mean_annual_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;ETHZ_CESM&quot;,&quot;_&quot;,&quot;2023&quot;,&quot;_zonal_mean_sections_annual.csv&quot;))</code></pre>
 </div>
@@ -28487,6 +28571,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/76276f40024508e1d5e6a3a8ecd1738a831f6cdc/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_profiles_annual-4.png" target="_blank">76276f4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d3d3c448aa9c064f820ea35b9d54c7f781c95ed0/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_profiles_annual-4.png" target="_blank">d3d3c44</a>
 </td>
 <td>
@@ -28503,6 +28598,43 @@ jens-daniel-mueller
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/ETHZ_CESM.Rmd/2023_anomaly_profiles_annual-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_anomaly_profiles_annual-5">
+Past versions of 2023_anomaly_profiles_annual-5.png
+</button>
+</p>
+<div id="fig-2023_anomaly_profiles_annual-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/76276f40024508e1d5e6a3a8ecd1738a831f6cdc/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_profiles_annual-5.png" target="_blank">76276f4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pco2_product_profiles_annual_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;ETHZ_CESM&quot;,&quot;_&quot;,&quot;2023&quot;,&quot;_profiles_annual.csv&quot;))</code></pre>
 </div>
@@ -28687,6 +28819,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/76276f40024508e1d5e6a3a8ecd1738a831f6cdc/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_profiles_monthly-4.png" target="_blank">76276f4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/d3d3c448aa9c064f820ea35b9d54c7f781c95ed0/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_profiles_monthly-4.png" target="_blank">d3d3c44</a>
 </td>
 <td>
@@ -28703,6 +28846,43 @@ jens-daniel-mueller
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/ETHZ_CESM.Rmd/2023_anomaly_profiles_monthly-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-2023_anomaly_profiles_monthly-5">
+Past versions of 2023_anomaly_profiles_monthly-5.png
+</button>
+</p>
+<div id="fig-2023_anomaly_profiles_monthly-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/76276f40024508e1d5e6a3a8ecd1738a831f6cdc/docs/figure/ETHZ_CESM.Rmd/2023_anomaly_profiles_monthly-5.png" target="_blank">76276f4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-05-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pco2_product_profiles_monthly_regression %&gt;%
   write_csv(paste0(&quot;../data/&quot;,&quot;ETHZ_CESM&quot;,&quot;_&quot;,&quot;2023&quot;,&quot;_profiles_monthly.csv&quot;))</code></pre>
 <br>
