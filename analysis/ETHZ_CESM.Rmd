@@ -18,6 +18,7 @@ editor_options:
 library(stars)
 library(lubridate)
 library(seacarb)
+library(tidync)
 
 ```
 
@@ -45,6 +46,71 @@ print(nc)
 
 ```
 
+```{r read_ETHZ_CESM_3d}
+
+# pco2_product <-
+#   read_mdim(
+#     paste0(
+#       path_pCO2_products,
+#       "Heatwaves_RunA.nc"
+#     ),
+#     var = c("dissic")
+#   )
+
+pco2_product_interior <-
+  tidync(paste0(path_pCO2_products,
+                        "Heatwaves_RunA.nc"))
+
+pco2_product_interior <- pco2_product_interior %>%
+  hyper_filter(depth = depth <= 500) %>% 
+  hyper_tibble(select_var = c("thetao", "dissic", "no3", "o2"),
+                       force = TRUE)
+
+pco2_product_interior <-
+  pco2_product_interior %>%
+  filter(thetao < 1e36)
+
+gc()
+
+pco2_product_interior <-
+  pco2_product_interior %>%
+  mutate(time = ymd_hms("1980-01-01 00:00:00") + days(time))
+
+pco2_product_interior <-
+  pco2_product_interior %>%
+  rename(temperature = thetao)
+
+pco2_product_interior <-
+  pco2_product_interior %>%
+  mutate(
+    lon = if_else(lon < 20, lon + 360, lon),
+    dissic = dissic * 1.025e3,
+    no3 = no3 * 1.025e3,
+    o2 = o2 * 1.025e3
+  )
+gc()
+
+# pco2_product_interior_sub <-
+#   pco2_product_interior %>%
+#   filter(time == max(time))
+# 
+# pco2_product_interior_sub %>%
+#   filter(depth == 5) %>%
+#   ggplot(aes(lon, lat, fill = thetao)) +
+#   geom_raster() +
+#   scale_fill_viridis_c(option = "magma") +
+#   coord_quickmap(expand = 0)
+# 
+# pco2_product_interior_sub %>%
+#   filter(lon == 330.5) %>%
+#   ggplot(aes(lat, depth, z = thetao)) +
+#   geom_contour_filled(breaks = seq(-10,40,2)) +
+#   scale_y_reverse() +
+#   coord_cartesian(expand = 0) +
+#   scale_fill_viridis_d(option = "magma")
+
+
+```
 
 ```{r read_ETHZ_CESM}
 
@@ -56,55 +122,13 @@ pco2_product <-
       path_pCO2_products,
       "Heatwaves_RunA.nc"
     ),
-    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld", "pco2", "pco2atm", "patm", "alpha", "zos", "intpp", "no3os", "o2os"),
+    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld", "pco2", "pco2atm", "patm", "alpha", "zos", "intpp", "no3os", "o2os", "dissicos"),
     make_units = FALSE
   )
 
-# library(tidync)
-# library(lubridate)
-# 
-# pco2_product <-
-#   tidync(paste0(path_pCO2_products,
-#                         "Heatwaves_RunA.nc"))
-# 
-# pco2_product <- pco2_product %>%
-#   hyper_tibble(select_var = "thetao",
-#                        force = TRUE)
-# 
-# pco2_product <-
-#   pco2_product %>%
-#   filter(thetao < 1e36)
-# 
-# gc()
-# 
-# pco2_product <-
-#   pco2_product %>%
-#   mutate(time = ymd_hms("1980-01-01 00:00:00") + days(time))
-# 
-# gc()
-# 
-# pco2_product_sub <-
-#   pco2_product %>%
-#   filter(time == max(time))
-# 
-# pco2_product_sub %>% 
-#   filter(depth == 5) %>% 
-#   ggplot(aes(lon, lat, fill = thetao)) +
-#   geom_raster() +
-#   scale_fill_viridis_c(option = "magma") +
-#   coord_quickmap(expand = 0)
-# 
-# pco2_product_sub %>%
-#   filter(lon == 330.5) %>%
-#   ggplot(aes(lat, depth, z = thetao)) +
-#   geom_contour_filled(breaks = seq(-10,40,2)) +
-#   scale_y_reverse() +
-#   coord_cartesian(expand = 0) +
-#   scale_fill_viridis_d(option = "magma")
 
-
-
-pco2_product <- pco2_product %>%
+pco2_product <-
+  pco2_product %>%
   as_tibble()
 
 
@@ -116,13 +140,15 @@ pco2_product <-
          temperature = tos,
          sol = alpha,
          press = patm,
-         SSH = zos)
+         SSH = zos,
+         no3 = no3os,
+         o2 = o2os,
+         dissic = dissicos)
 
 
 pco2_product <-
   pco2_product %>%
-  mutate(area = earth_surf(lat, lon),
-         year = year(time),
+  mutate(year = year(time),
          month = month(time))
 
 pco2_product <-
@@ -132,7 +158,10 @@ pco2_product <-
          kw = kw *60 *60 *24 *365,
          mld = log10(mld),
          fgco2 = -fgco2 *60 *60 *24 *365,
-         sol = sol * 1.025e3 * 1e-6)
+         sol = sol * 1.025e3 * 1e-6,
+         dissic = dissic * 1.025e3,
+         no3 = no3 * 1.025e3,
+         o2 = o2 * 1.025e3)
 
 pco2_product <-
   pco2_product %>%
@@ -160,7 +189,10 @@ pco2_product <-
 ```{r source_pCO2_product_preprocessing_child}
 
 pCO2_product_preprocessing <-
-  knitr::knit_expand(file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"))
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"),
+    product_name = "ETHZ_CESM"
+  )
 
 ```
 
