@@ -15,12 +15,23 @@ library(ggtext)
 
 ```
 
+```{r check_if_model}
+
+# model <- TRUE
+model <- str_detect('{{product_name}}', "FESOM-REcoM|ETHZ_CESM")
+
+```
+
+
 ## Load masks
 
 ```{r mask_and_map}
 
 biome_mask <-
   read_rds(here::here("data/biome_mask.rds"))
+
+region_mask <-
+  read_rds(here::here("data/region_mask.rds"))
 
 map <-
   read_rds(here::here("data/map.rds"))
@@ -46,156 +57,156 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "dco2") {
     i_legend_title <- "ΔpCO<sub>2</sub><br>(µatm)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "dfco2") {
     i_legend_title <- "ΔfCO<sub>2</sub><br>(µatm)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "atm_co2") {
     i_legend_title <- "pCO<sub>2,atm</sub><br>(µatm)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "atm_fco2") {
     i_legend_title <- "fCO<sub>2,atm</sub><br>(µatm)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "sol") {
     i_legend_title <- "K<sub>0</sub><br>(mol m<sup>-3</sup> µatm<sup>-1</sup>)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "kw") {
     i_legend_title <- "k<sub>w</sub><br>(m yr<sup>-1</sup>)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "kw_sol") {
     i_legend_title <- "k<sub>w</sub> K<sub>0</sub><br>(mol yr<sup>-1</sup> m<sup>-2</sup> µatm<sup>-1</sup>)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "spco2") {
     i_legend_title <- "pCO<sub>2,ocean</sub><br>(µatm)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "sfco2") {
     i_legend_title <- "fCO<sub>2,ocean</sub><br>(µatm)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "intpp") {
+    i_legend_title <- "NPP<sub>int</sub><br>(mol s<sup>-1</sup> m<sup>-2</sup>)"
+  }
+
+  if (i_name == "no3") {
+    i_legend_title <- "NO<sub>3</sub><br>(μmol kg<sup>-1</sup>)"
+  }
+
+  if (i_name == "o2") {
+    i_legend_title <- "O<sub>2</sub><br>(μmol kg<sup>-1</sup>)"
+  }
+
+  if (i_name == "dissic") {
+    i_legend_title <- "DIC<br>(μmol kg<sup>-1</sup>)"
+  }
+
+  if (i_name == "talk") {
+    i_legend_title <- "TA<br>(μmol kg<sup>-1</sup>)"
+  }
+  
+  if (i_name == "sfco2_total") {
+    i_legend_title <- "total"
+  }
+  
+  if (i_name == "sfco2_therm") {
+    i_legend_title <- "thermal"
+  }
+  
+  if (i_name == "sfco2_nontherm") {
+    i_legend_title <- "non-thermal"
   }
   
   if (i_name == "fgco2") {
     i_legend_title <- "FCO<sub>2</sub><br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "fgco2_hov") {
     i_legend_title <- "FCO<sub>2</sub><br>(PgC deg<sup>-1</sup> yr<sup>-1</sup>)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "fgco2_int") {
     i_legend_title <- "FCO<sub>2</sub><br>(PgC yr<sup>-1</sup>)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
+  }
+  
+  if (i_name == "thetao") {
+    i_legend_title <- "Temp.<br>(°C)"
   }
   
   if (i_name == "temperature") {
     i_legend_title <- "SST<br>(°C)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "salinity") {
     i_legend_title <- "SSS"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "chl") {
     i_legend_title <- "lg(Chl-a)<br>(lg(mg m<sup>-3</sup>))"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "mld") {
-    i_legend_title <- "lg(MLD)<br>(lg(m))"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
+    i_legend_title <- "MLD<br>(m)"
   }
   
   if (i_name == "press") {
     i_legend_title <- "pressure<sub>atm</sub><br>(Pa)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "wind") {
     i_legend_title <- "Wind <br>(m sec<sup>-1</sup>)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "SSH") {
     i_legend_title <- "SSH <br>(m)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
   if (i_name == "fice") {
     i_legend_title <- "Sea ice <br>(%)"
-    # i_breaks <- c(-Inf, seq(0, 80, 10), Inf)
-    # i_contour_level <- 50
-    # i_contour_level_abs <- 2200
   }
   
-  all_labels_breaks <- lst(i_legend_title,
-                           # i_breaks,
-                           # i_contour_level,
-                           # i_contour_level_abs
-                           )
+    
+  if (i_name == "resid_fgco2") {
+    i_legend_title <-
+      "Observed"
+  }
+    
+  if (i_name == "resid_fgco2_dfco2") {
+    i_legend_title <-
+      "ΔfCO<sub>2</sub>"
+  }
+    
+  if (i_name == "resid_fgco2_kw_sol") {
+    i_legend_title <-
+      "k<sub>w</sub> K<sub>0</sub>"
+  }
+    
+  if (i_name == "resid_fgco2_dfco2_kw_sol") {
+    i_legend_title <-
+      "k<sub>w</sub> K<sub>0</sub> X ΔfCO<sub>2</sub>"
+  }
+    
+  if (i_name == "resid_fgco2_sum") {
+    i_legend_title <-
+      "∑"
+  }
+    
+  if (i_name == "resid_fgco2_offset") {
+    i_legend_title <-
+      "Obs. - ∑"
+  }
+  
+  all_labels_breaks <- lst(i_legend_title)
   
   return(all_labels_breaks)
   
 }
-
-
-# labels_breaks("fgco2")
 
 x_axis_labels <-
   c(
@@ -206,11 +217,20 @@ x_axis_labels <-
     "sol" = labels_breaks("sol")$i_legend_title,
     "kw" = labels_breaks("kw")$i_legend_title,
     "kw_sol" = labels_breaks("kw_sol")$i_legend_title,
+    "intpp" = labels_breaks("intpp")$i_legend_title,
+    "no3" = labels_breaks("no3")$i_legend_title,
+    "o2" = labels_breaks("o2")$i_legend_title,
+    "dissic" = labels_breaks("dissic")$i_legend_title,
+    "talk" = labels_breaks("talk")$i_legend_title,
     "spco2" = labels_breaks("spco2")$i_legend_title,
     "sfco2" = labels_breaks("sfco2")$i_legend_title,
+    "sfco2_total" = labels_breaks("sfco2_total")$i_legend_title,
+    "sfco2_therm" = labels_breaks("sfco2_therm")$i_legend_title,
+    "sfco2_nontherm" = labels_breaks("sfco2_nontherm")$i_legend_title,
     "fgco2" = labels_breaks("fgco2")$i_legend_title,
     "fgco2_hov" = labels_breaks("fgco2_hov")$i_legend_title,
     "fgco2_int" = labels_breaks("fgco2_int")$i_legend_title,
+    "thetao" = labels_breaks("thetao")$i_legend_title,
     "temperature" = labels_breaks("temperature")$i_legend_title,
     "salinity" = labels_breaks("salinity")$i_legend_title,
     "chl" = labels_breaks("chl")$i_legend_title,
@@ -218,12 +238,17 @@ x_axis_labels <-
     "press" = labels_breaks("press")$i_legend_title,
     "wind" = labels_breaks("wind")$i_legend_title,
     "SSH" = labels_breaks("SSH")$i_legend_title,
-    "fice" = labels_breaks("fice")$i_legend_title
+    "fice" = labels_breaks("fice")$i_legend_title,
+    "resid_fgco2" = labels_breaks("resid_fgco2")$i_legend_title,
+    "resid_fgco2_dfco2" = labels_breaks("resid_fgco2_dfco2")$i_legend_title,
+    "resid_fgco2_kw_sol" = labels_breaks("resid_fgco2_kw_sol")$i_legend_title,
+    "resid_fgco2_dfco2_kw_sol" = labels_breaks("resid_fgco2_dfco2_kw_sol")$i_legend_title,
+    "resid_fgco2_sum" = labels_breaks("resid_fgco2_sum")$i_legend_title,
+    "resid_fgco2_offset" = labels_breaks("resid_fgco2_offset")$i_legend_title
   )
 
 
 ```
-
 
 ## Analysis settings
 
@@ -248,8 +273,19 @@ pco2_product <-
 
 ```
 
+```{r temporal_boundaries_interior, eval=model}
+
+pco2_product_interior <-
+  pco2_product_interior %>%
+  filter(time >= ymd(paste0(start_year, "-01-01")))
+
+```
+
 
 ```{r biome_mask}
+
+biome_mask <- biome_mask %>% 
+  mutate(area = earth_surf(lat, lon))
 
 pco2_product <-
   full_join(pco2_product,
@@ -317,8 +353,6 @@ pco2_product_coarse_monthly <-
 
 
 ```
-
-
 
 ```{r compute_global_means_and_integrals}
 
@@ -395,6 +429,75 @@ pco2_product_monthly <-
   pco2_product_monthly %>%
   pivot_longer(-c(time, year, month, biome))
 
+
+```
+
+```{r generate_biome_mean_profiles, eval=model}
+
+pco2_product_interior <- 
+  left_join(
+    biome_mask,
+    pco2_product_interior
+  )
+
+pco2_product_profiles <- pco2_product_interior %>%
+  fselect(-c(lat, lon)) %>%
+  fgroup_by(biome, depth, time) %>% {
+    add_vars(fgroup_vars(., "unique"),
+             fmean(.,
+                   w = area,
+                   keep.w = FALSE,
+                   keep.group_vars = FALSE))
+  }
+
+pco2_product_profiles <-
+  pco2_product_profiles %>%
+  mutate(
+    year = year(time),
+    month = month(time)
+  )
+
+gc()
+
+```
+
+
+```{r generate_zonal_mean_sections, eval=model}
+
+pco2_product_interior <- 
+  left_join(
+    region_mask,
+    pco2_product_interior %>% select(-c(biome, area))
+  )
+
+pco2_product_zonal_mean <- pco2_product_interior %>%
+  fselect(-c(lon)) %>%
+  fgroup_by(region, depth, lat, time) %>% {
+    add_vars(fgroup_vars(., "unique"),
+             fmean(.,
+                   keep.group_vars = FALSE))
+  }
+
+pco2_product_zonal_mean <-
+  pco2_product_zonal_mean %>%
+  mutate(
+    year = year(time),
+    month = month(time)
+  )
+
+gc()
+
+# pco2_product_zonal_mean %>% 
+#   filter(region == "atlantic",
+#          year == 2023,
+#          month == 1) %>% 
+#   ggplot(aes(lat, depth, z = no3)) +
+#   geom_contour_filled() +
+#   scale_y_reverse() +
+#   scale_fill_viridis_d()
+
+rm(pco2_product_interior)
+gc()
 
 ```
 

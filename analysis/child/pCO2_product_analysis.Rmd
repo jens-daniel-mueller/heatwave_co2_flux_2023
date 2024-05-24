@@ -14,7 +14,7 @@ The regression models are fitted to all data since `r print(paste(start_year))`,
 anomaly_determination <- function(df,...) {
   
   group_by <- quos(...)
-  # group_by <- quos(lon, lat)
+  # group_by <- quos(region, lat, depth)
   # df <- pco2_product_coarse_annual
   
   # Linear regression models
@@ -60,6 +60,8 @@ anomaly_determination <- function(df,...) {
   
   # Quadratic regression models
   
+  if(any(df %>% distinct(name) %>% pull() %in% name_quadratic_fit)){
+  
   df_quadratic <-
     df %>%
     filter(year != {{year_anom}},
@@ -70,7 +72,6 @@ anomaly_determination <- function(df,...) {
       tidied = map(fit, tidy),
       augmented = map(fit, augment)
     )
-  
   
   df_quadratic_year_anom <-
     full_join(
@@ -105,12 +106,19 @@ anomaly_determination <- function(df,...) {
     bind_rows(df_lm,
               df_quadratic)
   
-  df_regression <-
-    df_regression %>% 
-    arrange(year)
-  
   rm(df_lm,
      df_quadratic)
+  
+  } else{
+    
+    df_regression <- df_lm
+    
+    rm(df_lm)
+  }
+  
+  df_regression <-
+    df_regression %>%
+    arrange(year)
   
   
   return(df_regression)
@@ -1929,4 +1937,153 @@ pco2_product_monthly_detrended_anomaly_relative %>%
 
 ```
 
+
+# Zonal mean sections
+
+The following analysis is available for GOBMs only.
+
+## Annual means
+
+### {{year_anom}} anomaly
+
+```{r {{year_anom}}_anomaly_zonal_mean_sections_annual, fig.asp=1, eval=model}
+
+pco2_product_zonal_mean_annual <-   pco2_product_zonal_mean %>%
+  pivot_longer(-c(region, depth, lat, time, year, month)) %>%
+  group_by(region, lat, depth, year, name) %>%
+  summarise(value = mean(value)) %>%
+  ungroup() %>%
+  drop_na() %>%
+  mutate(region = str_to_title(region))
+
+pco2_product_zonal_mean_annual_regression <-
+  pco2_product_zonal_mean_annual %>% 
+  anomaly_determination(region, lat, depth)
+
+pco2_product_zonal_mean_annual_regression %>%
+  filter(year == {{year_anom}}) %>%
+  group_split(name) %>%
+  # head(3) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_contour_filled(aes(lat, depth, z = resid)) +
+      scale_fill_discrete_divergingx(name = labels_breaks(.x %>% distinct(name))$i_legend_title) +
+      guides(fill = guide_colorsteps(
+        barheight = unit(8, "cm"),
+        show.limits = TRUE
+      )) +
+      scale_y_continuous(trans = trans_reverser("sqrt"),
+                         breaks = c(50,100,200,400)) +
+      scale_x_continuous(breaks = seq(-100, 100, 20)) +
+      coord_cartesian(expand = 0) +
+      facet_wrap( ~ region, ncol = 1) +
+      labs(y = "Depth (m)") +
+      theme(legend.title = element_markdown())
+  )
+
+```
+
+
+```{r write_anomaly_anomaly_year_zonal_mean_sections_annual, eval=model}
+
+pco2_product_zonal_mean_annual_regression %>%
+  write_csv(paste0("../data/","{{product_name}}","_","{{year_anom}}","_zonal_mean_sections_annual.csv"))
+
+```
+
+# Biome profiles
+
+The following analysis is available for GOBMs only.
+
+## Annual means
+
+### {{year_anom}} anomaly
+
+```{r {{year_anom}}_anomaly_profiles_annual, fig.asp=1, eval=model}
+
+pco2_product_profiles_annual <-   pco2_product_profiles %>%
+  pivot_longer(-c(biome, depth, time, year, month)) %>%
+  group_by(biome, depth, year, name) %>%
+  summarise(value = mean(value)) %>%
+  ungroup() %>%
+  drop_na()
+
+pco2_product_profiles_annual_regression <-
+  pco2_product_profiles_annual %>% 
+  anomaly_determination(biome, depth)
+
+pco2_product_profiles_annual_regression %>%
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_path(aes(resid, depth, group = year), col = "grey30", alpha = 0.5) +
+      geom_path(data = .x %>% filter(year == {{year_anom}}),
+                aes(resid, depth, col = as.factor(year)),
+                linewidth = 1) +
+      scale_y_continuous(trans = trans_reverser("sqrt"),
+                         breaks = c(50,100,200,400)) +
+      facet_wrap( ~ biome) +
+      labs(y = "Depth (m)",
+           x = labels_breaks(.x %>% distinct(name))$i_legend_title) +
+      theme(legend.title = element_blank(),
+            axis.title.x = element_markdown())
+  )
+
+```
+
+
+```{r write_anomaly_year_profiles_annual, eval=model}
+
+pco2_product_profiles_annual_regression %>%
+  write_csv(paste0("../data/","{{product_name}}","_","{{year_anom}}","_profiles_annual.csv"))
+
+```
+
+## Monthly means
+
+### {{year_anom}} anomaly
+
+```{r {{year_anom}}_anomaly_profiles_monthly, fig.asp=1, eval=model}
+
+pco2_product_profiles_monthly <-   pco2_product_profiles %>%
+  pivot_longer(-c(biome, depth, time, year, month)) %>%
+  group_by(biome, depth, year, month, name) %>%
+  summarise(value = mean(value)) %>%
+  ungroup() %>%
+  drop_na()
+
+pco2_product_profiles_monthly_regression <-
+  pco2_product_profiles_monthly %>% 
+  anomaly_determination(biome, depth, month)
+
+pco2_product_profiles_monthly_regression %>%
+  filter(year == {{year_anom}}) %>% 
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_vline(xintercept = 0) +
+      geom_path(aes(resid, depth, col = as.factor(month)),
+                linewidth = 1) +
+      scale_color_scico_d(palette = "hawaii") +
+      scale_y_continuous(trans = trans_reverser("sqrt"),
+                         breaks = c(50, 100, 200, 400)) +
+      facet_wrap(~ biome,
+                 scales = "free_x") +
+      labs(y = "Depth (m)",
+           x = labels_breaks(.x %>% distinct(name))$i_legend_title) +
+      theme(legend.title = element_blank(),
+            axis.title.x = element_markdown())
+  )
+
+```
+
+
+```{r write_anomaly_year_profiles_monthly, eval=model}
+
+pco2_product_profiles_monthly_regression %>%
+  write_csv(paste0("../data/","{{product_name}}","_","{{year_anom}}","_profiles_monthly.csv"))
+
+```
 
