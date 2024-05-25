@@ -149,11 +149,15 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "ETHZ_CESM.Rmd",
+    "CMEMS.Rmd",
+    "SOM_FFN.Rmd",
+    "OceanSODA.Rmd",
+    "NRT_fco2residual.Rmd",
+    # "ETHZ_CESM.Rmd",
     "FESOM_REcoM.Rmd"
   )
 ),
-message = "talk included, variable names adapted, monthly anomaly profiles addded")
+message = "SO processed, but not included in global integrals")
 
 
 

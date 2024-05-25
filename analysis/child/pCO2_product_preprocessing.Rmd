@@ -107,6 +107,10 @@ labels_breaks <- function(i_name) {
     i_legend_title <- "DIC<br>(μmol kg<sup>-1</sup>)"
   }
 
+  if (i_name == "cstar") {
+    i_legend_title <- "C*<br>(μmol kg<sup>-1</sup>)"
+  }
+
   if (i_name == "talk") {
     i_legend_title <- "TA<br>(μmol kg<sup>-1</sup>)"
   }
@@ -221,6 +225,7 @@ x_axis_labels <-
     "no3" = labels_breaks("no3")$i_legend_title,
     "o2" = labels_breaks("o2")$i_legend_title,
     "dissic" = labels_breaks("dissic")$i_legend_title,
+    "cstar" = labels_breaks("cstar")$i_legend_title,
     "talk" = labels_breaks("talk")$i_legend_title,
     "spco2" = labels_breaks("spco2")$i_legend_title,
     "sfco2" = labels_breaks("sfco2")$i_legend_title,
@@ -358,9 +363,12 @@ pco2_product_coarse_monthly <-
 
 pco2_product_monthly_global <-
   pco2_product %>%
-  filter(!is.na(fgco2)) %>% 
-  mutate(fgco2_int = fgco2) %>% 
-  select(-c(lon, lat, year, month, biome)) %>% 
+  filter(!is.na(fgco2)) %>%
+  mutate(fgco2_int = fgco2) %>%
+  mutate(biome = case_when(str_detect(biome, "SO-") ~ "Southern Ocean",
+                           TRUE ~ "other")) %>%
+  filter(biome == "other") %>%
+  select(-c(lon, lat, year, month, biome)) %>%
   group_by(time) %>%
   summarise(across(-c(fgco2_int, area),
                    ~ weighted.mean(., area, na.rm = TRUE)),
