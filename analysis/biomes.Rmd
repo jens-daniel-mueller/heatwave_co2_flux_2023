@@ -122,8 +122,8 @@ biome_mask <- biome_mask  %>%
     # biome == "arctic_3" ~ "NA-ICE",
     # biome == "arctic_4" ~ "Barents",
     # str_detect(biome, "arctic") ~ "Arctic",
-    # biome == "southern_1" ~ "SO-STSS",
-    # biome == "southern_2" ~ "SO-SPSS",
+    biome == "southern_1" ~ "SO-STSS",
+    biome == "southern_2" ~ "SO-SPSS",
     # biome == "southern_3" ~ "SO-ICE",
     TRUE ~ "other"
   ))
@@ -208,7 +208,7 @@ super_biome_mask <- biome_mask  %>%
     biome = case_when(
       str_detect(biome, "NA-") ~ "North Atlantic",
       str_detect(biome, "NP-") ~ "North Pacific",
-      # str_detect(biome, "SO-") ~ "Southern Ocean",
+      str_detect(biome, "SO-") ~ "Southern Ocean",
       TRUE ~ "other"
     )
   )
