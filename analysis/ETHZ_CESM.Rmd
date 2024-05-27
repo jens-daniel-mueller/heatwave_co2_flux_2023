@@ -63,7 +63,7 @@ pco2_product_interior <-
 
 pco2_product_interior <- pco2_product_interior %>%
   hyper_filter(depth = depth <= 500) %>% 
-  hyper_tibble(select_var = c("thetao", "dissic", "no3", "o2", "talk"),
+  hyper_tibble(select_var = c("thetao", "dissic", "no3", "talk"),
                        force = TRUE)
 
 pco2_product_interior <-
@@ -87,7 +87,6 @@ pco2_product_interior <-
     dissic = dissic * 1.025e3,
     talk = talk * 1.025e3,
     no3 = no3 * 1.025e3,
-    o2 = o2 * 1.025e3,
     cstar = dissic  - (117/16 * no3)  - 0.5 * (talk + no3)
   )
 gc()
@@ -124,7 +123,7 @@ pco2_product <-
       path_pCO2_products,
       "Heatwaves_RunA.nc"
     ),
-    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld", "pco2", "pco2atm", "patm", "alpha", "zos", "intpp", "no3os", "o2os", "dissicos"),
+    var = c("chlos", "sos", "tos", "Kw", "sfco2", "fgco2", "mld", "pco2", "pco2atm", "patm", "alpha", "zos", "intpp", "no3os", "dissicos", "talkos"),
     make_units = FALSE
   )
 
@@ -144,8 +143,8 @@ pco2_product <-
          press = patm,
          SSH = zos,
          no3 = no3os,
-         o2 = o2os,
-         dissic = dissicos)
+         dissic = dissicos,
+         talk = talkos)
 
 
 pco2_product <-
@@ -162,8 +161,8 @@ pco2_product <-
          fgco2 = -fgco2 *60 *60 *24 *365,
          sol = sol * 1.025e3 * 1e-6,
          dissic = dissic * 1.025e3,
-         no3 = no3 * 1.025e3,
-         o2 = o2 * 1.025e3)
+         talk = talk * 1.025e3,
+         no3 = no3 * 1.025e3)
 
 pco2_product <-
   pco2_product %>%

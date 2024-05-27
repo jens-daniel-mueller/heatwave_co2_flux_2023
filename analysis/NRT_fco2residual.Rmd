@@ -77,6 +77,9 @@ pco2_product <-
 pco2_product <- pco2_product %>%
   as_tibble()
 
+pco2_product <- pco2_product %>%
+  select(-mld)
+
 pco2_product <-
   pco2_product %>%
   rename(lon = xlon,
@@ -92,8 +95,7 @@ pco2_product <-
          dfco2 = sfco2 - atm_fco2,
          kw = kw * 1e-2 * 24 * 365,
          sol = sol * 1e-3,
-         chl = log10(chl),
-         mld = log10(mld))
+         chl = log10(chl))
 
 pco2_product <-
   pco2_product %>% 
