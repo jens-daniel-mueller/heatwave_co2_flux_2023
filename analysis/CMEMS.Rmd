@@ -95,20 +95,21 @@ CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("fuCO2_clim"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("UV"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Ps"))]
 CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("Sea_Ice"))]
+CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("xCO2_r"))]
 # print(CMEMS_files, max = 5000)
 
 file_names <- str_split(CMEMS_files, "_", simplify = TRUE)[,1] %>% unique()
 
 
 for (i_file_name in file_names) {
-  # i_file_name <- file_names[3]
+  # i_file_name <- file_names[7]
   CMEMS_files_var <-
     CMEMS_files[CMEMS_files %>% str_detect(i_file_name)]
   
-  if(i_file_name == "xCO2"){
-  CMEMS_files_var <-
-    CMEMS_files_var[!CMEMS_files_var %>% str_detect("fluxCO2")]
-  }
+  # if(i_file_name == "xCO2"){
+  # CMEMS_files_var <-
+  #   CMEMS_files_var[!CMEMS_files_var %>% str_detect("fluxCO2")]
+  # }
   
   for (i_name in CMEMS_files_var) {
     # i_name <- CMEMS_files_var[465]
@@ -180,13 +181,16 @@ rm(i_pco2_product_var,
    CMEMS_files)
 # rm(pco2_product)
 
+# pco2_product %>% distinct(name)
+
 pco2_product <-
   pco2_product %>%
   rename(chl = CHL,
          mld = MLD,
-         atm_co2 = CO2,
+         atm_fco2 = pCO2,
          fgco2 = fCO2_mean,
          sfco2 = fuCO2_mean,
+         sol = L,
          salinity = SSS,
          temperature = SST)
 
@@ -221,18 +225,12 @@ pco2_product <-
 pco2_product <-
   pco2_product %>%
   mutate(
-    atm_fco2 = p2fCO2(T = temperature,
-                      pCO2 = atm_co2),
     dfco2 = sfco2 - atm_fco2
   )
 
 pco2_product <-
   pco2_product %>%
-  select(-c(atm_co2))
-
-# pco2_product <-
-#   pco2_product %>% 
-#   mutate(kw_sol = kw * sol)
+  mutate(kw_sol = kw * sol)
 
 ```
 
