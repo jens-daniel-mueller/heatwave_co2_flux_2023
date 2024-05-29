@@ -48,14 +48,6 @@ print(nc)
 
 ```{r read_ETHZ_CESM_3d}
 
-# pco2_product <-
-#   read_mdim(
-#     paste0(
-#       path_pCO2_products,
-#       "Heatwaves_RunA.nc"
-#     ),
-#     var = c("dissic")
-#   )
 
 pco2_product_interior <-
   tidync(paste0(path_pCO2_products,
@@ -63,7 +55,7 @@ pco2_product_interior <-
 
 pco2_product_interior <- pco2_product_interior %>%
   hyper_filter(depth = depth <= 500) %>% 
-  hyper_tibble(select_var = c("thetao", "dissic", "no3", "talk"),
+  hyper_tibble(select_var = c("thetao", "dissic", "no3", "talk", "so"),
                        force = TRUE)
 
 pco2_product_interior <-
@@ -76,9 +68,7 @@ pco2_product_interior <-
   pco2_product_interior %>%
   mutate(time = ymd_hms("1980-01-01 00:00:00") + days(time))
 
-# pco2_product_interior <-
-#   pco2_product_interior %>%
-#   rename(temperature = thetao)
+gc()
 
 pco2_product_interior <-
   pco2_product_interior %>%
@@ -86,30 +76,13 @@ pco2_product_interior <-
     lon = if_else(lon < 20, lon + 360, lon),
     dissic = dissic * 1.025e3,
     talk = talk * 1.025e3,
+    sdissic = dissic / so * 35,
+    stalk = talk / so * 35,
     no3 = no3 * 1.025e3,
     cstar = dissic  - (117/16 * no3)  - 0.5 * (talk + no3)
   )
+
 gc()
-
-# pco2_product_interior_sub <-
-#   pco2_product_interior %>%
-#   filter(time == max(time))
-# 
-# pco2_product_interior_sub %>%
-#   filter(depth == 5) %>%
-#   ggplot(aes(lon, lat, fill = thetao)) +
-#   geom_raster() +
-#   scale_fill_viridis_c(option = "magma") +
-#   coord_quickmap(expand = 0)
-# 
-# pco2_product_interior_sub %>%
-#   filter(lon == 330.5) %>%
-#   ggplot(aes(lat, depth, z = thetao)) +
-#   geom_contour_filled(breaks = seq(-10,40,2)) +
-#   scale_y_reverse() +
-#   coord_cartesian(expand = 0) +
-#   scale_fill_viridis_d(option = "magma")
-
 
 ```
 
@@ -162,6 +135,8 @@ pco2_product <-
          sol = sol * 1.025e3 * 1e-6,
          dissic = dissic * 1.025e3,
          talk = talk * 1.025e3,
+         sdissic = dissic / salinity * 35,
+         stalk = talk / salinity * 35,
          no3 = no3 * 1.025e3)
 
 pco2_product <-
