@@ -129,6 +129,7 @@ wflow_publish(c("analysis/*Rmd"), message = "include G19 comparison", republish 
 wflow_publish(here::here(
   "analysis",
   c(
+    "pco2_product_mapping_skill.Rmd",
     "index.Rmd",
     "biomes.Rmd",
     "mhw_stats.Rmd",
@@ -142,22 +143,28 @@ wflow_publish(here::here(
     "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "rebuild entire website with focus on extended NH",
+message = "SOCATv2024 comparison",
 republish = TRUE)
 
 
 wflow_publish(here::here(
   "analysis",
   c(
+    "pco2_product_mapping_skill.Rmd",
+    "index.Rmd",
+    "biomes.Rmd",
+    "mhw_stats.Rmd",
+    "atm_co2.Rmd",
     "CMEMS.Rmd",
     "SOM_FFN.Rmd",
     "OceanSODA.Rmd",
     "NRT_fco2residual.Rmd",
-    # "ETHZ_CESM.Rmd",
-    "FESOM_REcoM.Rmd"
+    "ETHZ_CESM.Rmd",
+    "FESOM_REcoM.Rmd",
+    "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "SO processed, but not included in global integrals")
+message = "SOCATv2024 comparison")
 
 
 
