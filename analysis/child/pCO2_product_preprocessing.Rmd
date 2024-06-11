@@ -12,6 +12,8 @@ library(khroma)
 library(broom)
 library(scico)
 library(ggtext)
+library(cmocean)
+library(scales)
 
 ```
 
@@ -592,7 +594,13 @@ pco2_product_hovmoeller_monthly_annual %>%
     ~ ggplot(data = .x,
              aes(year, lat, fill = value)) +
       geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
+        oob = squish
+      ) +
       theme(legend.title = element_markdown()) +
       coord_cartesian(expand = 0) +
       labs(title = "Annual means",
@@ -655,7 +663,13 @@ pco2_product_hovmoeller_monthly %>%
     ~ ggplot(data = .x,
              aes(decimal, lat, fill = value)) +
       geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
+        oob = squish
+      )+
       theme(legend.title = element_markdown()) +
       labs(title = "Monthly means",
            y = "Latitude") +
