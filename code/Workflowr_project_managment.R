@@ -150,7 +150,7 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "SOM_FFN.Rmd"
+    "OceanSODA.Rmd"
   )
 ),
 message = "repaired analysis child Rmd")
