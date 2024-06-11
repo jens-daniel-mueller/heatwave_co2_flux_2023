@@ -445,7 +445,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">SOM_FFN</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">05 June, 2024</h4>
+<h4 class="date">10 June, 2024</h4>
 
 </div>
 
@@ -474,7 +474,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-06-05
+<strong>Last updated:</strong> 2024-06-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -606,15 +606,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree6a16b4c5cf9848247b663c788a37c53c23b48f59targetblank6a16b4ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree0c5c024c8257ed65ae7d8d1c40ab6758c1051a3ctargetblank0c5c024a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/6a16b4c5cf9848247b663c788a37c53c23b48f59" target="_blank">6a16b4c</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/0c5c024c8257ed65ae7d8d1c40ab6758c1051a3c" target="_blank">0c5c024</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree6a16b4c5cf9848247b663c788a37c53c23b48f59targetblank6a16b4ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree0c5c024c8257ed65ae7d8d1c40ab6758c1051a3ctargetblank0c5c024a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -624,7 +624,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/6a16b4c5cf9848247b663c788a37c53c23b48f59" target="_blank">6a16b4c</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/0c5c024c8257ed65ae7d8d1c40ab6758c1051a3c" target="_blank">0c5c024</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -641,13 +641,14 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/Rplot.png
     Ignored:    data/
 
 Unstaged changes:
-    Modified:   analysis/_site.yml
+    Modified:   analysis/biomes.Rmd
+    Modified:   analysis/child/pCO2_product_analysis.Rmd
     Modified:   analysis/child/pCO2_product_preprocessing.Rmd
     Modified:   analysis/child/pCO2_product_synopsis.Rmd
+    Modified:   analysis/pco2_product_mapping_skill.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -694,6 +695,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/6954c65e1cad9fcf6bed68c70917e48497f78233/docs/SOM_FFN.html" target="_blank">6954c65</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2123,15 +2141,28 @@ pco2_product &lt;-
 <pre class="r"><code># apply coarse grid
 
 pco2_product_coarse &lt;-
-  m_grid_horizontal_coarse(pco2_product)
+  pco2_product %&gt;% 
+  mutate(lon_grid = lon,
+         lat_grid = lat)
+
+# pco2_product_coarse &lt;-
+#   m_grid_horizontal(pco2_product)
+
+# pco2_product_coarse &lt;-
+#   pco2_product_coarse %&gt;%
+#   select(-c(lon, lat, time, biome)) %&gt;%
+#   group_by(year, month, lon_grid, lat_grid) %&gt;%
+#   summarise(across(-area,
+#                    ~ weighted.mean(., area))) %&gt;%
+#   ungroup() %&gt;%
+#   rename(lon = lon_grid, lat = lat_grid)
 
 pco2_product_coarse &lt;-
   pco2_product_coarse %&gt;%
   select(-c(lon, lat, time, biome)) %&gt;%
-  group_by(year, month, lon_grid, lat_grid) %&gt;%
-  summarise(across(-area,
-                   ~ weighted.mean(., area))) %&gt;%
-  ungroup() %&gt;%
+  fgroup_by(year, month, lon_grid, lat_grid) %&gt;%
+  fmean(w = area,
+        keep.w = FALSE) %&gt;%
   rename(lon = lon_grid, lat = lat_grid)
 
 pco2_product_coarse &lt;-
@@ -2140,15 +2171,17 @@ pco2_product_coarse &lt;-
   drop_na() %&gt;%
   pivot_wider()
 
-# compute annual means
+gc()</code></pre>
+<pre><code>            used (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   3013101  161    5636110   301.1    5636110   301.1
+Vcells 677372235 5168 3191647047 24350.4 3962781251 30233.7</code></pre>
+<pre class="r"><code># compute annual means
 
 pco2_product_coarse_annual &lt;-
   pco2_product_coarse %&gt;%
   select(-month) %&gt;% 
-  group_by(year, lon, lat) %&gt;%
-  summarise(across(where(is.numeric),
-                   ~ mean(.))) %&gt;%
-  ungroup()
+  fgroup_by(year, lon, lat) %&gt;%
+  fmean()
 
 pco2_product_coarse_annual &lt;-
   pco2_product_coarse_annual %&gt;% 
@@ -2158,14 +2191,17 @@ pco2_product_coarse_annual &lt;-
 
 pco2_product_coarse_monthly &lt;-
   pco2_product_coarse %&gt;%
-  group_by(year, month, lon, lat) %&gt;%
-  summarise(across(where(is.numeric),
-                   ~ mean(.))) %&gt;%
-  ungroup()
+  fgroup_by(year, month, lon, lat) %&gt;%
+  fmean()
 
 pco2_product_coarse_monthly &lt;-
   pco2_product_coarse_monthly %&gt;% 
-  pivot_longer(-c(year, month, lon, lat))</code></pre>
+  pivot_longer(-c(year, month, lon, lat))
+
+gc()</code></pre>
+<pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    3013288   161.0    5636110   301.1    5636110   301.1
+Vcells 1597583783 12188.6 3191647047 24350.4 3962781251 30233.7</code></pre>
 <pre class="r"><code>pco2_product_monthly_global &lt;-
   pco2_product %&gt;%
   filter(!is.na(fgco2)) %&gt;%
@@ -5437,10 +5473,17 @@ which are approximated with quadratic fits.</p>
 <pre class="r"><code>anomaly_determination &lt;- function(df,...) {
   
   group_by &lt;- quos(...)
-  # group_by &lt;- quos(region, lat, depth)
+  # group_by &lt;- quos(lon, lat)
   # df &lt;- pco2_product_coarse_annual
   
   # Linear regression models
+  
+  # df_lm &lt;-
+  #   df %&gt;%
+  #   filter(year != 2023,
+  #          !(name %in% name_quadratic_fit)) %&gt;%
+  #   fgroup_by(name, lon, lat) %&gt;%
+  #   flm(value ~ year)
   
   df_lm &lt;-
     df %&gt;%
@@ -30170,6 +30213,7 @@ other attached packages:
 [25] forcats_0.5.2       stringr_1.5.0       dplyr_1.1.3        
 [28] purrr_1.0.2         readr_2.1.3         tidyr_1.3.0        
 [31] tibble_3.2.1        ggplot2_3.4.4       tidyverse_1.3.2    
+[34] workflowr_1.7.0    
 
 loaded via a namespace (and not attached):
   [1] googledrive_2.0.0       ellipsis_0.3.2          class_7.3-20           
@@ -30178,34 +30222,35 @@ loaded via a namespace (and not attached):
  [10] farver_2.1.1            bit64_4.0.5             fansi_1.0.3            
  [13] xml2_1.3.3              splines_4.2.2           codetools_0.2-18       
  [16] cachem_1.0.6            knitr_1.41              polyclip_1.10-4        
- [19] jsonlite_1.8.3          workflowr_1.7.0         dbplyr_2.2.1           
- [22] compiler_4.2.2          httr_1.4.4              backports_1.4.1        
- [25] Matrix_1.5-3            assertthat_0.2.1        fastmap_1.1.0          
- [28] gargle_1.2.1            cli_3.6.1               later_1.3.0            
- [31] tweenr_2.0.2            htmltools_0.5.3         tools_4.2.2            
- [34] gtable_0.3.1            glue_1.6.2              rnaturalearthdata_0.1.0
- [37] Rcpp_1.0.11             RNetCDF_2.6-1           cellranger_1.1.0       
- [40] jquerylib_0.1.4         vctrs_0.6.4             nlme_3.1-160           
- [43] lwgeom_0.2-10           xfun_0.35               rvest_1.0.3            
+ [19] jsonlite_1.8.3          dbplyr_2.2.1            compiler_4.2.2         
+ [22] httr_1.4.4              backports_1.4.1         Matrix_1.5-3           
+ [25] assertthat_0.2.1        fastmap_1.1.0           gargle_1.2.1           
+ [28] cli_3.6.1               later_1.3.0             tweenr_2.0.2           
+ [31] htmltools_0.5.3         tools_4.2.2             rnaturalearthdata_0.1.0
+ [34] gtable_0.3.1            glue_1.6.2              Rcpp_1.0.11            
+ [37] RNetCDF_2.6-1           cellranger_1.1.0        jquerylib_0.1.4        
+ [40] vctrs_0.6.4             nlme_3.1-160            lwgeom_0.2-10          
+ [43] xfun_0.35               ps_1.7.2                rvest_1.0.3            
  [46] ncmeta_0.3.5            lifecycle_1.0.3         googlesheets4_1.0.1    
- [49] MASS_7.3-58.1           scales_1.2.1            vroom_1.6.0            
- [52] hms_1.1.2               promises_1.2.0.1        parallel_4.2.2         
- [55] RColorBrewer_1.1-3      yaml_2.3.6              memoise_2.0.1          
- [58] sass_0.4.4              stringi_1.7.8           highr_0.9              
- [61] e1071_1.7-12            checkmate_2.1.0         commonmark_1.8.1       
- [64] rlang_1.1.1             pkgconfig_2.0.3         systemfonts_1.0.4      
- [67] evaluate_0.18           lattice_0.20-45         labeling_0.4.2         
- [70] bit_4.0.5               tidyselect_1.2.0        here_1.0.1             
- [73] magrittr_2.0.3          R6_2.5.1                generics_0.1.3         
- [76] DBI_1.1.3               mgcv_1.8-41             pillar_1.9.0           
- [79] haven_2.5.1             whisker_0.4             withr_2.5.0            
- [82] units_0.8-0             sp_1.5-1                modelr_0.1.10          
- [85] crayon_1.5.2            KernSmooth_2.23-20      utf8_1.2.2             
- [88] tzdb_0.3.0              rmarkdown_2.18          grid_4.2.2             
- [91] readxl_1.4.1            data.table_1.14.6       git2r_0.30.1           
- [94] reprex_2.0.2            digest_0.6.30           classInt_0.4-8         
- [97] httpuv_1.6.6            textshaping_0.3.6       munsell_0.5.0          
-[100] viridisLite_0.4.1       bslib_0.4.1            </code></pre>
+ [49] getPass_0.2-2           MASS_7.3-58.1           scales_1.2.1           
+ [52] vroom_1.6.0             hms_1.1.2               promises_1.2.0.1       
+ [55] parallel_4.2.2          RColorBrewer_1.1-3      yaml_2.3.6             
+ [58] memoise_2.0.1           sass_0.4.4              stringi_1.7.8          
+ [61] highr_0.9               e1071_1.7-12            checkmate_2.1.0        
+ [64] commonmark_1.8.1        rlang_1.1.1             pkgconfig_2.0.3        
+ [67] systemfonts_1.0.4       evaluate_0.18           lattice_0.20-45        
+ [70] labeling_0.4.2          bit_4.0.5               processx_3.8.0         
+ [73] tidyselect_1.2.0        here_1.0.1              magrittr_2.0.3         
+ [76] R6_2.5.1                generics_0.1.3          DBI_1.1.3              
+ [79] mgcv_1.8-41             pillar_1.9.0            haven_2.5.1            
+ [82] whisker_0.4             withr_2.5.0             units_0.8-0            
+ [85] sp_1.5-1                modelr_0.1.10           crayon_1.5.2           
+ [88] KernSmooth_2.23-20      utf8_1.2.2              tzdb_0.3.0             
+ [91] rmarkdown_2.18          grid_4.2.2              readxl_1.4.1           
+ [94] data.table_1.14.6       callr_3.7.3             git2r_0.30.1           
+ [97] reprex_2.0.2            digest_0.6.30           classInt_0.4-8         
+[100] httpuv_1.6.6            textshaping_0.3.6       munsell_0.5.0          
+[103] viridisLite_0.4.1       bslib_0.4.1            </code></pre>
 </div>
 </div>
 </div>
