@@ -445,7 +445,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">SOM_FFN</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">11 June, 2024</h4>
+<h4 class="date">12 June, 2024</h4>
 
 </div>
 
@@ -474,7 +474,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-06-11
+<strong>Last updated:</strong> 2024-06-12
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -606,15 +606,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree9cfceb94cffbe933b260b7b20d13c4c03cb1e9cftargetblank9cfceb9a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree5c6b61d2e294d41acec4726ab6280c8adf4e62f5targetblank5c6b61da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/9cfceb94cffbe933b260b7b20d13c4c03cb1e9cf" target="_blank">9cfceb9</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/5c6b61d2e294d41acec4726ab6280c8adf4e62f5" target="_blank">5c6b61d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree9cfceb94cffbe933b260b7b20d13c4c03cb1e9cftargetblank9cfceb9a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree5c6b61d2e294d41acec4726ab6280c8adf4e62f5targetblank5c6b61da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -624,7 +624,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/9cfceb94cffbe933b260b7b20d13c4c03cb1e9cf" target="_blank">9cfceb9</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/5c6b61d2e294d41acec4726ab6280c8adf4e62f5" target="_blank">5c6b61d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -690,6 +690,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/SOM_FFN.html" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2305,13 +2322,13 @@ pco2_product &lt;-
 <h2>Compuations</h2>
 <pre class="r"><code># apply coarse grid
 
-# pco2_product_coarse &lt;-
-#   pco2_product %&gt;%
-#   mutate(lon_grid = lon,
-#          lat_grid = lat)
-
 pco2_product_coarse &lt;-
-  m_grid_horizontal_coarse(pco2_product)
+  pco2_product %&gt;%
+  mutate(lon_grid = lon,
+         lat_grid = lat)
+
+# pco2_product_coarse &lt;-
+#   m_grid_horizontal_coarse(pco2_product)
 
 # pco2_product_coarse &lt;-
 #   pco2_product_coarse %&gt;%
@@ -2338,9 +2355,9 @@ pco2_product_coarse &lt;-
   pivot_wider()
 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   3014911  161.1    5056178  270.1    5056178  270.1
-Vcells 488311758 3725.6 1278201624 9752.0 1275091263 9728.2</code></pre>
+<pre><code>            used (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   3013775  161    5636077   301.0    5636077   301.0
+Vcells 677373666 5168 3191648696 24350.4 3962782682 30233.7</code></pre>
 <pre class="r"><code># compute annual means
 
 pco2_product_coarse_annual &lt;-
@@ -2365,9 +2382,9 @@ pco2_product_coarse_monthly &lt;-
   pivot_longer(-c(year, month, lon, lat))
 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   3015092  161.1    5056178  270.1    5056178  270.1
-Vcells 518866682 3958.7 1278201624 9752.0 1275091263 9728.2</code></pre>
+<pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    3013962   161.0    5636077   301.0    5636077   301.0
+Vcells 1597585214 12188.7 3191648696 24350.4 3962782682 30233.7</code></pre>
 <pre class="r"><code>pco2_product_monthly_global &lt;-
   pco2_product %&gt;%
   filter(!is.na(fgco2)) %&gt;%
@@ -2571,6 +2588,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -2732,6 +2760,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -2882,6 +2921,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-3.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -3030,6 +3080,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-4.png" target="_blank">0a7394b</a>
@@ -3191,6 +3252,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-5.png" target="_blank">0a7394b</a>
@@ -3363,6 +3435,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-6.png" target="_blank">0a7394b</a>
@@ -3548,6 +3631,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-7.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -3676,6 +3770,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -3791,6 +3896,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-9.png" target="_blank">0a7394b</a>
@@ -3963,6 +4079,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-10.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -4124,6 +4251,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -4239,6 +4377,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-12.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_annual_absolute-12.png" target="_blank">0a7394b</a>
@@ -4363,6 +4512,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-1.png" target="_blank">0a7394b</a>
@@ -4526,6 +4686,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -4663,6 +4834,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-3.png" target="_blank">0a7394b</a>
@@ -4813,6 +4995,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-4.png" target="_blank">0a7394b</a>
@@ -4974,6 +5167,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-5.png" target="_blank">0a7394b</a>
@@ -5159,6 +5363,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-6.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -5331,6 +5546,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-7.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -5470,6 +5696,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -5596,6 +5833,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-9.png" target="_blank">0a7394b</a>
@@ -5779,6 +6027,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-10.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -5929,6 +6188,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -6044,6 +6314,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-12.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/hovmoeller_monthly_absolute-12.png" target="_blank">0a7394b</a>
@@ -6383,6 +6664,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -6641,6 +6933,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-2.png" target="_blank">0a7394b</a>
@@ -6903,6 +7206,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-3.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -7139,6 +7453,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-4.png" target="_blank">0a7394b</a>
@@ -7388,6 +7713,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-5.png" target="_blank">0a7394b</a>
@@ -7650,6 +7986,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-6.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -7910,6 +8257,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-7.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -8137,6 +8495,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -8340,6 +8709,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-9.png" target="_blank">0a7394b</a>
@@ -8603,6 +8983,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-10.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -8841,6 +9232,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_maps-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -9038,6 +9440,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-1.png" target="_blank">0a7394b</a>
@@ -9256,6 +9669,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -9459,6 +9883,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-3.png" target="_blank">0a7394b</a>
@@ -9688,6 +10123,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -9902,6 +10348,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-5.png" target="_blank">0a7394b</a>
@@ -10120,6 +10577,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-6.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -10323,6 +10791,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-7.png" target="_blank">0a7394b</a>
@@ -10550,6 +11029,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-8.png" target="_blank">0a7394b</a>
@@ -10790,6 +11280,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-9.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -10993,6 +11494,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-10.png" target="_blank">0a7394b</a>
@@ -11200,6 +11712,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_annual_mean_maps-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -11351,6 +11874,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-1.png" target="_blank">0a7394b</a>
@@ -11569,6 +12103,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -11761,6 +12306,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-3.png" target="_blank">0a7394b</a>
@@ -11979,6 +12535,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -12193,6 +12760,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-5.png" target="_blank">0a7394b</a>
@@ -12411,6 +12989,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-6.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -12625,6 +13214,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-7.png" target="_blank">0a7394b</a>
@@ -12854,6 +13454,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -13081,6 +13692,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-9.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -13284,6 +13906,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-10.png" target="_blank">0a7394b</a>
@@ -13502,6 +14135,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_annual_mean_maps-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -13681,6 +14325,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-1.png" target="_blank">0a7394b</a>
@@ -13943,6 +14598,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -14192,6 +14858,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-3.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -14430,6 +15107,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -14666,6 +15354,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-5.png" target="_blank">0a7394b</a>
@@ -14926,6 +15625,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-6.png" target="_blank">0a7394b</a>
@@ -15199,6 +15909,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-7.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -15426,6 +16147,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -15640,6 +16372,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-9.png" target="_blank">0a7394b</a>
@@ -15904,6 +16647,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-10.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -16153,6 +16907,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_maps-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -16347,6 +17112,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-1.png" target="_blank">0a7394b</a>
@@ -16554,6 +17330,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -16746,6 +17533,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-3.png" target="_blank">0a7394b</a>
@@ -16964,6 +17762,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -17169,6 +17978,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-5.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -17372,6 +18192,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-6.png" target="_blank">0a7394b</a>
@@ -17588,6 +18419,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-7.png" target="_blank">0a7394b</a>
@@ -17817,6 +18659,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -18044,6 +18897,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-9.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -18247,6 +19111,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-10.png" target="_blank">0a7394b</a>
@@ -18454,6 +19329,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_change_monthly_mean_maps-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -18606,6 +19492,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-1.png" target="_blank">0a7394b</a>
@@ -18824,6 +19721,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -19016,6 +19924,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-3.png" target="_blank">0a7394b</a>
@@ -19245,6 +20164,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -19459,6 +20389,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-5.png" target="_blank">0a7394b</a>
@@ -19677,6 +20618,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-6.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -19880,6 +20832,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-7.png" target="_blank">0a7394b</a>
@@ -20107,6 +21070,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-8.png" target="_blank">0a7394b</a>
@@ -20347,6 +21321,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-9.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -20563,6 +21548,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-10.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -20768,6 +21764,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomaly_monthly_mean_maps-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -20943,6 +21950,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -21115,6 +22133,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -21274,6 +22303,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-3.png" target="_blank">0a7394b</a>
@@ -21459,6 +22499,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -21640,6 +22691,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-5.png" target="_blank">0a7394b</a>
@@ -21825,6 +22887,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-6.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -21995,6 +23068,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-7.png" target="_blank">0a7394b</a>
@@ -22189,6 +23273,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-8.png" target="_blank">0a7394b</a>
@@ -22396,6 +23491,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-9.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -22577,6 +23683,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-10.png" target="_blank">0a7394b</a>
@@ -22762,6 +23879,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -22877,6 +24005,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-12.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_annual_anomaly-12.png" target="_blank">0a7394b</a>
@@ -23010,6 +24149,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-1.png" target="_blank">0a7394b</a>
@@ -23184,6 +24334,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -23343,6 +24504,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-3.png" target="_blank">0a7394b</a>
@@ -23528,6 +24700,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -23711,6 +24894,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-5.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -23881,6 +25075,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-6.png" target="_blank">0a7394b</a>
@@ -24064,6 +25269,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-7.png" target="_blank">0a7394b</a>
@@ -24258,6 +25474,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-8.png" target="_blank">0a7394b</a>
@@ -24465,6 +25692,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-9.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -24635,6 +25873,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-10.png" target="_blank">0a7394b</a>
@@ -24820,6 +26069,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -24937,6 +26197,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-12.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies-12.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -25049,6 +26320,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-1.png" target="_blank">0a7394b</a>
@@ -25224,6 +26506,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -25384,6 +26677,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-3.png" target="_blank">0a7394b</a>
@@ -25570,6 +26874,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -25743,6 +27058,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -25914,6 +27240,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-6.png" target="_blank">0a7394b</a>
@@ -26098,6 +27435,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-7.png" target="_blank">0a7394b</a>
@@ -26293,6 +27641,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-8.png" target="_blank">0a7394b</a>
@@ -26501,6 +27860,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-9.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -26683,6 +28053,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-10.png" target="_blank">0a7394b</a>
@@ -26869,6 +28250,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-11.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -26985,6 +28377,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-12.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-12.png" target="_blank">0a7394b</a>
@@ -27138,6 +28541,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_global-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_global-1.png" target="_blank">0a7394b</a>
@@ -27340,6 +28754,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -27537,6 +28962,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -27697,6 +29133,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes-2.png" target="_blank">0a7394b</a>
@@ -27861,6 +29308,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes-3.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -28010,6 +29468,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes-4.png" target="_blank">0a7394b</a>
@@ -28200,6 +29669,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_overview_biomes_super-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_overview_biomes_super-1.png" target="_blank">0a7394b</a>
@@ -28422,6 +29902,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes_super-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes_super-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -28585,6 +30076,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes_super-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes_super-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -28735,6 +30237,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes_super-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_absolute_means_and_integrals_key_biomes_super-3.png" target="_blank">0a7394b</a>
@@ -28931,6 +30444,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-1.png" target="_blank">0a7394b</a>
@@ -29139,6 +30663,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -29332,6 +30867,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-3.png" target="_blank">0a7394b</a>
@@ -29548,6 +31094,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-4.png" target="_blank">0a7394b</a>
@@ -29771,6 +31328,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-5.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -29990,6 +31558,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-6.png" target="_blank">0a7394b</a>
@@ -30221,6 +31800,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_annual_mean_trends-7.png" target="_blank">0a7394b</a>
@@ -30472,6 +32062,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -30692,6 +32293,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -30910,6 +32522,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_overview-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_overview-3.png" target="_blank">0a7394b</a>
@@ -31155,6 +32778,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -31328,6 +32962,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -31499,6 +33144,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">0a7394b</a>
@@ -31683,6 +33339,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">0a7394b</a>
@@ -31907,6 +33574,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -32081,6 +33759,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -32253,6 +33942,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes_super-3.png" target="_blank">0a7394b</a>
@@ -32463,6 +34163,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_trends-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_trends-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -32652,6 +34363,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_trends-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_trends-2.png" target="_blank">0a7394b</a>
@@ -32873,6 +34595,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_trends-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_trends-3.png" target="_blank">0a7394b</a>
@@ -33099,6 +34832,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_trends-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_monthly_mean_trends-4.png" target="_blank">0a7394b</a>
@@ -33333,6 +35077,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -33554,6 +35309,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -33773,6 +35539,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_global-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_global-3.png" target="_blank">0a7394b</a>
@@ -34012,6 +35789,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -34245,6 +36033,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -34428,6 +36227,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">0a7394b</a>
@@ -34615,6 +36425,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -34798,6 +36619,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">0a7394b</a>
@@ -35002,6 +36834,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super_overview-1.png" target="_blank">0a7394b</a>
@@ -35248,6 +37091,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -35420,6 +37274,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-2.png" target="_blank">0a7394b</a>
@@ -35605,6 +37470,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_from_monthly_mean_trends_biomes_super-3.png" target="_blank">0a7394b</a>
@@ -35827,6 +37703,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_global_annual-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_global_annual-1.png" target="_blank">0a7394b</a>
@@ -36083,6 +37970,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -36329,6 +38227,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -36502,6 +38411,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -36664,6 +38584,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-3.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -36824,6 +38755,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-4.png" target="_blank">0a7394b</a>
@@ -36997,6 +38939,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-5.png" target="_blank">0a7394b</a>
@@ -37181,6 +39134,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-6.png" target="_blank">0a7394b</a>
@@ -37378,6 +39342,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-7.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -37573,6 +39548,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -37744,6 +39730,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-9.png" target="_blank">0a7394b</a>
@@ -37931,6 +39928,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-10.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -38037,6 +40045,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_biome_monthly-11.png" target="_blank">0a7394b</a>
@@ -38174,6 +40193,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-1.png" target="_blank">0a7394b</a>
@@ -38339,6 +40369,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -38489,6 +40530,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-3.png" target="_blank">0a7394b</a>
@@ -38665,6 +40717,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-4.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -38839,6 +40902,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-5.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -39011,6 +41085,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-6.png" target="_blank">0a7394b</a>
@@ -39196,6 +41281,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-7.png" target="_blank">0a7394b</a>
@@ -39394,6 +41490,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -39566,6 +41673,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-9.png" target="_blank">0a7394b</a>
@@ -39753,6 +41871,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-10.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -39848,6 +41977,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_absolute_super_biome_monthly-11.png" target="_blank">0a7394b</a>
@@ -40016,6 +42156,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-1.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-1.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -40179,6 +42330,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-2.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-2.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -40340,6 +42502,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-3.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-3.png" target="_blank">0a7394b</a>
@@ -40514,6 +42687,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-4.png" target="_blank">0a7394b</a>
@@ -40701,6 +42885,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-5.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-5.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -40884,6 +43079,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-6.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-6.png" target="_blank">0a7394b</a>
@@ -41082,6 +43288,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-7.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-7.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -41278,6 +43495,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-8.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-8.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -41450,6 +43678,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-9.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-9.png" target="_blank">0a7394b</a>
@@ -41626,6 +43865,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-10.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-10.png" target="_blank">0a7394b</a>
 </td>
 <td>
@@ -41721,6 +43971,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e3748fc7e09b6a55106cbb10b73ce2852149ff7c/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-11.png" target="_blank">e3748fc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/0a7394b90d1b44e8e4768c740b9b62113b7f1bc4/docs/figure/SOM_FFN.Rmd/2023_anomalies_correlation_realtive_to_spread_monthly-11.png" target="_blank">0a7394b</a>
