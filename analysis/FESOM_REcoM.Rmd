@@ -55,7 +55,7 @@ FESOM_files <- list.files(path = path_FESOM)
 
 FESOM_files <-
   FESOM_files[FESOM_files %>% str_detect(c(
-    "dissic_|no3|thetao|talk_"
+    "dissic_|no3|thetao|talk_|so_"
   ))]
 
 
@@ -113,6 +113,8 @@ pco2_product_interior <-
     no3 = no3 * 1.025e3,
     dissic = dissic * 1.025e3,
     talk = talk * 1.025e3,
+    sdissic = dissic / so * 35,
+    stalk = talk / so * 35, 
     cstar = dissic  - (117/16 * no3)  - 0.5 * (talk + no3)
   )
 gc()
@@ -193,7 +195,9 @@ pco2_product <-
     fgco2 = -fgco2 * 60 * 60 * 24 * 365,
     dfco2 = sfco2 - atm_fco2,
     dissic = dissic * 1.025e3,
-    talk = talk * 1.025e3
+    talk = talk * 1.025e3,
+    sdissic = dissic / salinity * 35,
+    stalk = talk / salinity * 35
   )
 
 pco2_product <-
@@ -202,7 +206,7 @@ pco2_product <-
 
 pco2_product <- 
   full_join(pco2_product,
-            pco2_product_surf %>% select(-c(depth, thetao, dissic, talk, cstar)))
+            pco2_product_surf %>% select(-c(depth, thetao, dissic, talk, cstar, sdissic, stalk)))
 
 rm(pco2_product_surf)
 gc()
