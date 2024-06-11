@@ -150,10 +150,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "pco2_product_mapping_skill.Rmd"
+    "SOM_FFN.Rmd"
   )
 ),
-message = "low res analysis rebuild website")
+message = "high res analysis")
 
 
 

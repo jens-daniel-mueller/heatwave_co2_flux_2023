@@ -260,8 +260,13 @@ pco2_product_coarse_annual_regression %>%
          geom_tile(data = .x,
                    aes(lon, lat, fill = value)) +
          labs(title = paste("Annual mean", {{year_anom}})) +
-         scale_fill_divergent(
-           name = labels_breaks(.x %>% distinct(name))) +
+         scale_fill_gradientn(
+           colours = cmocean("curl")(100),
+           rescaler = ~ scales::rescale_mid(.x, mid = 0),
+           name = labels_breaks(.x %>% distinct(name)),
+           limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
+           oob = squish
+         ) +
          theme(legend.title = element_markdown())
   )
   
@@ -294,7 +299,13 @@ pco2_product_coarse_annual_regression %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = change)) +
       labs(title =  paste("Change: ",.x$period)) +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$change, .01), quantile(.x$change, .99)),
+        oob = squish
+      ) +
       theme(legend.title = element_markdown())
   )
 
@@ -312,8 +323,13 @@ pco2_product_coarse_annual_regression %>%
          geom_tile(data = .x,
                    aes(lon, lat, fill = resid)) +
          labs(title =  paste({{year_anom}},"anomaly")) +
-         scale_fill_divergent(
-           name = labels_breaks(.x %>% distinct(name))) +
+         scale_fill_gradientn(
+           colours = cmocean("curl")(100),
+           rescaler = ~ scales::rescale_mid(.x, mid = 0),
+           name = labels_breaks(.x %>% distinct(name)),
+           limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
+           oob = squish
+         )+
          theme(legend.title = element_markdown())
   )
 
@@ -371,7 +387,13 @@ pco2_product_coarse_monthly_regression %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = value)) +
       labs(title = paste("Monthly means", {{year_anom}})) +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
+        oob = squish
+      ) +
       theme(legend.title = element_markdown()) +
       facet_wrap( ~ month, ncol = 2)
   )
@@ -400,7 +422,13 @@ pco2_product_coarse_monthly_regression %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = change)) +
       labs(title =  paste("Change: ", .x$period)) +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$change, .01), quantile(.x$change, .99)),
+        oob = squish
+      ) +
       theme(legend.title = element_markdown()) +
       facet_wrap(~ month, ncol = 2)
   )
@@ -420,7 +448,13 @@ pco2_product_coarse_monthly_regression %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
       labs(title = paste({{year_anom}}, "anomaly")) +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
+        oob = squish
+      ) +
       theme(legend.title = element_markdown()) +
       facet_wrap( ~ month, ncol = 2)
   )
@@ -462,7 +496,13 @@ pco2_product_hovmoeller_monthly_annual_regression %>%
     ~ ggplot(data = .x,
              aes(year, lat, fill = resid)) +
       geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
+        oob = squish
+      ) +
       theme(legend.title = element_markdown()) +
       coord_cartesian(expand = 0) +
       labs(title = "Annual mean anomalies",
@@ -496,7 +536,13 @@ pco2_product_hovmoeller_monthly_regression %>%
     ~ ggplot(data = .x,
              aes(decimal, lat, fill = resid)) +
       geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
+        oob = squish
+      ) +
       theme(legend.title = element_markdown()) +
       coord_cartesian(expand = 0) +
       labs(title = "Monthly mean anomalies",
@@ -530,7 +576,13 @@ pco2_product_hovmoeller_monthly_regression %>%
     ~ ggplot(data = .x,
              aes(decimal, lat, fill = resid)) +
       geom_raster() +
-      scale_fill_divergent(name = labels_breaks(.x %>% distinct(name))) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
+        oob = squish
+      ) +
       theme(legend.title = element_markdown()) +
       coord_cartesian(expand = 0) +
       labs(title = "Monthly mean anomalies",
