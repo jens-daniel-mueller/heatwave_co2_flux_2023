@@ -153,7 +153,7 @@ wflow_publish(here::here(
     "SOM_FFN.Rmd"
   )
 ),
-message = "run high res 1x1 analysis")
+message = "repaired analysis child Rmd")
 
 
 
