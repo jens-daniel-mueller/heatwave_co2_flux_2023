@@ -327,15 +327,29 @@ pco2_product <-
 # apply coarse grid
 
 pco2_product_coarse <-
-  m_grid_horizontal_coarse(pco2_product)
+  pco2_product %>%
+  mutate(lon_grid = lon,
+         lat_grid = lat)
+
+# pco2_product_coarse <-
+#   m_grid_horizontal_coarse(pco2_product)
+
+# pco2_product_coarse <-
+#   pco2_product_coarse %>%
+#   select(-c(lon, lat, time, biome)) %>%
+#   group_by(year, month, lon_grid, lat_grid) %>%
+#   summarise(across(-area,
+#                    ~ weighted.mean(., area))) %>%
+#   ungroup() %>%
+#   rename(lon = lon_grid, lat = lat_grid)
 
 pco2_product_coarse <-
   pco2_product_coarse %>%
   select(-c(lon, lat, time, biome)) %>%
-  group_by(year, month, lon_grid, lat_grid) %>%
-  summarise(across(-area,
-                   ~ weighted.mean(., area))) %>%
-  ungroup() %>%
+  fgroup_by(year, month, lon_grid, lat_grid) %>%
+  fmean(w = area,
+        keep.w = FALSE,
+        na.rm = FALSE) %>%
   rename(lon = lon_grid, lat = lat_grid)
 
 pco2_product_coarse <-
@@ -344,15 +358,15 @@ pco2_product_coarse <-
   drop_na() %>%
   pivot_wider()
 
+gc()
+
 # compute annual means
 
 pco2_product_coarse_annual <-
   pco2_product_coarse %>%
   select(-month) %>% 
-  group_by(year, lon, lat) %>%
-  summarise(across(where(is.numeric),
-                   ~ mean(.))) %>%
-  ungroup()
+  fgroup_by(year, lon, lat) %>%
+  fmean(na.rm = FALSE)
 
 pco2_product_coarse_annual <-
   pco2_product_coarse_annual %>% 
@@ -362,15 +376,14 @@ pco2_product_coarse_annual <-
 
 pco2_product_coarse_monthly <-
   pco2_product_coarse %>%
-  group_by(year, month, lon, lat) %>%
-  summarise(across(where(is.numeric),
-                   ~ mean(.))) %>%
-  ungroup()
+  fgroup_by(year, month, lon, lat) %>%
+  fmean()
 
 pco2_product_coarse_monthly <-
   pco2_product_coarse_monthly %>% 
   pivot_longer(-c(year, month, lon, lat))
 
+gc()
 
 ```
 

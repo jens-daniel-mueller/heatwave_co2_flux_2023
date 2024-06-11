@@ -15,6 +15,7 @@ library(scales)
 library(ggh4x)
 library(cmocean)
 library(patchwork)
+library(kableExtra)
 
 ```
 
@@ -195,6 +196,9 @@ super_biomes <-
 
 biome_mask <-
   read_rds(here::here("data/biome_mask.rds"))
+
+region_biomes <-
+  read_rds(here::here("data/region_biomes.rds"))
 
 biome_mask <-
   bind_rows(
@@ -1765,6 +1769,27 @@ pco2_product_annual_regression_ensemble <-
             fit = mean(fit)) %>%
   ungroup()
 
+full_join(
+  pco2_product_annual_regression_ensemble %>%
+    filter(biome == "Global",
+           year == {{year_anom}}),
+  pco2_product_annual_regression_ensemble %>%
+    filter(biome == "Global",
+           year != {{year_anom}}) %>%
+    group_by(name, biome) %>%
+    summarise(resid_sd_historic = sd(resid)) %>%
+    ungroup()
+) %>% 
+  mutate(resid_vs_historic_sd = resid / resid_sd_historic)
+
+(exp(0.0423*0.204)-1)*404
+
+pco2_product_annual_regression_ensemble %>%
+  filter(biome == "Global") %>% 
+  select(year, name, resid) %>% 
+  pivot_wider(values_from = resid) %>% 
+  arrange(desc(temperature))
+
 bind_rows(
   pco2_product_annual_regression_ensemble,
   pco2_product_annual_regression_ensemble %>%
@@ -2037,6 +2062,89 @@ full_join(
   )
   
 
+
+```
+
+```{r absolute_anomaly_integrals_merged}
+
+pco2_product_annual_regression_merged <-
+full_join(region_biomes,
+          pco2_product_annual_regression) %>%
+  mutate(region = case_when(biome == "Global" ~ "Global",
+                            region == "atlantic" ~ "Atlantic",
+                            region == "pacific" ~ "Pacific",
+                            region == "indian" ~ "Indian Ocean",
+                            TRUE ~ region),
+         region = fct_rev(fct_inorder(region))) %>% 
+  filter(year == {{year_anom}},
+         name %in% c("temperature", "fgco2", "fgco2_int"),
+         region != "southern",
+         region != "Super biomes",
+         !str_detect(biome, "SO-"))
+
+pco2_product_annual_regression_merged_ensemble <- 
+pco2_product_annual_regression_merged %>% 
+  filter(product %in% pco2_product_list) %>% 
+  group_by(name, biome, region) %>%
+  summarise(resid_sd = sd(resid),
+            resid = mean(resid))
+
+pco2_product_annual_regression_merged_ensemble %>%
+  kable() %>%
+  kable_styling() %>%
+  scroll_box(height = "300px")
+  
+  
+pco2_product_annual_regression_merged_ensemble %>% 
+  ggplot(aes(biome, resid)) +
+  geom_hline(yintercept = 0) +
+  geom_col(aes(fill = "pCO2 product\nensemble mean"), col = "grey20") +
+  geom_linerange(aes(x = biome, 
+                     ymin = resid - resid_sd,
+                     ymax = resid + resid_sd,
+                     col = "pCO2 product\nensemble SD")) +
+  scale_color_manual(values = "grey20", name = "") +
+  scale_fill_manual(values = "grey90", name = "") +
+  new_scale_color()+
+  geom_point(
+    data = pco2_product_annual_regression_merged %>%
+      filter(product %in% pco2_product_list),
+    aes(col = product),
+    # position = position_nudge(x = -0.15),
+    shape = 21
+  ) +
+  scale_color_manual(values = color_products,
+                     name = "pCO2 products") +
+  new_scale_color()+
+  geom_point(data = pco2_product_annual_regression_merged %>% 
+               filter(product %in% gobm_product_list),
+             aes(col = product),
+             position = position_nudge(x = 0.2),
+             shape = 21) +
+  scale_color_manual(values = color_products,
+                     name = "GOBMs") +
+  facet_grid(name ~ region, 
+             scales = "free", space = "free_x",
+             labeller = labeller(name = x_axis_labels),
+             switch = "y") +
+  theme(
+    axis.text.x = element_text(
+      angle = 90,
+      vjust = 0.5,
+      hjust = 1
+    ),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    strip.background.x = element_blank()
+  )
+  
+ggsave(width = 8,
+       height = 6,
+       dpi = 600,
+       filename = "../output/biome_annual_ensemble_mean.jpg")
 
 ```
 

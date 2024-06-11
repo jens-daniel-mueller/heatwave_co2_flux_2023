@@ -14,49 +14,74 @@ The regression models are fitted to all data since `r print(paste(start_year))`,
 anomaly_determination <- function(df,...) {
   
   group_by <- quos(...)
-  # group_by <- quos(region, lat, depth)
+  # group_by <- quos(lon, lat)
   # df <- pco2_product_coarse_annual
   
   # Linear regression models
-  
+
   df_lm <-
     df %>%
     filter(year != {{year_anom}},
            !(name %in% name_quadratic_fit)) %>%
+    drop_na() %>%
     nest(data = -c(name, !!!group_by)) %>%
-    mutate(
-      fit = map(data, ~ lm(value ~ year, data = .x)),
-      tidied = map(fit, tidy),
-      augmented = map(fit, augment)
-    )
-  
-  
-  df_lm_year_anom <-
-    full_join(
-      df_lm %>%
-        unnest(tidied) %>%
-        select(name, !!!group_by, term, estimate) %>%
-        pivot_wider(names_from = term,
-                    values_from = estimate) %>%
-        mutate(fit = `(Intercept)` + year * {{year_anom}}) %>%
-        select(name, !!!group_by, fit) %>%
-        mutate(year = {{year_anom}}),
-      df %>%
-        filter(year == {{year_anom}},
-               !(name %in% name_quadratic_fit))
-    ) %>%
-    mutate(resid = value - fit)
-  
+    mutate(fit = map(data, ~ flm(
+      formula = value ~ year, data = .x
+    )))
   
   df_lm <-
-    bind_rows(
+    left_join(
       df_lm %>%
-        unnest(augmented) %>%
-        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
-      df_lm_year_anom
-    )
-  
-  rm(df_lm_year_anom)
+        unnest_wider(fit) %>%
+        select(name, !!!group_by,
+               intercept = `(Intercept)`,  slope = year) %>%
+        mutate(intercept = as.vector(intercept),
+               slope = as.vector(slope)),
+      df
+    ) %>%
+    mutate(fit = intercept + year * slope) %>%
+    select(name, !!!group_by, year, fit, value) %>%
+    mutate(resid = value - fit)
+
+  # df_lm <-
+  #   df %>%
+  #   filter(year != {{year_anom}},
+  #          !(name %in% name_quadratic_fit)) %>%
+  #   drop_na() %>% 
+  #   nest(data = -c(name, !!!group_by)) %>%
+  #   mutate(
+  #     fit = map(data, ~ lm(value ~ year, data = .x)),
+  #     tidied = map(fit, tidy),
+  #     augmented = map(fit, augment)
+  #   )
+  # 
+  # 
+  # df_lm_year_anom <-
+  #   full_join(
+  #     df_lm %>%
+  #       unnest(tidied) %>%
+  #       select(name, !!!group_by, term, estimate) %>%
+  #       pivot_wider(names_from = term,
+  #                   values_from = estimate) %>%
+  #       mutate(fit = `(Intercept)` + year * {{year_anom}}) %>%
+  #       select(name, !!!group_by, fit) %>%
+  #       mutate(year = {{year_anom}}),
+  #     df %>%
+  #       filter(year == {{year_anom}},
+  #              !(name %in% name_quadratic_fit))
+  #   ) %>%
+  #   mutate(resid = value - fit)
+  # 
+  # 
+  # df_lm <-
+  #   bind_rows(
+  #     df_lm %>%
+  #       unnest(augmented) %>%
+  #       select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
+  #     df_lm_year_anom
+  #   )
+  # 
+  # rm(df_lm_year_anom)
   
   # Quadratic regression models
   
@@ -66,39 +91,66 @@ anomaly_determination <- function(df,...) {
     df %>%
     filter(year != {{year_anom}},
            name %in% name_quadratic_fit) %>%
+    drop_na() %>% 
     nest(data = -c(name, !!!group_by)) %>%
     mutate(
-      fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
-      tidied = map(fit, tidy),
-      augmented = map(fit, augment)
+      fit = map(data, ~ flm(
+        formula = value ~ year + I(year ^ 2), data = .x))
     )
   
-  df_quadratic_year_anom <-
-    full_join(
+  df_quadratic <-
+    left_join(
       df_quadratic %>%
-        unnest(tidied) %>%
-        select(name, !!!group_by, term, estimate) %>%
-        pivot_wider(names_from = term,
-                    values_from = estimate) %>%
-        mutate(fit = `(Intercept)` + year * {{year_anom}} + `I(year^2)` * {{year_anom}} ^ 2) %>%
-        select(name, !!!group_by, fit) %>%
-        mutate(year = {{year_anom}}),
-      df %>%
-        filter(year == {{year_anom}},
-               name %in% name_quadratic_fit)
+        unnest_wider(fit) %>%
+        select(name, !!!group_by,
+               intercept = `(Intercept)`, slope = year, slope_squared = `I(year^2)`) %>%
+        mutate(intercept = as.vector(intercept),
+               slope = as.vector(slope),
+               slope_squared = as.vector(slope_squared)),
+      df
     ) %>%
+    mutate(fit = intercept + year * slope + year^2 * slope_squared) %>%
+    select(name, !!!group_by, year, fit, value) %>%
     mutate(resid = value - fit)
   
   
-  df_quadratic <-
-    bind_rows(
-      df_quadratic %>%
-        unnest(augmented) %>%
-        select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
-      df_quadratic_year_anom
-    )
-  
-  rm(df_quadratic_year_anom)
+  # df_quadratic <-
+  #   df %>%
+  #   filter(year != {{year_anom}},
+  #          name %in% name_quadratic_fit) %>%
+  #   nest(data = -c(name, !!!group_by)) %>%
+  #   mutate(
+  #     fit = map(data, ~ lm(value ~ year + I(year ^ 2), data = .x)),
+  #     tidied = map(fit, tidy),
+  #     augmented = map(fit, augment)
+  #   )
+  # 
+  # df_quadratic_year_anom <-
+  #   full_join(
+  #     df_quadratic %>%
+  #       unnest(tidied) %>%
+  #       select(name, !!!group_by, term, estimate) %>%
+  #       pivot_wider(names_from = term,
+  #                   values_from = estimate) %>%
+  #       mutate(fit = `(Intercept)` + year * {{year_anom}} + `I(year^2)` * {{year_anom}} ^ 2) %>%
+  #       select(name, !!!group_by, fit) %>%
+  #       mutate(year = {{year_anom}}),
+  #     df %>%
+  #       filter(year == {{year_anom}},
+  #              name %in% name_quadratic_fit)
+  #   ) %>%
+  #   mutate(resid = value - fit)
+  # 
+  # 
+  # df_quadratic <-
+  #   bind_rows(
+  #     df_quadratic %>%
+  #       unnest(augmented) %>%
+  #       select(name, !!!group_by, year, value, fit = .fitted, resid = .resid),
+  #     df_quadratic_year_anom
+  #   )
+  # 
+  # rm(df_quadratic_year_anom)
   
   # Join linear and quadratic regression results
   
@@ -1343,7 +1395,7 @@ pco2_product_monthly_regression %>%
 
 pco2_product_monthly_detrended <-
   full_join(pco2_product_monthly,
-            pco2_product_monthly_regression %>% select(-c(value, resid, time))) %>%
+            pco2_product_monthly_regression %>% select(-c(value, resid))) %>%
   mutate(resid = value - fit)
 
 pco2_product_monthly_detrended %>% 

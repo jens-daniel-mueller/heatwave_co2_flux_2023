@@ -19,6 +19,8 @@ library(lubridate)
 library(scales)
 library(RColorBrewer)
 library(ggtext)
+library(ggnewscale)
+
 ```
 
 
@@ -49,6 +51,12 @@ pco2_product_coarse_monthly_regression <-
     product = factor(product, levels = all_product_list)
   ) %>%
   filter(!is.na(name))
+
+pco2_product_list <- c("OceanSODA",
+                      "SOM_FFN",
+                      "NRT_fco2residual",
+                      "CMEMS"
+                      )
 
 ```
 
@@ -126,7 +134,7 @@ map +
   facet_wrap(~ month)
 
 SOCAT_pCO2_product <-
-  inner_join(
+  left_join(
     pco2_product_coarse_monthly_regression %>%
       filter(name == "sfco2"),
     SOCAT_gridded_monthly
@@ -147,24 +155,83 @@ map +
 
 SOCAT_pCO2_product <-
   SOCAT_pCO2_product %>%
+  group_by(lon, lat, month, year) %>% 
+  mutate(n = n()) %>% 
+  ungroup() %>% 
+  filter(n == 6) %>% 
+  select(-n)
+
+SOCAT_pCO2_product <-
+  SOCAT_pCO2_product %>%
   mutate(sfco2_bias = value - sfco2_obs)
+
+map +
+  geom_tile(
+    data = SOCAT_pCO2_product %>% filter(year == 2023,
+                                         product %in% pco2_product_list) %>%
+      group_by(lon, lat, month) %>%
+      summarise(sfco2_bias = mean(sfco2_bias)) %>%
+      ungroup(),
+    aes(lon, lat, fill = sfco2_bias)
+  ) +
+  scale_fill_gradientn(
+    colours = rev(brewer.pal(7, "Spectral")),
+    rescaler = ~ scales::rescale_mid(.x, mid = 0),
+    name = "fCO<sub>2,ocean</sub> bias<br>pred. - obs.<br>(µatm)",
+    # limits = c(
+    #   quantile(SOCAT_pCO2_product$sfco2_bias, .01),
+    #   quantile(SOCAT_pCO2_product$sfco2_bias, .99)
+    # ),
+    oob = squish
+  ) +
+  guides(
+    fill = guide_colorbar(
+      barheight = unit(0.3, "cm"),
+      barwidth = unit(6, "cm"),
+      ticks = TRUE,
+      ticks.colour = "grey20",
+      frame.colour = "grey20",
+      label.position = "top",
+      direction = "horizontal"
+    )
+  ) +
+  theme(legend.title = element_markdown(),
+        legend.position = "top") +
+  facet_wrap(~ month)
+
+ggsave(width = 7,
+       height = 4,
+       dpi = 600,
+       filename = "../output/SOCAT_fco2_bias_map_2023_ensemble_mean.jpg")
 
 
 map +
   geom_tile(data = SOCAT_pCO2_product %>% filter(year == 2023),
             aes(lon, lat, fill = sfco2_bias)) +
   scale_fill_gradientn(
-    colours = brewer.pal(7, "Spectral"),
+    colours = rev(brewer.pal(7, "Spectral")),
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
-    name = "fCO<sub>2,ocean</sub><br>bias<br>(µatm)",
-    limits = c(quantile(SOCAT_pCO2_product$sfco2_bias, .01), 
-               quantile(SOCAT_pCO2_product$sfco2_bias, .99)),
+    name = "fCO<sub>2,ocean</sub> bias<br>pred. - obs.<br>(µatm)",
+    # limits = c(quantile(SOCAT_pCO2_product$sfco2_bias, .01), 
+    #            quantile(SOCAT_pCO2_product$sfco2_bias, .99)),
     oob = squish
   ) +
-  theme(legend.title = element_markdown()) +
+  guides(
+    fill = guide_colorbar(
+      barheight = unit(0.3, "cm"),
+      barwidth = unit(6, "cm"),
+      ticks = TRUE,
+      ticks.colour = "grey20",
+      frame.colour = "grey20",
+      label.position = "top",
+      direction = "horizontal"
+    )
+  ) +
+  theme(legend.title = element_markdown(),
+        legend.position = "top") +
   facet_grid(month ~ product)
 
-ggsave(width = 10,
+ggsave(width = 8,
        height = 7,
        dpi = 600,
        filename = "../output/SOCAT_fco2_bias_map_2023.jpg")
@@ -176,35 +243,81 @@ ggsave(width = 10,
 ```{r biome_timeseries}
 
 SOCAT_pCO2_product_biome <-
-inner_join(SOCAT_pCO2_product,
-           biome_mask,
-           relationship = "many-to-many")
+  inner_join(SOCAT_pCO2_product,
+             biome_mask,
+             relationship = "many-to-many")
 
 
 SOCAT_pCO2_product_biome <-
-SOCAT_pCO2_product_biome %>% 
-  group_by(year, month, product, biome) %>% 
-  summarise(sfco2_bias = mean(sfco2_bias, na.rm = TRUE),
-            sfco2_resid = mean(resid, na.rm = TRUE)) %>% 
+  SOCAT_pCO2_product_biome %>%
+  group_by(year, month, product, biome) %>%
+  summarise(
+    sfco2_bias = mean(sfco2_bias, na.rm = TRUE),
+    sfco2_resid = mean(resid, na.rm = TRUE)
+  ) %>%
   ungroup()
+  
+SOCAT_pCO2_product_biome %>%
+  filter(biome %in% c("Global", key_biomes),
+         year >= 2020,
+         product %in% pco2_product_list) %>%
+  group_by(biome, year, month) %>%
+  summarise(sfco2_bias = mean(sfco2_bias, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(year + month / 12, sfco2_bias))+
+  geom_hline(yintercept = 0) +
+  geom_path() +
+  geom_point(data = . %>% filter(year != 2023),
+             aes(fill = "2020-2022"),
+             size = 1) +
+  scale_fill_manual(values = "grey70",name = "") +
+  new_scale_fill() +
+  geom_point(data = . %>% filter(year == 2023),
+             aes(fill = month),
+             shape = 21) +
+  scale_fill_scico(
+    palette = "buda",
+    guide = guide_legend(reverse = TRUE,
+                         order = 1),
+    name = paste("Month\nof", 2023)
+  ) +
+  coord_cartesian(ylim = c(-50,50)) +
+  scale_x_continuous(breaks = seq(1980, 2022, 2)) +
+  labs(y = "fCO<sub>2,ocean</sub> bias<br>pred. - obs.<br>(µatm)",) +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_markdown()) +
+  facet_wrap(~ biome)
+
+
+ggsave(width = 7,
+       height = 4,
+       dpi = 600,
+       filename = "../output/SOCAT_fco2_bias_timeseries_2018_2023_ensemble_mean.jpg")
   
 SOCAT_pCO2_product_biome %>% 
   filter(biome %in% c("Global", key_biomes),
-         year >= 2018) %>%
+         year >= 2020) %>%
   ggplot(aes(year + month/12, sfco2_bias)) +
   geom_hline(yintercept = 0) +
   geom_path() +
   geom_point(data = . %>% filter(year != 2023),
-             aes(col = "2018-2022"),
+             aes(fill = "2020-2022"),
              size = 1) +
+  scale_fill_manual(values = "grey70",name = "") +
+  new_scale_fill() +
   geom_point(data = . %>% filter(year == 2023),
-             aes(col = "2023"),
-             size = 1) +
-  scale_color_brewer(palette = "Set1") +
+             aes(fill = month),
+             shape = 21) +
+  scale_fill_scico(
+    palette = "buda",
+    guide = guide_legend(reverse = TRUE,
+                         order = 1),
+    name = paste("Month\nof", 2023)
+  ) +
   coord_cartesian(ylim = c(-50,50)) +
-  labs(y = "fCO<sub>2,ocean</sub><br>bias<br>(µatm)") +
-  theme(legend.title = element_blank(),
-        axis.title.x = element_blank(),
+  scale_x_continuous(breaks = seq(1980, 2022, 2)) +
+  labs(y = "fCO<sub>2,ocean</sub> bias<br>pred. - obs.<br>(µatm)") +
+  theme(axis.title.x = element_blank(),
         axis.title.y = element_markdown()) +
   facet_grid(biome ~ product)
 
@@ -217,6 +330,48 @@ ggsave(width = 10,
 ```
 
 ```{r bias_anomaly_correlation}
+
+SOCAT_pCO2_product_biome %>%
+  mutate(month = as.factor(month)) %>%
+  filter(biome %in% c("Global", key_biomes),
+         product %in% pco2_product_list) %>%
+  group_by(biome, year, month) %>%
+  summarise(sfco2_bias = mean(sfco2_bias, na.rm = TRUE),
+            sfco2_resid = mean(sfco2_resid, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(sfco2_bias, sfco2_resid)) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  geom_point(data = . %>% filter(year != 2023),
+             alpha = 0.1) +
+  geom_path(data = . %>% filter(year == 2023)) +
+  geom_point(
+    data = . %>% filter(year == 2023),
+    aes(fill = month),
+    shape = 21,
+    size = 2
+  ) +
+  scale_fill_scico_d(
+    palette = "buda",
+    guide = guide_legend(reverse = TRUE,
+                         order = 1),
+    name = paste("Month\nof", 2023)
+  ) +
+  coord_fixed(ylim = c(-50, 50),
+              xlim = c(-50, 50)) +
+  labs(x = "fCO<sub>2,ocean</sub> bias<br>pred. - obs.<br>(µatm)",
+       y = "fCO<sub>2,ocean</sub><br>anomaly<br>(µatm)") +
+  facet_wrap(~ biome) +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown()
+  )
+
+
+ggsave(width = 7,
+       height = 4,
+       dpi = 600,
+       filename = "../output/SOCAT_fco2_anomaly_vs_bias_ensemble_mean.jpg")
 
 SOCAT_pCO2_product_biome %>%
   mutate(month = as.factor(month)) %>%
@@ -241,7 +396,7 @@ SOCAT_pCO2_product_biome %>%
   ) +
   coord_fixed(ylim = c(-50, 50),
               xlim = c(-50, 50)) +
-  labs(x = "fCO<sub>2,ocean</sub><br>bias<br>(µatm)",
+  labs(x = "fCO<sub>2,ocean</sub> bias<br>pred. - obs.<br>(µatm)",
        y = "fCO<sub>2,ocean</sub><br>anomaly<br>(µatm)") +
   facet_grid(biome ~ product) +
   theme(
@@ -278,7 +433,7 @@ SOCAT_pCO2_product_biome %>%
   ) +
   coord_fixed(ylim = c(-20, 20),
               xlim = c(-20, 20)) +
-  labs(x = "fCO<sub>2,ocean</sub><br>bias<br>(µatm)",
+  labs(x = "fCO<sub>2,ocean</sub> bias<br>pred. - obs.<br>(µatm)",
        y = "fCO<sub>2,ocean</sub><br>anomaly<br>(µatm)") +
   facet_grid(biome ~ product) +
   theme(
@@ -299,6 +454,7 @@ ggsave(width = 10,
 ```{r bias_all_biomes}
 
 SOCAT_pCO2_product_biome %>%
+  filter(biome %in% c("Global", key_biomes)) %>% 
   mutate(month = as.factor(month)) %>%
   ggplot(aes(sfco2_bias, product)) +
   geom_vline(xintercept = 0) +
