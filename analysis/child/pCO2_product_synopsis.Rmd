@@ -2232,7 +2232,7 @@ pco2_product_annual_regression_recompute <-
       ungroup() %>%
       filter(biome != "Global")
   ) %>% 
-  pivot_longer(value:resid,
+  pivot_longer(c(value,resid,fit),
                names_to = "estimate") %>% 
   pivot_wider()
 

@@ -150,10 +150,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "OceanSODA.Rmd"
+    "pco2_product_mapping_skill.Rmd"
   )
 ),
-message = "repaired analysis child Rmd")
+message = "low res analysis rebuild website")
 
 
 
