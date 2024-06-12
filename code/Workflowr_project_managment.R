@@ -129,7 +129,6 @@ wflow_publish(c("analysis/*Rmd"), message = "include G19 comparison", republish 
 wflow_publish(here::here(
   "analysis",
   c(
-    "pco2_product_mapping_skill.Rmd",
     "index.Rmd",
     "biomes.Rmd",
     "mhw_stats.Rmd",
@@ -140,17 +139,18 @@ wflow_publish(here::here(
     "NRT_fco2residual.Rmd",
     "ETHZ_CESM.Rmd",
     "FESOM_REcoM.Rmd",
-    "pco2_product_synopsis_2023.Rmd"
+    "pco2_product_synopsis_2023.Rmd",
+    "pco2_product_mapping_skill.Rmd"
   )
 ),
-message = "SOCATv2024 comparison",
+message = "low res rebuild",
 republish = TRUE)
 
 
 wflow_publish(here::here(
   "analysis",
   c(
-    "index.Rmd"
+    "pco2_product_mapping_skill.Rmd"
   )
 ),
 message = "high res analysis")
