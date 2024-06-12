@@ -150,19 +150,11 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "index.Rmd",
-    "biomes.Rmd",
-    "mhw_stats.Rmd",
-    "atm_co2.Rmd",
-    "CMEMS.Rmd",
-    "SOM_FFN.Rmd",
-    "OceanSODA.Rmd",
-    "NRT_fco2residual.Rmd",
-    "ETHZ_CESM.Rmd",
-    "FESOM_REcoM.Rmd"
+    "pco2_product_synopsis_2023.Rmd",
+    "pco2_product_mapping_skill.Rmd"
   )
 ),
-message = "free memory")
+message = "high res")
 
 
 

@@ -1991,9 +1991,9 @@ pco2_product_annual_regression %>%
                      "kw_sol", "temperature",
                      "no3", "mld", "intpp", "chl")) %>%
   mutate(region = case_when(biome == "Global" ~ "Global",
-                            biome %in% super_biomes ~ "Super biomes",
+                            # biome %in% super_biomes ~ "Super biomes",
                             TRUE ~ "Biomes"),
-         region = factor(region, levels = c("Global", "Super biomes", "Biomes"))) %>% 
+         region = factor(region, levels = c("Global", "Biomes"))) %>% 
   group_split(name) %>%
   # head(1) %>%
   map(
@@ -2033,10 +2033,10 @@ full_join(
   mutate(
     region = case_when(
       biome == "Global" ~ "Global",
-      biome %in% super_biomes ~ "Super biomes",
+      # biome %in% super_biomes ~ "Super biomes",
       TRUE ~ "Biomes"
     ),
-    region = factor(region, levels = c("Global", "Super biomes", "Biomes"))
+    region = factor(region, levels = c("Global", "Biomes"))
   ) %>%
   group_split(name) %>%
   # head(1) %>%
@@ -2079,7 +2079,7 @@ full_join(region_biomes,
   filter(year == {{year_anom}},
          name %in% c("temperature", "fgco2", "fgco2_int"),
          region != "southern",
-         region != "Super biomes",
+         # region != "Super biomes",
          !str_detect(biome, "SO-"))
 
 pco2_product_annual_regression_merged_ensemble <- 
@@ -2239,8 +2239,7 @@ pco2_product_annual_regression_recompute <-
 pco2_product_annual_regression_recompute <-
 bind_rows(
   pco2_product_annual_regression_recompute %>%
-    filter(biome != "Global",
-           !(biome %in% super_biomes)) %>%
+    filter(biome != "Global") %>%
     select(-biome) %>% 
     group_by(product, estimate, year) %>%
     summarise(across(-c(fgco2_int, area),
@@ -2251,8 +2250,7 @@ bind_rows(
     mutate(region = "Global"),
   pco2_product_annual_regression_recompute %>%
     filter(biome != "Global",
-           !str_detect(biome, "SO"),
-           !(biome %in% super_biomes)) %>%
+           !str_detect(biome, "SO")) %>%
     select(-biome) %>% 
     group_by(product, estimate, year) %>%
     summarise(across(-c(fgco2_int, area),
@@ -2263,8 +2261,7 @@ bind_rows(
     mutate(region = "Global excl. SO"),
   pco2_product_annual_regression_recompute %>%
     filter(biome != "Global",
-           !str_detect(biome, "SO|SA-|SP-|Southern"),
-           !(biome %in% super_biomes)) %>%
+           !str_detect(biome, "SO|SA-|SP-|Southern")) %>%
     select(-biome) %>% 
     group_by(product, estimate, year) %>%
     summarise(across(-c(fgco2_int, area),
@@ -2454,21 +2451,6 @@ pco2_product_monthly_detrended %>%
 
 ```
 
-```{r anomalies_from_monthly_mean_trends_key_biomes_super, fig.asp=1.5}
-
-pco2_product_monthly_detrended %>%
-  filter(biome %in% super_biomes,
-         name %in% name_core) %>%
-  group_split(biome) %>%
-  # head(1) %>%
-  map(
-    ~ p_season(df = .x,
-               title = paste("Anomalies from predicted monthly mean |", .x$biome))
-  )
-
-
-```
-
 ```{r anomalies_from_monthly_mean_trends_key_biomes, fig.asp=1.5}
 
 pco2_product_monthly_detrended %>%
@@ -2628,69 +2610,6 @@ ggsave(width = 10,
 
 pco2_product_monthly_detrended %>%
   filter(biome == "Global") %>%
-  select(-c(time, fit, value)) %>% 
-  pivot_wider(values_from = resid) %>%
-  pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
-  group_split(name) %>%
-  # head(1) %>%
-  map(
-    ~ ggplot(data = .x,
-             aes(value, fgco2_int)) +
-      geom_hline(yintercept = 0) +
-      geom_point(
-        data = . %>% filter(year != {{year_anom}}),
-        aes(col = paste(min(year), max(year), sep = "-")),
-        alpha = 0.2
-      ) +
-      geom_smooth(
-        data = . %>% filter(year != {{year_anom}}),
-        aes(col = paste(min(year), max(year), sep = "-")),
-        method = "lm",
-        se = FALSE,
-        fullrange = TRUE
-      )  +
-      scale_color_grey(name = "") +
-      new_scale_color() +
-      geom_path(data = . %>% filter(year == {{year_anom}}),
-      aes(col = as.factor(month), group = 1))  +
-      geom_point(
-        data = . %>% filter(year == {{year_anom}}),
-        aes(fill =  as.factor(month)),
-        shape = 21,
-        size = 3
-      )  +
-      scale_color_scico_d(
-        palette = "buda",
-        guide = guide_legend(reverse = TRUE,
-                             order = 1),
-        name = paste("Month\nof", {{year_anom}})
-      ) +
-      scale_fill_scico_d(
-        palette = "buda",
-        guide = guide_legend(reverse = TRUE,
-                             order = 1),
-        name = paste("Month\nof", {{year_anom}})
-      ) +
-      labs(
-        y = labels_breaks("fgco2_int")$i_legend_title,
-        x = labels_breaks(unique(.x$name))$i_legend_title
-      ) +
-      facet_grid(biome ~ product,
-                 scales = "free_y") +
-      theme(
-        axis.title.x = element_markdown(),
-        axis.title.y = element_markdown()
-      )
-  )
-
-
-```
-
-```{r anomalies_correlation_absolute_monthly_biomes_super, fig.asp=0.9}
-
-
-pco2_product_monthly_detrended %>%
-  filter(biome %in% super_biomes) %>%
   select(-c(time, fit, value)) %>% 
   pivot_wider(values_from = resid) %>%
   pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
@@ -3050,28 +2969,7 @@ pco2_product_biome_monthly_flux_attribution %>%
       )
   )
 
-pco2_product_biome_monthly_flux_attribution %>%
-  filter(biome %in% super_biomes) %>% 
-  group_split(biome) %>%
-  # head(1) %>%
-  map(
-    ~ p_season(
-      df = .x,
-      title  = paste("Anomalies from predicted monthly mean |", .x$biome)
-    ) +
-      facet_grid(
-        name ~ product,
-        labeller = labeller(name = x_axis_labels),
-        switch = "y"
-      ) +
-      theme(
-        strip.text.y.left = element_markdown(),
-        strip.placement = "outside",
-        strip.background.y = element_blank(),
-        axis.title.y = element_blank(),
-        legend.title = element_blank()
-      )
-  )
+
 pco2_product_biome_monthly_flux_attribution %>%
   filter(biome %in% key_biomes) %>% 
   group_split(biome) %>%
