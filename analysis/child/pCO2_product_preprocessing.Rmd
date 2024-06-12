@@ -324,7 +324,7 @@ pco2_product <-
 
 ## Compuations
 
-```{r compute_coarse_resolution_maps}
+```{r compute_coarse_resolution_maps, include=FALSE}
 
 # apply coarse grid
 
@@ -419,37 +419,36 @@ pco2_product_monthly_biome <-
   ungroup()
 
 
-pco2_product_monthly_biome_super <-
-  pco2_product %>%
-  filter(!is.na(fgco2)) %>% 
-  mutate(fgco2_int = fgco2) %>% 
-  mutate(
-    biome = case_when(
-      str_detect(biome, "NA-") ~ "North Atlantic",
-      str_detect(biome, "NP-") ~ "North Pacific",
-      str_detect(biome, "SO-") ~ "Southern Ocean",
-      TRUE ~ "other"
-    )
-  ) %>%
-  filter(biome != "other") %>%
-  select(-c(lon, lat, year, month)) %>%
-  group_by(time, biome) %>%
-  summarise(across(-c(fgco2_int, area),
-                   ~ weighted.mean(., area, na.rm = TRUE)),
-            across(fgco2_int,
-                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
-  ungroup()
+# pco2_product_monthly_biome_super <-
+#   pco2_product %>%
+#   filter(!is.na(fgco2)) %>% 
+#   mutate(fgco2_int = fgco2) %>% 
+#   mutate(
+#     biome = case_when(
+#       str_detect(biome, "NA-") ~ "North Atlantic",
+#       str_detect(biome, "NP-") ~ "North Pacific",
+#       str_detect(biome, "SO-") ~ "Southern Ocean",
+#       TRUE ~ "other"
+#     )
+#   ) %>%
+#   filter(biome != "other") %>%
+#   select(-c(lon, lat, year, month)) %>%
+#   group_by(time, biome) %>%
+#   summarise(across(-c(fgco2_int, area),
+#                    ~ weighted.mean(., area, na.rm = TRUE)),
+#             across(fgco2_int,
+#                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
+#   ungroup()
 
 pco2_product_monthly <-
   bind_rows(pco2_product_monthly_global %>%
               mutate(biome = "Global"),
-            pco2_product_monthly_biome,
-            pco2_product_monthly_biome_super)
+            pco2_product_monthly_biome)
 
 rm(
   pco2_product_monthly_global,
-  pco2_product_monthly_biome,
-  pco2_product_monthly_biome_super
+  pco2_product_monthly_biome
+  # pco2_product_monthly_biome_super
 )
 
 
@@ -570,43 +569,43 @@ pco2_product_hovmoeller_monthly_annual <-
   pivot_longer(-c(year, lat)) %>% 
   drop_na()
 
-pco2_product_hovmoeller_monthly_annual %>%
-  filter(!(name %in% name_divergent)) %>% 
-  group_split(name) %>%
-  # tail(5) %>%
-  map(
-    ~ ggplot(data = .x,
-             aes(year, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      coord_cartesian(expand = 0) +
-      labs(title = "Annual means",
-           y = "Latitude") +
-      theme(axis.title.x = element_blank())
-  )
-
-pco2_product_hovmoeller_monthly_annual %>%
-  filter(name %in% name_divergent) %>% 
-  group_split(name) %>%
-  # head(1) %>%
-  map(
-    ~ ggplot(data = .x,
-             aes(year, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_gradientn(
-        colours = cmocean("curl")(100),
-        rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
-        limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
-        oob = squish
-      ) +
-      theme(legend.title = element_markdown()) +
-      coord_cartesian(expand = 0) +
-      labs(title = "Annual means",
-           y = "Latitude") +
-      theme(axis.title.x = element_blank())
-  )
+# pco2_product_hovmoeller_monthly_annual %>%
+#   filter(!(name %in% name_divergent)) %>% 
+#   group_split(name) %>%
+#   # tail(5) %>%
+#   map(
+#     ~ ggplot(data = .x,
+#              aes(year, lat, fill = value)) +
+#       geom_raster() +
+#       scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+#       theme(legend.title = element_markdown()) +
+#       coord_cartesian(expand = 0) +
+#       labs(title = "Annual means",
+#            y = "Latitude") +
+#       theme(axis.title.x = element_blank())
+#   )
+# 
+# pco2_product_hovmoeller_monthly_annual %>%
+#   filter(name %in% name_divergent) %>% 
+#   group_split(name) %>%
+#   # head(1) %>%
+#   map(
+#     ~ ggplot(data = .x,
+#              aes(year, lat, fill = value)) +
+#       geom_raster() +
+#       scale_fill_gradientn(
+#         colours = cmocean("curl")(100),
+#         rescaler = ~ scales::rescale_mid(.x, mid = 0),
+#         name = labels_breaks(.x %>% distinct(name)),
+#         limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
+#         oob = squish
+#       ) +
+#       theme(legend.title = element_markdown()) +
+#       coord_cartesian(expand = 0) +
+#       labs(title = "Annual means",
+#            y = "Latitude") +
+#       theme(axis.title.x = element_blank())
+#   )
 
 
 ```
@@ -639,43 +638,54 @@ pco2_product_hovmoeller_monthly <-
   pco2_product_hovmoeller_monthly %>% 
   mutate(decimal = year + (month-1) / 12)
 
-pco2_product_hovmoeller_monthly %>%
-  filter(!(name %in% name_divergent)) %>%
-  group_split(name) %>%
-  # head(1) %>%
-  map(
-    ~ ggplot(data = .x,
-             aes(decimal, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
-      theme(legend.title = element_markdown()) +
-      labs(title = "Monthly means",
-           y = "Latitude") +
-      coord_cartesian(expand = 0) +
-      theme(axis.title.x = element_blank())
-  )
-
-pco2_product_hovmoeller_monthly %>%
-  filter(name %in% name_divergent) %>%
-  group_split(name) %>%
-  # head(1) %>%
-  map(
-    ~ ggplot(data = .x,
-             aes(decimal, lat, fill = value)) +
-      geom_raster() +
-      scale_fill_gradientn(
-        colours = cmocean("curl")(100),
-        rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
-        limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
-        oob = squish
-      )+
-      theme(legend.title = element_markdown()) +
-      labs(title = "Monthly means",
-           y = "Latitude") +
-      coord_cartesian(expand = 0) +
-      theme(axis.title.x = element_blank())
-  )
+# pco2_product_hovmoeller_monthly %>%
+#   filter(!(name %in% name_divergent)) %>%
+#   group_split(name) %>%
+#   # head(1) %>%
+#   map(
+#     ~ ggplot(data = .x,
+#              aes(decimal, lat, fill = value)) +
+#       geom_raster() +
+#       scale_fill_viridis_c(name = labels_breaks(.x %>% distinct(name))) +
+#       theme(legend.title = element_markdown()) +
+#       labs(title = "Monthly means",
+#            y = "Latitude") +
+#       coord_cartesian(expand = 0) +
+#       theme(axis.title.x = element_blank())
+#   )
+# 
+# pco2_product_hovmoeller_monthly %>%
+#   filter(name %in% name_divergent) %>%
+#   group_split(name) %>%
+#   # head(1) %>%
+#   map(
+#     ~ ggplot(data = .x,
+#              aes(decimal, lat, fill = value)) +
+#       geom_raster() +
+#       scale_fill_gradientn(
+#         colours = cmocean("curl")(100),
+#         rescaler = ~ scales::rescale_mid(.x, mid = 0),
+#         name = labels_breaks(.x %>% distinct(name)),
+#         limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
+#         oob = squish
+#       )+
+#       theme(legend.title = element_markdown()) +
+#       labs(title = "Monthly means",
+#            y = "Latitude") +
+#       coord_cartesian(expand = 0) +
+#       theme(axis.title.x = element_blank())
+#   )
 
 
 ```
+
+
+```{r clean_environment, results = FALSE}
+
+rm(pco2_product,
+   pco2_product_coarse)
+
+gc()
+
+```
+
