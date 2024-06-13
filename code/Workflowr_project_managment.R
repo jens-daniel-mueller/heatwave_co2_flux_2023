@@ -150,11 +150,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "pco2_product_synopsis_2023.Rmd",
-    "pco2_product_mapping_skill.Rmd"
+    "FESOM_REcoM.Rmd"
   )
 ),
-message = "high res")
+message = "testrun on sea")
 
 
 
