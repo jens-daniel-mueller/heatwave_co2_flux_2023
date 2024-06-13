@@ -115,23 +115,23 @@ map +
   facet_wrap(~ month)
 
 
-SOCAT_gridded_monthly <-
-  m_grid_horizontal_coarse(SOCAT_gridded_monthly)
-
-SOCAT_gridded_monthly <-
-  SOCAT_gridded_monthly %>%
-  mutate(area = earth_surf(lat, lon)) %>% 
-  group_by(year, month, lon_grid, lat_grid) %>%
-  summarise(across(sfco2_obs,
-                   ~ weighted.mean(., area, na.rm = TRUE))) %>%
-  ungroup() %>%
-  rename(lon = lon_grid, lat = lat_grid)
-
-map +
-  geom_tile(data = SOCAT_gridded_monthly %>% filter(year == 2023),
-            aes(lon, lat, fill = sfco2_obs)) +
-  scale_fill_viridis_c() +
-  facet_wrap(~ month)
+# SOCAT_gridded_monthly <-
+#   m_grid_horizontal_coarse(SOCAT_gridded_monthly)
+# 
+# SOCAT_gridded_monthly <-
+#   SOCAT_gridded_monthly %>%
+#   mutate(area = earth_surf(lat, lon)) %>% 
+#   group_by(year, month, lon_grid, lat_grid) %>%
+#   summarise(across(sfco2_obs,
+#                    ~ weighted.mean(., area, na.rm = TRUE))) %>%
+#   ungroup() %>%
+#   rename(lon = lon_grid, lat = lat_grid)
+# 
+# map +
+#   geom_tile(data = SOCAT_gridded_monthly %>% filter(year == 2023),
+#             aes(lon, lat, fill = sfco2_obs)) +
+#   scale_fill_viridis_c() +
+#   facet_wrap(~ month)
 
 SOCAT_pCO2_product <-
   left_join(
