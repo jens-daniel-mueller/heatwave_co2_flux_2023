@@ -150,10 +150,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "FESOM_REcoM.Rmd"
+    "SOM_FFN.Rmd"
   )
 ),
-message = "testrun on sea")
+message = "Equatorial Indian biomes joined, flux assesment included")
 
 
 
