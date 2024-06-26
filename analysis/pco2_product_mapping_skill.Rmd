@@ -114,6 +114,52 @@ map +
   scale_fill_viridis_c() +
   facet_wrap(~ month)
 
+map +
+  geom_tile(data = SOCAT_gridded_monthly %>% count(lat, lon),
+            aes(lon, lat, fill = n)) +
+  scale_fill_scico(palette = "grayC", trans = "log10")
+
+
+SOCAT_gridded_monthly_raster <- rast(SOCAT_gridded_monthly %>%
+                                       count(lon, lat), crs = "+proj=longlat")
+
+
+SOCAT_gridded_monthly_raster <- project(SOCAT_gridded_monthly_raster, target_crs, method = "near")
+
+SOCAT_gridded_monthly_tibble <- SOCAT_gridded_monthly_raster %>%
+  as.data.frame(xy = TRUE, na.rm = FALSE) %>%
+  as_tibble() %>%
+  rename(lon = x, lat = y) %>%
+  drop_na()
+
+ggplot() +
+  geom_tile(data = SOCAT_gridded_monthly_tibble,
+            aes(x = lon, y = lat, fill = n)) +
+  scale_fill_scico(palette = "grayC", trans = "log10",
+                   "Months with\nobservations") +
+  geom_sf(data = worldmap_trans, fill = "grey90", col = "grey90") +
+  geom_sf(data = coastline_trans, linewidth = 0.3) +
+  geom_sf(data = bbox_graticules_trans, linewidth = 0.5) +
+  coord_sf(
+    crs = target_crs,
+    ylim = lat_lim,
+    xlim = lon_lim,
+    expand = FALSE
+  ) +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.border = element_rect(colour = "transparent"),
+    strip.background = element_blank(),
+    legend.position = "top"
+  )
+
+ggsave(width = 6,
+       height = 4,
+       dpi = 600,
+       filename = "../output/SOCAT_observations_map.jpg")
+
 
 # SOCAT_gridded_monthly <-
 #   m_grid_horizontal_coarse(SOCAT_gridded_monthly)
