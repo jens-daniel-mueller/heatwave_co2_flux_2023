@@ -22,6 +22,47 @@ library(collapse)
 
 # Read data
 
+```{r read_all_files}
+
+files <- list.files(here::here("data/"),
+                    pattern = "FESOM-REcoM")
+
+file_types <- str_remove(files, paste0("FESOM-REcoM_",{{year_anom}},"_"))
+file_types <- str_remove(file_types, ".csv")
+
+for(i_file_type in file_types) {
+  
+  print(i_file_type)
+  # i_file_type <- file_types[1]
+  
+  files <- list.files(here::here("data/"),
+                      pattern = paste({{year_anom}}, i_file_type, sep = "_"),
+                      full.names = TRUE)
+  
+  print(files)
+  
+  if(i_file_type == "map_annual_anomaly"){
+    files <- files[!str_detect(files, "slope")]
+  }
+  
+  pco2_product <-
+    read_csv(files, id = "product")
+  
+  pco2_product <-
+    pco2_product %>%
+    mutate(
+      product = str_extract(
+        product,
+        "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"
+      )
+    )
+  
+  assign(paste("pco2_product", i_file_type, sep = "_"), pco2_product)
+
+}
+
+```
+
 ```{r read_anomaly_2023_annual_mean_maps}
 
 files <- list.files(here::here("data/"),

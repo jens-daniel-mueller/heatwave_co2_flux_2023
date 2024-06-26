@@ -150,10 +150,11 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "SOM_FFN.Rmd"
+    "ETHZ_CESM.Rmd",
+    "FESOM_REcoM.Rmd"
   )
 ),
-message = "Equatorial Indian biomes joined, flux assesment included")
+message = "print all figures")
 
 
 
