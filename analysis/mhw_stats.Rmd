@@ -79,6 +79,27 @@ cat.clim <-
 
 ```
 
+```{r apply_biome_mask, eval=FALSE}
+
+
+inner_join(
+  biome_mask %>% mutate(
+    lon_min = lon - 0.5,
+    lon_max = lon + 0.5,
+    lat_min = lat - 0.5,
+    lat_max = lat + 0.5
+  ) %>%
+    select(-c(lon, lat)),
+  cat.clim %>% as_tibble(),
+  by = join_by(between(lon, lon_min, lon_max) &
+                 between(lat, lat_min, lat_max))
+)
+
+
+```
+
+
+
 ```{r mhw_output_directory}
 
 path_out <- "/net/kryo/work/datasets/gridded/ocean/2d/obs/mhw"
