@@ -41,11 +41,6 @@ map <-
 key_biomes <-
   read_rds(here::here("data/key_biomes.rds"))
 
-super_biomes <-
-  read_rds(here::here("data/super_biomes.rds"))
-
-super_biome_mask <-
-  read_rds(here::here("data/super_biome_mask.rds"))
 
 ```
 
@@ -324,20 +319,22 @@ pco2_product <-
 
 ## Compuations
 
-```{r compute_coarse_resolution_maps, include=FALSE}
+### Maps
+
+```{r prepare_2d_maps, include=FALSE}
 
 # apply coarse grid
 
-pco2_product_coarse <-
+pco2_product_map <-
   pco2_product %>%
   mutate(lon_grid = lon,
          lat_grid = lat)
 
-# pco2_product_coarse <-
+# pco2_product_map <-
 #   m_grid_horizontal_coarse(pco2_product)
 
-# pco2_product_coarse <-
-#   pco2_product_coarse %>%
+# pco2_product_map <-
+#   pco2_product_map %>%
 #   select(-c(lon, lat, time, biome)) %>%
 #   group_by(year, month, lon_grid, lat_grid) %>%
 #   summarise(across(-area,
@@ -345,8 +342,8 @@ pco2_product_coarse <-
 #   ungroup() %>%
 #   rename(lon = lon_grid, lat = lat_grid)
 
-pco2_product_coarse <-
-  pco2_product_coarse %>%
+pco2_product_map <-
+  pco2_product_map %>%
   select(-c(lon, lat, time, biome)) %>%
   fgroup_by(year, month, lon_grid, lat_grid) %>%
   fmean(w = area,
@@ -354,8 +351,8 @@ pco2_product_coarse <-
         na.rm = FALSE) %>%
   rename(lon = lon_grid, lat = lat_grid)
 
-pco2_product_coarse <-
-  pco2_product_coarse %>%
+pco2_product_map <-
+  pco2_product_map %>%
   pivot_longer(-c(year, month, lon, lat)) %>% 
   drop_na() %>%
   pivot_wider()
@@ -364,34 +361,37 @@ gc()
 
 # compute annual means
 
-pco2_product_coarse_annual <-
-  pco2_product_coarse %>%
+pco2_product_map_annual <-
+  pco2_product_map %>%
   select(-month) %>% 
   fgroup_by(year, lon, lat) %>%
   fmean(na.rm = FALSE)
 
-pco2_product_coarse_annual <-
-  pco2_product_coarse_annual %>% 
+pco2_product_map_annual <-
+  pco2_product_map_annual %>% 
   pivot_longer(-c(year, lon, lat))
 
 ## compute monthly means
 
-pco2_product_coarse_monthly <-
-  pco2_product_coarse %>%
+pco2_product_map_monthly <-
+  pco2_product_map %>%
   fgroup_by(year, month, lon, lat) %>%
   fmean()
 
-pco2_product_coarse_monthly <-
-  pco2_product_coarse_monthly %>% 
+pco2_product_map_monthly <-
+  pco2_product_map_monthly %>% 
   pivot_longer(-c(year, month, lon, lat))
 
+rm(pco2_product_map)
 gc()
 
 ```
 
+### Biome means
+
 ```{r compute_global_means_and_integrals}
 
-pco2_product_monthly_global <-
+pco2_product_biome_monthly_global <-
   pco2_product %>%
   filter(!is.na(fgco2)) %>%
   mutate(fgco2_int = fgco2) %>%
@@ -406,7 +406,7 @@ pco2_product_monthly_global <-
                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
   ungroup()
 
-pco2_product_monthly_biome <-
+pco2_product_biome_monthly_biome <-
   pco2_product %>%
   filter(!is.na(fgco2)) %>% 
   mutate(fgco2_int = fgco2) %>% 
@@ -419,55 +419,41 @@ pco2_product_monthly_biome <-
   ungroup()
 
 
-# pco2_product_monthly_biome_super <-
-#   pco2_product %>%
-#   filter(!is.na(fgco2)) %>% 
-#   mutate(fgco2_int = fgco2) %>% 
-#   mutate(
-#     biome = case_when(
-#       str_detect(biome, "NA-") ~ "North Atlantic",
-#       str_detect(biome, "NP-") ~ "North Pacific",
-#       str_detect(biome, "SO-") ~ "Southern Ocean",
-#       TRUE ~ "other"
-#     )
-#   ) %>%
-#   filter(biome != "other") %>%
-#   select(-c(lon, lat, year, month)) %>%
-#   group_by(time, biome) %>%
-#   summarise(across(-c(fgco2_int, area),
-#                    ~ weighted.mean(., area, na.rm = TRUE)),
-#             across(fgco2_int,
-#                    ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
-#   ungroup()
-
-pco2_product_monthly <-
-  bind_rows(pco2_product_monthly_global %>%
+pco2_product_biome_monthly <-
+  bind_rows(pco2_product_biome_monthly_global %>%
               mutate(biome = "Global"),
-            pco2_product_monthly_biome)
+            pco2_product_biome_monthly_biome)
 
 rm(
-  pco2_product_monthly_global,
-  pco2_product_monthly_biome
-  # pco2_product_monthly_biome_super
+  pco2_product_biome_monthly_global,
+  pco2_product_biome_monthly_biome
 )
 
 
-pco2_product_monthly <-
-  pco2_product_monthly %>% 
+pco2_product_biome_monthly <-
+  pco2_product_biome_monthly %>% 
   filter(!is.na(biome))
 
-pco2_product_monthly <-
-  pco2_product_monthly %>%
+pco2_product_biome_monthly <-
+  pco2_product_biome_monthly %>%
   mutate(year = year(time),
          month = month(time),
          .after = time)
 
-pco2_product_monthly <-
-  pco2_product_monthly %>%
+pco2_product_biome_monthly <-
+  pco2_product_biome_monthly %>%
   pivot_longer(-c(time, year, month, biome))
 
 
+pco2_product_biome_annual <-
+  pco2_product_biome_monthly %>%
+  group_by(year, biome, name) %>%
+  summarise(value = mean(value)) %>%
+  ungroup()
+
 ```
+
+### Profiles
 
 ```{r generate_biome_mean_profiles, eval=model}
 
@@ -498,8 +484,9 @@ gc()
 
 ```
 
+### Zonal mean sections
 
-```{r generate_zonal_mean_sections, eval=model}
+```{r generate_zonal_mean_sections, eval=FALSE}
 
 pco2_product_interior <- 
   left_join(
@@ -524,15 +511,6 @@ pco2_product_zonal_mean <-
 
 gc()
 
-# pco2_product_zonal_mean %>% 
-#   filter(region == "atlantic",
-#          year == 2023,
-#          month == 1) %>% 
-#   ggplot(aes(lat, depth, z = no3)) +
-#   geom_contour_filled() +
-#   scale_y_reverse() +
-#   scale_fill_viridis_d()
-
 rm(pco2_product_interior)
 gc()
 
@@ -551,7 +529,7 @@ The following Hovmoeller plots show the value of each variable as provided throu
 
 ```{r hovmoeller_annual_absolute, fig.asp=0.5}
 
-pco2_product_hovmoeller_monthly_annual <-
+pco2_product_hovmoeller_annual <-
   pco2_product %>%
   mutate(fgco2_int = fgco2) %>% 
   select(-c(lon, time, month, biome)) %>%
@@ -564,12 +542,12 @@ pco2_product_hovmoeller_monthly_annual <-
   rename(fgco2_hov = fgco2_int) %>% 
   filter(fgco2_hov != 0)
 
-pco2_product_hovmoeller_monthly_annual <-
-  pco2_product_hovmoeller_monthly_annual %>%
+pco2_product_hovmoeller_annual <-
+  pco2_product_hovmoeller_annual %>%
   pivot_longer(-c(year, lat)) %>% 
   drop_na()
 
-# pco2_product_hovmoeller_monthly_annual %>%
+# pco2_product_hovmoeller_annual %>%
 #   filter(!(name %in% name_divergent)) %>% 
 #   group_split(name) %>%
 #   # tail(5) %>%
@@ -585,7 +563,7 @@ pco2_product_hovmoeller_monthly_annual <-
 #       theme(axis.title.x = element_blank())
 #   )
 # 
-# pco2_product_hovmoeller_monthly_annual %>%
+# pco2_product_hovmoeller_annual %>%
 #   filter(name %in% name_divergent) %>% 
 #   group_split(name) %>%
 #   # head(1) %>%
@@ -682,8 +660,7 @@ pco2_product_hovmoeller_monthly <-
 
 ```{r clean_environment, results = FALSE}
 
-rm(pco2_product,
-   pco2_product_coarse)
+rm(pco2_product)
 
 gc()
 
