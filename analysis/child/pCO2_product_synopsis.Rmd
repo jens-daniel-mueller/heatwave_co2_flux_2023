@@ -144,95 +144,6 @@ for(i_file_type in file_types) {
 
 ```
 
-```{r order_variable_names, eval=FALSE}
-
-# pco2_product_biome_annual_anomaly %>%
-#   distinct(product,name) %>%
-#   print(n=50)
-
-pco2_product_map_annual_anomaly <-
-  pco2_product_map_annual_anomaly %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-pco2_product_map_monthly_anomaly <-
-  pco2_product_map_monthly_anomaly %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-pco2_product_hovmoeller_monthly_anomaly <-
-  pco2_product_hovmoeller_monthly_anomaly %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-
-pco2_product_annual_detrended <- pco2_product_annual_detrended %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-pco2_product_biome_annual_anomaly <- pco2_product_biome_annual_anomaly %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-
-pco2_product_biome_monthly_detrended <- pco2_product_biome_monthly_detrended %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-pco2_product_biome_monthly_anomaly <-
-  pco2_product_biome_monthly_anomaly %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-pco2_product_profiles_monthly <-
-  pco2_product_profiles_monthly %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-pco2_product_profiles_annual <-
-  pco2_product_profiles_annual %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-pco2_product_zonal_mean_sections_annual <-
-  pco2_product_zonal_mean_sections_annual %>%
-  mutate(
-    name = factor(name, levels = name_core),
-    product = factor(product, levels = all_product_list)
-  ) %>%
-  filter(!is.na(name))
-
-gc()
-
-```
-
 # Define labels and breaks
 
 ```{r define_labels_and_breaks_OIA_variables_change}
@@ -2789,7 +2700,7 @@ pco2_product_biome_annual_anomaly_recompute %>%
 
 ```{r anomalies_from_annual_mean_trends_overview_OceanSODA, fig.asp=1}
 
-pco2_product_annual_detrended %>%
+pco2_product_biome_annual_detrended %>%
   filter(biome %in% "Global",
          name %in% c("fgco2_int", "temperature"),
          product %in% pco2_product_list) %>%
@@ -2812,7 +2723,7 @@ ggsave(width = 5,
 
 ```{r anomalies_from_annual_mean_trends_overview_pCO2_products}
 
-pco2_product_annual_detrended %>% 
+pco2_product_biome_annual_detrended %>% 
   filter(biome %in% "Global",
          name %in% c("fgco2", "temperature")) %>%
   p_season(title = NULL) +
@@ -2827,7 +2738,7 @@ ggsave(width = 15,
 
 ```{r anomalies_from_annual_mean_trends_overview, fig.asp=1.5}
 
-pco2_product_annual_detrended %>% 
+pco2_product_biome_annual_detrended %>% 
   filter(biome %in% "Global",
          name %in% name_core) %>%
   p_season(title = "Anomalies from predicted annual mean | Global")
@@ -2836,7 +2747,7 @@ pco2_product_annual_detrended %>%
 
 ```{r anomalies_from_annual_mean_trends_key_biomes, fig.asp=1.5}
 
-pco2_product_annual_detrended %>%
+pco2_product_biome_annual_detrended %>%
   filter(biome %in% key_biomes,
          name %in% name_core) %>%
   group_split(biome) %>%
