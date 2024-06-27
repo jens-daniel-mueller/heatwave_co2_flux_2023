@@ -133,10 +133,10 @@ wflow_publish(here::here(
     "biomes.Rmd",
     "mhw_stats.Rmd",
     "atm_co2.Rmd",
-    "CMEMS.Rmd",
     "SOM_FFN.Rmd",
     "OceanSODA.Rmd",
     "NRT_fco2residual.Rmd",
+    "CMEMS.Rmd",
     "ETHZ_CESM.Rmd",
     "FESOM_REcoM.Rmd",
     "pco2_product_synopsis_2023.Rmd",
@@ -150,11 +150,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "ETHZ_CESM.Rmd",
-    "FESOM_REcoM.Rmd"
+    "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "print all figures")
+message = "new and unique output files")
 
 
 

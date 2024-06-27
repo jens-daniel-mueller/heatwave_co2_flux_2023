@@ -22,210 +22,6 @@ library(collapse)
 
 # Read data
 
-```{r read_all_files}
-
-files <- list.files(here::here("data/"),
-                    pattern = "FESOM-REcoM")
-
-file_types <- str_remove(files, paste0("FESOM-REcoM_",{{year_anom}},"_"))
-file_types <- str_remove(file_types, ".csv")
-
-for(i_file_type in file_types) {
-  
-  print(i_file_type)
-  # i_file_type <- file_types[1]
-  
-  files <- list.files(here::here("data/"),
-                      pattern = paste({{year_anom}}, i_file_type, sep = "_"),
-                      full.names = TRUE)
-  
-  print(files)
-  
-  if(i_file_type == "map_annual_anomaly"){
-    files <- files[!str_detect(files, "slope")]
-  }
-  
-  pco2_product <-
-    read_csv(files, id = "product")
-  
-  pco2_product <-
-    pco2_product %>%
-    mutate(
-      product = str_extract(
-        product,
-        "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"
-      )
-    )
-  
-  assign(paste("pco2_product", i_file_type, sep = "_"), pco2_product)
-
-}
-
-```
-
-```{r read_anomaly_2023_annual_mean_maps}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_map_annual_anomaly.csv"),
-                    full.names = TRUE)
-
-pco2_product_map_annual_anomaly <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_map_annual_anomaly <-
-  pco2_product_map_annual_anomaly %>% 
-  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
-
-
-```
-
-```{r read_anomaly_2023_monthly_mean_maps}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_map_monthly_anomaly.csv"),
-                    full.names = TRUE)
-
-pco2_product_map_monthly_anomaly <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_map_monthly_anomaly <-
-  pco2_product_map_monthly_anomaly %>% 
-  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
-
-```
-
-```{r read_hovmoeller_monthly_anomaly}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_hovmoeller_monthly_anomaly.csv"),
-                    full.names = TRUE)
-
-pco2_product_hovmoeller_monthly_anomaly <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_hovmoeller_monthly_anomaly <-
-  pco2_product_hovmoeller_monthly_anomaly %>% 
-  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
-
-```
-
-```{r read_biome_annual_anomaly}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_biome_annual_anomaly.csv"),
-                    full.names = TRUE)
-
-pco2_product_biome_annual_anomaly <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_biome_annual_anomaly <-
-  pco2_product_biome_annual_anomaly %>% 
-  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
-
-```
-
-```{r read_biome_annual_detrended}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_biome_annual_detrended.csv"),
-                    full.names = TRUE)
-
-pco2_product_annual_detrended <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_annual_detrended <-
-  pco2_product_annual_detrended %>% 
-  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
-
-```
-
-```{r read_biome_monthly_anomaly}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_biome_monthly_anomaly.csv"),
-                    full.names = TRUE)
-
-pco2_product_biome_monthly_anomaly <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_biome_monthly_anomaly <-
-  pco2_product_biome_monthly_anomaly %>% 
-  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
-
-```
-
-```{r read_biome_monthly_detrended}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_biome_monthly_detrended.csv"),
-                    full.names = TRUE)
-
-pco2_product_monthly_detrended <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_monthly_detrended <-
-  pco2_product_monthly_detrended %>% 
-  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
-
-```
-
-```{r read_profiles_monthly}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_profiles_monthly.csv"),
-                    full.names = TRUE)
-
-pco2_product_profiles_monthly <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_profiles_monthly <-
-  pco2_product_profiles_monthly %>% 
-  mutate(product = str_extract(product, "ETHZ_CESM|FESOM-REcoM"))
-
-```
-
-```{r read_profiles_annual}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_profiles_annual.csv"),
-                    full.names = TRUE)
-
-pco2_product_profiles_annual <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_profiles_annual <-
-  pco2_product_profiles_annual %>% 
-  mutate(product = str_extract(product, "ETHZ_CESM|FESOM-REcoM"))
-
-```
-
-```{r read_zonal_mean_sections_annual}
-
-files <- list.files(here::here("data/"),
-                    pattern = paste0({{year_anom}},"_zonal_mean_sections_annual.csv"),
-                    full.names = TRUE)
-
-pco2_product_zonal_mean_sections_annual <-
-  read_csv(files,
-           id = "product")
-
-pco2_product_zonal_mean_sections_annual <-
-  pco2_product_zonal_mean_sections_annual %>% 
-  mutate(product = str_extract(product, "ETHZ_CESM|FESOM-REcoM"))
-
-gc()
-
-```
-
 ```{r read_map}
 
 map <-
@@ -234,9 +30,6 @@ map <-
 key_biomes <-
   read_rds(here::here("data/key_biomes.rds"))
 
-
-super_biomes <-
-  read_rds(here::here("data/super_biomes.rds"))
 
 biome_mask <-
   read_rds(here::here("data/biome_mask.rds"))
@@ -261,7 +54,9 @@ name_core <- c("fgco2", "fgco2_int", "fgco2_hov",
                "dissic", "talk", "sdissic", "stalk", "cstar", 
                "no3", "o2",
                "mld", "thetao", "so",
-               "intpp", "chl")
+               "intpp", "chl",
+               "sfco2_therm","sfco2_nontherm","sfco2_total",
+               "resid_fgco2_dfco2", "resid_fgco2_kw_sol", "resid_fgco2_dfco2_kw_sol")
 
 
 all_product_list <- c("OceanSODA",
@@ -295,7 +90,61 @@ cold_color <- "#16877CFF"
 
 ```
 
-```{r order_variable_names}
+
+```{r read_all_files}
+
+files <- list.files(here::here("data/"),
+                    pattern = "FESOM-REcoM")
+
+file_types <- str_remove(files, paste0("FESOM-REcoM_",{{year_anom}},"_"))
+file_types <- str_remove(file_types, ".csv")
+
+for(i_file_type in file_types) {
+  
+  print(i_file_type)
+  # i_file_type <- file_types[1]
+  
+  files <- list.files(here::here("data/"),
+                      pattern = paste({{year_anom}}, i_file_type, sep = "_"),
+                      full.names = TRUE)
+  
+  length(files)
+  print(files)
+  
+  
+  pco2_product <-
+    read_csv(files, id = "product")
+  
+  pco2_product <-
+    pco2_product %>%
+    mutate(
+      product = str_extract(
+        product,
+        "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"
+      )
+    )
+  
+  if (!str_detect(files[1], "slope")) {
+    pco2_product <-
+      pco2_product %>%
+      mutate(
+        name = factor(name, levels = name_core),
+        product = factor(product, levels = all_product_list)
+      ) %>%
+      filter(!is.na(name))
+  } else {
+    pco2_product <-
+      pco2_product %>%
+      mutate(product = factor(product, levels = all_product_list))
+  }
+  
+  assign(paste("pco2_product", i_file_type, sep = "_"), pco2_product)
+
+}
+
+```
+
+```{r order_variable_names, eval=FALSE}
 
 # pco2_product_biome_annual_anomaly %>%
 #   distinct(product,name) %>%
@@ -341,7 +190,7 @@ pco2_product_biome_annual_anomaly <- pco2_product_biome_annual_anomaly %>%
   filter(!is.na(name))
 
 
-pco2_product_monthly_detrended <- pco2_product_monthly_detrended %>%
+pco2_product_biome_monthly_detrended <- pco2_product_biome_monthly_detrended %>%
   mutate(
     name = factor(name, levels = name_core),
     product = factor(product, levels = all_product_list)
@@ -707,7 +556,7 @@ p_season <- function(df,
 
 ## fCO2 decomposition
 
-```{r fCO2_decomposition_function}
+```{r fCO2_decomposition_function, eval=FALSE}
 
 fco2_decomposition <- function(df, ...) {
   
@@ -763,7 +612,7 @@ fco2_decomposition <- function(df, ...) {
 
 ## Flux attribution
 
-```{r flux_attribution_function}
+```{r flux_attribution_function, eval=FALSE}
 
 flux_attribution <- function(df, ...) {
   
@@ -1082,42 +931,192 @@ pco2_product_map_annual_anomaly_ensemble %>%
 
 ```
 
+```{r anomaly_annual_mean_maps_ensemble_mean_offset, fig.asp=1.5}
+
+pco2_product_map_annual_anomaly_ensemble_offset <-
+left_join(
+    pco2_product_map_annual_anomaly_ensemble,
+    pco2_product_map_annual_anomaly %>% 
+      filter(year == {{year_anom}},
+             product %in% pco2_product_list)
+  ) %>%
+  mutate(`Anomaly offset` = resid - resid_mean) %>% 
+  select(name, lon, lat, product, `Anomaly offset`)
+
+pco2_product_map_annual_anomaly_ensemble_baseline <-
+  pco2_product_map_annual_anomaly %>% 
+  filter(year == {{year_anom}},
+         product %in% pco2_product_list) %>%
+  group_by(name, lon, lat) %>%
+  summarize(
+    fit_mean = mean(fit),
+    n = n()
+  ) %>%
+  ungroup() %>%
+  filter(n == length(pco2_product_list)) %>% 
+  select(-n)
+
+pco2_product_map_annual_anomaly_ensemble_baseline <-
+left_join(
+    pco2_product_map_annual_anomaly_ensemble_baseline,
+    pco2_product_map_annual_anomaly %>% 
+      filter(year == {{year_anom}},
+             product %in% pco2_product_list)
+  ) %>%
+  mutate(`Baseline offset` = fit - fit_mean) %>% 
+  select(name, lon, lat, product, `Baseline offset`)
+
+full_join(
+  pco2_product_map_annual_anomaly_ensemble_offset,
+  pco2_product_map_annual_anomaly_ensemble_baseline
+) %>%
+  pivot_longer(contains("offset"),
+               names_to = "offset") %>% 
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = value)) +
+      labs(title =  paste({{year_anom}}, "offset from ensemble mean")) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
+        oob = squish
+      ) +
+      facet_grid(product ~ offset) +
+      guides(
+        fill = guide_colorbar(
+          barheight = unit(0.3, "cm"),
+          barwidth = unit(6, "cm"),
+          ticks = TRUE,
+          ticks.colour = "grey20",
+          frame.colour = "grey20",
+          label.position = "top",
+          direction = "horizontal"
+        )
+      ) +
+      theme(legend.title = element_markdown(), legend.position = "top")
+  )
+
+rm(pco2_product_map_annual_anomaly_ensemble_offset,
+   pco2_product_map_annual_anomaly_ensemble_baseline)
+
+gc()
+
+```
+
+
+
+```{r anomaly_annual_mean_maps_ensemble_mean_gobm, fig.asp=0.5}
+
+pco2_product_map_annual_anomaly_ensemble_gobm <-
+  pco2_product_map_annual_anomaly %>% 
+  filter(year == {{year_anom}},
+         product %in% gobm_product_list) %>%
+  group_by(name, lon, lat) %>%
+  summarize(
+    resid_sd = sd(resid),
+    resid_range = max(resid) - min(resid),
+    resid_mean = mean(resid),
+    n = n()
+  ) %>%
+  ungroup() %>%
+  filter(n == length(gobm_product_list)) %>% 
+  select(-n)
+
+pco2_product_map_annual_anomaly_ensemble_gobm %>%
+  mutate(product = "Ensemble mean") %>% 
+  group_split(name) %>%
+  # head(1) %>%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = resid_mean)) +
+      labs(title =  paste({{year_anom}}, "GOBM ensemble mean anomaly")) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
+        oob = squish
+      ) +
+      scale_shape_manual(values = 20, name = "") +
+      guides(
+        fill = guide_colorbar(
+          barheight = unit(0.3, "cm"),
+          barwidth = unit(6, "cm"),
+          ticks = TRUE,
+          ticks.colour = "grey20",
+          frame.colour = "grey20",
+          label.position = "top",
+          direction = "horizontal"
+        )
+      ) +
+      theme(legend.title = element_markdown(),
+            legend.position = "top")
+  )
+
+
+plot_list <- 
+pco2_product_map_annual_anomaly_ensemble_gobm %>%
+  # mutate(product = "Ensemble mean") %>% 
+  filter(name %in% c(
+           "fgco2",
+           # "dfco2",
+           # "kw_sol",
+           "temperature",
+           # "salinity",
+           "sdissic",
+           # "talk",
+           # "no3",
+           "mld",
+           "intpp",
+           "chl"
+         )) %>%
+  group_split(name) %>% 
+  # head(1) %>%
+  map(
+    ~ map +
+      geom_tile(data = .x,
+                aes(lon, lat, fill = resid_mean)) +
+      scale_fill_gradientn(
+        colours = cmocean("curl")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        name = labels_breaks(.x %>% distinct(name)),
+        limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
+        oob = squish
+      ) +
+      theme(legend.title = element_markdown(),
+            legend.justification = "left")
+  )
+
+
+ggsave(plot = wrap_plots(plot_list,
+                         ncol = 2,
+                         byrow = FALSE),
+       width = 12,
+       height = 6,
+       filename = "../output/GOBM_2023_surface_anomaly_maps.jpg")
+
+rm(plot_list,
+   pco2_product_map_annual_anomaly_ensemble_gobm)
+
+gc()
+
+```
+
 
 ```{r bivariate_anomaly_year_annual_mean_maps}
 
-bivariate_map <- 
-pco2_product_map_annual_anomaly %>%
-  filter(year == {{year_anom}},
-         name %in% c("fgco2", "temperature")) %>%
-  select(product, name, lon, lat, resid) %>% 
-  pivot_wider(names_from = name,
-              values_from = resid) %>% 
+bivariate_map <-
+  pco2_product_map_annual_anomaly %>%
+  filter(year == {{year_anom}}, name %in% c("fgco2", "temperature")) %>%
+  select(product, name, lon, lat, resid) %>%
+  pivot_wider(names_from = name, values_from = resid) %>%
   drop_na()
-
-# map +
-#   geom_tile(data = bivariate_map,
-#             aes(lon, lat, fill = temperature)) +
-#   scale_fill_gradientn(
-#     colours = cmocean("curl")(100),
-#     rescaler = ~ scales::rescale_mid(.x, mid = 0),
-#     name = labels_breaks("temperature"),
-#     oob = squish
-#   ) +
-#   facet_wrap( ~ product, ncol = 2) +
-#   theme(legend.title = element_markdown())
-# 
-# map +
-#   geom_tile(data = bivariate_map,
-#             aes(lon, lat, fill = fgco2)) +
-#   scale_fill_gradientn(
-#     colours = cmocean("curl")(100),
-#     rescaler = ~ scales::rescale_mid(.x, mid = 0),
-#     name = labels_breaks("fgco2"),
-#     oob = squish
-#   ) +
-#   facet_wrap(~ product, ncol = 2) +
-#   theme(legend.title = element_markdown())
-
 
 dim_set <- 3
 
@@ -1141,16 +1140,17 @@ bi_breaks <-
   )
 
 map +
-  geom_tile(data = bivariate_map,
-            aes(lon, lat, fill = bi_class)) +
+  geom_tile(data = bivariate_map, aes(lon, lat, fill = bi_class)) +
   bi_scale_fill(pal = "BlueGold", dim = dim_set) +
   theme(legend.position = "none") +
-  facet_wrap(~ product, ncol = 2)
+  facet_wrap( ~ product, ncol = 2)
 
-ggsave(width = 6,
-       height = 5,
-       dpi = 600,
-       filename = "../output/sst_fco2_bivariate_map_products.jpg")
+ggsave(
+  width = 6,
+  height = 5,
+  dpi = 600,
+  filename = "../output/sst_fco2_bivariate_map_products.jpg"
+)
 
 bi_legend(
   pal = "BlueGold",
@@ -1169,14 +1169,14 @@ bi_legend(
   )
 
 
-ggsave(width = 4,
-       height = 3,
-       dpi = 600,
-       filename = "../output/sst_fco2_bivariate_map_products_legend.jpg")
+ggsave(
+  width = 4,
+  height = 3,
+  dpi = 600,
+  filename = "../output/sst_fco2_bivariate_map_products_legend.jpg"
+)
 
 ```
-
-
 
 ```{r bivariate_anomaly_year_annual_mean_maps_ensemble_mean}
 
@@ -1187,30 +1187,6 @@ pco2_product_map_annual_anomaly_ensemble %>%
   pivot_wider(names_from = name,
               values_from = resid_mean) %>% 
   drop_na()
-
-# map +
-#   geom_tile(data = bivariate_map,
-#             aes(lon, lat, fill = temperature)) +
-#   scale_fill_gradientn(
-#     colours = cmocean("curl")(100),
-#     rescaler = ~ scales::rescale_mid(.x, mid = 0),
-#     name = labels_breaks("temperature"),
-#     oob = squish
-#   ) +
-#   facet_wrap( ~ product, ncol = 2) +
-#   theme(legend.title = element_markdown())
-# 
-# map +
-#   geom_tile(data = bivariate_map,
-#             aes(lon, lat, fill = fgco2)) +
-#   scale_fill_gradientn(
-#     colours = cmocean("curl")(100),
-#     rescaler = ~ scales::rescale_mid(.x, mid = 0),
-#     name = labels_breaks("fgco2"),
-#     oob = squish
-#   ) +
-#   facet_wrap(~ product, ncol = 2) +
-#   theme(legend.title = element_markdown())
 
 
 dim_set <- 3
@@ -1323,197 +1299,115 @@ ggsave(width = 4,
        dpi = 600,
        filename = "../output/sst_fco2_bivariate_map_ensemble_legend.jpg")
 
-# cowplot::plot_grid(
-#   bi_map, bi_legend,
-#   rel_heights = c(5, 3),
-#   ncol = 1
-# )
-
 
 ```
 
 
+```{r anomaly_correlation_map}
 
-```{r anomaly_annual_mean_maps_ensemble_mean_gobm, fig.asp=0.5}
+map +
+  geom_tile(data = pco2_product_map_annual_slope, aes(lon, lat, fill = slope)) +
+  scale_fill_gradientn(
+    colours = cmocean("curl")(100),
+    rescaler = ~ scales::rescale_mid(.x, mid = 0),
+    limits = c(
+      quantile(pco2_product_map_annual_slope$slope, .01),
+      quantile(pco2_product_map_annual_slope$slope, .99)
+    ),
+    oob = squish
+  ) +
+  facet_wrap( ~ product) +
+  guides(
+    fill = guide_colorbar(
+      barheight = unit(0.3, "cm"),
+      barwidth = unit(6, "cm"),
+      ticks = TRUE,
+      ticks.colour = "grey20",
+      frame.colour = "grey20",
+      label.position = "top",
+      direction = "horizontal"
+    )
+  ) +
+  theme(legend.title = element_markdown(), legend.position = "top") +
+  labs(title = "Correlation of historic annual flux and SST anomalies")
 
-pco2_product_map_annual_anomaly_ensemble_gobm <-
-  pco2_product_map_annual_anomaly %>% 
-  filter(year == {{year_anom}},
-         product %in% gobm_product_list) %>%
-  group_by(name, lon, lat) %>%
-  summarize(
-    resid_sd = sd(resid),
-    resid_range = max(resid) - min(resid),
-    resid_mean = mean(resid),
-    n = n()
+pco2_product_map_annual_slope_ensemble <-
+  pco2_product_map_annual_slope %>% 
+  filter(product %in% pco2_product_list) %>%
+  fgroup_by(lon, lat) %>%
+  fsummarise(
+    slope_sd = fsd(slope),
+    slope_mean = fmean(slope),
+    n = fnobs(slope)
   ) %>%
-  ungroup() %>%
-  filter(n == length(gobm_product_list)) %>% 
-  select(-n)
-
-pco2_product_map_annual_anomaly_ensemble_gobm %>%
-  mutate(product = "Ensemble mean") %>% 
-  group_split(name) %>%
-  # head(1) %>%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = resid_mean)) +
-      # geom_point(data = .x %>% filter(abs(resid_mean) < resid_sd),
-      #           aes(lon, lat, shape = "Ensemble mean\n< StDev"),
-      #           col = "grey", size = 1) +
-      labs(title =  paste({{year_anom}}, "GOBM ensemble mean anomaly")) +
-      scale_fill_gradientn(
-        colours = cmocean("curl")(100),
-        rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
-        limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
-        oob = squish
-      ) +
-      scale_shape_manual(values = 20, name = "") +
-      guides(
-        fill = guide_colorbar(
-          barheight = unit(0.3, "cm"),
-          barwidth = unit(6, "cm"),
-          ticks = TRUE,
-          ticks.colour = "grey20",
-          frame.colour = "grey20",
-          label.position = "top",
-          direction = "horizontal"
-        )
-      ) +
-      theme(legend.title = element_markdown(),
-            legend.position = "top")
-  )
-
-
-plot_list <- 
-pco2_product_map_annual_anomaly_ensemble_gobm %>%
-  # mutate(product = "Ensemble mean") %>% 
-  filter(name %in% c(
-           "fgco2",
-           # "dfco2",
-           # "kw_sol",
-           "temperature",
-           # "salinity",
-           "sdissic",
-           # "talk",
-           # "no3",
-           "mld",
-           "intpp",
-           "chl"
-         )) %>%
-  group_split(name) %>% 
-  # head(1) %>%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = resid_mean)) +
-      scale_fill_gradientn(
-        colours = cmocean("curl")(100),
-        rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
-        limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
-        oob = squish
-      ) +
-      theme(legend.title = element_markdown(),
-            legend.justification = "left")
-  )
-
-
-ggsave(plot = wrap_plots(plot_list,
-                         ncol = 2,
-                         byrow = FALSE),
-       width = 12,
-       height = 6,
-       filename = "../output/GOBM_2023_surface_anomaly_maps.jpg")
-
-rm(plot_list)
-
-
-
-rm(pco2_product_map_annual_anomaly_ensemble_gobm)
-gc()
-
-```
-
-```{r anomaly_annual_mean_maps_ensemble_mean_offset, fig.asp=1.5}
-
-pco2_product_map_annual_anomaly_ensemble <-
-left_join(
-    pco2_product_map_annual_anomaly_ensemble,
-    pco2_product_map_annual_anomaly %>% 
-      filter(year == {{year_anom}},
-             product %in% pco2_product_list)
-  ) %>%
-  mutate(`Anomaly offset` = resid - resid_mean) %>% 
-  select(name, lon, lat, product, `Anomaly offset`)
-
-pco2_product_map_annual_anomaly_ensemble_baseline <-
-  pco2_product_map_annual_anomaly %>% 
-  filter(year == {{year_anom}},
-         product %in% pco2_product_list) %>%
-  group_by(name, lon, lat) %>%
-  summarize(
-    fit_mean = mean(fit),
-    n = n()
-  ) %>%
-  ungroup() %>%
   filter(n == length(pco2_product_list)) %>% 
   select(-n)
 
-pco2_product_map_annual_anomaly_ensemble_baseline <-
-left_join(
-    pco2_product_map_annual_anomaly_ensemble_baseline,
-    pco2_product_map_annual_anomaly %>% 
-      filter(year == {{year_anom}},
-             product %in% pco2_product_list)
-  ) %>%
-  mutate(`Baseline offset` = fit - fit_mean) %>% 
-  select(name, lon, lat, product, `Baseline offset`)
+pco2_product_map_annual_slope_ensemble_coarse <-
+  m_grid_horizontal_coarse(pco2_product_map_annual_slope_ensemble) %>%
+  fgroup_by(lon_grid, lat_grid) %>%
+  fsummarise(
+    slope_sd_coarse = fmean(slope_sd, na.rm = TRUE),
+    slope_mean_coarse = fmean(slope_mean, na.rm = TRUE)
+  ) %>% 
+  rename(lon = lon_grid, lat = lat_grid)
 
-full_join(
-  pco2_product_map_annual_anomaly_ensemble,
-  pco2_product_map_annual_anomaly_ensemble_baseline
-) %>%
-  pivot_longer(contains("offset"),
-               names_to = "offset") %>% 
-  group_split(name) %>%
-  # head(1) %>%
-  map(
-    ~ map +
-      geom_tile(data = .x,
-                aes(lon, lat, fill = value)) +
-      labs(title =  paste({{year_anom}}, "offset from ensemble mean")) +
-      scale_fill_gradientn(
-        colours = cmocean("curl")(100),
-        rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
-        limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
-        oob = squish
-      ) +
-      facet_grid(product ~ offset) +
-            guides(
-        fill = guide_colorbar(
-          barheight = unit(0.3, "cm"),
-          barwidth = unit(6, "cm"),
-          ticks = TRUE,
-          ticks.colour = "grey20",
-          frame.colour = "grey20",
-          label.position = "top",
-          direction = "horizontal"
-        )
-      ) +
-      theme(legend.title = element_markdown(),
-            legend.position = "top")
+pco2_product_map_annual_slope_ensemble <-
+  left_join(
+    pco2_product_map_annual_slope_ensemble,
+    pco2_product_map_annual_slope_ensemble_coarse
   )
 
-rm(pco2_product_map_annual_anomaly_ensemble,
-   pco2_product_map_annual_anomaly_ensemble_baseline)
 
-gc()
+map +
+  geom_tile(data = pco2_product_map_annual_slope_ensemble, 
+            aes(lon, lat, fill = slope_mean)) +
+  geom_point(
+    data = pco2_product_map_annual_slope_ensemble %>%
+      filter(abs(slope_mean_coarse) < slope_sd_coarse),
+    aes(lon, lat, shape = "Ensemble mean\n< StDev"),
+    col = "grey80",
+    size = 1
+  )+
+  scale_fill_gradientn(
+    colours = cmocean("curl")(100),
+    rescaler = ~ scales::rescale_mid(.x, mid = 0),
+    limits = c(
+      quantile(pco2_product_map_annual_slope$slope,.01),
+      quantile(pco2_product_map_annual_slope$slope, .99)),
+    oob = squish,
+    name = paste0("Slope<br><br>",
+                  labels_breaks("fgco2"),
+                  " / <br><br>",
+                  labels_breaks("temperature"))
+  ) +
+  scale_shape(name = "") +
+  labs(title = "Correlation of historic annual flux and SST anomalies", 
+       subtitle = "pCO2 product ensemble mean") +
+  guides(
+    fill = guide_colorbar(
+      barheight = unit(0.3, "cm"),
+      barwidth = unit(6, "cm"),
+      ticks = TRUE,
+      ticks.colour = "grey20",
+      frame.colour = "grey20",
+      label.position = "top",
+      direction = "horizontal"
+    )
+  ) +
+  theme(legend.title = element_markdown(), 
+        legend.position = "top")
+
+ggsave(width = 8,
+       height = 6,
+       dpi = 600,
+       filename = "../output/sst_fco2_annual_corrlation_map_ensemble.jpg")
+
 
 ```
+
+
+
 
 ## Monthly means
 
@@ -1627,99 +1521,13 @@ gc()
 
 ```
 
-```{r anomaly_correlation_map}
-
-pco2_product_map_annual_anomaly_ensemble_correlation <-
-  pco2_product_map_annual_anomaly %>%
-  filter(product %in% pco2_product_list,
-         name %in% c("fgco2", "temperature")) %>%
-  fgroup_by(name, lon, lat, year) %>%
-  fsummarise(
-    resid_mean = fmean(resid),
-    n = fnobs(resid)
-  ) %>%
-  filter(n == length(pco2_product_list)) %>%
-  select(-n)
-
-pco2_product_map_annual_anomaly_ensemble_correlation_lm <-
-pco2_product_map_annual_anomaly_ensemble_correlation %>%
-  filter(year != {{year_anom}}) %>% 
-  pivot_wider(values_from = resid_mean) %>%
-  select(lon, lat, fgco2, temperature) %>%
-  drop_na() %>% 
-  nest(data = -c(lon, lat)) %>%
-  mutate(fit = map(data, ~ flm(
-    formula = fgco2 ~ temperature, data = .x
-  )))
-  
-pco2_product_map_annual_anomaly_ensemble_correlation_lm <-
-  pco2_product_map_annual_anomaly_ensemble_correlation_lm %>%
-  unnest_wider(fit) %>%
-  select(lon, lat, slope = temperature) %>%
-  mutate(slope = as.vector(slope))
-
-map +
-  geom_tile(data = pco2_product_map_annual_anomaly_ensemble_correlation_lm, 
-            aes(lon, lat, fill = slope)) +
-  scale_fill_gradientn(
-    colours = cmocean("curl")(100),
-    rescaler = ~ scales::rescale_mid(.x, mid = 0),
-    limits = c(
-      quantile(pco2_product_map_annual_anomaly_ensemble_correlation_lm$slope,.01),
-      quantile(pco2_product_map_annual_anomaly_ensemble_correlation_lm$slope, .99)),
-    oob = squish
-  ) +
-  labs(title = "Correlation of historic annual flux and SST anomalies")
-
-ggsave(width = 8,
-       height = 6,
-       dpi = 600,
-       filename = "../output/sst_fco2_annual_corrlation_map_ensemble.jpg")
-
-# pco2_product_map_monthly_anomaly_ensemble_correlation_corr <-
-#   pco2_product_map_monthly_anomaly_ensemble_correlation %>%
-#   pivot_wider(values_from = resid_mean) %>%
-#   select(lon, lat, fgco2, temperature) %>%
-#   drop_na() %>%
-#   nest(data = -c(lon, lat)) %>%
-#   mutate(fit = map(data, ~ cor(x = .x$fgco2, y = .x$temperature)))
-#   
-# pco2_product_map_monthly_anomaly_ensemble_correlation_corr <-
-#   pco2_product_map_monthly_anomaly_ensemble_correlation_corr %>%
-#   unnest(fit) %>%
-#   select(lon, lat, correlation = fit)
-# 
-# map +
-#   geom_tile(data = pco2_product_map_monthly_anomaly_ensemble_correlation_corr, aes(lon, lat, fill = correlation)) +
-#   scale_fill_gradientn(
-#     colours = cmocean("curl")(100),
-#     rescaler = ~ scales::rescale_mid(.x, mid = 0),
-#     limits = c(
-#       quantile(
-#         pco2_product_map_monthly_anomaly_ensemble_correlation_corr$correlation,
-#         .01
-#       ),
-#       quantile(
-#         pco2_product_map_monthly_anomaly_ensemble_correlation_corr$correlation,
-#         .99
-#       )
-#     ),
-#     oob = squish
-#   )
-# 
-# map +
-#   geom_tile(data = pco2_product_map_monthly_anomaly_ensemble_correlation_corr, aes(lon, lat, fill = abs(correlation)))
-
-```
-
-
 ### fCO2 decomposition
 
 ```{r fCO2_decomposition_monthly_maps, fig.asp=1.8}
 
-pco2_product_map_monthly_fCO2_decomposition <-
-  fco2_decomposition(pco2_product_map_monthly_anomaly,
-                     year, month, lon, lat)
+# pco2_product_map_monthly_fCO2_decomposition <-
+#   fco2_decomposition(pco2_product_map_monthly_anomaly,
+#                      year, month, lon, lat)
 
 
 pco2_product_map_monthly_fCO2_decomposition %>%
@@ -1872,8 +1680,6 @@ pco2_product_map_annual_fCO2_decomposition_ensemble <-
   )
   
   
-  
-  
 pco2_product_map_annual_fCO2_decomposition_ensemble %>% 
   mutate(product = "Ensemble mean") %>% 
   group_split(product) %>%
@@ -1925,9 +1731,9 @@ ggsave(width = 6,
 
 ```{r flux_attribution_seasonal_maps, fig.asp=1.8}
 
-pco2_product_map_monthly_flux_attribution <-
-  flux_attribution(pco2_product_map_monthly_anomaly,
-                   year, month, lon, lat)
+# pco2_product_map_monthly_flux_attribution <-
+#   flux_attribution(pco2_product_map_monthly_anomaly,
+#                    year, month, lon, lat)
 
 pco2_product_map_monthly_flux_attribution %>%
   filter(year == {{year_anom}}) %>% 
@@ -3047,7 +2853,7 @@ pco2_product_annual_detrended %>%
 
 ```{r anomalies_from_monthly_mean_trends_overview, fig.asp=1.5}
 
-pco2_product_monthly_detrended %>% 
+pco2_product_biome_monthly_detrended %>% 
   filter(biome %in% "Global",
          name %in% name_core) %>%
   p_season(title = "Anomalies from predicted monthly mean | Global")
@@ -3056,7 +2862,7 @@ pco2_product_monthly_detrended %>%
 
 ```{r anomalies_from_monthly_mean_trends_key_biomes, fig.asp=1.5}
 
-pco2_product_monthly_detrended %>%
+pco2_product_biome_monthly_detrended %>%
   filter(biome %in% key_biomes,
          name %in% name_core) %>%
   group_split(biome) %>%
@@ -3428,7 +3234,7 @@ filter(
 ```{r anomalies_correlation_absolute_monthly_global, fig.asp=0.7}
 
 
-pco2_product_monthly_detrended %>%
+pco2_product_biome_monthly_detrended %>%
   filter(biome == "Global") %>%
   select(-c(time, fit, value)) %>% 
   pivot_wider(values_from = resid) %>%
@@ -3491,7 +3297,7 @@ pco2_product_monthly_detrended %>%
 ```{r anomalies_correlation_absolute_monthly_biomes_key, fig.asp=1.2}
 
 
-pco2_product_monthly_detrended %>%
+pco2_product_biome_monthly_detrended %>%
   filter(biome %in% key_biomes) %>%
   select(-c(time, fit, value)) %>% 
   pivot_wider(values_from = resid) %>%
@@ -3555,33 +3361,24 @@ pco2_product_monthly_detrended %>%
 
 ```{r pCO2_decomposition}
 
-pco2_product_biome_monthly_fCO2_decomposition <-
-  full_join(pco2_product_map_monthly_fCO2_decomposition,
-            biome_mask,
-            relationship = "many-to-many") %>% 
-  group_by(product, year, month, biome, name) %>% 
-  summarise(resid = mean(resid, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  drop_na()
+# pco2_product_biome_monthly_fCO2_decomposition <-
+#   full_join(pco2_product_map_monthly_fCO2_decomposition,
+#             biome_mask,
+#             relationship = "many-to-many") %>% 
+#   group_by(product, year, month, biome, name) %>% 
+#   summarise(resid = mean(resid, na.rm = TRUE)) %>% 
+#   ungroup() %>% 
+#   drop_na()
 
 
-pco2_product_biome_annual_fCO2_decomposition <-
-  pco2_product_biome_monthly_fCO2_decomposition %>%
-  group_by(product, year, biome, name) %>%
-  summarise(resid = mean(resid)) %>%
-  ungroup()
-
-pco2_product_biome_monthly_fCO2_decomposition %>%
-  filter(biome %in% "Global") %>%
-  group_split(biome) %>%
-  # head(1) %>%
-  map(
-    ~ p_season(df = .x,
-               title  = paste("Anomalies from predicted monthly mean |", .x$biome))
-  )
+# pco2_product_biome_annual_fCO2_decomposition <-
+#   pco2_product_biome_monthly_fCO2_decomposition %>%
+#   group_by(product, year, biome, name) %>%
+#   summarise(resid = mean(resid)) %>%
+#   ungroup()
 
 pco2_product_biome_monthly_fCO2_decomposition %>%
-  filter(biome %in% key_biomes) %>%
+  filter(biome %in% c("Global",key_biomes)) %>%
   group_split(biome) %>%
   # head(1) %>%
   map(
@@ -3598,46 +3395,45 @@ pco2_product_biome_monthly_fCO2_decomposition %>%
 
 ```{r flux_attribution, fig.asp=1}
 
-pco2_product_biome_monthly_flux_attribution <-
-  full_join(pco2_product_map_monthly_flux_attribution,
-            biome_mask,
-            relationship = "many-to-many") %>% 
-  group_by(product, year, month, biome, name) %>% 
-  summarise(resid = mean(resid, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  drop_na()
-
-pco2_product_biome_monthly_flux_attribution_total <-
-  full_join(pco2_product_map_monthly_anomaly %>% 
-              filter(name == "fgco2") %>% 
-              mutate(name = "resid_fgco2"),
-            biome_mask,
-            relationship = "many-to-many") %>% 
-  group_by(product, year, month, biome, name) %>% 
-  summarise(resid = mean(resid, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  drop_na()
-
-pco2_product_biome_monthly_flux_attribution <-
-  bind_rows(
-    pco2_product_biome_monthly_flux_attribution,
-    pco2_product_biome_monthly_flux_attribution_total
-  )
-
-
-pco2_product_biome_annual_flux_attribution <-
-  pco2_product_biome_monthly_flux_attribution %>%
-  group_by(product, year, biome, name) %>%
-  summarise(resid = mean(resid)) %>%
-  ungroup()
+# pco2_product_biome_monthly_flux_attribution <-
+#   full_join(pco2_product_map_monthly_flux_attribution,
+#             biome_mask,
+#             relationship = "many-to-many") %>% 
+#   group_by(product, year, month, biome, name) %>% 
+#   summarise(resid = mean(resid, na.rm = TRUE)) %>% 
+#   ungroup() %>% 
+#   drop_na()
+# 
+# pco2_product_biome_monthly_flux_attribution_total <-
+#   full_join(pco2_product_map_monthly_anomaly %>% 
+#               filter(name == "fgco2") %>% 
+#               mutate(name = "resid_fgco2"),
+#             biome_mask,
+#             relationship = "many-to-many") %>% 
+#   group_by(product, year, month, biome, name) %>% 
+#   summarise(resid = mean(resid, na.rm = TRUE)) %>% 
+#   ungroup() %>% 
+#   drop_na()
+# 
+# pco2_product_biome_monthly_flux_attribution <-
+#   bind_rows(
+#     pco2_product_biome_monthly_flux_attribution,
+#     pco2_product_biome_monthly_flux_attribution_total
+#   )
+# 
+# 
+# pco2_product_biome_annual_flux_attribution <-
+#   pco2_product_biome_monthly_flux_attribution %>%
+#   group_by(product, year, biome, name) %>%
+#   summarise(resid = mean(resid)) %>%
+#   ungroup()
 
 
 ggplot() +
   geom_hline(yintercept = 0) +
   geom_col(
     data = pco2_product_biome_annual_flux_attribution %>%
-      filter(year == {{year_anom}},
-             biome %in% c("Global", key_biomes),
+      filter(biome %in% c("Global", key_biomes),
              product %in% pco2_product_list) %>% 
       group_by(biome, name) %>% 
       summarise(resid = mean(resid)) %>% 
@@ -3647,8 +3443,7 @@ ggplot() +
   ) +
   geom_point(
     data = pco2_product_biome_annual_flux_attribution %>%
-      filter(year == {{year_anom}},
-             biome %in% c("Global", key_biomes)),
+      filter(biome %in% c("Global", key_biomes)),
     aes("", resid, fill = product),
     shape = 21
   ) +
@@ -3677,8 +3472,7 @@ ggplot() +
   geom_hline(yintercept = 0) +
   geom_col(
     data = pco2_product_biome_annual_flux_attribution %>%
-      filter(year == {{year_anom}},
-             biome %in% c("Global", key_biomes)),
+      filter(biome %in% c("Global", key_biomes)),
     aes("", resid, fill = product),
     position = position_dodge(width = 1),
     alpha = 0.5, col = "grey30"
@@ -3750,31 +3544,10 @@ pco2_product_biome_monthly_flux_attribution %>%
 
 ```{r flux_attribution_seasonal}
 
-pco2_product_biome_monthly_flux_attribution %>%
-  filter(biome %in% "Global") %>% 
-  group_split(biome) %>%
-  map(
-    ~ p_season(
-      df = .x,
-      title  = paste("Anomalies from predicted monthly mean |", .x$biome)
-    ) +
-      facet_grid(
-        name ~ product,
-        labeller = labeller(name = x_axis_labels),
-        switch = "y"
-      ) +
-      theme(
-        strip.text.y.left = element_markdown(),
-        strip.placement = "outside",
-        strip.background.y = element_blank(),
-        axis.title.y = element_blank(),
-        legend.title = element_blank()
-      )
-  )
 
 
 pco2_product_biome_monthly_flux_attribution %>%
-  filter(biome %in% key_biomes) %>% 
+  filter(biome %in% c("Global", key_biomes)) %>% 
   group_split(biome) %>%
   # head(1) %>%
   map(
@@ -3804,60 +3577,19 @@ pco2_product_biome_monthly_flux_attribution %>%
 ```{r flux_attribution_annual, fig.asp=0.5}
 
 
-pco2_product_biome_annual_flux_attribution <-
-full_join(
-pco2_product_biome_annual_flux_attribution %>% 
-  filter(year == {{year_anom}}) %>% 
-  select(-year),
-pco2_product_biome_annual_flux_attribution %>% 
-  filter(year != {{year_anom}}) %>% 
-  group_by(product, biome, name) %>% 
-  summarise(resid_mean = mean(abs(resid))) %>% 
-  ungroup())
+# pco2_product_biome_annual_flux_attribution <-
+# full_join(
+# pco2_product_biome_annual_flux_attribution %>% 
+#   filter(year == {{year_anom}}) %>% 
+#   select(-year),
+# pco2_product_biome_annual_flux_attribution %>% 
+#   filter(year != {{year_anom}}) %>% 
+#   group_by(product, biome, name) %>% 
+#   summarise(resid_mean = mean(abs(resid))) %>% 
+#   ungroup())
 
 pco2_product_biome_annual_flux_attribution %>%
-  filter(biome %in% "Global") %>% 
-  group_split(biome) %>%
-  # head(1) %>%
-  map(
-    ~ ggplot(data = .x) +
-      geom_col(aes("x", resid, fill = product),
-               position = "dodge2") +
-      scale_fill_manual(values = color_products) +
-      geom_col(
-        aes(
-          "x",
-          resid_mean * sign(resid),
-          group = product,
-          col = paste0("Mean\nexcl.",{{year_anom}})
-        ),
-        position = "dodge2",
-        fill = "transparent"
-      ) +
-      labs(y = labels_breaks(unique("fgco2"))$i_legend_title,
-           title = .x$biome) +
-      facet_grid(
-        .~name,
-        labeller = labeller(name = x_axis_labels),
-        switch = "x"
-      ) +
-      scale_color_grey() +
-      theme(
-        legend.title = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.title.x = element_blank(),
-        axis.title.y = element_markdown(),
-        strip.text.x.bottom = element_markdown(),
-        strip.placement = "outside",
-        strip.background.x = element_blank(),
-        legend.position = "top"
-      )
-  )
-
-
-pco2_product_biome_annual_flux_attribution %>%
-  filter(biome %in% key_biomes) %>% 
+  filter(biome %in% c("Global", key_biomes)) %>% 
   group_split(biome) %>%
   # head(1) %>%
   map(
@@ -3904,7 +3636,7 @@ pco2_product_biome_annual_flux_attribution %>%
 ```{r merged_seasonality_ensemble_mean}
 
 
-pco2_product_monthly_detrended %>%
+pco2_product_biome_monthly_detrended %>%
   filter(product %in% pco2_product_list) %>%
   group_by(year, month, biome, name) %>%
   summarise(across(where(is.numeric), mean)) %>%
@@ -3954,7 +3686,7 @@ ggsave(width = 9,
 
 ```{r merged_seasonality_all_products}
 
-pco2_product_monthly_detrended %>% 
+pco2_product_biome_monthly_detrended %>% 
   filter(year == {{year_anom}},
          name %in% c("temperature", "fgco2"),
          biome %in% c("Global", key_biomes)) %>%
@@ -4054,7 +3786,7 @@ The following analysis is available for GOBMs only.
 
 ### {{year_anom}} anomaly
 
-```{r {{year_anom}}_anomaly_zonal_mean_sections_annual}
+```{r {{year_anom}}_anomaly_zonal_mean_sections_annual, eval=FALSE}
 
 pco2_product_zonal_mean_sections_annual %>%
   filter(year == {{year_anom}},
@@ -4285,7 +4017,7 @@ ggsave(width = 16,
 
 ```{r {{year_anom}}_anomaly_profiles_monthly_CESM_hovmoeller, fig.asp=1}
 
-pco2_product_monthly_detrended %>% 
+pco2_product_biome_monthly_detrended %>% 
   filter(biome %in% key_biomes,
          name %in% "mld",
          year == {{year_anom}},
@@ -4302,7 +4034,7 @@ plot_list <-
         product == "ETHZ_CESM",
         name %in% c("sdissic", "thetao")
       ),
-    pco2_product_monthly_detrended %>%
+    pco2_product_biome_monthly_detrended %>%
       filter(
         biome %in% key_biomes,
         name %in% "mld",
