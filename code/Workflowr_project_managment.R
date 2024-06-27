@@ -153,7 +153,7 @@ wflow_publish(here::here(
     "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "new and unique output files")
+message = "figures revised")
 
 
 

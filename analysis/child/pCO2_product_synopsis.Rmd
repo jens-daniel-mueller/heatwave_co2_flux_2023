@@ -30,6 +30,9 @@ map <-
 key_biomes <-
   read_rds(here::here("data/key_biomes.rds"))
 
+key_biomes <- 
+key_biomes[!str_detect(key_biomes, "NP")]
+
 
 biome_mask <-
   read_rds(here::here("data/biome_mask.rds"))
@@ -610,7 +613,7 @@ pco2_product_map_annual_anomaly %>%
                 aes(lon, lat, fill = resid)) +
       # labs(title =  paste({{year_anom}}, "anomaly")) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -661,7 +664,7 @@ pco2_product_map_annual_anomaly %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -707,7 +710,7 @@ pco2_product_map_annual_anomaly %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -778,7 +781,7 @@ pco2_product_map_annual_anomaly_ensemble %>%
                 col = "grey80", size = 1) +
       labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean anomaly")) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -818,7 +821,7 @@ pco2_product_map_annual_anomaly_ensemble %>%
                 col = "grey80", size = 1) +
       labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean absolute")) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$value_mean, .01), quantile(.x$value_mean, .99)),
@@ -891,7 +894,7 @@ full_join(
                 aes(lon, lat, fill = value)) +
       labs(title =  paste({{year_anom}}, "offset from ensemble mean")) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
@@ -948,7 +951,7 @@ pco2_product_map_annual_anomaly_ensemble_gobm %>%
                 aes(lon, lat, fill = resid_mean)) +
       labs(title =  paste({{year_anom}}, "GOBM ensemble mean anomaly")) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -994,7 +997,7 @@ pco2_product_map_annual_anomaly_ensemble_gobm %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid_mean)) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1219,7 +1222,7 @@ ggsave(width = 4,
 map +
   geom_tile(data = pco2_product_map_annual_slope, aes(lon, lat, fill = slope)) +
   scale_fill_gradientn(
-    colours = cmocean("curl")(100),
+    colours = cmocean("balance")(100),
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     limits = c(
       quantile(pco2_product_map_annual_slope$slope, .01),
@@ -1281,7 +1284,7 @@ map +
     size = 1
   )+
   scale_fill_gradientn(
-    colours = cmocean("curl")(100),
+    colours = cmocean("balance")(100),
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     limits = c(
       quantile(pco2_product_map_annual_slope$slope,.01),
@@ -1336,7 +1339,7 @@ pco2_product_map_monthly_anomaly %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -1400,7 +1403,7 @@ pco2_product_map_monthly_anomaly_ensemble %>%
                 aes(lon, lat, fill = resid_mean)) +
       labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean monthly anomaly")) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1451,7 +1454,7 @@ pco2_product_map_monthly_fCO2_decomposition %>%
                 aes(lon, lat, fill = resid)) +
       labs(title = .x$product) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("sfco2"),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -1499,7 +1502,7 @@ pco2_product_map_monthly_fCO2_decomposition %>%
       #   col = "grey"
       # ) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("sfco2"),,
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1540,7 +1543,7 @@ map +
               filter(year == {{year_anom}}),
             aes(lon, lat, fill = resid)) +
   scale_fill_gradientn(
-    colours = cmocean("curl")(100),
+    colours = cmocean("balance")(100),
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     name = labels_breaks("sfco2"),
     limits = c(quantile(pco2_product_map_annual_fCO2_decomposition$resid, .01), 
@@ -1604,7 +1607,7 @@ pco2_product_map_annual_fCO2_decomposition_ensemble %>%
                 aes(lon, lat, shape = "Ensemble mean\n< StDev"),
                 col = "grey80", size = 1) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("sfco2"),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1657,7 +1660,7 @@ pco2_product_map_monthly_flux_attribution %>%
                 aes(lon, lat, fill = resid)) +
       labs(subtitle = .x$product) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("fgco2"),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -1709,7 +1712,7 @@ pco2_product_map_monthly_flux_attribution %>%
       # geom_point(data = .x %>% filter(abs(resid_mean) < resid_sd),
       #            aes(lon, lat, shape = "Ensemble mean\n< StDev"))+
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("fgco2"),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1755,7 +1758,7 @@ map +
               filter(year == {{year_anom}}),
             aes(lon, lat, fill = resid)) +
   scale_fill_gradientn(
-    colours = cmocean("curl")(100),
+    colours = cmocean("balance")(100),
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     name = labels_breaks("fgco2"),
     limits = c(quantile(pco2_product_map_annual_flux_attribution$resid, .01, na.rm = TRUE), 
@@ -1825,7 +1828,7 @@ pco2_product_map_annual_flux_attribution_ensemble %>%
                 aes(lon, lat, shape = "Ensemble mean\n< StDev"),
                 col = "grey80", size = 1) +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("fgco2"),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1885,7 +1888,7 @@ pco2_product_hovmoeller_monthly_anomaly %>%
              aes(decimal, lat, fill = resid)) +
       geom_raster() +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid,.01),quantile(.x$resid,.99)),
@@ -1927,7 +1930,7 @@ pco2_product_hovmoeller_monthly_anomaly_ensemble %>%
              aes(decimal, lat, fill = resid_mean)) +
       geom_raster() +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1959,7 +1962,7 @@ left_join(
              aes(decimal, lat, fill = resid_offset)) +
       geom_raster() +
       scale_fill_gradientn(
-        colours = cmocean("curl")(100),
+        colours = cmocean("balance")(100),
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -2390,20 +2393,28 @@ full_join(region_biomes,
                                        "Northern\nhemisphere",
                                        "Equatorial\nregions",
                                        "Southern\nhemisphere"))) %>% 
+  mutate(basin = case_when(
+    biome == "Global" ~ "",
+    str_detect(biome, "NA|SA|AEQU") ~ "Atlantic",
+    str_detect(biome, "NP|SP") ~ "Pacific",
+    str_detect(biome, "Indian") ~ "Indian",
+    biome == "PEQU-E" ~ "Pacific-E",
+    biome == "PEQU-W" ~ "Pacific-W",
+    TRUE ~ "other")) %>% 
   mutate(biome_class = case_when(
-    str_detect(biome, "SPSS") ~ "Subpolar\nseasonally stratified\n(SPSS)",
-    str_detect(biome, "STSS") ~ "Subtropical\nseasonally stratified\n(STSS)",
-    str_detect(biome, "STPS|Southern Indian") ~ "Subtropical\npermanently stratified\n(STPS)",
+    str_detect(biome, "SPSS") ~ "Subpolar\nseasonally\nstratified\n(SPSS)",
+    str_detect(biome, "STSS") ~ "Subtropical\nseasonally\nstratified\n(STSS)",
+    str_detect(biome, "STPS|Southern Indian") ~ "Subtropical\npermanently\nstratified\n(STPS)",
     TRUE ~ "")) %>% 
   filter(year == {{year_anom}},
-         name %in% c("temperature", "fgco2"),
+         name %in% c("temperature", "fgco2", "fgco2_int"),
          region != "southern",
          !str_detect(biome, "SO-"))
 
 pco2_product_biome_annual_anomaly_merged_ensemble <- 
 pco2_product_biome_annual_anomaly_merged %>% 
   filter(product %in% pco2_product_list) %>% 
-  group_by(name, biome, region, latitude, biome_class) %>%
+  group_by(name, biome, basin, region, latitude, biome_class) %>%
   summarise(resid_sd = sd(resid),
             resid = mean(resid))
 
@@ -2414,6 +2425,76 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
   
   
 pco2_product_biome_annual_anomaly_merged_ensemble %>% 
+  filter(name != "fgco2_int") %>% 
+  ggplot(aes(x = basin, y = resid)) +
+  geom_hline(yintercept = 0) +
+  geom_col(aes(fill = "pCO2 product\nensemble mean"), col = "grey20") +
+  geom_linerange(aes(ymin = resid - resid_sd,
+                     ymax = resid + resid_sd,
+                     col = "pCO2 product\nensemble SD")) +
+  scale_color_manual(values = "grey20", name = "") +
+  scale_fill_manual(values = "grey90", name = "") +
+  new_scale_color()+
+  geom_point(
+    data = pco2_product_biome_annual_anomaly_merged %>%
+      filter(name != "fgco2_int",
+             product %in% pco2_product_list),
+    aes(col = product),
+    # position = position_nudge(x = -0.15),
+    shape = 21
+  ) +
+  scale_color_manual(values = color_products,
+                     name = "pCO2 products") +
+  new_scale_color()+
+  geom_point(data = pco2_product_biome_annual_anomaly_merged %>% 
+               filter(name != "fgco2_int",
+                      product %in% gobm_product_list),
+             aes(col = product),
+             position = position_nudge(x = 0.2),
+             shape = 21) +
+  scale_color_manual(values = color_products,
+                     name = "GOBMs") +
+  facet_nested(name ~ latitude + biome_class, 
+             scales = "free", space = "free_x",
+             labeller = labeller(name = x_axis_labels),
+             switch = "y",
+             nest_line = element_line(linewidth = 0.8),
+             solo_line = TRUE,
+             strip = strip_nested(text_x = list(
+               element_text(face = "bold"),
+               element_text(face = "bold"),
+               element_text(face = "bold"),
+               element_text(face = "bold"),
+               elem_list_text(),
+               elem_list_text(),
+               elem_list_text(),
+               elem_list_text(),
+               elem_list_text(),
+               elem_list_text()
+               ))) +
+  # theme_bw() +
+  theme(
+    axis.text.x = element_text(
+      angle = 90,
+      vjust = 0.5,
+      hjust = 1
+    ),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    strip.text.y.left = element_markdown(),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    strip.background.x = element_blank()
+  )
+
+ggsave(width = 10,
+       height = 6,
+       dpi = 600,
+       filename = "../output/biome_annual_ensemble_mean.jpg")
+
+
+p_global <- pco2_product_biome_annual_anomaly_merged_ensemble %>% 
+  filter(biome == "Global") %>% 
   ggplot(aes(biome, resid)) +
   geom_hline(yintercept = 0) +
   geom_col(aes(fill = "pCO2 product\nensemble mean"), col = "grey20") +
@@ -2426,7 +2507,8 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
   new_scale_color()+
   geom_point(
     data = pco2_product_biome_annual_anomaly_merged %>%
-      filter(product %in% pco2_product_list),
+      filter(biome == "Global",
+             product %in% pco2_product_list),
     aes(col = product),
     # position = position_nudge(x = -0.15),
     shape = 21
@@ -2435,7 +2517,8 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
                      name = "pCO2 products") +
   new_scale_color()+
   geom_point(data = pco2_product_biome_annual_anomaly_merged %>% 
-               filter(product %in% gobm_product_list),
+               filter(biome == "Global",
+                      product %in% gobm_product_list),
              aes(col = product),
              position = position_nudge(x = 0.2),
              shape = 21) +
@@ -2458,13 +2541,71 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
     strip.text.y.left = element_markdown(),
     strip.placement = "outside",
     strip.background.y = element_blank(),
-    strip.background.x = element_blank()
+    strip.background.x = element_blank(),
+    legend.position = "none"
   )
   
-ggsave(width = 10,
-       height = 6,
+p_biome <- pco2_product_biome_annual_anomaly_merged_ensemble %>% 
+  filter(biome != "Global") %>% 
+  ggplot(aes(biome, resid)) +
+  geom_hline(yintercept = 0) +
+  geom_col(aes(fill = "pCO2 product\nensemble mean"), col = "grey20") +
+  geom_linerange(aes(x = biome, 
+                     ymin = resid - resid_sd,
+                     ymax = resid + resid_sd,
+                     col = "pCO2 product\nensemble SD")) +
+  scale_color_manual(values = "grey20", name = "") +
+  scale_fill_manual(values = "grey90", name = "") +
+  new_scale_color()+
+  geom_point(
+    data = pco2_product_biome_annual_anomaly_merged %>%
+      filter(biome != "Global",
+             product %in% pco2_product_list),
+    aes(col = product),
+    # position = position_nudge(x = -0.15),
+    shape = 21
+  ) +
+  scale_color_manual(values = color_products,
+                     name = "pCO2 products") +
+  new_scale_color()+
+  geom_point(data = pco2_product_biome_annual_anomaly_merged %>% 
+               filter(biome != "Global",
+                      product %in% gobm_product_list),
+             aes(col = product),
+             position = position_nudge(x = 0.2),
+             shape = 21) +
+  scale_color_manual(values = color_products,
+                     name = "GOBMs") +
+  facet_nested(name ~ latitude + biome_class, 
+             scales = "free", space = "free_x",
+             labeller = labeller(name = ""),
+             # switch = "y",
+             nest_line = element_line(),
+             solo_line = TRUE
+             ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 90,
+      vjust = 0.5,
+      hjust = 1
+    ),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    strip.text.y.right = element_text(colour = "transparent",
+                                      size = 0),
+    strip.placement = "outside",
+    strip.background.y = element_blank(),
+    strip.background.x = element_blank()
+  )
+
+
+ggsave(cowplot::plot_grid(p_global, p_biome,
+                   align = "h",
+                   rel_widths = c(1,6)),
+       width = 12,
+       height = 8,
        dpi = 600,
-       filename = "../output/biome_annual_ensemble_mean.jpg")
+       filename = "../output/biome_annual_ensemble_mean_with_integrated_flux.jpg")
 
 ```
 
@@ -2518,7 +2659,7 @@ map +
             aes(lon, lat, fill = resid)) +
   facet_wrap(~ region, ncol = 1) +
   scale_fill_gradientn(
-    colours = cmocean("curl")(100),
+    colours = cmocean("balance")(100),
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     name = labels_breaks("fgco2"),
     limits = c(
@@ -3552,13 +3693,28 @@ pco2_product_biome_monthly_detrended %>%
   group_by(year, month, biome, name) %>%
   summarise(across(where(is.numeric), mean)) %>%
   ungroup() %>%
-  filter(name %in% c("temperature", "fgco2"),
-         biome %in% c("Global", key_biomes)) %>%
-  p_season(dim_col = "biome",
-           title = "Ensemble mean anomalies from predicted monthly mean")
+  filter(name %in% c("temperature", "fgco2"), biome %in% key_biomes) %>%
+  p_season(dim_col = "biome", 
+           title = "Ensemble mean anomalies from predicted monthly mean") +
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank()) +
+  new_scale_color() +
+  scale_color_manual(values = warm_color) +
+  geom_path(
+    data = pco2_product_biome_monthly_detrended %>%
+      filter(
+        product %in% gobm_product_list,
+        year == {{year_anom}},
+        name %in% c("temperature", "fgco2"),
+        biome %in% key_biomes
+      ) %>%
+      group_by(year, month, biome, name) %>%
+      summarise(across(where(is.numeric), mean)) %>%
+      ungroup(),
+    aes(month, resid, col = "2023\nGOBM mean")
+  )
 
 ggsave(width = 9,
-       height = 3,
+       height = 4,
        dpi = 600,
        filename = "../output/seasonal_anomaly_ensemble.jpg")
 
@@ -3568,13 +3724,28 @@ pco2_product_biome_monthly_flux_attribution %>%
   summarise(across(where(is.numeric), mean)) %>%
   ungroup() %>%
   filter(name %in% c("resid_fgco2_dfco2", "resid_fgco2_kw_sol"),
-         biome %in% c("Global", key_biomes)) %>%
+         biome %in% key_biomes) %>%
   p_season(dim_col = "biome",
            title = "Ensemble mean drivers of flux anomaly",
-           scales = "fixed")
+           scales = "fixed") +
+  new_scale_color() +
+  scale_color_manual(values = warm_color) +
+  geom_path(
+    data = pco2_product_biome_monthly_flux_attribution %>%
+      filter(
+        product %in% gobm_product_list,
+        year == {{year_anom}},
+        name %in% c("resid_fgco2_dfco2", "resid_fgco2_kw_sol"),
+        biome %in% key_biomes
+      ) %>%
+      group_by(year, month, biome, name) %>%
+      summarise(across(where(is.numeric), mean)) %>%
+      ungroup(),
+    aes(month, resid, col = "2023\nGOBM mean")
+  )
 
 ggsave(width = 9,
-       height = 3,
+       height = 4,
        dpi = 600,
        filename = "../output/seasonal_anomaly_attribution_ensemble.jpg")
 
@@ -3689,60 +3860,6 @@ ggsave(width = 9,
 
 ```
 
-# Zonal mean sections
-
-The following analysis is available for GOBMs only.
-
-## Annual means
-
-### {{year_anom}} anomaly
-
-```{r {{year_anom}}_anomaly_zonal_mean_sections_annual, eval=FALSE}
-
-pco2_product_zonal_mean_sections_annual %>%
-  filter(year == {{year_anom}},
-         region != "Southern") %>%
-  group_split(name) %>%
-  # head(1) %>%
-  map(
-    ~ ggplot(data = .x) +
-      geom_contour_filled(aes(lat, depth, z = resid)) +
-      scale_fill_gradientn(colours = cmocean(name = "curl")(100),
-                           rescaler = ~ scales::rescale_mid(.x, mid = 0),
-                           super = ScaleDiscretised,
-                           name = labels_breaks(.x %>% distinct(name))$i_legend_title) +
-      # scale_fill_distiller(type = "div",
-      #                      palette = "RdBu",
-      #                      rescaler = ~ scales::rescale_mid(.x, mid = 0),
-      #                      super = ScaleDiscretised,
-      #                      name = labels_breaks(.x %>% distinct(name))$i_legend_title) +
-      scale_y_continuous(trans = trans_reverser("sqrt"),
-                         breaks = c(50, 100, 200, 400)) +
-      scale_x_continuous(breaks = seq(-100, 100, 20)) +
-      coord_cartesian(expand = 0) +
-      facet_grid(region ~ product) +
-      labs(y = "Depth (m)", x = "Latitude (°N)") +
-      guides(
-        fill = guide_colorsteps(
-          barheight = unit(0.3, "cm"),
-          barwidth = unit(6, "cm"),
-          ticks = TRUE,
-          ticks.colour = "grey20",
-          frame.colour = "grey20",
-          label.position = "top",
-          direction = "horizontal"
-        )
-      ) +
-      theme(
-        legend.position = "top",
-        legend.title.align = 1,
-        legend.box.spacing = unit(0.1, "cm"),
-        legend.title = element_markdown(halign = 1,
-                                        lineheight = 1.5)
-      )
-  )
-
-```
 
 # Biome profiles
 
@@ -3926,127 +4043,6 @@ ggsave(width = 16,
 
 ```
 
-```{r {{year_anom}}_anomaly_profiles_monthly_CESM_hovmoeller, fig.asp=1}
-
-pco2_product_biome_monthly_detrended %>% 
-  filter(biome %in% key_biomes,
-         name %in% "mld",
-         year == {{year_anom}},
-         product == "ETHZ_CESM"
-  )
-
-
-plot_list <-
-  full_join(
-    pco2_product_profiles_monthly %>%
-      filter(
-        year == {{year_anom}},
-        biome %in% key_biomes,
-        product == "ETHZ_CESM",
-        name %in% c("sdissic", "thetao")
-      ),
-    pco2_product_biome_monthly_detrended %>%
-      filter(
-        biome %in% key_biomes,
-        name %in% "mld",
-        year == {{year_anom}},
-        product == "ETHZ_CESM"
-      ) %>%
-      select(month, biome, mld = value)
-  ) %>%
-  group_split(name, biome) %>%
-  # tail(1) %>%
-  map(
-    ~ ggplot(data = .x) +
-      geom_contour_filled(aes(month, depth, z = resid)) +
-      geom_line(aes(month, mld))+
-      scale_fill_gradientn(
-        colours = cmocean(name = "curl")(100),
-        rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        super = ScaleDiscretised,
-        name = labels_breaks(.x %>% distinct(name))$i_legend_title
-      )+
-      # scale_y_reverse() +
-      scale_y_continuous(trans = trans_reverser("sqrt"), breaks = c(50, 100, 200, 400)) +
-      coord_cartesian(expand = 0) +
-      facet_wrap( ~ biome) +
-      guides(
-        fill = guide_colorsteps(
-          barheight = unit(0.3, "cm"),
-          barwidth = unit(10, "cm"),
-          ticks = TRUE,
-          ticks.colour = "grey20",
-          frame.colour = "grey20",
-          label.position = "top",
-          direction = "horizontal"
-        )
-      ) +
-      theme(
-        legend.position = "top",
-        legend.title.align = 1,
-        legend.box.spacing = unit(0.1, "cm"),
-        legend.title = element_markdown(halign = 1,
-                                        lineheight = 1.5)
-      )
-  )
-
-ggsave(plot = wrap_plots(plot_list,
-                         ncol = 4),
-       width = 22,
-       height = 8,
-       dpi = 600,
-       filename = "../output/CESM_2023_anomaly_profiles_hovmoeller.jpg")
-
-plot_list <- pco2_product_profiles_monthly %>%
-  filter(year == {{year_anom}},
-         biome %in% key_biomes,
-         product == "ETHZ_CESM",
-         name %in% c("sdissic", "thetao")) %>%
-  arrange(month) %>%
-  group_by(biome, name, depth) %>%
-  mutate(resid = resid - first(resid)) %>%
-  ungroup() %>% 
-  group_split(name, biome) %>%
-  # tail(1) %>%
-  map(
-    ~ ggplot(data = .x) +
-      geom_contour_filled(aes(month, depth, z = resid)) +
-      scale_fill_gradientn(colours = cmocean(name = "curl")(100),
-                           rescaler = ~ scales::rescale_mid(.x, mid = 0),
-                           super = ScaleDiscretised,
-                           name = labels_breaks(.x %>% distinct(name))$i_legend_title) +
-      scale_y_continuous(trans = trans_reverser("sqrt"), breaks = c(50, 100, 200, 400)) +
-      coord_cartesian(expand = 0) +
-      facet_wrap( ~ biome) +
-      guides(
-        fill = guide_colorsteps(
-          barheight = unit(0.3, "cm"),
-          barwidth = unit(10, "cm"),
-          ticks = TRUE,
-          ticks.colour = "grey20",
-          frame.colour = "grey20",
-          label.position = "top",
-          direction = "horizontal"
-        )
-      ) +
-      theme(
-        legend.position = "top",
-        legend.title.align = 1,
-        legend.box.spacing = unit(0.1, "cm"),
-        legend.title = element_markdown(halign = 1,
-                                        lineheight = 1.5)
-      )
-  )
-
-ggsave(plot = wrap_plots(plot_list,
-                         ncol = 4),
-       width = 22,
-       height = 8,
-       dpi = 600,
-       filename = "../output/CESM_2023_anomaly_profiles_hovmoeller_evolution.jpg")
-
-
-```
 
 ```{r {{year_anom}}_anomaly_profiles_monthly_FESOM, fig.asp=1}
 
@@ -4090,6 +4086,411 @@ ggsave(width = 10,
        height = 8,
        dpi = 600,
        filename = "../output/FESOM_2023_anomaly_profiles.jpg")
+
+
+```
+
+
+
+```{r {{year_anom}}_anomaly_profiles_monthly_hovmoeller, fig.asp=1}
+
+
+plot_list <-
+  full_join(
+    pco2_product_profiles_monthly %>%
+      filter(
+        year == {{year_anom}},
+        biome %in% key_biomes,
+        # product == "ETHZ_CESM",
+        name %in% c("sdissic", "thetao")
+      ),
+    pco2_product_biome_monthly_detrended %>%
+      filter(
+        biome %in% key_biomes,
+        name %in% "mld",
+        year == {{year_anom}},
+        product %in% gobm_product_list
+      ) %>%
+      select(product, month, biome, mld = value)
+  ) %>%
+  group_split(name, biome) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_contour_filled(aes(month, depth, z = resid)) +
+      geom_line(aes(month, mld))+
+      scale_fill_gradientn(
+        colours = cmocean(name = "balance")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        super = ScaleDiscretised,
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title
+      )+
+      scale_y_continuous(trans = trans_reverser("sqrt"), breaks = c(20, 50, 100, 200, 400)) +
+      coord_cartesian(expand = 0,
+                      ylim = c(300,NA)) +
+      facet_grid(product ~ biome) +
+      guides(
+        fill = guide_colorsteps(
+          barheight = unit(0.3, "cm"),
+          barwidth = unit(10, "cm"),
+          ticks = TRUE,
+          ticks.colour = "grey20",
+          frame.colour = "grey20",
+          label.position = "top",
+          direction = "horizontal"
+        )
+      ) +
+      theme(
+        legend.position = "top",
+        legend.title.align = 1,
+        legend.box.spacing = unit(0.1, "cm"),
+        legend.title = element_markdown(halign = 1,
+                                        lineheight = 1.5)
+      )
+  )
+
+ggsave(plot = wrap_plots(plot_list,
+                         ncol = 3),
+       width = 18,
+       height = 12,
+       dpi = 600,
+       filename = "../output/GOBM_profiles_hovmoeller.jpg")
+
+plot_list <-
+  full_join(
+    pco2_product_profiles_monthly %>%
+      filter(
+        year == {{year_anom}},
+        biome %in% key_biomes,
+        # product == "ETHZ_CESM",
+        name %in% c("sdissic", "thetao")
+      ) %>% 
+      arrange(month) %>% 
+      group_by(product, name, biome, depth) %>% 
+      mutate(resid = resid - first(resid)) %>% 
+      ungroup(),
+    pco2_product_biome_monthly_detrended %>%
+      filter(
+        biome %in% key_biomes,
+        name %in% "mld",
+        year == {{year_anom}},
+        product %in% gobm_product_list
+      ) %>%
+      select(product, month, biome, mld = value)
+  ) %>%
+  group_split(name, biome) %>%
+  # head(1) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_contour_filled(aes(month, depth, z = resid)) +
+      geom_line(aes(month, mld))+
+      scale_fill_gradientn(
+        colours = cmocean(name = "balance")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        super = ScaleDiscretised,
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title
+      )+
+      scale_y_continuous(trans = trans_reverser("sqrt"), breaks = c(20, 50, 100, 200, 400)) +
+      coord_cartesian(expand = 0,
+                      ylim = c(300,NA)) +
+      facet_grid(product ~ biome) +
+      guides(
+        fill = guide_colorsteps(
+          barheight = unit(0.3, "cm"),
+          barwidth = unit(10, "cm"),
+          ticks = TRUE,
+          ticks.colour = "grey20",
+          frame.colour = "grey20",
+          label.position = "top",
+          direction = "horizontal"
+        )
+      ) +
+      theme(
+        legend.position = "top",
+        legend.title.align = 1,
+        legend.box.spacing = unit(0.1, "cm"),
+        legend.title = element_markdown(halign = 1,
+                                        lineheight = 1.5)
+      )
+  )
+
+ggsave(plot = wrap_plots(plot_list,
+                         ncol = 3),
+       width = 18,
+       height = 12,
+       dpi = 600,
+       filename = "../output/GOBM_profiles_hovmoeller_evolution.jpg")
+
+
+```
+
+
+
+```{r {{year_anom}}_anomaly_profiles_monthly_hovmoeller_ensemble, fig.asp=1}
+
+CESM_depth_grid <- pco2_product_profiles_monthly %>%
+  filter(year == {{year_anom}}, 
+         product == "ETHZ_CESM",
+         biome %in% key_biomes,
+         name %in% c("sdissic", "thetao")) %>%
+  distinct(name, biome, month, depth)
+
+pco2_product_profiles_monthly_FESOM_regrid <-
+full_join(
+  pco2_product_profiles_monthly %>%
+    filter(
+      year == {{year_anom}},
+      product == "FESOM-REcoM",
+      biome %in% key_biomes,
+      name %in% c("sdissic", "thetao")
+    ),
+  CESM_depth_grid %>% mutate(product = "FESOM-REcoM")
+)
+
+pco2_product_profiles_monthly_FESOM_regrid <-
+pco2_product_profiles_monthly_FESOM_regrid %>%
+  arrange(product, name, biome, month, depth)
+  
+  
+pco2_product_profiles_monthly_FESOM_regrid <-
+pco2_product_profiles_monthly_FESOM_regrid %>%
+  arrange(depth) %>%
+  group_by(product, name, biome, month) %>%
+  mutate(resid = spline(
+    depth,
+    resid,
+    method = "natural",
+    xout = depth
+  )$y) %>%
+  ungroup()
+
+CESM_depth <- 
+  CESM_depth_grid %>% distinct(depth) %>% pull()
+
+pco2_product_profiles_monthly_FESOM_regrid <-
+  pco2_product_profiles_monthly_FESOM_regrid %>%
+  filter(depth %in% CESM_depth)
+
+
+pco2_product_profiles_monthly_merged <-
+  bind_rows(
+    pco2_product_profiles_monthly_FESOM_regrid,
+    pco2_product_profiles_monthly %>%
+      filter(
+        year == {{year_anom}},
+        product == "ETHZ_CESM",
+        biome %in% key_biomes,
+        name %in% c("sdissic", "thetao")
+      )
+  )
+
+
+pco2_product_profiles_monthly_ensemble <-
+  pco2_product_profiles_monthly_merged %>%
+  group_by(name, biome, month, depth) %>%
+  summarise(resid = mean(resid)) %>%
+  ungroup()
+
+plot_list <-
+  full_join(
+    pco2_product_profiles_monthly_ensemble %>%
+      filter(
+        biome %in% key_biomes,
+        name %in% c("sdissic", "thetao")
+      ),
+    pco2_product_biome_monthly_detrended %>%
+      filter(
+        biome %in% key_biomes,
+        name %in% "mld",
+        year == {{year_anom}},
+        product %in% gobm_product_list
+      ) %>%
+      group_by(month, biome) %>% 
+      summarise(mld = mean(value)) %>% 
+      ungroup()
+  ) %>%
+  group_split(name, biome) %>%
+  # tail(1) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_contour_filled(aes(month, depth, z = resid)) +
+      geom_line(aes(month, mld))+
+      scale_fill_gradientn(
+        colours = cmocean(name = "balance")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        super = ScaleDiscretised,
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title
+      )+
+      # scale_y_reverse() +
+      scale_y_continuous(trans = trans_reverser("sqrt"), breaks = c(50, 100, 200, 400)) +
+      coord_cartesian(expand = 0,
+                      ylim = c(300,NA)) +
+      facet_wrap( ~ biome) +
+      guides(
+        fill = guide_colorsteps(
+          barheight = unit(0.3, "cm"),
+          barwidth = unit(10, "cm"),
+          ticks = TRUE,
+          ticks.colour = "grey20",
+          frame.colour = "grey20",
+          label.position = "top",
+          direction = "horizontal"
+        )
+      ) +
+      theme(
+        legend.position = "top",
+        legend.title.align = 1,
+        legend.box.spacing = unit(0.1, "cm"),
+        legend.title = element_markdown(halign = 1,
+                                        lineheight = 1.5)
+      )
+  )
+
+ggsave(plot = wrap_plots(plot_list,
+                         ncol = 3),
+       width = 18,
+       height = 8,
+       dpi = 600,
+       filename = "../output/GOBM_profiles_hovmoeller_ensemble.jpg")
+
+
+plot_list_left <-
+  full_join(
+    pco2_product_profiles_monthly_ensemble %>%
+      filter(
+        biome %in% key_biomes,
+        name %in% c("sdissic", "thetao")
+      ) %>% 
+      arrange(month) %>% 
+      group_by(name, biome, depth) %>% 
+      mutate(resid = if_else(name == "sdissic",
+                             resid - first(resid),
+                             resid)) %>% 
+      ungroup(),
+    pco2_product_biome_monthly_detrended %>%
+      filter(
+        biome %in% key_biomes,
+        name %in% "mld",
+        year == {{year_anom}},
+        product %in% gobm_product_list
+      ) %>%
+      group_by(month, biome) %>% 
+      summarise(mld = mean(value)) %>% 
+      ungroup()
+  ) %>%
+  group_split(biome, name) %>%
+  head(2) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_contour_filled(aes(month, depth, z = resid),
+                          bins = 8) +
+      geom_line(aes(month, mld))+
+      scale_fill_gradientn(
+        colours = cmocean(name = "balance")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        super = ScaleDiscretised,
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title
+      )+
+      # scale_y_reverse() +
+      scale_y_continuous(trans = trans_reverser("sqrt"), breaks = c(20, 50, 100, 200, 400)) +
+      coord_cartesian(expand = 0,
+                      ylim = c(300,NA)) +
+      facet_wrap( ~ biome) +
+      guides(
+        fill = guide_colorsteps(
+          barheight = unit(0.3, "cm"),
+          barwidth = unit(8, "cm"),
+          ticks = TRUE,
+          ticks.colour = "grey20",
+          frame.colour = "grey20",
+          label.position = "top",
+          direction = "horizontal"
+        )
+      ) +
+      theme(
+        legend.position = "top",
+        legend.title.align = 1,
+        legend.box.spacing = unit(0.1, "cm"),
+        legend.title = element_markdown(halign = 1,
+                                        lineheight = 1.5)
+      )
+  )
+
+plot_list_right <-
+  full_join(
+    pco2_product_profiles_monthly_ensemble %>%
+      filter(
+        biome %in% key_biomes,
+        name %in% c("sdissic", "thetao")
+      ) %>% 
+      arrange(month) %>% 
+      group_by(name, biome, depth) %>% 
+      mutate(resid = if_else(name == "sdissic",
+                             resid - first(resid),
+                             resid)) %>% 
+      ungroup(),
+    pco2_product_biome_monthly_detrended %>%
+      filter(
+        biome %in% key_biomes,
+        name %in% "mld",
+        year == {{year_anom}},
+        product %in% gobm_product_list
+      ) %>%
+      group_by(month, biome) %>% 
+      summarise(mld = mean(value)) %>% 
+      ungroup()
+  ) %>%
+  group_split(biome, name) %>%
+  tail(4) %>%
+  map(
+    ~ ggplot(data = .x) +
+      geom_contour_filled(aes(month, depth, z = resid),
+                          bins = 8) +
+      geom_line(aes(month, mld))+
+      scale_fill_gradientn(
+        colours = cmocean(name = "balance")(100),
+        rescaler = ~ scales::rescale_mid(.x, mid = 0),
+        super = ScaleDiscretised,
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title
+      )+
+      # scale_y_reverse() +
+      scale_y_continuous(trans = trans_reverser("sqrt"), breaks = c(20, 50, 100, 200, 400)) +
+      coord_cartesian(expand = 0,
+                      ylim = c(300,NA)) +
+      facet_wrap( ~ biome) +
+      guides(
+        fill = guide_colorsteps(
+          barheight = unit(0.3, "cm"),
+          barwidth = unit(8, "cm"),
+          ticks = TRUE,
+          ticks.colour = "grey20",
+          frame.colour = "grey20",
+          label.position = "top",
+          direction = "horizontal"
+        )
+      ) +
+      theme(
+        legend.position = "top",
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        legend.title.align = 1,
+        legend.box.spacing = unit(0.1, "cm"),
+        legend.title = element_markdown(halign = 1,
+                                        lineheight = 1.5)
+      )
+  )
+
+plot_list <- c(plot_list_left, plot_list_right)
+
+ggsave(plot = wrap_plots(plot_list,
+                         ncol = 3,
+                         byrow = FALSE),
+       width = 13,
+       height = 6,
+       dpi = 600,
+       filename = "../output/GOBM_profiles_hovmoeller_ensemble_evolution.jpg")
+
+
 
 
 ```
