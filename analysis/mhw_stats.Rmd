@@ -31,15 +31,14 @@ map <-
 key_biomes <-
   read_rds(here::here("data/key_biomes.rds"))
 
-super_biomes <-
-  read_rds(here::here("data/super_biomes.rds"))
-
-super_biome_mask <-
-  read_rds(here::here("data/super_biome_mask.rds"))
-
 biome_mask <-
   read_rds(here::here("data/biome_mask.rds"))
 
+
+biome_mask %>% 
+  filter(!str_detect(biome, "SO-")) %>% 
+  pull(lat) %>% 
+  max()
 
 ```
 
@@ -132,6 +131,34 @@ map +
 
 ```
 
+```{r MHW_timeseries}
+
+
+map +
+  geom_raster(data = cat.clim %>%
+                distinct(lon, lat), aes(lon, lat))
+
+area_total <-
+cat.clim %>%
+  distinct(lon, lat) %>% 
+  mutate(area = earth_surf(lat, lon)) %>% 
+  summarise(area_total = sum(area)) %>% 
+  pull()
+
+cat.clim.timeseries <-
+  cat.clim %>%
+  mutate(area = earth_surf(lat, lon)) %>%
+  group_by(time) %>%
+  summarise(area_mhw = sum(area)) %>%
+  ungroup() %>%
+  mutate(area_mhw_rel = area_mhw / area_total)
+
+cat.clim.timeseries %>% 
+  ggplot(aes(time, area_mhw_rel)) +
+  geom_path()
+  
+
+```
 
 
 ```{r write_output_mhw_raw_2023, eval=FALSE}

@@ -20,6 +20,12 @@ library(collapse)
 
 ```
 
+```{r}
+
+
+```
+
+
 # Read data
 
 ```{r read_map}
@@ -88,8 +94,36 @@ color_products <- c(
   "FESOM-REcoM" = "#00798c"
 )
 
-warm_color <- "#B84A60FF"
-cold_color <- "#16877CFF"
+warm_color <- "#c33c57"
+cold_color <- "#3f6fb3"
+
+
+warm_cool_gradient <- 
+c(
+  "#61195a",
+  "#6f185f",
+  "#8d1e62",
+  "#aa2960",
+  "#c33c57",
+  "#da5351",
+  "#e77155",
+  "#f09264",
+  "#f09264",
+  "#fbd297",
+  "#fefefe",
+  "#c6e8ea",
+  "#97d4db",
+  "#79bcd0",
+  "#5ca2c6",
+  "#4a88bc",
+  "#3f6fb3",
+  "#3e56a2",
+  "#3c3f82",
+  "#2f2c5a",
+  "#272648"
+)
+
+# cmocean("balance")(100)
 
 ```
 
@@ -613,7 +647,7 @@ pco2_product_map_annual_anomaly %>%
                 aes(lon, lat, fill = resid)) +
       # labs(title =  paste({{year_anom}}, "anomaly")) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -664,7 +698,7 @@ pco2_product_map_annual_anomaly %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -710,7 +744,7 @@ pco2_product_map_annual_anomaly %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -781,7 +815,7 @@ pco2_product_map_annual_anomaly_ensemble %>%
                 col = "grey80", size = 1) +
       labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean anomaly")) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -821,7 +855,7 @@ pco2_product_map_annual_anomaly_ensemble %>%
                 col = "grey80", size = 1) +
       labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean absolute")) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$value_mean, .01), quantile(.x$value_mean, .99)),
@@ -894,7 +928,7 @@ full_join(
                 aes(lon, lat, fill = value)) +
       labs(title =  paste({{year_anom}}, "offset from ensemble mean")) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
@@ -951,7 +985,7 @@ pco2_product_map_annual_anomaly_ensemble_gobm %>%
                 aes(lon, lat, fill = resid_mean)) +
       labs(title =  paste({{year_anom}}, "GOBM ensemble mean anomaly")) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -997,7 +1031,7 @@ pco2_product_map_annual_anomaly_ensemble_gobm %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid_mean)) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1222,7 +1256,7 @@ ggsave(width = 4,
 map +
   geom_tile(data = pco2_product_map_annual_slope, aes(lon, lat, fill = slope)) +
   scale_fill_gradientn(
-    colours = cmocean("balance")(100),
+    colours = warm_cool_gradient,
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     limits = c(
       quantile(pco2_product_map_annual_slope$slope, .01),
@@ -1284,7 +1318,7 @@ map +
     size = 1
   )+
   scale_fill_gradientn(
-    colours = cmocean("balance")(100),
+    colours = warm_cool_gradient,
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     limits = c(
       quantile(pco2_product_map_annual_slope$slope,.01),
@@ -1339,7 +1373,7 @@ pco2_product_map_monthly_anomaly %>%
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -1403,7 +1437,7 @@ pco2_product_map_monthly_anomaly_ensemble %>%
                 aes(lon, lat, fill = resid_mean)) +
       labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean monthly anomaly")) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1454,7 +1488,7 @@ pco2_product_map_monthly_fCO2_decomposition %>%
                 aes(lon, lat, fill = resid)) +
       labs(title = .x$product) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("sfco2"),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -1502,7 +1536,7 @@ pco2_product_map_monthly_fCO2_decomposition %>%
       #   col = "grey"
       # ) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("sfco2"),,
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1543,7 +1577,7 @@ map +
               filter(year == {{year_anom}}),
             aes(lon, lat, fill = resid)) +
   scale_fill_gradientn(
-    colours = cmocean("balance")(100),
+    colours = warm_cool_gradient,
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     name = labels_breaks("sfco2"),
     limits = c(quantile(pco2_product_map_annual_fCO2_decomposition$resid, .01), 
@@ -1607,7 +1641,7 @@ pco2_product_map_annual_fCO2_decomposition_ensemble %>%
                 aes(lon, lat, shape = "Ensemble mean\n< StDev"),
                 col = "grey80", size = 1) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("sfco2"),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1660,7 +1694,7 @@ pco2_product_map_monthly_flux_attribution %>%
                 aes(lon, lat, fill = resid)) +
       labs(subtitle = .x$product) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("fgco2"),
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
@@ -1712,7 +1746,7 @@ pco2_product_map_monthly_flux_attribution %>%
       # geom_point(data = .x %>% filter(abs(resid_mean) < resid_sd),
       #            aes(lon, lat, shape = "Ensemble mean\n< StDev"))+
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("fgco2"),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1758,7 +1792,7 @@ map +
               filter(year == {{year_anom}}),
             aes(lon, lat, fill = resid)) +
   scale_fill_gradientn(
-    colours = cmocean("balance")(100),
+    colours = warm_cool_gradient,
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     name = labels_breaks("fgco2"),
     limits = c(quantile(pco2_product_map_annual_flux_attribution$resid, .01, na.rm = TRUE), 
@@ -1828,7 +1862,7 @@ pco2_product_map_annual_flux_attribution_ensemble %>%
                 aes(lon, lat, shape = "Ensemble mean\n< StDev"),
                 col = "grey80", size = 1) +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks("fgco2"),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1888,7 +1922,7 @@ pco2_product_hovmoeller_monthly_anomaly %>%
              aes(decimal, lat, fill = resid)) +
       geom_raster() +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid,.01),quantile(.x$resid,.99)),
@@ -1930,7 +1964,7 @@ pco2_product_hovmoeller_monthly_anomaly_ensemble %>%
              aes(decimal, lat, fill = resid_mean)) +
       geom_raster() +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -1962,7 +1996,7 @@ left_join(
              aes(decimal, lat, fill = resid_offset)) +
       geom_raster() +
       scale_fill_gradientn(
-        colours = cmocean("balance")(100),
+        colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
         name = labels_breaks(.x %>% distinct(name)),
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
@@ -2156,8 +2190,9 @@ bind_rows(
     labeller = labeller(name = x_axis_labels),
     switch = "y"
   ) +
+  labs(x = "Year") +
   theme(
-    axis.title = element_blank(),
+    axis.title.y = element_blank(),
     strip.text.y.left = element_markdown(),
     strip.placement = "outside",
     strip.background.y = element_blank(),
@@ -2405,7 +2440,10 @@ full_join(region_biomes,
     str_detect(biome, "SPSS") ~ "Subpolar\nseasonally\nstratified\n(SPSS)",
     str_detect(biome, "STSS") ~ "Subtropical\nseasonally\nstratified\n(STSS)",
     str_detect(biome, "STPS|Southern Indian") ~ "Subtropical\npermanently\nstratified\n(STPS)",
-    TRUE ~ "")) %>% 
+    TRUE ~ ""),
+    biome_class = fct_relevel(biome_class, 
+                              "Subtropical\nseasonally\nstratified\n(STSS)", 
+                              after = 2)) %>% 
   filter(year == {{year_anom}},
          name %in% c("temperature", "fgco2", "fgco2_int"),
          region != "southern",
@@ -2439,20 +2477,22 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
     data = pco2_product_biome_annual_anomaly_merged %>%
       filter(name != "fgco2_int",
              product %in% pco2_product_list),
-    aes(col = product),
-    # position = position_nudge(x = -0.15),
-    shape = 21
+    aes(col = product, shape = product)
   ) +
   scale_color_manual(values = color_products,
                      name = "pCO2 products") +
-  new_scale_color()+
+  scale_shape_manual(values = 21:24,
+                     name = "pCO2 products") +
+  new_scale_color() +
+  new_scale("shape") +
   geom_point(data = pco2_product_biome_annual_anomaly_merged %>% 
                filter(name != "fgco2_int",
                       product %in% gobm_product_list),
-             aes(col = product),
-             position = position_nudge(x = 0.2),
-             shape = 21) +
+             aes(col = product, shape = product),
+             position = position_nudge(x = 0.2)) +
   scale_color_manual(values = color_products,
+                     name = "GOBMs") +
+  scale_shape_manual(values = 21:22,
                      name = "GOBMs") +
   facet_nested(name ~ latitude + biome_class, 
              scales = "free", space = "free_x",
@@ -2659,7 +2699,7 @@ map +
             aes(lon, lat, fill = resid)) +
   facet_wrap(~ region, ncol = 1) +
   scale_fill_gradientn(
-    colours = cmocean("balance")(100),
+    colours = warm_cool_gradient,
     rescaler = ~ scales::rescale_mid(.x, mid = 0),
     name = labels_breaks("fgco2"),
     limits = c(
@@ -2841,9 +2881,9 @@ pco2_product_biome_annual_anomaly_recompute %>%
 
 ```{r anomalies_from_annual_mean_trends_overview_OceanSODA, fig.asp=1}
 
-pco2_product_biome_annual_detrended %>%
+pco2_product_biome_monthly_detrended %>%
   filter(biome %in% "Global",
-         name %in% c("fgco2_int", "temperature"),
+         name %in% c("temperature"),
          product %in% pco2_product_list) %>%
   select(-c(time, product)) %>% 
   group_by(year, month, biome, name) %>% 
@@ -2851,13 +2891,29 @@ pco2_product_biome_annual_detrended %>%
   ungroup() %>% 
   # mutate(product = "Ensemble mean") %>% 
   p_season(title = NULL,
-           dim_col = NULL) +
-  theme(legend.position = "top")
+           dim_col = NULL)
 
-ggsave(width = 5,
-       height = 6,
+ggsave(width = 7,
+       height = 3,
        dpi = 600,
-       filename = "../output/seasonality_ensemble_mean.jpg")
+       filename = "../output/seasonality_sst_global.jpg")
+
+pco2_product_biome_monthly_detrended %>%
+  filter(biome %in% "Global",
+         name %in% c("fgco2_int"),
+         product %in% pco2_product_list) %>%
+  select(-c(time, product)) %>% 
+  group_by(year, month, biome, name) %>% 
+  summarise(across(where(is.numeric), mean)) %>% 
+  ungroup() %>% 
+  # mutate(product = "Ensemble mean") %>% 
+  p_season(title = NULL,
+           dim_col = NULL)
+
+ggsave(width = 7,
+       height = 3,
+       dpi = 600,
+       filename = "../output/seasonality_fgco2_global.jpg")
 
 
 ```
@@ -3091,56 +3147,58 @@ pco2_product_biome_annual_anomaly_ensemble %>%
       geom_smooth(
         data = . %>% filter(year != {{year_anom}}),
         method = "lm",
-        fill = cold_color,
-        col = cold_color,
+        fill = "grey",
+        col = "grey40",
         fullrange = TRUE
       ) +
       geom_linerange(
-        data = . %>% filter(year != {{year_anom}}),
+        data = . %>% filter(!year %in% c({{year_anom}}, 1997, 2015)),
         aes(ymin = mean_fgco2_int - sd_fgco2_int,
-            ymax = mean_fgco2_int + sd_fgco2_int)
+            ymax = mean_fgco2_int + sd_fgco2_int,
+            col = "1990-2022")
       ) +
       geom_linerange(
-        data = . %>% filter(year != {{year_anom}}),
+        data = . %>% filter(!year %in% c({{year_anom}}, 1997, 2015)),
         aes(xmin = mean - sd,
-            xmax = mean + sd)
+            xmax = mean + sd,
+            col = "1990-2022")
       ) +
       geom_point(
-        data = . %>% filter(year != {{year_anom}}),
-        aes(fill = year),
+        data = . %>% filter(!year %in% c({{year_anom}}, 1997, 2015)),
+        aes(fill = "1990-2022"),
         shape = 21
       ) +
-      scale_color_grayC() +
-      scale_fill_grayC() +
+      scale_color_manual(values = "grey60", name = "X") +
+      scale_fill_manual(values = "grey60", name = "X") +
       new_scale_fill() +
       new_scale_color() +
       geom_linerange(
-        data = . %>% filter(year == {{year_anom}}),
+        data = . %>% filter(year %in% c({{year_anom}}, 1997, 2015)),
         aes(ymin = mean_fgco2_int - sd_fgco2_int,
             ymax = mean_fgco2_int + sd_fgco2_int,
             col = as.factor(year)),
         linewidth = 1
       ) +
       geom_linerange(
-        data = . %>% filter(year == {{year_anom}}),
+        data = . %>% filter(year %in% c({{year_anom}}, 1997, 2015)),
         aes(xmin = mean - sd,
             xmax = mean + sd,
             col = as.factor(year)),
         linewidth = 1
       ) +
       geom_point(
-        data = . %>% filter(year == {{year_anom}}),
+        data = . %>% filter(year %in% c({{year_anom}}, 1997, 2015)),
         aes(fill = as.factor(year)),
         shape = 21,
-        size = 2
+        size = 3
       )  +
       scale_fill_manual(
-        values = warm_color,
+        values = rev(warm_cool_gradient[c(9,5,2)]),
         guide = guide_legend(reverse = TRUE,
                              order = 2)
       ) +
       scale_color_manual(
-        values = warm_color,
+        values = rev(warm_cool_gradient[c(9,5,2)]),
         guide = guide_legend(reverse = TRUE,
                              order = 2)
       ) +
@@ -3152,9 +3210,7 @@ pco2_product_biome_annual_anomaly_ensemble %>%
       theme(
         axis.title.x = element_markdown(),
         axis.title.y = element_markdown(),
-        legend.title = element_blank(),
-        legend.box = "horizontal",
-        legend.position = c(0.8,0.25)
+        legend.title = element_blank()
       )
   )
 

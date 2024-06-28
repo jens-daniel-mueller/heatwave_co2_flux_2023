@@ -153,7 +153,7 @@ wflow_publish(here::here(
     "pco2_product_synopsis_2023.Rmd"
   )
 ),
-message = "figures revised")
+message = "new warm-cold color scale")
 
 
 
