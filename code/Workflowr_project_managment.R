@@ -150,10 +150,10 @@ republish = TRUE)
 wflow_publish(here::here(
   "analysis",
   c(
-    "pco2_product_synopsis_2023.Rmd"
+    "SOM_FFN.Rmd"
   )
 ),
-message = "new warm-cold color scale")
+message = "correct global mask for fco2 decomposition and flux attribution")
 
 
 

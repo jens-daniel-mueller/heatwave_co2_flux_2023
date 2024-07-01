@@ -2294,7 +2294,9 @@ pco2_product_biome_monthly_detrended_anomaly_relative %>%
 biome_mask <-
   bind_rows(
     biome_mask,
-    biome_mask %>% mutate(biome = "Global")
+    biome_mask %>% 
+      filter(!str_detect(biome, "SO-")) %>% 
+      mutate(biome = "Global")
   )
 
 pco2_product_biome_monthly_fCO2_decomposition <-
