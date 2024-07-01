@@ -445,7 +445,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">SOM_FFN</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">26 June, 2024</h4>
+<h4 class="date">01 July, 2024</h4>
 
 </div>
 
@@ -474,7 +474,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-06-26
+<strong>Last updated:</strong> 2024-07-01
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -606,15 +606,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree3c17a8e6a8490b5d8f01e6269b00c50995117a17targetblank3c17a8ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treecb93db46f5e5309f9be322e688f522dcc8d45aactargetblankcb93db4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/3c17a8e6a8490b5d8f01e6269b00c50995117a17" target="_blank">3c17a8e</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/cb93db46f5e5309f9be322e688f522dcc8d45aac" target="_blank">cb93db4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree3c17a8e6a8490b5d8f01e6269b00c50995117a17targetblank3c17a8ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treecb93db46f5e5309f9be322e688f522dcc8d45aactargetblankcb93db4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -624,7 +624,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/3c17a8e6a8490b5d8f01e6269b00c50995117a17" target="_blank">3c17a8e</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/cb93db46f5e5309f9be322e688f522dcc8d45aac" target="_blank">cb93db4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -643,9 +643,6 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data
     Ignored:    output/
-
-Unstaged changes:
-    Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
 <p>
@@ -691,6 +688,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/f1954bc7d14844b6b3c00f59cf78a40949f20dae/docs/SOM_FFN.html" target="_blank">f1954bc</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -5395,8 +5409,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    3208806   171.4   57557708  3074.0  175652181  9380.9
-Vcells 1976513844 15079.7 5034243955 38408.3 5034243955 38408.3</code></pre>
+Ncells    3208808   171.4   57555444  3073.8  175645274  9380.5
+Vcells 1976513936 15079.7 5034244047 38408.3 5034244047 38408.3</code></pre>
 <pre class="r"><code>map +
   geom_tile(data = pco2_product_map_annual_fCO2_decomposition %&gt;%
               filter(year == 2023), aes(lon, lat, fill = resid)) +
@@ -5587,8 +5601,8 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    3229608   172.5   46046167  2459.2  175652181  9380.9
-Vcells 2181711404 16645.2 5034243955 38408.3 5034243955 38408.3</code></pre>
+Ncells    3229610   172.5   46044356  2459.1  175645274  9380.5
+Vcells 2181711496 16645.2 5034244047 38408.3 5034244047 38408.3</code></pre>
 <pre class="r"><code>pco2_product_map_monthly_anomaly %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
@@ -20441,7 +20455,9 @@ jens-daniel-mueller
 <pre class="r"><code>biome_mask &lt;-
   bind_rows(
     biome_mask,
-    biome_mask %&gt;% mutate(biome = &quot;Global&quot;)
+    biome_mask %&gt;% 
+      filter(!str_detect(biome, &quot;SO-&quot;)) %&gt;% 
+      mutate(biome = &quot;Global&quot;)
   )
 
 pco2_product_biome_monthly_fCO2_decomposition &lt;-
