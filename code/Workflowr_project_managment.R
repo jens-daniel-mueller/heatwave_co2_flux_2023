@@ -149,13 +149,9 @@ republish = TRUE)
 
 wflow_publish(here::here(
   "analysis", c(
-    "OceanSODA.Rmd",
-    "NRT_fco2residual.Rmd",
-    "CMEMS.Rmd",
-    "ETHZ_CESM.Rmd",
-    "FESOM_REcoM.Rmd"
+    "NRT_fco2residual.Rmd"
   )
-), message = "correct global mask for fco2 decomposition and flux attribution")
+), message = "rename fCO2-Residual")
 
 
 
