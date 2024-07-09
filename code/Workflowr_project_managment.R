@@ -149,9 +149,9 @@ republish = TRUE)
 
 wflow_publish(here::here(
   "analysis", c(
-    "NRT_fco2residual.Rmd"
+    "pco2_product_synopsis_2023.Rmd"
   )
-), message = "rename fCO2-Residual")
+), message = "Robinson map binned color scale")
 
 
 

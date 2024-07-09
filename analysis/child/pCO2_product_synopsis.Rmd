@@ -122,7 +122,7 @@ rev(c(
 ```
 
 
-```{r read_all_files}
+```{r read_all_files, results = FALSE}
 
 files <- list.files(here::here("data/"),
                     pattern = "FESOM-REcoM")
@@ -132,17 +132,14 @@ file_types <- str_remove(file_types, ".csv")
 
 for(i_file_type in file_types) {
   
-  print(i_file_type)
+  # print(i_file_type)
   # i_file_type <- file_types[1]
   
   files <- list.files(here::here("data/"),
                       pattern = paste({{year_anom}}, i_file_type, sep = "_"),
                       full.names = TRUE)
   
-  length(files)
-  print(files)
-  
-  
+
   pco2_product <-
     read_csv(files, id = "product")
   
@@ -179,172 +176,211 @@ for(i_file_type in file_types) {
 
 ```{r define_labels_and_breaks_OIA_variables_change}
 
+
 labels_breaks <- function(i_name) {
-  
   if (i_name == "dco2") {
-    i_legend_title <- "ΔpCO<sub>2</sub><br>(µatm)"
+    i_legend_title <- "ΔpCO<sub>2</sub> anom.<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "dfco2") {
-    i_legend_title <- "ΔfCO<sub>2</sub><br>(µatm)"
+    i_legend_title <- "ΔfCO<sub>2</sub> anom.<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-12, 12, 3), Inf)
   }
   
   if (i_name == "atm_co2") {
-    i_legend_title <- "pCO<sub>2,atm</sub><br>(µatm)"
+    i_legend_title <- "pCO<sub>2,atm</sub> anom.<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "atm_fco2") {
-    i_legend_title <- "fCO<sub>2,atm</sub><br>(µatm)"
+    i_legend_title <- "fCO<sub>2,atm</sub> anom.<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-2, 2, 0.5), Inf)
   }
   
   if (i_name == "sol") {
-    i_legend_title <- "K<sub>0</sub><br>(mol m<sup>-3</sup> µatm<sup>-1</sup>)"
+    i_legend_title <- "K<sub>0</sub> anom.<br>(mol m<sup>-3</sup> µatm<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "kw") {
-    i_legend_title <- "k<sub>w</sub><br>(m yr<sup>-1</sup>)"
+    i_legend_title <- "k<sub>w</sub> anom.<br>(m yr<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "kw_sol") {
-    i_legend_title <- "k<sub>w</sub> K<sub>0</sub><br>(mol yr<sup>-1</sup> m<sup>-2</sup> µatm<sup>-1</sup>)"
+    i_legend_title <- "k<sub>w</sub> K<sub>0</sub> anom.<br>(mol yr<sup>-1</sup> m<sup>-2</sup> µatm<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.015, 0.015, 0.003), Inf)
   }
   
   if (i_name == "spco2") {
-    i_legend_title <- "pCO<sub>2,ocean</sub><br>(µatm)"
+    i_legend_title <- "pCO<sub>2,ocean</sub> anom.<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-12, 12, 3), Inf)
   }
   
   if (i_name == "sfco2") {
-    i_legend_title <- "fCO<sub>2,ocean</sub><br>(µatm)"
+    i_legend_title <- "fCO<sub>2,ocean</sub> anom.<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-12, 12, 3), Inf)
   }
   
   if (i_name == "intpp") {
-    i_legend_title <- "NPP<sub>int</sub><br>(mol s<sup>-1</sup> m<sup>-2</sup>)"
+    i_legend_title <- "NPP<sub>int</sub> anom.<br>(mol s<sup>-1</sup> m<sup>-2</sup>)"
+    i_breaks <- c(-Inf, seq(-1e-7, 1e-7, 2.5e-8), Inf)
   }
-
+  
   if (i_name == "no3") {
-    i_legend_title <- "NO<sub>3</sub><br>(μmol kg<sup>-1</sup>)"
+    i_legend_title <- "NO<sub>3</sub> anom.<br>(μmol kg<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-1.5, 1.5, 0.3), Inf)
   }
-
+  
   if (i_name == "o2") {
-    i_legend_title <- "O<sub>2</sub><br>(μmol kg<sup>-1</sup>)"
+    i_legend_title <- "O<sub>2</sub> anom.<br>(μmol kg<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
-
+  
   if (i_name == "dissic") {
-    i_legend_title <- "DIC<br>(μmol kg<sup>-1</sup>)"
+    i_legend_title <- "DIC anom.<br>(μmol kg<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-25, 25, 5), Inf)
   }
-
+  
   if (i_name == "sdissic") {
-    i_legend_title <- "sDIC<br>(μmol kg<sup>-1</sup>)"
+    i_legend_title <- "sDIC anom.<br>(μmol kg<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-25, 25, 5), Inf)
   }
-
+  
   if (i_name == "cstar") {
-    i_legend_title <- "C*<br>(μmol kg<sup>-1</sup>)"
+    i_legend_title <- "C* anom.<br>(μmol kg<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
-
+  
   if (i_name == "talk") {
-    i_legend_title <- "TA<br>(μmol kg<sup>-1</sup>)"
+    i_legend_title <- "TA anom.<br>(μmol kg<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-25, 25, 5), Inf)
   }
-
+  
   if (i_name == "stalk") {
-    i_legend_title <- "sTA<br>(μmol kg<sup>-1</sup>)"
+    i_legend_title <- "sTA anom.<br>(μmol kg<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-25, 25, 5), Inf)
   }
   
   if (i_name == "sfco2_total") {
-    i_legend_title <- "total"
+    i_legend_title <- "fCO<sub>2,ocean</sub> anom.<br>total<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "sfco2_therm") {
-    i_legend_title <- "thermal"
+    i_legend_title <- "fCO<sub>2,ocean</sub> anom.<br>thermal<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "sfco2_nontherm") {
-    i_legend_title <- "non-thermal"
+    i_legend_title <- "fCO<sub>2,ocean</sub> anom.<br>non-thermal<br>(µatm)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "fgco2") {
-    i_legend_title <- "FCO<sub>2</sub><br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+    i_legend_title <- "FCO<sub>2</sub> anom.<br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "fgco2_hov") {
-    i_legend_title <- "FCO<sub>2</sub><br>(PgC deg<sup>-1</sup> yr<sup>-1</sup>)"
+    i_legend_title <- "FCO<sub>2</sub> anom.<br>(PgC deg<sup>-1</sup> yr<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "fgco2_int") {
-    i_legend_title <- "FCO<sub>2</sub><br>(PgC yr<sup>-1</sup>)"
+    i_legend_title <- "FCO<sub>2</sub> anom.<br>(PgC yr<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "thetao") {
-    i_legend_title <- "Temp.<br>(°C)"
+    i_legend_title <- "Temp. anom.<br>(°C)"
+    i_breaks <- c(-Inf, seq(-1.6, 1.6, 0.4), Inf)
   }
   
   if (i_name == "temperature") {
-    i_legend_title <- "SST<br>(°C)"
+    i_legend_title <- "SST anom.<br>(°C)"
+    i_breaks <- c(-Inf, seq(-1.6, 1.6, 0.4), Inf)
   }
   
   if (i_name == "salinity") {
-    i_legend_title <- "SSS"
+    i_legend_title <- "SSS anom."
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "so") {
-    i_legend_title <- "Salinity"
+    i_legend_title <- "Salinity anom."
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "chl") {
-    i_legend_title <- "lg(Chl-a)<br>(lg(mg m<sup>-3</sup>))"
+    i_legend_title <- "lg(Chl-a) anom.<br>(lg(mg m<sup>-3</sup>))"
+    i_breaks <- c(-Inf, seq(-0.4, 0.4, 0.1), Inf)
   }
   
   if (i_name == "mld") {
-    i_legend_title <- "MLD<br>(m)"
+    i_legend_title <- "MLD anom.<br>(m)"
+    i_breaks <- c(-Inf, seq(-100, 100, 25), Inf)
   }
   
   if (i_name == "press") {
-    i_legend_title <- "pressure<sub>atm</sub><br>(Pa)"
+    i_legend_title <- "pressure<sub>atm</sub> anom.<br>(Pa)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "wind") {
-    i_legend_title <- "Wind <br>(m sec<sup>-1</sup>)"
+    i_legend_title <- "Wind anom.<br>(m sec<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "SSH") {
-    i_legend_title <- "SSH <br>(m)"
+    i_legend_title <- "SSH anom.<br>(m)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
   if (i_name == "fice") {
-    i_legend_title <- "Sea ice <br>(%)"
+    i_legend_title <- "Sea ice anom.<br>(%)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
-    
+  
   if (i_name == "resid_fgco2") {
     i_legend_title <-
       "Observed"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
-    
+  
   if (i_name == "resid_fgco2_dfco2") {
     i_legend_title <-
-      "ΔfCO<sub>2</sub>"
+      "FCO<sub>2</sub> anom.<br>ΔfCO<sub>2</sub> contr.<br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
-    
+  
   if (i_name == "resid_fgco2_kw_sol") {
     i_legend_title <-
-      "k<sub>w</sub> K<sub>0</sub>"
+      "FCO<sub>2</sub> anom.<br>k<sub>w</sub> K<sub>0</sub> contr.<br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
-    
+  
   if (i_name == "resid_fgco2_dfco2_kw_sol") {
     i_legend_title <-
-      "k<sub>w</sub> K<sub>0</sub> X ΔfCO<sub>2</sub>"
+      "FCO<sub>2</sub> anom.<br>k<sub>w</sub> K<sub>0</sub> X ΔfCO<sub>2</sub> contr.<br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
-    
+  
   if (i_name == "resid_fgco2_sum") {
     i_legend_title <-
       "∑"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
-    
+  
   if (i_name == "resid_fgco2_offset") {
     i_legend_title <-
       "Obs. - ∑"
+    i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
-  all_labels_breaks <- lst(i_legend_title)
+  all_labels_breaks <- lst(i_legend_title, i_breaks)
   
   return(all_labels_breaks)
   
@@ -488,8 +524,10 @@ p_season <- function(df,
       strip.placement = "outside",
       strip.background.y = element_blank(),
       axis.title.y = element_blank(),
-      legend.title = element_blank()
-    )
+      legend.title = element_blank(),
+      axis.text.y.right = element_blank()
+    ) +
+    scale_y_continuous(sec.axis = dup_axis())
   
   p
   
@@ -617,6 +655,305 @@ flux_attribution <- function(df, ...) {
 
 ```
 
+## Robinson map
+
+```{r robinson_map}
+
+
+bbox <- st_bbox(c(xmin = -180, xmax = 180, ymax = 80, ymin = -80), crs = st_crs(4326))
+bbox <- st_as_sfc(bbox)
+bbox_trans <- st_break_antimeridian(bbox, lon_0 = center)
+
+bbox_graticules <- st_graticule(
+  x = bbox_trans,
+  crs = st_crs(bbox_trans),
+  datum = st_crs(bbox_trans),
+  lon = c(20, 20.001),
+  lat = c(-80,80),
+  ndiscr = 1e3,
+  margin = 0.001
+)
+
+bbox_graticules_trans <- st_transform(bbox_graticules, crs = target_crs)
+rm(bbox, bbox_trans)
+
+# ggplot() +
+#   geom_sf(data = worldmap_trans, fill = "grey", col="grey") +
+#   geom_sf(data = coastline_trans) +
+#   geom_sf(data = bbox_graticules_trans)
+
+lat_lim <- ext(bbox_graticules_trans)[c(3,4)]*1.002
+lon_lim <- ext(bbox_graticules_trans)[c(1,2)]*1.005
+
+
+p_map_mdim_robinson <-
+  function(df,
+           df_uncertainty = NULL,
+           dim_row = NULL,
+           dim_col = NULL,
+           var,
+           legend_title = NULL,
+           breaks = NULL,
+           n_labels = 1,
+           target_crs = "+proj=robin +over +lon_0=-160",
+           col = "divergent",
+           col_scale = "warm_cold",
+           dot_size_single = 0.5,
+           dot_size_double = 0.01,
+           plot_latitudes = FALSE,
+           legend_position = "top") {
+    
+    if (is.null(dim_col) & is.null(dim_row)) {
+      df_raster <- df %>%
+        select(lon, lat, all_of(var)) %>% 
+        rast(crs = "+proj=longlat")
+      
+      df_raster <-
+        project(df_raster, target_crs)
+      
+      df_tibble <-
+        df_raster %>%
+        as.data.frame(xy = TRUE, na.rm = FALSE) %>%
+        as_tibble() %>%
+        rename(lon = x, lat = y) %>%
+        drop_na()
+      
+      
+    } else {
+      df_raster <- df %>%
+        pivot_wider(names_from = all_of(c(dim_row, dim_col)), values_from = all_of(var)) %>%
+        rast(crs = "+proj=longlat")
+      
+      
+      df_raster <-
+        project(df_raster, target_crs)
+      
+      if (!is.null(dim_col) & !is.null(dim_row)) {
+        names_sep <- "_"
+      } else {
+        names_sep <- NULL
+      }
+      
+      df_tibble <-
+        df_raster %>%
+        as.data.frame(xy = TRUE, na.rm = FALSE) %>%
+        as_tibble() %>%
+        rename(lon = x, lat = y) %>%
+        pivot_longer(
+          -c(lon, lat),
+          names_sep = names_sep,
+          names_to = c(dim_row, dim_col),
+          values_to = var
+        ) %>%
+        drop_na()
+      
+      
+    }
+    
+    
+    if (is.null(legend_title)) {
+      legend_title <- var
+    }
+    
+    var <- sym(var)
+    
+    p_map <- ggplot() +
+      geom_raster(data = df_tibble, aes(
+        x = lon,
+        y = lat,
+        fill = cut(!!var, breaks, include.lowest = TRUE)
+      ))
+    
+    
+    p_map <- p_map +
+      geom_sf(data = worldmap_trans,
+              fill = "grey90",
+              col = "grey90") +
+      geom_sf(data = coastline_trans, linewidth = 0.3) +
+      geom_sf(data = bbox_graticules_trans, linewidth = 0.5)
+    
+    if (plot_latitudes) {
+      p_map <- p_map +
+        geom_sf(data = latitude_graticules_trans,
+                col = "grey60",
+                linewidth = 0.2) +
+        geom_sf_text(
+          data = latitude_labels_trans,
+          aes(label = lat_label),
+          size = 3,
+          col = "grey60"
+        )
+    }
+    
+    if (!is.null(df_uncertainty)) {
+      p_map <- p_map +
+        geom_sf(
+          data = df_uncertainty %>% filter(signif_single == 0),
+          col = "grey60",
+          size = dot_size_single
+        )
+    }
+    
+    p_map <- p_map +
+      coord_sf(
+        crs = target_crs,
+        ylim = lat_lim,
+        xlim = lon_lim,
+        expand = FALSE
+      )
+    
+    if (legend_position == "top") {
+      p_map <- p_map +
+        guides(
+          fill = guide_colorsteps(
+            barheight = unit(0.3, "cm"),
+            barwidth = unit(8, "cm"),
+            ticks = TRUE,
+            ticks.colour = "grey20",
+            frame.colour = "grey20",
+            label.position = "top",
+            direction = "horizontal"
+          )
+        ) +
+        theme_void() +
+        theme(
+          legend.position = "top",
+          legend.title.align = 1,
+          legend.box.spacing = unit(0.1, "cm"),
+          legend.title = element_markdown(halign = 1, lineheight = 1.5)
+        )
+    }
+    
+    if (legend_position == "right") {
+      p_map <- p_map +
+        guides(
+          fill = guide_colorsteps(
+            barheight = unit(6, "cm"),
+            barwidth = unit(0.3, "cm"),
+            ticks = TRUE,
+            ticks.colour = "grey20",
+            frame.colour = "grey20",
+            label.position = "right",
+            direction = "vertical"
+          )
+        ) +
+        theme_void() +
+        theme(
+          legend.position = "right",
+          legend.title.align = 0,
+          legend.box.spacing = unit(0.1, "cm"),
+          legend.title = element_markdown(halign = 0, lineheight = 1.5)
+        )
+    }
+    
+    if (legend_position == "left") {
+      p_map <- p_map +
+        guides(
+          fill = guide_colorsteps(
+            barheight = unit(6, "cm"),
+            barwidth = unit(0.3, "cm"),
+            ticks = TRUE,
+            ticks.colour = "grey20",
+            frame.colour = "grey20",
+            label.position = "left",
+            direction = "vertical"
+          )
+        ) +
+        theme_void() +
+        theme(
+          legend.position = "left",
+          legend.title.align = 0,
+          legend.box.spacing = unit(0.1, "cm"),
+          legend.title = element_markdown(halign = 0, lineheight = 1.5)
+        )
+    }
+    
+    if (col == "sequential") {
+      breaks_test <- breaks[!breaks == Inf]
+      breaks_test <- breaks_test[!breaks_test == -Inf]
+      breaks_reverse <-
+        abs(first(breaks_test)) < abs(last(breaks_test))
+      
+      if (breaks_reverse == TRUE) {
+        direction_value = 1
+        reverse_value = TRUE
+      } else{
+        direction_value = -1
+        reverse_value = FALSE
+      }
+      
+      if (n_labels == 1) {
+        labels <- breaks_test
+      } else {
+        breaks_test[seq_along(breaks_test) %% 2 == 0] <- ""
+        labels <- breaks_test
+      }
+      
+      if (col_scale %in% c("viridis", "plasma", "cividis")) {
+        p_map <- p_map +
+          scale_fill_viridis_d(
+            drop = FALSE,
+            name = legend_title,
+            direction = direction_value,
+            option = col_scale,
+            labels = unname(labels)
+          )
+      }
+      
+    } else {
+      
+      breaks_test <- breaks[!breaks == Inf]
+      breaks_test <- breaks_test[!breaks_test == -Inf]
+      
+      if (n_labels == 1) {
+        labels <- breaks_test
+      } else {
+        breaks_test[seq_along(breaks_test) %% 2 == 0] <- ""
+        labels <- breaks_test
+      }
+      
+      p_map <- p_map +
+        scale_fill_gradientn(
+          colours = warm_cool_gradient,
+          # rescaler = ~ scales::rescale_mid(.x, mid = 0),
+          super = ScaleDiscretised,
+          name = legend_title,
+          labels = unname(labels)
+        )
+        # colorspace::scale_fill_discrete_divergingx(
+        #   palette = "RdBu",
+        #   drop = FALSE,
+        #   rev = TRUE,
+        #   name = legend_title,
+        #   labels = unname(labels)
+        # )
+    }
+    
+    
+    
+    if (!(is.null(dim_row) & is.null(dim_col))) {
+      if (is.null(dim_col)) {
+        dim_col <- "."
+      }
+      
+      if (is.null(dim_row)) {
+        dim_row <- "."
+      }
+      
+      p_map <- p_map +
+        facet_grid(as.formula(paste(dim_row, "~", dim_col)), switch = "y")
+      
+      # p_map <- egg::tag_facet(p_map)
+    }
+    
+    p_map
+    
+    }
+
+
+```
+
+
 # Maps
 
 The following maps show the anomalies of each variable in `r {{year_anom}}` as provided through the pCO2 product. Anomalies are determined based on the predicted value of a linear regression model fit to the available data from 1990 to `r {{year_anom}}-1`.
@@ -639,11 +976,10 @@ pco2_product_map_annual_anomaly %>%
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid)) +
-      # labs(title =  paste({{year_anom}}, "anomaly")) +
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
         oob = squish
       ) +
@@ -694,7 +1030,7 @@ pco2_product_map_annual_anomaly %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
         oob = squish
       ) +
@@ -740,7 +1076,7 @@ pco2_product_map_annual_anomaly %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
         oob = squish
       ) +
@@ -788,6 +1124,31 @@ pco2_product_map_annual_anomaly_ensemble_coarse <-
   ) %>% 
   rename(lon = lon_grid, lat = lat_grid)
 
+pco2_product_map_annual_anomaly_ensemble_uncertainty <-
+  pco2_product_map_annual_anomaly_ensemble_coarse %>%
+  mutate(signif_single = if_else(abs(resid_mean_coarse) < resid_sd_coarse, 0, 1)) %>% 
+  select(lon, lat, name, signif_single) %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = "+proj=longlat")
+
+
+pco2_product_map_annual_anomaly_ensemble %>%
+  mutate(product = "Ensemble mean") %>% 
+  group_split(name) %>%
+  # head(4) %>%
+  map(
+    ~ p_map_mdim_robinson(
+      df = .x,
+      df_uncertainty = pco2_product_map_annual_anomaly_ensemble_uncertainty %>% 
+        filter(name == .x %>% distinct(name) %>% pull()),
+      var = "resid_mean",
+      legend_title = labels_breaks(.x %>% distinct(name))$i_legend_title,
+      breaks = labels_breaks(.x %>% distinct(name))$i_breaks,
+      n_labels = 2
+    )
+  )
+
+rm(pco2_product_map_annual_anomaly_ensemble_uncertainty)
+
 pco2_product_map_annual_anomaly_ensemble <-
   left_join(
     pco2_product_map_annual_anomaly_ensemble,
@@ -811,7 +1172,7 @@ pco2_product_map_annual_anomaly_ensemble %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
         oob = squish
       ) +
@@ -851,7 +1212,7 @@ pco2_product_map_annual_anomaly_ensemble %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$value_mean, .01), quantile(.x$value_mean, .99)),
         oob = squish
       ) +
@@ -924,7 +1285,7 @@ full_join(
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$value, .01), quantile(.x$value, .99)),
         oob = squish
       ) +
@@ -981,7 +1342,7 @@ pco2_product_map_annual_anomaly_ensemble_gobm %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
         oob = squish
       ) +
@@ -1027,7 +1388,7 @@ pco2_product_map_annual_anomaly_ensemble_gobm %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
         oob = squish
       ) +
@@ -1369,7 +1730,7 @@ pco2_product_map_monthly_anomaly %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
         oob = squish
       ) +
@@ -1433,7 +1794,7 @@ pco2_product_map_monthly_anomaly_ensemble %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
         oob = squish
       ) +
@@ -1918,7 +2279,7 @@ pco2_product_hovmoeller_monthly_anomaly %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid,.01),quantile(.x$resid,.99)),
         oob = squish
       ) +
@@ -1960,7 +2321,7 @@ pco2_product_hovmoeller_monthly_anomaly_ensemble %>%
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
         oob = squish
       ) +
@@ -1992,7 +2353,7 @@ left_join(
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-        name = labels_breaks(.x %>% distinct(name)),
+        name = labels_breaks(.x %>% distinct(name))$i_legend_title,
         limits = c(quantile(.x$resid_mean, .01), quantile(.x$resid_mean, .99)),
         oob = squish
       ) +
@@ -2916,7 +3277,7 @@ pco2_product_biome_monthly_detrended %>%
            dim_col = NULL)
 
 ggsave(width = 7,
-       height = 3,
+       height = 2.5,
        dpi = 600,
        filename = "../output/seasonality_sst_global.jpg")
 
@@ -2933,7 +3294,7 @@ pco2_product_biome_monthly_detrended %>%
            dim_col = NULL)
 
 ggsave(width = 7,
-       height = 3,
+       height = 2.5,
        dpi = 600,
        filename = "../output/seasonality_fgco2_global.jpg")
 
@@ -3687,7 +4048,7 @@ pco2_product_biome_monthly_detrended %>%
            title = "Ensemble mean anomalies from predicted monthly mean") +
   theme(axis.title.x = element_blank(), axis.text.x = element_blank()) +
   new_scale_color() +
-  scale_color_manual(values = warm_color) +
+  scale_color_manual(values = warm_cool_gradient[20]) +
   geom_path(
     data = pco2_product_biome_monthly_detrended %>%
       filter(
@@ -3701,6 +4062,7 @@ pco2_product_biome_monthly_detrended %>%
       ungroup(),
     aes(month, resid, col = "2023\nGOBM mean")
   )
+
 
 ggsave(width = 9,
        height = 4,
@@ -3718,7 +4080,7 @@ pco2_product_biome_monthly_flux_attribution %>%
            title = "Ensemble mean drivers of flux anomaly",
            scales = "fixed") +
   new_scale_color() +
-  scale_color_manual(values = warm_color) +
+  scale_color_manual(values = warm_cool_gradient[20]) +
   geom_path(
     data = pco2_product_biome_monthly_flux_attribution %>%
       filter(
@@ -4079,7 +4441,7 @@ ggsave(width = 10,
 
 ```
 
-
+### Hovmoeller
 
 ```{r {{year_anom}}_anomaly_profiles_monthly_hovmoeller, fig.asp=1}
 
@@ -4136,6 +4498,8 @@ plot_list <-
                                         lineheight = 1.5)
       )
   )
+
+plot_list
 
 ggsave(plot = wrap_plots(plot_list,
                          ncol = 3),
@@ -4311,7 +4675,6 @@ plot_list <-
         super = ScaleDiscretised,
         name = labels_breaks(.x %>% distinct(name))$i_legend_title
       )+
-      # scale_y_reverse() +
       scale_y_continuous(trans = trans_reverser("sqrt"), breaks = c(50, 100, 200, 400)) +
       coord_cartesian(expand = 0,
                       ylim = c(300,NA)) +
