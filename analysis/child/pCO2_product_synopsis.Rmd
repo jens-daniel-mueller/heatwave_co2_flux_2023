@@ -63,28 +63,28 @@ name_core <- c("fgco2", "fgco2_int", "fgco2_hov",
 
 
 all_product_list <- c("OceanSODA",
-                      "SOM_FFN",
+                      "SOM-FFN",
                       "fCO2-Residual",
                       "CMEMS",
-                      "ETHZ_CESM",
+                      "ETHZ-CESM",
                       "FESOM-REcoM")
 
-gobm_product_list <- c("ETHZ_CESM",
+gobm_product_list <- c("ETHZ-CESM",
                        "FESOM-REcoM")
 
 
 pco2_product_list <- c("OceanSODA",
-                      "SOM_FFN",
+                      "SOM-FFN",
                       "fCO2-Residual",
                       "CMEMS"
                       )
 
 color_products <- c(
   "OceanSODA" = "#672933",
-  "SOM_FFN" = "#d1495b",
+  "SOM-FFN" = "#d1495b",
   "fCO2-Residual" = "#edae49",
   "CMEMS" = "#AD8E55",
-  "ETHZ_CESM" = "#66a182",
+  "ETHZ-CESM" = "#66a182",
   "FESOM-REcoM" = "#00798c"
 )
 
@@ -148,7 +148,7 @@ for(i_file_type in file_types) {
     mutate(
       product = str_extract(
         product,
-        "OceanSODA|SOM_FFN|CMEMS|fCO2-Residual|ETHZ_CESM|FESOM-REcoM"
+        "OceanSODA|SOM-FFN|CMEMS|fCO2-Residual|ETHZ-CESM|FESOM-REcoM"
       )
     )
   
@@ -1050,7 +1050,7 @@ pco2_product_map_annual_anomaly %>%
 # plot_list <- 
 # pco2_product_map_annual_anomaly %>%
 #   filter(year == {{year_anom}},
-#          product == "ETHZ_CESM",
+#          product == "ETHZ-CESM",
 #          name %in% c(
 #            "fgco2",
 #            "dfco2",
@@ -1085,7 +1085,7 @@ pco2_product_map_annual_anomaly %>%
 plot_list <- 
 pco2_product_map_annual_anomaly %>%
   filter(year == {{year_anom}},
-         product == "ETHZ_CESM",
+         product == "ETHZ-CESM",
          name %in% c(
            "fgco2",
            "dfco2",
@@ -1116,7 +1116,7 @@ ggsave(plot = wrap_plots(plot_list,
                          byrow = FALSE),
        width = 14,
        height = 11,
-       filename = "../output/map_anomaly_ETHZ_CESM.jpg")
+       filename = "../output/map_anomaly_ETHZ-CESM.jpg")
 
 ```
 
@@ -4420,7 +4420,7 @@ pco2_product_profiles_monthly %>%
 pco2_product_profiles_monthly %>%
   filter(year == {{year_anom}},
          biome %in% key_biomes,
-         product == "ETHZ_CESM",
+         product == "ETHZ-CESM",
          name %in% c(
            "sdissic",
            "cstar",
@@ -4460,7 +4460,7 @@ pco2_product_profiles_monthly %>%
 pco2_product_profiles_monthly %>%
   filter(year == {{year_anom}},
          biome %in% key_biomes,
-         product == "ETHZ_CESM") %>%
+         product == "ETHZ-CESM") %>%
   arrange(month) %>% 
   group_by(biome, name, depth) %>% 
   mutate(resid = resid - first(resid)) %>% 
@@ -4500,7 +4500,7 @@ pco2_product_profiles_monthly %>%
 #   filter(
 #     biome %in% "NA-STPS",
 #     depth == 5,
-#     product == "ETHZ_CESM",
+#     product == "ETHZ-CESM",
 #     name %in% c("dissic", "talk", "sdissic", "stalk", "so")
 #   ) %>%
 #   filter(month %in% seq(1, 12, 3)) %>%
@@ -4517,7 +4517,7 @@ pco2_product_profiles_monthly %>%
 #   filter(
 #     biome %in% "NA-STPS",
 #     depth == 5,
-#     product == "ETHZ_CESM",
+#     product == "ETHZ-CESM",
 #     name %in% c("dissic", "talk", "sdissic", "stalk", "so")
 #   ) %>%
 #   filter(month %in% seq(1, 12, 3)) %>%
@@ -4589,7 +4589,7 @@ plot_list <-
       filter(
         year == {{year_anom}},
         biome %in% key_biomes,
-        # product == "ETHZ_CESM",
+        # product == "ETHZ-CESM",
         name %in% c("sdissic", "thetao")
       ),
     pco2_product_biome_monthly_detrended %>%
@@ -4652,7 +4652,7 @@ plot_list <-
       filter(
         year == {{year_anom}},
         biome %in% key_biomes,
-        # product == "ETHZ_CESM",
+        # product == "ETHZ-CESM",
         name %in% c("sdissic", "thetao")
       ) %>% 
       arrange(month) %>% 
@@ -4722,7 +4722,7 @@ ggsave(plot = wrap_plots(plot_list,
 
 CESM_depth_grid <- pco2_product_profiles_monthly %>%
   filter(year == {{year_anom}}, 
-         product == "ETHZ_CESM",
+         product == "ETHZ-CESM",
          biome %in% key_biomes,
          name %in% c("sdissic", "thetao")) %>%
   distinct(name, biome, month, depth)
@@ -4770,7 +4770,7 @@ pco2_product_profiles_monthly_merged <-
     pco2_product_profiles_monthly %>%
       filter(
         year == {{year_anom}},
-        product == "ETHZ_CESM",
+        product == "ETHZ-CESM",
         biome %in% key_biomes,
         name %in% c("sdissic", "thetao")
       )
