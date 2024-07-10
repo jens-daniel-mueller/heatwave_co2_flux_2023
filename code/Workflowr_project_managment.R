@@ -149,9 +149,18 @@ republish = TRUE)
 
 wflow_publish(here::here(
   "analysis", c(
-    "pco2_product_synopsis_2023.Rmd"
+    # "index.Rmd",
+    # "biomes.Rmd",
+    # "mhw_stats.Rmd",
+    # "atm_co2.Rmd",
+    # "SOM_FFN.Rmd",
+    # "OceanSODA.Rmd",
+    # "NRT_fco2residual.Rmd",
+    # "CMEMS.Rmd",
+    "ETHZ_CESM.Rmd",
+    "FESOM_REcoM.Rmd"
   )
-), message = "Robinson map binned color scale")
+), message = "rebuild all products")
 
 
 

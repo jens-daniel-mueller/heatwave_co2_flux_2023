@@ -445,7 +445,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Marine Heatwave 2023</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">13 June, 2024</h4>
+<h4 class="date">10 July, 2024</h4>
 
 </div>
 
@@ -474,7 +474,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-06-13
+<strong>Last updated:</strong> 2024-07-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -606,15 +606,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree2f0c1f7adfc85e26e2d1c5ca6c9a84365722b97atargetblank2f0c1f7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree71d9d102e221448f836ff7e4467526f556aff516targetblank71d9d10a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/2f0c1f7adfc85e26e2d1c5ca6c9a84365722b97a" target="_blank">2f0c1f7</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/71d9d102e221448f836ff7e4467526f556aff516" target="_blank">71d9d10</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree2f0c1f7adfc85e26e2d1c5ca6c9a84365722b97atargetblank2f0c1f7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree71d9d102e221448f836ff7e4467526f556aff516targetblank71d9d10a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -624,7 +624,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/2f0c1f7adfc85e26e2d1c5ca6c9a84365722b97a" target="_blank">2f0c1f7</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/71d9d102e221448f836ff7e4467526f556aff516" target="_blank">71d9d10</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -639,11 +639,12 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    data/
+    Ignored:    data
+    Ignored:    output/
 
 Unstaged changes:
-    Modified:   analysis/child/pCO2_product_preprocessing.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -690,6 +691,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/134db94680edc547a9c5f6e4ec7322861721671e/analysis/mhw_stats.Rmd" target="_blank">134db94</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-28
+</td>
+<td>
+manual commit
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/88b4e04349e452da821027d9bee64b1b3d7f8046/analysis/mhw_stats.Rmd" target="_blank">88b4e04</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-26
+</td>
+<td>
+started to apply biome mask
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/caec40082e4b49310d7d52d471dcef913d1ad5aa/docs/mhw_stats.html" target="_blank">caec400</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-06-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1465,14 +1517,15 @@ latitude_labels_trans &lt;- st_transform(latitude_labels, crs = target_crs)
 key_biomes &lt;-
   read_rds(here::here(&quot;data/key_biomes.rds&quot;))
 
-super_biomes &lt;-
-  read_rds(here::here(&quot;data/super_biomes.rds&quot;))
-
-super_biome_mask &lt;-
-  read_rds(here::here(&quot;data/super_biome_mask.rds&quot;))
-
 biome_mask &lt;-
-  read_rds(here::here(&quot;data/biome_mask.rds&quot;))</code></pre>
+  read_rds(here::here(&quot;data/biome_mask.rds&quot;))
+
+
+biome_mask %&gt;% 
+  filter(!str_detect(biome, &quot;SO-&quot;)) %&gt;% 
+  pull(lat) %&gt;% 
+  max()</code></pre>
+<pre><code>[1] 79.5</code></pre>
 </div>
 <div id="read-data" class="section level1">
 <h1>Read data</h1>
@@ -1503,6 +1556,18 @@ cat.clim &lt;-
   cat.clim %&gt;%
   mutate(mday = mday(time),
          month = month(time))</code></pre>
+<pre class="r"><code>inner_join(
+  biome_mask %&gt;% mutate(
+    lon_min = lon - 0.5,
+    lon_max = lon + 0.5,
+    lat_min = lat - 0.5,
+    lat_max = lat + 0.5
+  ) %&gt;%
+    select(-c(lon, lat)),
+  cat.clim %&gt;% as_tibble(),
+  by = join_by(between(lon, lon_min, lon_max) &amp;
+                 between(lat, lat_min, lat_max))
+)</code></pre>
 <pre class="r"><code>path_out &lt;- &quot;/net/kryo/work/datasets/gridded/ocean/2d/obs/mhw&quot;</code></pre>
 </div>
 <div id="mhw-maps" class="section level1">
@@ -1548,6 +1613,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/430e926790c4b2167774f519a7ed14cce04aed51/docs/figure/mhw_stats.Rmd/plot_mhw_maps-1.png" target="_blank">430e926</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-07-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a60be97a5c5f5a9f41037c4e37fc422c3134fa2b/docs/figure/mhw_stats.Rmd/plot_mhw_maps-1.png" target="_blank">a60be97</a>
@@ -1651,6 +1727,29 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>map +
+  geom_raster(data = cat.clim %&gt;%
+                distinct(lon, lat), aes(lon, lat))</code></pre>
+<p><img src="figure/mhw_stats.Rmd/MHW_timeseries-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>area_total &lt;-
+cat.clim %&gt;%
+  distinct(lon, lat) %&gt;% 
+  mutate(area = earth_surf(lat, lon)) %&gt;% 
+  summarise(area_total = sum(area)) %&gt;% 
+  pull()
+
+cat.clim.timeseries &lt;-
+  cat.clim %&gt;%
+  mutate(area = earth_surf(lat, lon)) %&gt;%
+  group_by(time) %&gt;%
+  summarise(area_mhw = sum(area)) %&gt;%
+  ungroup() %&gt;%
+  mutate(area_mhw_rel = area_mhw / area_total)
+
+cat.clim.timeseries %&gt;% 
+  ggplot(aes(time, area_mhw_rel)) +
+  geom_path()</code></pre>
+<p><img src="figure/mhw_stats.Rmd/MHW_timeseries-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>cat.clim &lt;-
   cat.clim %&gt;%
   as_tibble() %&gt;%
@@ -1731,6 +1830,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/430e926790c4b2167774f519a7ed14cce04aed51/docs/figure/mhw_stats.Rmd/mhw_days_category-1.png" target="_blank">430e926</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-07-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a60be97a5c5f5a9f41037c4e37fc422c3134fa2b/docs/figure/mhw_stats.Rmd/mhw_days_category-1.png" target="_blank">a60be97</a>
@@ -1898,6 +2008,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/430e926790c4b2167774f519a7ed14cce04aed51/docs/figure/mhw_stats.Rmd/mhw_days_category_limit-1.png" target="_blank">430e926</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-07-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a60be97a5c5f5a9f41037c4e37fc422c3134fa2b/docs/figure/mhw_stats.Rmd/mhw_days_category_limit-1.png" target="_blank">a60be97</a>
@@ -2125,6 +2246,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/430e926790c4b2167774f519a7ed14cce04aed51/docs/figure/mhw_stats.Rmd/MHW_intensity_mean-1.png" target="_blank">430e926</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-07-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a60be97a5c5f5a9f41037c4e37fc422c3134fa2b/docs/figure/mhw_stats.Rmd/MHW_intensity_mean-1.png" target="_blank">a60be97</a>
 </td>
 <td>
@@ -2276,6 +2408,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/430e926790c4b2167774f519a7ed14cce04aed51/docs/figure/mhw_stats.Rmd/MHW_intensity_cummulative_category-1.png" target="_blank">430e926</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-07-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a60be97a5c5f5a9f41037c4e37fc422c3134fa2b/docs/figure/mhw_stats.Rmd/MHW_intensity_cummulative_category-1.png" target="_blank">a60be97</a>
 </td>
 <td>
@@ -2408,6 +2551,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/430e926790c4b2167774f519a7ed14cce04aed51/docs/figure/mhw_stats.Rmd/MHW_intensity_cummulative_all-1.png" target="_blank">430e926</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-07-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a60be97a5c5f5a9f41037c4e37fc422c3134fa2b/docs/figure/mhw_stats.Rmd/MHW_intensity_cummulative_all-1.png" target="_blank">a60be97</a>
 </td>
 <td>
@@ -2530,6 +2684,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/430e926790c4b2167774f519a7ed14cce04aed51/docs/figure/mhw_stats.Rmd/MHW_intensity_cummulative_all-2.png" target="_blank">430e926</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-07-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/a60be97a5c5f5a9f41037c4e37fc422c3134fa2b/docs/figure/mhw_stats.Rmd/MHW_intensity_cummulative_all-2.png" target="_blank">a60be97</a>
