@@ -27,7 +27,7 @@ library(ggnewscale)
 ```{r read_anomaly_2023_monthly_mean_maps}
 
 files <- list.files(here::here("data/"),
-                    pattern = paste0(2023,"_anomaly_map_monthly.csv"),
+                    pattern = paste0(2023,"_map_monthly_anomaly.csv"),
                     full.names = TRUE)
 
 pco2_product_coarse_monthly_regression <-
@@ -36,13 +36,13 @@ pco2_product_coarse_monthly_regression <-
 
 pco2_product_coarse_monthly_regression <-
   pco2_product_coarse_monthly_regression %>% 
-  mutate(product = str_extract(product, "OceanSODA|SOM_FFN|CMEMS|NRT_fco2residual|ETHZ_CESM|FESOM-REcoM"))
+  mutate(product = str_extract(product, "OceanSODA|SOM-FFN|CMEMS|fCO2-Residual|ETHZ-CESM|FESOM-REcoM"))
 
 all_product_list <- c("OceanSODA",
-                      "SOM_FFN",
-                      "NRT_fco2residual",
+                      "SOM-FFN",
+                      "fCO2-Residual",
                       "CMEMS",
-                      "ETHZ_CESM",
+                      "ETHZ-CESM",
                       "FESOM-REcoM")
 
 pco2_product_coarse_monthly_regression <-
@@ -53,8 +53,8 @@ pco2_product_coarse_monthly_regression <-
   filter(!is.na(name))
 
 pco2_product_list <- c("OceanSODA",
-                      "SOM_FFN",
-                      "NRT_fco2residual",
+                      "SOM-FFN",
+                      "fCO2-Residual",
                       "CMEMS"
                       )
 
@@ -69,9 +69,6 @@ map <-
 key_biomes <-
   read_rds(here::here("data/key_biomes.rds"))
 
-
-super_biomes <-
-  read_rds(here::here("data/super_biomes.rds"))
 
 biome_mask <-
   read_rds(here::here("data/biome_mask.rds"))
