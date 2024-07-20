@@ -62,7 +62,7 @@ name_core <- c("fgco2", "fgco2_int", "fgco2_hov",
                "resid_fgco2_dfco2", "resid_fgco2_kw_sol", "resid_fgco2_dfco2_kw_sol")
 
 
-all_product_list <- c("OceanSODA",
+all_product_list <- c("OceanSODAv2",
                       "SOM-FFN",
                       "fCO2-Residual",
                       "CMEMS",
@@ -73,14 +73,14 @@ gobm_product_list <- c("ETHZ-CESM",
                        "FESOM-REcoM")
 
 
-pco2_product_list <- c("OceanSODA",
+pco2_product_list <- c("OceanSODAv2",
                       "SOM-FFN",
                       "fCO2-Residual",
                       "CMEMS"
                       )
 
 color_products <- c(
-  "OceanSODA" = "#672933",
+  "OceanSODAv2" = "#672933",
   "SOM-FFN" = "#d1495b",
   "fCO2-Residual" = "#edae49",
   "CMEMS" = "#AD8E55",
@@ -148,7 +148,7 @@ for(i_file_type in file_types) {
     mutate(
       product = str_extract(
         product,
-        "OceanSODA|SOM-FFN|CMEMS|fCO2-Residual|ETHZ-CESM|FESOM-REcoM"
+        "OceanSODAv2|SOM-FFN|CMEMS|fCO2-Residual|ETHZ-CESM|FESOM-REcoM"
       )
     )
   
@@ -984,7 +984,7 @@ p_map_mdim_robinson <-
 
 # Maps
 
-The following maps show the anomalies of each variable in `r {{year_anom}}` as provided through the pCO2 product. Anomalies are determined based on the predicted value of a linear regression model fit to the available data from 1990 to `r {{year_anom}}-1`.
+The following maps show the anomalies of each variable in `r {{year_anom}}` as provided through the fCO2 product. Anomalies are determined based on the predicted value of a linear regression model fit to the available data from 1990 to `r {{year_anom}}-1`.
 
 Maps are first presented as annual means, and than as monthly means. Note that the 2023 predictions for the monthly maps are done individually for each month, such the mean seasonal anomaly from the annual mean is removed.
 
@@ -1290,7 +1290,7 @@ rm(pco2_product_map_annual_anomaly_ensemble_uncertainty)
 #                    filter(abs(resid_mean_coarse) < resid_sd_coarse),
 #                 aes(lon, lat, shape = "Ensemble mean\n< StDev"),
 #                 col = "grey80", size = 1) +
-#       labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean anomaly")) +
+#       labs(title =  paste({{year_anom}}, "fCO2 product ensemble mean anomaly")) +
 #       scale_fill_gradientn(
 #         colours = warm_cool_gradient,
 #         rescaler = ~ scales::rescale_mid(.x, mid = 0),
@@ -1330,7 +1330,7 @@ rm(pco2_product_map_annual_anomaly_ensemble_uncertainty)
 #                    filter(abs(value_mean_coarse) < value_sd_coarse),
 #                 aes(lon, lat, shape = "Ensemble mean\n< StDev"),
 #                 col = "grey80", size = 1) +
-#       labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean absolute")) +
+#       labs(title =  paste({{year_anom}}, "fCO2 product ensemble mean absolute")) +
 #       scale_fill_gradientn(
 #         colours = warm_cool_gradient,
 #         rescaler = ~ scales::rescale_mid(.x, mid = 0),
@@ -1784,7 +1784,7 @@ ggsave(width = 7,
 #   ) +
 #   scale_shape(name = "") +
 #   labs(title = "Correlation of historic annual flux and SST anomalies", 
-#        subtitle = "pCO2 product ensemble mean") +
+#        subtitle = "fCO2 product ensemble mean") +
 #   guides(
 #     fill = guide_colorbar(
 #       barheight = unit(0.3, "cm"),
@@ -1882,7 +1882,7 @@ pco2_product_map_monthly_anomaly_ensemble %>%
     ~ map +
       geom_tile(data = .x,
                 aes(lon, lat, fill = resid_mean)) +
-      labs(title =  paste({{year_anom}}, "pCO2 product ensemble mean monthly anomaly")) +
+      labs(title =  paste({{year_anom}}, "fCO2 product ensemble mean monthly anomaly")) +
       scale_fill_gradientn(
         colours = warm_cool_gradient,
         rescaler = ~ scales::rescale_mid(.x, mid = 0),
@@ -2510,7 +2510,7 @@ left_join(
 
 # Regional means and integrals
 
-The following plots show biome-, super biome- or global- averaged/integrated values of each variable as provided through the pCO2 product, represented here as the anomalies from the prediction of a linear/quadratic fit to the data from 1990 to `r {{year_anom}}-1`.
+The following plots show biome-, super biome- or global- averaged/integrated values of each variable as provided through the fCO2 product, represented here as the anomalies from the prediction of a linear/quadratic fit to the data from 1990 to `r {{year_anom}}-1`.
 
 Anomalies are presented relative to the predicted annual mean of each year, hence preserving the seasonality.
 
@@ -2771,7 +2771,7 @@ bind_rows(
 ) %>%
   mutate(year = year + month/12) %>% 
   filter(name %in% c("fgco2_int", "temperature"),
-         product == "OceanSODA",
+         product == "OceanSODAv2",
          biome == "Global",
          year >= 2010) %>%
   ggplot() +
@@ -2970,11 +2970,11 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
   filter(name != "fgco2_int", !str_detect(biome, "SO-")) %>%
   ggplot(aes(x = basin, y = resid)) +
   geom_hline(yintercept = 0) +
-  geom_col(aes(fill = "pCO2 product\nensemble mean"), col = "grey20") +
+  geom_col(aes(fill = "fCO2 product\nensemble mean"), col = "grey20") +
   geom_linerange(aes(
     ymin = resid - resid_sd,
     ymax = resid + resid_sd,
-    col = "pCO2 product\nensemble SD"
+    col = "fCO2 product\nensemble SD"
   )) +
   scale_color_manual(values = "grey20", name = "") +
   scale_fill_manual(values = "grey90", name = "") +
@@ -2988,8 +2988,8 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
       ),
     aes(col = product, shape = product)
   ) +
-  scale_color_manual(values = color_products, name = "pCO2 products") +
-  scale_shape_manual(values = 21:24, name = "pCO2 products") +
+  scale_color_manual(values = color_products, name = "fCO2 products") +
+  scale_shape_manual(values = 21:24, name = "fCO2 products") +
   new_scale_color() +
   new_scale("shape") +
   geom_point(
@@ -3051,10 +3051,10 @@ p_global <- pco2_product_biome_annual_anomaly_merged_ensemble %>%
   filter(biome == "Global") %>% 
   ggplot(aes(basin, resid)) +
   geom_hline(yintercept = 0) +
-  geom_col(aes(fill = "pCO2 product\nensemble mean"), col = "grey20") +
+  geom_col(aes(fill = "fCO2 product\nensemble mean"), col = "grey20") +
   geom_linerange(aes(ymin = resid - resid_sd,
                      ymax = resid + resid_sd,
-                     col = "pCO2 product\nensemble SD")) +
+                     col = "fCO2 product\nensemble SD")) +
   scale_color_manual(values = "grey20", name = "") +
   scale_fill_manual(values = "grey90", name = "") +
   new_scale_color()+
@@ -3067,7 +3067,7 @@ p_global <- pco2_product_biome_annual_anomaly_merged_ensemble %>%
     shape = 21
   ) +
   scale_color_manual(values = color_products,
-                     name = "pCO2 products") +
+                     name = "fCO2 products") +
   new_scale_color()+
   geom_point(data = pco2_product_biome_annual_anomaly_merged %>% 
                filter(biome == "Global",
@@ -3102,10 +3102,10 @@ p_biome <- pco2_product_biome_annual_anomaly_merged_ensemble %>%
   filter(biome != "Global") %>% 
   ggplot(aes(basin, resid)) +
   geom_hline(yintercept = 0) +
-  geom_col(aes(fill = "pCO2 product\nensemble mean"), col = "grey20") +
+  geom_col(aes(fill = "fCO2 product\nensemble mean"), col = "grey20") +
   geom_linerange(aes(ymin = resid - resid_sd,
                      ymax = resid + resid_sd,
-                     col = "pCO2 product\nensemble SD")) +
+                     col = "fCO2 product\nensemble SD")) +
   scale_color_manual(values = "grey20", name = "") +
   scale_fill_manual(values = "grey90", name = "") +
   new_scale_color()+
@@ -3118,7 +3118,7 @@ p_biome <- pco2_product_biome_annual_anomaly_merged_ensemble %>%
     shape = 21
   ) +
   scale_color_manual(values = color_products,
-                     name = "pCO2 products") +
+                     name = "fCO2 products") +
   new_scale_color()+
   geom_point(data = pco2_product_biome_annual_anomaly_merged %>% 
                filter(biome != "Global",
@@ -3391,7 +3391,7 @@ pco2_product_biome_annual_anomaly_recompute %>%
 
 ### Annual mean trends
 
-```{r anomalies_from_annual_mean_trends_overview_OceanSODA, fig.asp=1}
+```{r anomalies_from_annual_mean_trends_overview_OceanSODAv2, fig.asp=1}
 
 pco2_product_biome_monthly_detrended %>%
   filter(biome %in% "NA-STPS",

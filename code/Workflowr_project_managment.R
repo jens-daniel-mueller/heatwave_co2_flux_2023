@@ -149,9 +149,9 @@ republish = TRUE)
 
 wflow_publish(here::here(
   "analysis", c(
-    "pco2_product_synopsis_2023.Rmd"
+    "pco2_product_mapping_skill.Rmd"
   )
-), message = "rebuild all products")
+), message = "label v2 and fco2 products")
 
 
 
