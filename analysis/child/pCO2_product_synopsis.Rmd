@@ -54,7 +54,7 @@ biome_mask <-
 name_core <- c("fgco2", "fgco2_int", "fgco2_hov",
                "sfco2", "atm_fco2", "dfco2",
                "kw_sol", "temperature", "salinity",
-               "dissic", "talk", "sdissic", "stalk", "cstar", 
+               "dissic", "talk", "sdissic", "stalk", "cstar", "sdissic_stalk",
                "no3", "o2",
                "mld", "thetao", "so",
                "intpp", "chl",
@@ -224,8 +224,8 @@ labels_breaks <- function(i_name) {
   }
   
   if (i_name == "intpp") {
-    i_legend_title <- "NPP<sub>int</sub> anom.<br>(mol s<sup>-1</sup> m<sup>-2</sup>)"
-    i_breaks <- c(-Inf, seq(-1e-7, 1e-7, 2.5e-8), Inf)
+    i_legend_title <- "NPP<sub>int</sub> anom.<br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-3, 3, 0.5), Inf)
   }
   
   if (i_name == "no3") {
@@ -240,12 +240,12 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "dissic") {
     i_legend_title <- "DIC anom.<br>(μmol kg<sup>-1</sup>)"
-    i_breaks <- c(-Inf, seq(-25, 25, 5), Inf)
+    i_breaks <- c(-Inf, seq(-15, 15, 3), Inf)
   }
   
   if (i_name == "sdissic") {
     i_legend_title <- "sDIC anom.<br>(μmol kg<sup>-1</sup>)"
-    i_breaks <- c(-Inf, seq(-25, 25, 5), Inf)
+    i_breaks <- c(-Inf, seq(-15, 15, 3), Inf)
   }
   
   if (i_name == "cstar") {
@@ -255,12 +255,17 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "talk") {
     i_legend_title <- "TA anom.<br>(μmol kg<sup>-1</sup>)"
-    i_breaks <- c(-Inf, seq(-25, 25, 5), Inf)
+    i_breaks <- c(-Inf, seq(-15, 15, 3), Inf)
   }
   
   if (i_name == "stalk") {
     i_legend_title <- "sTA anom.<br>(μmol kg<sup>-1</sup>)"
-    i_breaks <- c(-Inf, seq(-25, 25, 5), Inf)
+    i_breaks <- c(-Inf, seq(-15, 15, 3), Inf)
+  }
+  
+  if (i_name == "sdissic_stalk") {
+    i_legend_title <- "sDIC - sTA anom.<br>(μmol kg<sup>-1</sup>)"
+    i_breaks <- c(-Inf, seq(-15, 15, 3), Inf)
   }
   
   if (i_name == "sfco2_total") {
@@ -315,12 +320,12 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "chl") {
     i_legend_title <- "lg(Chl-a) anom.<br>(lg(mg m<sup>-3</sup>))"
-    i_breaks <- c(-Inf, seq(-0.4, 0.4, 0.1), Inf)
+    i_breaks <- c(-Inf, seq(-0.2, 0.2, 0.05), Inf)
   }
   
   if (i_name == "mld") {
     i_legend_title <- "MLD anom.<br>(m)"
-    i_breaks <- c(-Inf, seq(-100, 100, 25), Inf)
+    i_breaks <- c(-Inf, seq(-40, 40, 10), Inf)
   }
   
   if (i_name == "press") {
@@ -403,6 +408,7 @@ x_axis_labels <-
     "cstar" = labels_breaks("cstar")$i_legend_title,
     "talk" = labels_breaks("talk")$i_legend_title,
     "stalk" = labels_breaks("stalk")$i_legend_title,
+    "sdissic_stalk" = labels_breaks("sdissic_stalk")$i_legend_title,
     "spco2" = labels_breaks("spco2")$i_legend_title,
     "sfco2" = labels_breaks("sfco2")$i_legend_title,
     "sfco2_total" = labels_breaks("sfco2_total")$i_legend_title,
@@ -1094,6 +1100,7 @@ pco2_product_map_annual_anomaly %>%
            "salinity",
            "sdissic",
            "stalk",
+           "sdissic_stalk",
            "no3",
            "mld",
            "intpp",
@@ -1135,6 +1142,7 @@ pco2_product_map_annual_anomaly %>%
            "salinity",
            "sdissic",
            "stalk",
+           "sdissic_stalk",
            "no3",
            "mld",
            "intpp",
@@ -1463,6 +1471,7 @@ pco2_product_map_annual_anomaly_ensemble_gobm %>%
            "salinity",
            "sdissic",
            "stalk",
+           "sdissic_stalk",
            "no3",
            "mld",
            "intpp",
@@ -4315,7 +4324,7 @@ pco2_product_biome_monthly_flux_attribution %>%
 ggsave(width = 9,
        height = 3,
        dpi = 600,
-       filename = "../output/sbiome_seasonal_anomaly_fgco2_attribution_all_products.jpg")
+       filename = "../output/biome_seasonal_anomaly_fgco2_attribution_all_products.jpg")
 
 pco2_product_biome_monthly_fCO2_decomposition %>% 
   filter(year == {{year_anom}},
@@ -4590,7 +4599,7 @@ plot_list <-
         year == {{year_anom}},
         biome %in% key_biomes,
         # product == "ETHZ-CESM",
-        name %in% c("sdissic", "thetao")
+        name %in% c("sdissic_stalk", "thetao")
       ),
     pco2_product_biome_monthly_detrended %>%
       filter(
@@ -4653,7 +4662,7 @@ plot_list <-
         year == {{year_anom}},
         biome %in% key_biomes,
         # product == "ETHZ-CESM",
-        name %in% c("sdissic", "thetao")
+        name %in% c("sdissic_stalk", "thetao")
       ) %>% 
       arrange(month) %>% 
       group_by(product, name, biome, depth) %>% 
@@ -4724,7 +4733,7 @@ CESM_depth_grid <- pco2_product_profiles_monthly %>%
   filter(year == {{year_anom}}, 
          product == "ETHZ-CESM",
          biome %in% key_biomes,
-         name %in% c("sdissic", "thetao")) %>%
+         name %in% c("sdissic_stalk", "thetao")) %>%
   distinct(name, biome, month, depth)
 
 pco2_product_profiles_monthly_FESOM_regrid <-
@@ -4734,7 +4743,7 @@ full_join(
       year == {{year_anom}},
       product == "FESOM-REcoM",
       biome %in% key_biomes,
-      name %in% c("sdissic", "thetao")
+      name %in% c("sdissic_stalk", "thetao")
     ),
   CESM_depth_grid %>% mutate(product = "FESOM-REcoM")
 )
@@ -4772,7 +4781,7 @@ pco2_product_profiles_monthly_merged <-
         year == {{year_anom}},
         product == "ETHZ-CESM",
         biome %in% key_biomes,
-        name %in% c("sdissic", "thetao")
+        name %in% c("sdissic_stalk", "thetao")
       )
   )
 
@@ -4788,7 +4797,7 @@ plot_list <-
     pco2_product_profiles_monthly_ensemble %>%
       filter(
         biome %in% key_biomes,
-        name %in% c("sdissic", "thetao")
+        name %in% c("sdissic_stalk", "thetao")
       ),
     pco2_product_biome_monthly_detrended %>%
       filter(
@@ -4850,7 +4859,7 @@ plot_list_left <-
     pco2_product_profiles_monthly_ensemble %>%
       filter(
         biome %in% key_biomes,
-        name %in% c("sdissic", "thetao")
+        name %in% c("sdissic_stalk", "thetao")
       ) %>% 
       arrange(month) %>% 
       group_by(name, biome, depth) %>% 
@@ -4912,7 +4921,7 @@ plot_list_right <-
     pco2_product_profiles_monthly_ensemble %>%
       filter(
         biome %in% key_biomes,
-        name %in% c("sdissic", "thetao")
+        name %in% c("sdissic_stalk", "thetao")
       ) %>% 
       arrange(month) %>% 
       group_by(name, biome, depth) %>% 

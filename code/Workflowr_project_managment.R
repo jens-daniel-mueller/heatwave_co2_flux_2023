@@ -149,9 +149,9 @@ republish = TRUE)
 
 wflow_publish(here::here(
   "analysis", c(
-    "pco2_product_mapping_skill.Rmd"
+    "pco2_product_synopsis_2023.Rmd"
   )
-), message = "label v2 and fco2 products")
+), message = "dic minus ta added")
 
 
 
