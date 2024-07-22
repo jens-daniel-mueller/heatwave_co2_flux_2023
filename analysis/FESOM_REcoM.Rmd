@@ -114,7 +114,8 @@ pco2_product_interior <-
     dissic = dissic * 1.025e3,
     talk = talk * 1.025e3,
     sdissic = dissic / so * 35,
-    stalk = talk / so * 35, 
+    stalk = talk / so * 35,
+    sdissic_stalk = sdissic - stalk,
     cstar = dissic  - (117/16 * no3)  - 0.5 * (talk + no3)
   )
 gc()
@@ -189,6 +190,7 @@ pco2_product <-
   mutate(
     lon = if_else(lon < 20, lon + 360, lon),
     chl = log10(chl * 1e6),
+    intpp = intpp * 60 * 60 * 24 * 365,
     kw = kw * 60 * 60 * 24 * 365,
     mld = -mld,
     sol = sol * 1.025e3 * 1e-6,
@@ -197,7 +199,8 @@ pco2_product <-
     dissic = dissic * 1.025e3,
     talk = talk * 1.025e3,
     sdissic = dissic / salinity * 35,
-    stalk = talk / salinity * 35
+    stalk = talk / salinity * 35,
+    sdissic_stalk = sdissic - stalk
   )
 
 pco2_product <-
@@ -206,7 +209,7 @@ pco2_product <-
 
 pco2_product <- 
   full_join(pco2_product,
-            pco2_product_surf %>% select(-c(depth, thetao, dissic, talk, cstar, sdissic, stalk)))
+            pco2_product_surf %>% select(-c(depth, thetao, dissic, talk, cstar, sdissic, stalk, sdissic_stalk)))
 
 rm(pco2_product_surf)
 gc()
