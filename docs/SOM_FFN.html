@@ -445,7 +445,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">SOM_FFN</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">10 July, 2024</h4>
+<h4 class="date">22 August, 2024</h4>
 
 </div>
 
@@ -474,7 +474,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-10
+<strong>Last updated:</strong> 2024-08-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -606,15 +606,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree334ff2686cf8ee004f5ea237f7e96c9efef98a88targetblank334ff26a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree98ceadcad2eefa3e107972a3a26a5267a6fdda21targetblank98ceadca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/334ff2686cf8ee004f5ea237f7e96c9efef98a88" target="_blank">334ff26</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/98ceadcad2eefa3e107972a3a26a5267a6fdda21" target="_blank">98ceadc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree334ff2686cf8ee004f5ea237f7e96c9efef98a88targetblank334ff26a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree98ceadcad2eefa3e107972a3a26a5267a6fdda21targetblank98ceadca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -624,7 +624,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/334ff2686cf8ee004f5ea237f7e96c9efef98a88" target="_blank">334ff26</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/98ceadcad2eefa3e107972a3a26a5267a6fdda21" target="_blank">98ceadc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -645,6 +645,9 @@ Ignored files:
     Ignored:    output/
 
 Unstaged changes:
+    Modified:   analysis/child/pCO2_product_analysis.Rmd
+    Modified:   analysis/child/pCO2_product_preprocessing.Rmd
+    Modified:   analysis/child/pCO2_product_synopsis.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -691,6 +694,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/4f019e4139f4c1df6640ba81458f6d3e0d930240/docs/SOM_FFN.html" target="_blank">4f019e4</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2024-07-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2379,7 +2399,7 @@ pco2_product &lt;-
 <div id="preprocessing" class="section level1">
 <h1>Preprocessing</h1>
 <pre class="r"><code># model &lt;- TRUE
-model &lt;- str_detect(&#39;SOM-FFN&#39;, &quot;FESOM-REcoM|ETHZ_CESM&quot;)</code></pre>
+model &lt;- str_detect(&#39;SOM-FFN&#39;, &quot;FESOM-REcoM|ETHZ-CESM&quot;)</code></pre>
 <div id="load-masks" class="section level2">
 <h2>Load masks</h2>
 <pre class="r"><code>biome_mask &lt;-
@@ -2435,7 +2455,7 @@ key_biomes &lt;-
   }
   
   if (i_name == &quot;intpp&quot;) {
-    i_legend_title &lt;- &quot;NPP&lt;sub&gt;int&lt;/sub&gt;&lt;br&gt;(mol s&lt;sup&gt;-1&lt;/sup&gt; m&lt;sup&gt;-2&lt;/sup&gt;)&quot;
+    i_legend_title &lt;- &quot;NPP&lt;sub&gt;int&lt;/sub&gt;&lt;br&gt;(mol m&lt;sup&gt;-2&lt;/sup&gt; yr&lt;sup&gt;-1&lt;/sup&gt;)&quot;
   }
 
   if (i_name == &quot;no3&quot;) {
@@ -2464,6 +2484,11 @@ key_biomes &lt;-
 
   if (i_name == &quot;stalk&quot;) {
     i_legend_title &lt;- &quot;sTA&lt;br&gt;(μmol kg&lt;sup&gt;-1&lt;/sup&gt;)&quot;
+  }
+  
+  
+  if (i_name == &quot;sdissic_stalk&quot;) {
+    i_legend_title &lt;- &quot;sDIC-sTA&lt;br&gt;(μmol kg&lt;sup&gt;-1&lt;/sup&gt;)&quot;
   }
   
   if (i_name == &quot;sfco2_total&quot;) {
@@ -2584,6 +2609,7 @@ x_axis_labels &lt;-
     &quot;cstar&quot; = labels_breaks(&quot;cstar&quot;)$i_legend_title,
     &quot;talk&quot; = labels_breaks(&quot;talk&quot;)$i_legend_title,
     &quot;stalk&quot; = labels_breaks(&quot;stalk&quot;)$i_legend_title,
+    &quot;sdissic_stalk&quot; = labels_breaks(&quot;sdissic_stalk&quot;)$i_legend_title,
     &quot;spco2&quot; = labels_breaks(&quot;spco2&quot;)$i_legend_title,
     &quot;sfco2&quot; = labels_breaks(&quot;sfco2&quot;)$i_legend_title,
     &quot;sfco2_total&quot; = labels_breaks(&quot;sfco2_total&quot;)$i_legend_title,
@@ -2651,7 +2677,7 @@ pco2_product &lt;-
   pco2_product %&gt;%
   filter(!is.na(fgco2)) %&gt;%
   mutate(fgco2_int = fgco2) %&gt;%
-  mutate(biome = case_when(str_detect(biome, &quot;SO-&quot;) ~ &quot;Southern Ocean&quot;,
+  mutate(biome = case_when(str_detect(biome, &quot;SO-SPSS|SO-ICE|Arctic&quot;) ~ &quot;Polar&quot;,
                            TRUE ~ &quot;other&quot;)) %&gt;%
   filter(biome == &quot;other&quot;) %&gt;%
   select(-c(lon, lat, year, month, biome)) %&gt;%
@@ -5480,8 +5506,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    3208648   171.4   65953666  3522.4  161019690  8599.4
-Vcells 1976514155 15079.7 4194972326 32005.1 4194972326 32005.1</code></pre>
+Ncells    3208844   171.4   86802225  4635.8  264899364 14147.2
+Vcells 2543902941 19408.5 6442224526 49150.3 6442218038 49150.3</code></pre>
 <pre class="r"><code>map +
   geom_tile(data = pco2_product_map_annual_fCO2_decomposition %&gt;%
               filter(year == 2023), aes(lon, lat, fill = resid)) +
@@ -5672,8 +5698,8 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    3229570   172.5   52762933  2817.9  161019690  8599.4
-Vcells 2181711878 16645.2 4194972326 32005.1 4194972326 32005.1</code></pre>
+Ncells    3229632   172.5   69441780  3708.6  264899364 14147.2
+Vcells 2810614528 21443.3 6442224526 49150.3 6442218038 49150.3</code></pre>
 <pre class="r"><code>pco2_product_map_monthly_anomaly %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
@@ -20527,7 +20553,7 @@ jens-daniel-mueller
   bind_rows(
     biome_mask,
     biome_mask %&gt;% 
-      filter(!str_detect(biome, &quot;SO-&quot;)) %&gt;% 
+      filter(!str_detect(biome, &quot;SO-SPSS|SO-ICE|Arctic&quot;)) %&gt;% 
       mutate(biome = &quot;Global&quot;)
   )
 
