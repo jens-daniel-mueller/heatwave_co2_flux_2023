@@ -401,7 +401,7 @@ pco2_product_biome_monthly_global <-
   pco2_product %>%
   filter(!is.na(fgco2)) %>%
   mutate(fgco2_int = fgco2) %>%
-  mutate(biome = case_when(str_detect(biome, "SO-") ~ "Southern Ocean",
+  mutate(biome = case_when(str_detect(biome, "SO-SPSS|SO-ICE|Arctic") ~ "Polar",
                            TRUE ~ "other")) %>%
   filter(biome == "other") %>%
   select(-c(lon, lat, year, month, biome)) %>%

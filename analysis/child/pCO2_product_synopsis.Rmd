@@ -357,7 +357,7 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "resid_fgco2_dfco2") {
     i_legend_title <-
-      "ΔfCO<sub>2</sub> contr.)"
+      "ΔfCO<sub>2</sub> contr."
     i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
@@ -369,7 +369,7 @@ labels_breaks <- function(i_name) {
   
   if (i_name == "resid_fgco2_dfco2_kw_sol") {
     i_legend_title <-
-      "k<sub>w</sub> K<sub>0</sub> X ΔfCO<sub>2</sub> contr."
+      "ΔfCO<sub>2</sub> ⨯ k<sub>w</sub> K<sub>0</sub> contr."
     i_breaks <- c(-Inf, seq(-0.5, 0.5, 0.1), Inf)
   }
   
@@ -1490,10 +1490,10 @@ pco2_product_map_annual_anomaly_ensemble_gobm %>%
 
 
 ggsave(plot = wrap_plots(plot_list,
-                         ncol = 3,
+                         ncol = 2,
                          byrow = FALSE),
-       width = 14,
-       height = 11,
+       width = 10,
+       height = 16,
        filename = "../output/map_anomaly_ensemble_mean_gobm.jpg")
 
 rm(plot_list,
@@ -2083,6 +2083,8 @@ pco2_product_map_annual_fCO2_decomposition_ensemble_uncertainty <-
 
 pco2_product_map_annual_fCO2_decomposition_ensemble %>%
   select(lon, lat, name, resid_mean) %>% 
+  mutate(name = fct_relevel(name,
+                            c("sfco2_therm", "sfco2_nontherm"))) %>% 
   p_map_mdim_robinson(
     df_uncertainty = pco2_product_map_annual_fCO2_decomposition_ensemble_uncertainty,
     var = "resid_mean",
@@ -2332,7 +2334,7 @@ pco2_product_map_annual_flux_attribution_ensemble %>%
     df_uncertainty = pco2_product_map_annual_flux_attribution_ensemble_uncertainty,
     var = "resid_mean",
     legend_title = labels_breaks("fgco2")$i_legend_title,
-    breaks = 2*(labels_breaks("fgco2")$i_breaks),
+    breaks = labels_breaks("fgco2")$i_breaks,
     dim_wrap = "name",
     n_col = 1,
     n_labels = 2
