@@ -402,10 +402,10 @@ pco2_product_biome_monthly_global <-
   filter(!is.na(fgco2)) %>%
   mutate(fgco2_int = fgco2) %>%
   mutate(biome = case_when(str_detect(biome, "SO-SPSS|SO-ICE|Arctic") ~ "Polar",
-                           TRUE ~ "other")) %>%
-  filter(biome == "other") %>%
-  select(-c(lon, lat, year, month, biome)) %>%
-  group_by(time) %>%
+                           TRUE ~ "Global")) %>%
+  filter(biome == "Global") %>%
+  select(-c(lon, lat, year, month)) %>%
+  group_by(time, biome) %>%
   summarise(across(-c(fgco2_int, area),
                    ~ weighted.mean(., area, na.rm = TRUE)),
             across(fgco2_int,
@@ -426,8 +426,7 @@ pco2_product_biome_monthly_biome <-
 
 
 pco2_product_biome_monthly <-
-  bind_rows(pco2_product_biome_monthly_global %>%
-              mutate(biome = "Global"),
+  bind_rows(pco2_product_biome_monthly_global,
             pco2_product_biome_monthly_biome)
 
 rm(
