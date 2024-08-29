@@ -151,7 +151,7 @@ wflow_publish(here::here(
   "analysis", c(
     "pco2_product_synopsis_2023.Rmd"
   )
-), message = "results table added")
+), message = "hovmoeller plots revise")
 
 
 
