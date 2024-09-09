@@ -151,7 +151,7 @@ wflow_publish(here::here(
   "analysis", c(
     "pco2_product_synopsis_2023.Rmd"
   )
-), message = "hovmoeller plots revise")
+), message = "revised plots and CIs")
 
 
 
