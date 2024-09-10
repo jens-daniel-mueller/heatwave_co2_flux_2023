@@ -2622,7 +2622,7 @@ pco2_product_biome_annual_anomaly_ensemble <-
 
 # lm_fgco2_sst <- pco2_product_biome_annual_anomaly_ensemble %>%
 #   filter(name %in% c("fgco2_int", "temperature"), 
-#          biome == "Global",
+#          biome == "Global non-polar",
 #          year != {{year_anom}}) %>%
 #   select(year, name, resid) %>% 
 #   pivot_wider(values_from = resid) %>% 
@@ -2632,7 +2632,7 @@ pco2_product_biome_annual_anomaly_ensemble <-
 lm_fgco2_sst <- pco2_product_biome_annual_anomaly %>%
   filter(
     name %in% c("fgco2_int", "temperature"),
-    biome == "Global",
+    biome == "Global non-polar",
     year != {{year_anom}},
     product %in% pco2_product_list
   ) %>%
@@ -2652,7 +2652,7 @@ lm_fgco2_sst <-
     pco2_product_biome_annual_anomaly %>%
       filter(
         name %in% c("temperature"),
-        biome == "Global",
+        biome == "Global non-polar",
         year == {{year_anom}},
         product %in% pco2_product_list
       ) %>%
@@ -2670,7 +2670,7 @@ lm_fgco2_sst
 
 # pco2_product_biome_annual_anomaly_ensemble_lm_fgco2_sst <-
 #   pco2_product_biome_annual_anomaly_ensemble %>%
-#   filter(name %in% c("fgco2_int", "temperature"), biome == "Global") %>%
+#   filter(name %in% c("fgco2_int", "temperature"), biome == "Global non-polar") %>%
 #   select(year, name, resid) %>%
 #   pivot_wider(values_from = resid) %>%
 #   select(year, temperature) %>%
@@ -2680,7 +2680,7 @@ pco2_product_biome_annual_anomaly_ensemble_lm_fgco2_sst <-
   bind_cols(
     lm_fgco2_sst,
     pco2_product_biome_annual_anomaly_ensemble %>%
-      filter(name %in% c("fgco2_int"), biome == "Global",
+      filter(name %in% c("fgco2_int"), biome == "Global non-polar",
              year == {{year_anom}}) %>%
       select(year, name, fit)
   ) %>%
@@ -2705,7 +2705,7 @@ bind_rows(
     mutate(year = year + 1) %>%
     select(-c(resid, resid_sd))
 ) %>%
-  filter(name %in% c("fgco2_int", "temperature"), biome == "Global") %>%
+  filter(name %in% c("fgco2_int", "temperature"), biome == "Global non-polar") %>%
   mutate(name = fct_rev(as.factor(name))) %>%
   ggplot() +
   geom_path(
@@ -2713,7 +2713,7 @@ bind_rows(
       filter(
         product %in% pco2_product_list,
         name %in% c("fgco2_int", "temperature"),
-        biome == "Global"
+        biome == "Global non-polar"
       ) %>%
       group_by(year, month, name, biome) %>%
       summarise(value = mean(value)) %>%
@@ -2854,12 +2854,12 @@ bind_rows(
     select(-c(resid))
 ) %>% 
   filter(name %in% c("fgco2_int", "temperature"),
-         biome == "Global") %>%
+         biome == "Global non-polar") %>%
   ggplot() +
   geom_path(
     data = pco2_product_biome_monthly_anomaly %>%
       filter(name %in% c("fgco2_int", "temperature"),
-             biome == "Global"),
+             biome == "Global non-polar"),
     aes(year + month / 12, value),
     col = "grey90"
   )+
@@ -2920,7 +2920,7 @@ bind_rows(
   mutate(year = year + month/12) %>% 
   filter(name %in% c("fgco2_int", "temperature"),
          product == "OceanSODAv2",
-         biome == "Global",
+         biome == "Global non-polar",
          year >= 2010) %>%
   ggplot() +
   geom_rect(
@@ -2970,10 +2970,10 @@ pco2_product_biome_annual_anomaly %>%
          name %in% c("fgco2", "fgco2_int", "dfco2",
                      "kw_sol", "temperature",
                      "no3", "mld", "intpp", "chl")) %>%
-  mutate(region = case_when(biome == "Global" ~ "Global",
+  mutate(region = case_when(biome == "Global non-polar" ~ "Global non-polar",
                             # biome %in% super_biomes ~ "Super biomes",
                             TRUE ~ "Biomes"),
-         region = factor(region, levels = c("Global", "Biomes"))) %>% 
+         region = factor(region, levels = c("Global non-polar", "Biomes"))) %>% 
   group_split(name) %>%
   # head(1) %>%
   map(
@@ -3012,10 +3012,10 @@ full_join(
            name %in% name_core)) %>%
   mutate(
     region = case_when(
-      biome == "Global" ~ "Global",
+      biome == "Global non-polar" ~ "Global non-polar",
       TRUE ~ "Biomes"
     ),
-    region = factor(region, levels = c("Global", "Biomes"))
+    region = factor(region, levels = c("Global non-polar", "Biomes"))
   ) %>%
   group_split(name) %>%
   # head(1) %>%
@@ -3051,7 +3051,7 @@ full_join(
 pco2_product_biome_annual_anomaly_super_regions <-
   full_join(
     pco2_product_biome_annual_anomaly %>% 
-      filter(biome != "Global"),
+      filter(biome != "Global non-polar"),
     biome_mask %>%
       mutate(area = earth_surf(lat, lon)) %>%
       group_by(biome) %>%
@@ -3204,7 +3204,7 @@ pco2_product_biome_annual_anomaly_super_regions <-
     pco2_product_biome_annual_anomaly_super_regions %>%
       rename(biome = region),
     pco2_product_biome_annual_anomaly %>% 
-      filter(biome != "Global")
+      filter(biome != "Global non-polar")
   ) %>%
   filter(product %in% pco2_product_list) %>%
   group_by(year, name, biome) %>%
@@ -3285,7 +3285,7 @@ pco2_product_biome_annual_anomaly_super_regions %>%
 pco2_product_biome_annual_anomaly_merged <-
 full_join(region_biomes,
           pco2_product_biome_annual_anomaly) %>%
-  mutate(region = case_when(biome == "Global" ~ "Global\nnon-polar",
+  mutate(region = case_when(biome == "Global non-polar" ~ "Global\nnon-polar",
                             region == "atlantic" ~ "Atlantic",
                             region == "pacific" ~ "Pacific",
                             region == "indian" ~ "Indian Ocean",
@@ -3293,7 +3293,7 @@ full_join(region_biomes,
          region = fct_rev(fct_inorder(region))) %>% 
   mutate(
     latitude = case_when(
-      biome == "Global" ~ "Global\nnon-polar",
+      biome == "Global non-polar" ~ "Global\nnon-polar",
       biome %in% c(
         "NA-SPSS",
         "NA-STSS",
@@ -3320,7 +3320,7 @@ full_join(region_biomes,
                                        "SH extratropics",
                                        "SH polar"))) %>% 
   mutate(basin = case_when(
-    biome == "Global" ~ "",
+    biome == "Global non-polar" ~ "",
     str_detect(biome, "NA-|SA-|AEQU") ~ "Atlantic",
     str_detect(biome, "NP-|SP-") ~ "Pacific",
     str_detect(biome, "Indian") ~ "Indian",
@@ -3437,7 +3437,7 @@ ggsave(width = 10,
 
 
 p_global <- pco2_product_biome_annual_anomaly_merged_ensemble %>% 
-  filter(biome == "Global") %>% 
+  filter(biome == "Global non-polar") %>% 
   ggplot(aes(basin, resid)) +
   geom_hline(yintercept = 0) +
   geom_col(aes(fill = "fCO2 product\nensemble mean"), col = "grey20") +
@@ -3449,7 +3449,7 @@ p_global <- pco2_product_biome_annual_anomaly_merged_ensemble %>%
   new_scale_color()+
   geom_point(
     data = pco2_product_biome_annual_anomaly_merged %>%
-      filter(biome == "Global",
+      filter(biome == "Global non-polar",
              product %in% pco2_product_list),
     aes(col = product),
     # position = position_nudge(x = -0.15),
@@ -3488,7 +3488,7 @@ p_global <- pco2_product_biome_annual_anomaly_merged_ensemble %>%
   )
   
 p_biome <- pco2_product_biome_annual_anomaly_merged_ensemble %>% 
-  filter(biome != "Global") %>% 
+  filter(biome != "Global non-polar") %>% 
   ggplot(aes(basin, resid)) +
   geom_hline(yintercept = 0) +
   geom_col(aes(fill = "fCO2 product\nensemble mean"), col = "grey20") +
@@ -3500,7 +3500,7 @@ p_biome <- pco2_product_biome_annual_anomaly_merged_ensemble %>%
   new_scale_color()+
   geom_point(
     data = pco2_product_biome_annual_anomaly_merged %>%
-      filter(biome != "Global",
+      filter(biome != "Global non-polar",
              product %in% pco2_product_list),
     aes(col = product),
     # position = position_nudge(x = -0.15),
@@ -3510,7 +3510,7 @@ p_biome <- pco2_product_biome_annual_anomaly_merged_ensemble %>%
                      name = "fCO2 products") +
   new_scale_color()+
   geom_point(data = pco2_product_biome_annual_anomaly_merged %>% 
-               filter(biome != "Global",
+               filter(biome != "Global non-polar",
                       product %in% gobm_product_list),
              aes(col = product),
              position = position_nudge(x = 0.2),
@@ -3570,7 +3570,7 @@ pco2_product_biome_monthly_detrended %>%
   ungroup()
 
 pco2_product_biome_monthly_detrended %>%
-  filter(biome %in% "Global",
+  filter(biome %in% "Global non-polar",
          name %in% c("temperature"),
          product %in% pco2_product_list) %>%
   select(-c(time, product)) %>% 
@@ -3588,7 +3588,7 @@ ggsave(width = 5,
        filename = "../output/global_seasonality_sst_ensemble_mean_pco2_products.jpg")
 
 pco2_product_biome_monthly_detrended %>%
-  filter(biome %in% "Global",
+  filter(biome %in% "Global non-polar",
          name %in% c("fgco2_int"),
          product %in% pco2_product_list) %>%
   select(-c(time, product)) %>% 
@@ -3612,7 +3612,7 @@ ggsave(width = 5,
 ```{r anomalies_from_annual_mean_trends_overview_pCO2_products}
 
 pco2_product_biome_annual_detrended %>% 
-  filter(biome %in% "Global",
+  filter(biome %in% "Global non-polar",
          name %in% c("fgco2", "temperature")) %>%
   p_season(title = NULL) +
   theme(legend.position = "top")
@@ -3627,8 +3627,8 @@ ggsave(width = 10,
 ```{r anomalies_from_annual_mean_trends_overview, fig.asp=1.5}
 
 pco2_product_biome_annual_detrended %>%
-  filter(biome %in% "Global", name %in% name_core) %>%
-  p_season(title = "Anomalies from predicted annual mean | Global")
+  filter(biome %in% "Global non-polar", name %in% name_core) %>%
+  p_season(title = "Anomalies from predicted annual mean | Global non-polar")
   
 ```
 
@@ -3656,7 +3656,7 @@ grDevices::cairo_pdf("../output/biome_seasonality_all_products.pdf",
     height = 10,
     onefile = TRUE)
 pco2_product_biome_monthly_detrended %>%
-  filter(biome %in% c("Global", key_biomes),
+  filter(biome %in% c("Global non-polar", key_biomes),
          name %in% name_core) %>%
   group_split(biome) %>%
   # head(1) %>%
@@ -3682,9 +3682,9 @@ Anomalies are first presented are first presented in absolute units. Due to the 
 
 
 pco2_product_biome_annual_anomaly %>%
-  filter(biome %in% c("Global", key_biomes),
+  filter(biome %in% c("Global non-polar", key_biomes),
          name %in% name_core) %>%
-  mutate(biome = if_else(biome == "Global", "Global non-polar", biome)) %>% 
+  mutate(biome = if_else(biome == "Global non-polar", "Global non-polar", biome)) %>% 
   select(-c(value, fit)) %>%
   pivot_wider(values_from = resid) %>%
   pivot_longer(-c(product, year, biome, fgco2_int))  %>%
@@ -3939,7 +3939,7 @@ ggsave(width = 9,
 
 pco2_product_biome_annual_anomaly %>%
   filter(
-    biome %in% c("Global", key_biomes),
+    biome %in% c("Global non-polar", key_biomes),
     name %in% c(
       "fgco2_int",
       "chl",
@@ -3976,7 +3976,7 @@ pco2_product_biome_annual_anomaly %>%
 
 pco2_product_biome_monthly_anomaly %>%
 filter(
-    biome %in% c("Global", key_biomes),
+    biome %in% c("Global non-polar", key_biomes),
     name %in% c(
       "fgco2_int",
       "chl",
@@ -4014,7 +4014,7 @@ filter(
 
 pco2_product_biome_monthly_anomaly %>%
 filter(
-    biome %in% c("Global", key_biomes),
+    biome %in% c("Global non-polar", key_biomes),
     name %in% c(
       "fgco2_int",
       "chl",
@@ -4056,7 +4056,7 @@ filter(
 
 
 pco2_product_biome_monthly_detrended %>%
-  filter(biome == "Global") %>%
+  filter(biome == "Global non-polar") %>%
   select(-c(time, fit, value)) %>% 
   pivot_wider(values_from = resid) %>%
   pivot_longer(-c(product, year, month, biome, fgco2_int))  %>%
@@ -4185,7 +4185,7 @@ pco2_product_biome_monthly_detrended %>%
 ```{r pCO2_decomposition}
 
 pco2_product_biome_monthly_fCO2_decomposition %>%
-  filter(biome %in% c("Global",key_biomes)) %>%
+  filter(biome %in% c("Global non-polar",key_biomes)) %>%
   group_split(biome) %>%
   # head(1) %>%
   map(
@@ -4339,13 +4339,13 @@ pco2_product_biome_annual_flux_attribution %>%
 
 
 pco2_product_biome_annual_flux_attribution_ensemble %>%
-  filter(biome %in% c("Global", key_biomes)) %>%
+  filter(biome %in% c("Global non-polar", key_biomes)) %>%
   ggplot() +
   geom_hline(yintercept = 0) +
   geom_col(aes("", resid), fill = "grey90", col = "grey20") +
   geom_point(
     data = pco2_product_biome_annual_flux_attribution %>%
-      filter(biome %in% c("Global", key_biomes)),
+      filter(biome %in% c("Global non-polar", key_biomes)),
     aes("", resid, fill = product),
     shape = 21
   ) +
@@ -4408,7 +4408,7 @@ ggplot() +
   geom_hline(yintercept = 0) +
   geom_col(
     data = pco2_product_biome_annual_flux_attribution %>%
-      filter(biome %in% c("Global", key_biomes)),
+      filter(biome %in% c("Global non-polar", key_biomes)),
     aes("", resid, fill = product),
     position = position_dodge(width = 1),
     alpha = 0.5, col = "grey30"
@@ -4416,7 +4416,7 @@ ggplot() +
   geom_point(
     data = pco2_product_biome_monthly_flux_attribution %>%
       filter(year == {{year_anom}},
-             biome %in% c("Global", key_biomes)),
+             biome %in% c("Global non-polar", key_biomes)),
     aes("", resid, fill = product),
     position = position_dodge(width = 1),
     shape = 21, alpha = 0.5, col = "grey30"
@@ -4444,7 +4444,7 @@ ggplot() +
 
 pco2_product_biome_monthly_flux_attribution %>%
   filter(year == {{year_anom}},
-         biome %in% c("Global", key_biomes)) %>%
+         biome %in% c("Global non-polar", key_biomes)) %>%
   ggplot() +
   geom_hline(yintercept = 0) +
   geom_path(
@@ -4483,7 +4483,7 @@ pco2_product_biome_monthly_flux_attribution %>%
 
 
 pco2_product_biome_monthly_flux_attribution %>%
-  filter(biome %in% c("Global", key_biomes)) %>% 
+  filter(biome %in% c("Global non-polar", key_biomes)) %>% 
   group_split(biome) %>%
   # head(1) %>%
   map(
@@ -4525,7 +4525,7 @@ pco2_product_biome_monthly_flux_attribution %>%
 #   ungroup())
 
 pco2_product_biome_annual_flux_attribution %>%
-  filter(biome %in% c("Global", key_biomes)) %>% 
+  filter(biome %in% c("Global non-polar", key_biomes)) %>% 
   group_split(biome) %>%
   # head(1) %>%
   map(
@@ -4656,7 +4656,7 @@ pco2_product_biome_monthly_fCO2_decomposition %>%
   summarise(across(where(is.numeric), mean)) %>%
   ungroup() %>%
   filter(name %in% c("sfco2_nontherm", "sfco2_therm", "sfco2_total"),
-         biome %in% c("Global", key_biomes)) %>%
+         biome %in% c("Global non-polar", key_biomes)) %>%
   p_season(dim_col = "biome",
            title = "Ensemble mean decomposition of fCO2 anomaly")  
 
@@ -4672,7 +4672,7 @@ ggsave(width = 9,
 pco2_product_biome_monthly_detrended %>% 
   filter(year == {{year_anom}},
          name %in% c("temperature", "fgco2"),
-         biome %in% c("Global", key_biomes)) %>%
+         biome %in% c("Global non-polar", key_biomes)) %>%
   ggplot(aes(month, resid)) +
   geom_hline(yintercept = 0, linewidth = 0.5) +
   geom_path(aes(col = product)) +
@@ -4702,7 +4702,7 @@ ggsave(width = 9,
 pco2_product_biome_monthly_flux_attribution %>%
   filter(year == {{year_anom}},
          name %in% c("resid_fgco2_dfco2", "resid_fgco2_kw_sol"),
-         biome %in% c("Global", key_biomes)) %>%
+         biome %in% c("Global non-polar", key_biomes)) %>%
   ggplot(aes(month, resid)) +
   geom_hline(yintercept = 0, linewidth = 0.5) +
   geom_path(aes(col = product)) +
@@ -4732,7 +4732,7 @@ ggsave(width = 9,
 pco2_product_biome_monthly_fCO2_decomposition %>% 
   filter(year == {{year_anom}},
          name %in% c("sfco2_nontherm", "sfco2_therm", "sfco2_total"),
-         biome %in% c("Global", key_biomes)) %>%
+         biome %in% c("Global non-polar", key_biomes)) %>%
   ggplot(aes(month, resid)) +
   geom_hline(yintercept = 0, linewidth = 0.5) +
   geom_path(aes(col = product)) +

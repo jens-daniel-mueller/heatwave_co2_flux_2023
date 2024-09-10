@@ -149,8 +149,7 @@ republish = TRUE)
 
 wflow_publish(here::here(
   "analysis", c(
-    "ETHZ_CESM.Rmd",
-    "FESOM_REcoM.Rmd"
+    "pco2_product_synopsis_2023.Rmd"
   )
 ), message = "Global non-polar integral label changed")
 
