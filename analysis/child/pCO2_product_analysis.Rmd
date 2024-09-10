@@ -1238,7 +1238,7 @@ Anomalies are first presented relative to the predicted annual mean of each year
 
 ## {{year_anom}} absolute values
 
-### Global
+### Global non-polar
 
 ```{r figure_height}
 
@@ -1255,7 +1255,7 @@ fig.height <- (fig.height + 2) * 0.1
 ```{r {{year_anom}}_absolute_means_and_integrals_global, fig.asp=fig.height}
 
 pco2_product_biome_monthly %>%
-  filter(biome %in% "Global") %>%
+  filter(biome %in% "Global non-polar") %>%
   ggplot(aes(month, value, group = as.factor(year))) +
   geom_path(data = . %>% filter(!between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = year)) +
@@ -1268,7 +1268,7 @@ pco2_product_biome_monthly %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-  labs(title = "Absolute values | Global") +
+  labs(title = "Absolute values | Global non-polar") +
   facet_wrap(name ~ .,
              scales = "free_y",
              labeller = labeller(name = x_axis_labels),
@@ -1369,7 +1369,7 @@ pco2_product_biome_monthly %>%
 ```{r {{year_anom}}_annual_mean_trends, fig.asp=fig.height}
 
 pco2_product_biome_annual %>% 
-  filter(biome %in% "Global") %>%
+  filter(biome %in% "Global non-polar") %>%
   ggplot(aes(year, value)) +
   geom_path() +
   geom_point(data = . %>% filter(year != {{year_anom}})) +
@@ -1392,7 +1392,7 @@ pco2_product_biome_annual %>%
     palette = "Set1",
     name = paste("Regression fit\nexcl.", {{year_anom}})) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-  labs(title = "Annual mean trends | Global") +
+  labs(title = "Annual mean trends | Global non-polar") +
   facet_wrap(name ~ .,
              scales = "free_y",
              labeller = labeller(name = x_axis_labels),
@@ -1449,7 +1449,7 @@ pco2_product_biome_annual_anomaly <-
   
 
 pco2_product_biome_annual_anomaly %>%
-  filter(biome %in% "Global") %>%
+  filter(biome %in% "Global non-polar") %>%
   ggplot(aes(year, resid)) +
   geom_hline(yintercept = 0) +
   geom_path() +
@@ -1465,7 +1465,7 @@ pco2_product_biome_annual_anomaly %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-  labs(title = "Residual from fit to annual means (actual - predicted) | Global") +
+  labs(title = "Residual from fit to annual means (actual - predicted) | Global non-polar") +
   facet_wrap(name ~ .,
              scales = "free_y",
              labeller = labeller(name = x_axis_labels),
@@ -1539,7 +1539,7 @@ pco2_product_biome_annual_detrended <-
   mutate(resid = value - fit)
 
 pco2_product_biome_annual_detrended %>% 
-  filter(biome %in% "Global") %>%
+  filter(biome %in% "Global non-polar") %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
   geom_path(data = . %>% filter(!between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = year)) +
@@ -1552,7 +1552,7 @@ pco2_product_biome_annual_detrended %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-  labs(title = "Anomalies from predicted annual mean | Global") +
+  labs(title = "Anomalies from predicted annual mean | Global non-polar") +
   facet_wrap(name ~ .,
              scales = "free_y",
              labeller = labeller(name = x_axis_labels),
@@ -1663,7 +1663,7 @@ pco2_product_biome_annual_detrended %>%
 ```{r {{year_anom}}_monthly_mean_trends, fig.asp=fig.height}
 
 # pco2_product_biome_monthly %>% 
-#   filter(biome %in% "Global") %>%
+#   filter(biome %in% "Global non-polar") %>%
 #   mutate(month = as.factor(month)) %>% 
 #   ggplot(aes(year, value, col = month)) +
 #   # geom_point() +
@@ -1683,7 +1683,7 @@ pco2_product_biome_annual_detrended %>%
 #   scale_color_scico_d(palette = "romaO", 
 #     name = paste("Regression fit\nexcl.", {{year_anom}})) +
 #   scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-#   labs(title = "Monthly mean trends | Global") +
+#   labs(title = "Monthly mean trends | Global non-polar") +
 #   facet_wrap(name ~ .,
 #              scales = "free_y",
 #              labeller = labeller(name = x_axis_labels),
@@ -1735,7 +1735,7 @@ pco2_product_biome_monthly_anomaly <-
 
 
 # pco2_product_biome_monthly_anomaly %>%
-#   filter(biome %in% "Global") %>%
+#   filter(biome %in% "Global non-polar") %>%
 #   group_split(month) %>%
 #   head(1) %>%
 #   map(
@@ -1762,7 +1762,7 @@ pco2_product_biome_monthly_anomaly <-
 #                              order = 1)
 #       ) +
 #       scale_x_continuous(breaks = seq(1980, 2020, 20)) +
-#       labs(title = "Residual from fit to monthly means (actual - predicted) | Global",
+#       labs(title = "Residual from fit to monthly means (actual - predicted) | Global non-polar",
 #            subtitle = paste("Month:", .x$month)) +
 #       facet_wrap(
 #         name ~ .,
@@ -1846,7 +1846,7 @@ pco2_product_biome_monthly_anomaly %>%
 
 
 
-### Global
+### Global non-polar
 
 ```{r {{year_anom}}_anomalies_from_monthly_mean_trends_global, fig.asp=fig.height}
 
@@ -1857,7 +1857,7 @@ pco2_product_biome_monthly_detrended <-
   mutate(resid = value - fit)
 
 pco2_product_biome_monthly_detrended %>% 
-  filter(biome %in% "Global") %>%
+  filter(biome %in% "Global non-polar") %>%
   ggplot(aes(month, resid, group = as.factor(year))) +
   geom_path(data = . %>% filter(!between(year, {{year_anom}}-1, {{year_anom}})),
             aes(col = year)) +
@@ -1870,7 +1870,7 @@ pco2_product_biome_monthly_detrended %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
   scale_x_continuous(breaks = seq(1, 12, 3), expand = c(0, 0)) +
-  labs(title = "Anomalies from predicted monthly mean | Global") +
+  labs(title = "Anomalies from predicted monthly mean | Global non-polar") +
   facet_wrap(
     name ~ .,
     scales = "free_y",
@@ -2029,7 +2029,7 @@ Anomalies are first presented are first presented in absolute units. Due to the 
 ```{r {{year_anom}}_anomalies_correlation_absolute_global_annual, fig.asp=fig.height}
 
 pco2_product_biome_annual_anomaly %>%
-  filter(biome == "Global") %>%
+  filter(biome == "Global non-polar") %>%
   select(-c(value, fit)) %>% 
   pivot_wider(values_from = resid) %>% 
   pivot_longer(-c(year, biome, fgco2_int))  %>%
@@ -2054,7 +2054,7 @@ pco2_product_biome_annual_anomaly %>%
   scale_fill_manual(values = c("orange", "red"),
                      guide = guide_legend(reverse = TRUE,
                                           order = 1)) +
-  labs(title = "Globally integrated fluxes",
+  labs(title = "Global non-polar integrated fluxes",
        y = labels_breaks("fgco2_int")$i_legend_title) +
   facet_wrap(
     ~ name,
@@ -2090,7 +2090,7 @@ pco2_product_biome_monthly_detrended_anomaly <-
 
 
 pco2_product_biome_monthly_detrended_anomaly %>%
-  filter(biome == "Global") %>%
+  filter(biome == "Global non-polar") %>%
   pivot_longer(-c(year, month, biome, fgco2_int))  %>%
   ggplot(aes(value, fgco2_int)) +
   geom_hline(yintercept = 0) +
@@ -2120,7 +2120,7 @@ pco2_product_biome_monthly_detrended_anomaly %>%
                      guide = guide_legend(reverse = TRUE,
                                           order = 1),
                      name = paste("Month\nof", {{year_anom}})) +
-  labs(title = "Globally integrated fluxes",
+  labs(title = "Global non-polar integrated fluxes",
        y = labels_breaks("fgco2_int")$i_legend_title) +
   facet_wrap(
     ~ name,
@@ -2143,7 +2143,7 @@ pco2_product_biome_monthly_detrended_anomaly %>%
 ```{r {{year_anom}}_anomalies_correlation_absolute_biome_monthly, fig.asp=1.8, results = FALSE}
 
 pco2_product_biome_monthly_detrended_anomaly %>%
-  filter(!(biome %in% c(key_biomes, "Global"))) %>%
+  filter(!(biome %in% c(key_biomes, "Global non-polar"))) %>%
   pivot_longer(-c(year, month, biome, fgco2_int))  %>%
   filter(name %in% c("temperature", "chl", "dfco2", "kw_sol")) %>% 
   group_split(name) %>%
@@ -2296,7 +2296,7 @@ biome_mask <-
     biome_mask,
     biome_mask %>% 
       filter(!str_detect(biome, "SO-SPSS|SO-ICE|Arctic")) %>% 
-      mutate(biome = "Global")
+      mutate(biome = "Global non-polar")
   )
 
 pco2_product_biome_monthly_fCO2_decomposition <-
@@ -2317,7 +2317,7 @@ pco2_product_biome_annual_fCO2_decomposition <-
 
 
 pco2_product_biome_monthly_fCO2_decomposition %>%
-  filter(biome %in% c("Global", key_biomes)) %>%
+  filter(biome %in% c("Global non-polar", key_biomes)) %>%
   p_season(title  = paste("Anomalies from predicted monthly mean"))
 
 
@@ -2365,7 +2365,7 @@ pco2_product_biome_annual_flux_attribution <-
 
 pco2_product_biome_monthly_flux_attribution %>%
   filter(year == {{year_anom}},
-         biome %in% c("Global", key_biomes)) %>%
+         biome %in% c("Global non-polar", key_biomes)) %>%
   ggplot() +
   geom_hline(yintercept = 0) +
   geom_path(
@@ -2400,7 +2400,7 @@ pco2_product_biome_monthly_flux_attribution %>%
 ```{r flux_attribution_seasonal}
 
 pco2_product_biome_monthly_flux_attribution %>%
-  filter(biome %in% c("Global", key_biomes)) %>%
+  filter(biome %in% c("Global non-polar", key_biomes)) %>%
   p_season(title  = paste("Anomalies from predicted monthly mean"))
 
 
@@ -2424,7 +2424,7 @@ pco2_product_biome_annual_flux_attribution <-
   )
 
 # pco2_product_biome_annual_flux_attribution %>%
-#   filter(biome %in% c("Global", key_biomes)) %>%
+#   filter(biome %in% c("Global non-polar", key_biomes)) %>%
 #   mutate(product == "pco2 product") %>%
 #   group_split(product) %>%
 #   # head(1) %>%
