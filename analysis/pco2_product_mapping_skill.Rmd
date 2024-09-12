@@ -52,11 +52,7 @@ pco2_product_coarse_monthly_regression <-
   ) %>%
   filter(!is.na(name))
 
-pco2_product_list <- c("OceanSODAv2",
-                      "SOM-FFN",
-                      "fCO2-Residual",
-                      "CMEMS"
-                      )
+pco2_product_list <- c("OceanSODAv2", "SOM-FFN", "fCO2-Residual", "CMEMS")
 
 ```
 
@@ -73,11 +69,15 @@ key_biomes <-
 biome_mask <-
   read_rds(here::here("data/biome_mask.rds"))
 
+map +
+  geom_tile(data = biome_mask,
+            aes(fill = biome))
+
 biome_mask <-
-  bind_rows(
-    biome_mask,
-    biome_mask %>% mutate(biome = "Global")
-  )
+  bind_rows(biome_mask,
+            biome_mask %>%
+              filter(!str_detect(biome, "SO-SPSS|SO-ICE|Arctic")) %>%
+              mutate(biome = "Global non-polar"))
 
 
 ```
@@ -105,6 +105,14 @@ SOCAT_gridded_monthly <-
          sfco2_obs = FCO2_AVE_WEIGHTED_YEAR) %>% 
   mutate(lon = if_else(lon < 20, lon + 360, lon))
 
+
+SOCAT_gridded_monthly <-
+  inner_join(
+    SOCAT_gridded_monthly,
+    biome_mask %>%
+      filter(!str_detect(biome, "SO-SPSS|SO-ICE|Arctic|Global")) %>%
+      select(lon, lat))
+
 map +
   geom_tile(data = SOCAT_gridded_monthly %>% filter(year == 2023),
             aes(lon, lat, fill = sfco2_obs)) +
@@ -129,12 +137,61 @@ SOCAT_gridded_monthly_tibble <- SOCAT_gridded_monthly_raster %>%
   rename(lon = x, lat = y) %>%
   drop_na()
 
+SOCAT_gridded_monthly_raster_2023 <- rast(SOCAT_gridded_monthly %>%
+                                       filter(year == 2023) %>% 
+                                       count(lon, lat), crs = "+proj=longlat")
+
+
+SOCAT_gridded_monthly_raster_2023 <- project(SOCAT_gridded_monthly_raster_2023, target_crs, method = "near")
+
+SOCAT_gridded_monthly_tibble_2023 <- SOCAT_gridded_monthly_raster_2023 %>%
+  as.data.frame(xy = TRUE, na.rm = FALSE) %>%
+  as_tibble() %>%
+  rename(lon = x, lat = y) %>%
+  drop_na()
+
+
+
+bbox <- st_bbox(c(xmin = -180, xmax = 180, ymax = 76, ymin = -54), crs = st_crs(4326))
+bbox <- st_as_sfc(bbox)
+bbox_trans <- st_break_antimeridian(bbox, lon_0 = center)
+
+bbox_graticules <- st_graticule(
+  x = bbox_trans,
+  crs = st_crs(bbox_trans),
+  datum = st_crs(bbox_trans),
+  lon = c(20, 20.001),
+  lat = c(-54,76),
+  ndiscr = 1e3,
+  margin = 0.001
+)
+
+bbox_graticules_trans <- st_transform(bbox_graticules, crs = target_crs)
+rm(bbox, bbox_trans)
+
+# ggplot() +
+#   geom_sf(data = worldmap_trans, fill = "grey", col="grey") +
+#   geom_sf(data = coastline_trans) +
+#   geom_sf(data = bbox_graticules_trans)
+
+lat_lim <- ext(bbox_graticules_trans)[c(3,4)]*1.002
+lon_lim <- ext(bbox_graticules_trans)[c(1,2)]*1.005
+
+
 ggplot() +
-  geom_tile(data = SOCAT_gridded_monthly_tibble,
-            aes(x = lon, y = lat, fill = n)) +
-  scale_fill_scico(palette = "grayC", trans = "log10",
-                   "Months with\nobservations") +
-  geom_sf(data = worldmap_trans, fill = "grey90", col = "grey90") +
+  geom_tile(data = SOCAT_gridded_monthly_tibble, aes(x = lon, y = lat, fill = n)) +
+  scale_fill_scico(palette = "grayC",
+                   begin = 0.2,
+                   trans = "log10",
+                   "Months with\nobservations\n1990-2022") +
+  new_scale_fill() +
+  geom_tile(data = SOCAT_gridded_monthly_tibble_2023, aes(x = lon, y = lat, fill = n)) +
+  scale_fill_scico(palette = "buda",
+                   trans = "log10",
+                   "Months with\nobservations\n2023") +
+  geom_sf(data = worldmap_trans,
+          fill = "grey90",
+          col = "grey90") +
   geom_sf(data = coastline_trans, linewidth = 0.3) +
   geom_sf(data = bbox_graticules_trans, linewidth = 0.5) +
   coord_sf(
@@ -157,6 +214,71 @@ ggsave(width = 6,
        dpi = 600,
        filename = "../output/SOCAT_observations_map.jpg")
 
+
+
+biome_mask_robin_raster <- rast(
+  biome_mask %>%
+    filter(!str_detect(biome, "SO-SPSS|SO-ICE|Arctic|Global")) %>%
+    mutate(dist = 1) %>%
+    mutate(biome = case_when(
+      str_detect(biome, "SPSS") ~ "SPSS",
+      str_detect(biome, "STSS") ~ "STSS",
+      str_detect(biome, "STPS") ~ "STPS",
+      TRUE ~ "Tropics"
+    )) %>% 
+    pivot_wider(names_from = biome, values_from = dist),
+  crs = "+proj=longlat"
+)
+
+
+biome_mask_robin_raster <- project(biome_mask_robin_raster, target_crs, method = "near")
+
+biome_mask_robin_tibble <- biome_mask_robin_raster %>%
+  as.data.frame(xy = TRUE, na.rm = FALSE) %>%
+  as_tibble() %>%
+  rename(lon = x, lat = y) %>%
+  pivot_longer(cols = -c("lon", "lat"),
+               names_to = "biome",
+               values_to = "dist") %>%
+  drop_na() %>% 
+  mutate(biome = as.character(biome))
+
+
+ggplot() +
+  geom_raster(
+    data = biome_mask_robin_tibble %>% 
+      mutate(biome = fct_inorder(biome)),
+    aes(
+      x = lon,
+      y = lat,
+      fill = biome
+    )
+  ) +
+  geom_sf(data = worldmap_trans, fill = "grey90", col = "grey90") +
+  geom_sf(data = coastline_trans, linewidth = 0.3) +
+  geom_sf(data = bbox_graticules_trans, linewidth = 0.5) +
+  coord_sf(
+    crs = target_crs,
+    ylim = lat_lim,
+    xlim = lon_lim,
+    expand = FALSE
+  ) +
+  scale_fill_viridis_d(option = "magma", begin = 0.1, end = 0.9)  +
+  guides(fill = guide_legend(byrow = TRUE)) +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.border = element_rect(colour = "transparent"),
+    strip.background = element_blank(),
+    legend.position = "top",
+    legend.title = element_blank()
+  )
+
+ggsave(width = 6,
+       height = 4,
+       dpi = 600,
+       filename = "../output/biome_map.jpg")
 
 # SOCAT_gridded_monthly <-
 #   m_grid_horizontal_coarse(SOCAT_gridded_monthly)
