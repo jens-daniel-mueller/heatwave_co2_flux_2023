@@ -177,6 +177,38 @@ rm(bbox, bbox_trans)
 lat_lim <- ext(bbox_graticules_trans)[c(3,4)]*1.002
 lon_lim <- ext(bbox_graticules_trans)[c(1,2)]*1.005
 
+stations <-
+  tibble(
+    lon = c(-64, -170, -12),
+    lat = c(32, 0, 30)
+    # label = c(1, 2, 3)
+  )
+
+stations <-
+  stations %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+stations <-
+  stations %>% as.matrix()
+
+# pts = matrix(1:10, , 2)
+# st_multipoint(pts)
+
+stations <- st_multipoint(stations)
+
+stations <- st_sfc(stations, crs = "+proj=longlat")
+stations_trans <- st_transform(stations, crs = target_crs)
+
+stations_tibble <- do.call(rbind, st_geometry(stations_trans)) %>% 
+    as_tibble() %>% setNames(c("lon","lat"))
+
+stations_tibble <- 
+  bind_cols(stations_tibble, label = c(1,2,3))
+
+# Bats: 31.5 - 32.5°N / 63.5 – 64.5°W
+# Mid Pacific: 0.5°S-0.5°N/170.5°W
+# VOS-Line: 29°N/13°W , 30°N/12°W , 31°N/11°W
+
 
 ggplot() +
   geom_tile(data = SOCAT_gridded_monthly_tibble, aes(x = lon, y = lat, fill = n)) +
@@ -194,6 +226,7 @@ ggplot() +
           col = "grey90") +
   geom_sf(data = coastline_trans, linewidth = 0.3) +
   geom_sf(data = bbox_graticules_trans, linewidth = 0.5) +
+  geom_label(data = stations_tibble, aes(x = lon, y = lat, label = label)) +
   coord_sf(
     crs = target_crs,
     ylim = lat_lim,
@@ -209,8 +242,8 @@ ggplot() +
     legend.position = "top"
   )
 
-ggsave(width = 6,
-       height = 4,
+ggsave(width = 8,
+       height = 4.5,
        dpi = 600,
        filename = "../output/SOCAT_observations_map.jpg")
 
@@ -275,8 +308,8 @@ ggplot() +
     legend.title = element_blank()
   )
 
-ggsave(width = 6,
-       height = 4,
+ggsave(width = 8,
+       height = 4.5,
        dpi = 600,
        filename = "../output/biome_map.jpg")
 
