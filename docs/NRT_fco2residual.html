@@ -445,7 +445,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">NRT_fco2residual</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">22 February, 2025</h4>
+<h4 class="date">23 February, 2025</h4>
 
 </div>
 
@@ -474,7 +474,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-22
+<strong>Last updated:</strong> 2025-02-23
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -606,15 +606,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treea8a114eb9ff252623e62ceb1fd00099774da1d2btargetblanka8a114ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree945d8f7060798781f1bf330e3601d067a2c0cae8targetblank945d8f7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/a8a114eb9ff252623e62ceb1fd00099774da1d2b" target="_blank">a8a114e</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/945d8f7060798781f1bf330e3601d067a2c0cae8" target="_blank">945d8f7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treea8a114eb9ff252623e62ceb1fd00099774da1d2btargetblanka8a114ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree945d8f7060798781f1bf330e3601d067a2c0cae8targetblank945d8f7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -624,7 +624,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/a8a114eb9ff252623e62ceb1fd00099774da1d2b" target="_blank">a8a114e</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/945d8f7060798781f1bf330e3601d067a2c0cae8" target="_blank">945d8f7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -697,6 +697,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/1ca18ff9f1a22c0b119511d31f9564c2d64a9f41/docs/NRT_fco2residual.html" target="_blank">1ca18ff</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -4340,6 +4357,8 @@ jens-daniel-mueller
     pco2_product_map_annual_anomaly %&gt;%
       filter(name %in% c(&quot;temperature&quot;, &quot;fgco2&quot;)) %&gt;% 
       select(lon, lat, name, resid, year) %&gt;% 
+      drop_na() %&gt;% 
+      arrange(desc(name)) %&gt;% 
       pivot_wider(values_from = &quot;resid&quot;)
   )
 
@@ -5942,8 +5961,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4287392   229.0   75419212  4027.9  230161165 12292.0
-Vcells 2225850772 16981.9 4793528434 36571.8 4793518609 36571.7</code></pre>
+Ncells    4287364   229.0   56348639  3009.4  171962395  9183.8
+Vcells 2225850538 16981.9 5256924436 40107.2 5256913416 40107.1</code></pre>
 <pre class="r"><code>map +
   geom_tile(data = pco2_product_map_annual_fCO2_decomposition %&gt;%
               filter(year == 2023), aes(lon, lat, fill = resid)) +
@@ -6178,8 +6197,8 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4305585   230.0   60335370  3222.3  230161165 12292.0
-Vcells 2488146751 18983.1 4793528434 36571.8 4793528421 36571.8</code></pre>
+Ncells    4305391   230.0   45078912  2407.5  171962395  9183.8
+Vcells 2488146292 18983.1 5256924436 40107.2 5256913416 40107.1</code></pre>
 <pre class="r"><code>pco2_product_map_monthly_anomaly %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
@@ -18088,7 +18107,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] ggh4x_0.2.8         scales_1.3.0        cmocean_0.3-2      
+ [1] ggh4x_0.3.0         scales_1.3.0        cmocean_0.3-2      
  [4] ggtext_0.1.2        broom_1.0.7         khroma_1.14.0      
  [7] ggnewscale_0.5.0    stars_0.6-7         abind_1.4-8        
 [10] terra_1.8-5         sf_1.0-19           rnaturalearth_1.0.1
