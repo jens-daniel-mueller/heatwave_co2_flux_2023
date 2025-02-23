@@ -606,15 +606,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree945d8f7060798781f1bf330e3601d067a2c0cae8targetblank945d8f7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treec8a9b1687d2312f293c1cf2319993bb1e7abe26ctargetblankc8a9b16a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/945d8f7060798781f1bf330e3601d067a2c0cae8" target="_blank">945d8f7</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/c8a9b1687d2312f293c1cf2319993bb1e7abe26c" target="_blank">c8a9b16</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree945d8f7060798781f1bf330e3601d067a2c0cae8targetblank945d8f7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treec8a9b1687d2312f293c1cf2319993bb1e7abe26ctargetblankc8a9b16a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -624,7 +624,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/945d8f7060798781f1bf330e3601d067a2c0cae8" target="_blank">945d8f7</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/c8a9b1687d2312f293c1cf2319993bb1e7abe26c" target="_blank">c8a9b16</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -697,6 +697,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/06d9c78db661b356677152a5ff1d0931b5e682de/docs/OceanSODA.html" target="_blank">06d9c78</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2965,6 +2982,7 @@ x_axis_labels &lt;-
 <div id="analysis-settings" class="section level2">
 <h2>Analysis settings</h2>
 <pre class="r"><code>name_quadratic_fit &lt;- c(&quot;atm_co2&quot;, &quot;atm_fco2&quot;, &quot;spco2&quot;, &quot;sfco2&quot;)
+name_quadratic_fit &lt;- c(name_quadratic_fit, &quot;dfco2&quot;, &quot;fgco2&quot;, &quot;fgco2_int&quot;, &quot;temperature&quot;)
 
 start_year &lt;- 1990
 
@@ -6519,7 +6537,7 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_map_annual_slope %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -6531,7 +6549,7 @@ pco2_product_map_annual_anomaly %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -6543,7 +6561,7 @@ pco2_product_map_annual_anomaly_temperature_predict %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -6554,7 +6572,7 @@ pco2_product_map_annual_anomaly_temperature_predict %&gt;%
 pco2_product_biome_annual_anomaly_temperature_predict %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -8212,8 +8230,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4291037   229.2   63884171  3411.8  194959015 10412.0
-Vcells 2430529377 18543.5 5583556924 42599.2 5583556924 42599.2</code></pre>
+Ncells    4291118   229.2   79729613  4258.1  194652372 10395.6
+Vcells 2430529638 18543.5 6143822661 46873.7 6143815316 46873.6</code></pre>
 <pre class="r"><code>map +
   geom_tile(data = pco2_product_map_annual_fCO2_decomposition %&gt;%
               filter(year == 2023), aes(lon, lat, fill = resid)) +
@@ -8492,13 +8510,13 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4308848   230.2   51107337  2729.5  194959015 10412.0
-Vcells 2699087220 20592.5 5583556924 42599.2 5583556924 42599.2</code></pre>
+Ncells    4308889   230.2   63783691  3406.5  194652372 10395.6
+Vcells 2699087431 20592.5 6143822661 46873.7 6143815316 46873.6</code></pre>
 <pre class="r"><code>pco2_product_map_monthly_anomaly %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -8510,7 +8528,7 @@ pco2_product_map_annual_flux_attribution %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -8522,7 +8540,7 @@ pco2_product_map_annual_fCO2_decomposition %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -8534,7 +8552,7 @@ pco2_product_map_monthly_flux_attribution %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -8546,7 +8564,7 @@ pco2_product_map_monthly_fCO2_decomposition %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -15501,7 +15519,7 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_hovmoeller_monthly_anomaly %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -18251,7 +18269,7 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_biome_annual_anomaly %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -19824,7 +19842,7 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_biome_annual_detrended %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -19999,7 +20017,7 @@ pco2_product_biome_monthly_anomaly &lt;-
 <pre class="r"><code>pco2_product_biome_monthly_anomaly %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -21863,7 +21881,7 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_biome_monthly_detrended %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -23558,7 +23576,7 @@ jens-daniel-mueller
 <pre class="r"><code>pco2_product_biome_annual_flux_attribution %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -23569,7 +23587,7 @@ jens-daniel-mueller
 pco2_product_biome_monthly_flux_attribution %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -23580,7 +23598,7 @@ pco2_product_biome_monthly_flux_attribution %&gt;%
 pco2_product_biome_annual_fCO2_decomposition %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -23591,7 +23609,7 @@ pco2_product_biome_annual_fCO2_decomposition %&gt;%
 pco2_product_biome_monthly_fCO2_decomposition %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -23652,7 +23670,7 @@ pco2_product_zonal_mean_annual_anomaly %&gt;%
 <pre class="r"><code>pco2_product_zonal_mean_annual_anomaly %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -23700,7 +23718,7 @@ pco2_product_profiles_annual_anomaly %&gt;%
 <pre class="r"><code>pco2_product_profiles_annual_anomaly %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
@@ -23746,7 +23764,7 @@ pco2_product_profiles_monthly_anomaly %&gt;%
 <pre class="r"><code>pco2_product_profiles_monthly_anomaly %&gt;%
   write_csv(
     paste0(
-      &quot;../data/&quot;,
+      &quot;../data/quadratic_fit/&quot;,
       &quot;OceanSODAv2&quot;,
       &quot;_&quot;,
       &quot;2023&quot;,
