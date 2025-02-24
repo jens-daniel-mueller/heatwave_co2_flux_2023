@@ -606,15 +606,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree1d3f08c95e554fe7fbee42d03a0c5f091c403b1etargetblank1d3f08ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree7e3974ee97fc4712ea7ecc5d4eca01ce48ab3c22targetblank7e3974ea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/1d3f08c95e554fe7fbee42d03a0c5f091c403b1e" target="_blank">1d3f08c</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/7e3974ee97fc4712ea7ecc5d4eca01ce48ab3c22" target="_blank">7e3974e</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree1d3f08c95e554fe7fbee42d03a0c5f091c403b1etargetblank1d3f08ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree7e3974ee97fc4712ea7ecc5d4eca01ce48ab3c22targetblank7e3974ea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -624,7 +624,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/1d3f08c95e554fe7fbee42d03a0c5f091c403b1e" target="_blank">1d3f08c</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/7e3974ee97fc4712ea7ecc5d4eca01ce48ab3c22" target="_blank">7e3974e</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -641,6 +641,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data
     Ignored:    output/
 
@@ -697,6 +698,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/7e3974ee97fc4712ea7ecc5d4eca01ce48ab3c22/docs/SOM_FFN.html" target="_blank">7e3974e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -3111,8 +3129,8 @@ which are approximated with quadratic fits.</p>
   
   group_by &lt;- quos(...)
   # group_by &lt;- quos(lon, lat)
+  # group_by &lt;- quos(biome)
   # df &lt;- pco2_product_map_annual
-  
   # Linear regression models
 
   df_lm &lt;-
@@ -3188,11 +3206,13 @@ which are approximated with quadratic fits.</p>
     filter(year != 2023,
            name %in% name_quadratic_fit) %&gt;%
     drop_na() %&gt;% 
+    mutate(year = year - 1989) %&gt;% 
     nest(data = -c(name, !!!group_by)) %&gt;%
     mutate(
       fit = map(data, ~ flm(
         # formula = value ~ year + I(year ^ 2), data = .x))
-        formula = value ~ year + I(year ^ 2) + I(year ^ 3), data = .x))
+        # formula = value ~ year + year_2 + year_3, data = .x))
+        formula = value ~ poly(year, 3, raw = TRUE), data = .x))
     )
   
   df_quadratic &lt;-
@@ -3202,20 +3222,22 @@ which are approximated with quadratic fits.</p>
         select(name, !!!group_by,
                # intercept = `(Intercept)`, slope = year, slope_squared = `I(year^2)`
                intercept = `(Intercept)`,
-               slope = year, 
-               slope_squared = `I(year^2)`,
-               slope_cube = `I(year^3)`
+               slope = `1`, 
+               slope_squared = `2`,
+               slope_cube = `3`
                ) %&gt;%
         mutate(intercept = as.vector(intercept),
                slope = as.vector(slope),
                slope_squared = as.vector(slope_squared),
                slope_cube = as.vector(slope_cube)
                ),
-      df
+      df %&gt;% 
+        mutate(year = year - 1989)
     ) %&gt;%
     mutate(fit = intercept + year * slope + year^2 * slope_squared + year^3 * slope_cube) %&gt;%
     select(name, !!!group_by, year, fit, value) %&gt;%
-    mutate(resid = value - fit)
+    mutate(resid = value - fit,
+           year = year + 1989)
   
   
   # df_quadratic &lt;-
@@ -7318,8 +7340,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4295845   229.5  119496889  6381.9  233392360 12464.5
-Vcells 2550121827 19455.9 5605562441 42767.1 5605549216 42767.0</code></pre>
+Ncells    4296671   229.5  124738477  6661.8  243629837 13011.3
+Vcells 2550124120 19456.0 5606654074 42775.4 5606633790 42775.3</code></pre>
 <pre class="r"><code>map +
   geom_tile(data = pco2_product_map_annual_fCO2_decomposition %&gt;%
               filter(year == 2023), aes(lon, lat, fill = resid)) +
@@ -7598,8 +7620,8 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4313548   230.4   95597512  5105.5  233392360 12464.5
-Vcells 2816824870 21490.7 5605562441 42767.1 5605549216 42767.0</code></pre>
+Ncells    4314496   230.5   99790782  5329.5  243629837 13011.3
+Vcells 2816827397 21490.7 5606654074 42775.4 5606633790 42775.3</code></pre>
 <pre class="r"><code>pco2_product_map_monthly_anomaly %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
@@ -17578,9 +17600,15 @@ jens-daniel-mueller
                                   name %in% name_quadratic_fit),
               method = &quot;lm&quot;,
               fullrange = TRUE,
-              # formula = y ~ x + I(x^2),
-              formula = y ~ x + I(x^2) + I(x^3),
+              formula = y ~ x + I(x^2),
               aes(col = &quot;quadratic&quot;),
+              se = FALSE) +
+  geom_smooth(data = . %&gt;% filter(year != 2023,
+                                  name %in% name_quadratic_fit),
+              method = &quot;lm&quot;,
+              fullrange = TRUE,
+              formula = y ~ poly(x,2),
+              aes(col = &quot;poly2&quot;),
               se = FALSE) +
   scale_color_brewer(
     palette = &quot;Set1&quot;,
