@@ -13,6 +13,20 @@ editor_options:
 # https://jdblischak.github.io/workflowr/articles/wflow-07-common-code.html
 ```
 
+```{r data_products_used}
+
+pco2_product_list <- c("OceanSODAv2", "SOM-FFN", "fCO2-Residual", "CMEMS")
+
+gobm_product_list <- c("ETHZ-CESM", "FESOM-REcoM")
+
+files <- list.files(here::here("data/"), pattern = "FESOM-REcoM")
+
+file_types <- str_remove(files, "FESOM-REcoM_2023_")
+GCB_products = FALSE
+
+```
+
+
 ```{r source_pCO2_product_synopsis_child}
 
 pCO2_product_synopsis <-
