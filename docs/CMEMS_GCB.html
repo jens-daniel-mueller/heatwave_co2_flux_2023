@@ -387,6 +387,9 @@ div.tocify {
     <li>
       <a href="NRT_fco2residual.html">NRT fco2residual</a>
     </li>
+    <li>
+      <a href="LDEO-HDP_GCB.html">LDEO-HDP_GCB</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -457,7 +460,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">CMEMS_GCB</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">27 February, 2025</h4>
+<h4 class="date">28 February, 2025</h4>
 
 </div>
 
@@ -486,7 +489,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-27
+<strong>Last updated:</strong> 2025-02-28
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -618,15 +621,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treea32dc555ffd959ddc139fe314b915768fa762c0btargetblanka32dc55a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree4d8eb676339cc1a20f6de9d5dead071ca2948023targetblank4d8eb67a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/a32dc555ffd959ddc139fe314b915768fa762c0b" target="_blank">a32dc55</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/4d8eb676339cc1a20f6de9d5dead071ca2948023" target="_blank">4d8eb67</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treea32dc555ffd959ddc139fe314b915768fa762c0btargetblanka32dc55a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree4d8eb676339cc1a20f6de9d5dead071ca2948023targetblank4d8eb67a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -636,7 +639,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/a32dc555ffd959ddc139fe314b915768fa762c0b" target="_blank">a32dc55</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/4d8eb676339cc1a20f6de9d5dead071ca2948023" target="_blank">4d8eb67</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -657,7 +660,6 @@ Ignored files:
     Ignored:    output/
 
 Untracked files:
-    Untracked:  analysis/pco2_product_synopsis_2023_GCB.Rmd
     Untracked:  code/gas_flux_kwko.R
 
 Unstaged changes:
@@ -712,6 +714,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/4d8eb676339cc1a20f6de9d5dead071ca2948023/analysis/CMEMS_GCB.Rmd" target="_blank">4d8eb67</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-28
+</td>
+<td>
+ingest with time shifted fgco2 data
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/CMEMS_GCB.html" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -878,23 +914,242 @@ nc &lt;-
     &quot;GCB-2024_dataprod_CMEMS-LSCE-FFNN_1990-2023_r100_v6.nc&quot;
   ))
 
-print(nc)</code></pre>
-<pre class="r"><code>pco2_product &lt;-
-  read_ncdf(
+time &lt;- ncvar_get(nc,&quot;time&quot;)
+time
+
+print(nc)
+ncmeta::nc_extended(nc)</code></pre>
+<pre class="r"><code>pco2_product_nc &lt;-
+  tidync(
     paste0(
       path_pCO2_products,
       &quot;GCB-2024_dataprod_CMEMS-LSCE-FFNN_1990-2023_r100_v6.nc&quot;
-    ),
-    var = c(&quot;fco2atm&quot;, &quot;fgco2&quot;, &quot;kw&quot;, &quot;alpha&quot;, &quot;sfco2&quot;, &quot;tos&quot;),
-    ignore_bounds = TRUE,
-    make_units = FALSE
+    )
   )
 
-pco2_product &lt;- pco2_product %&gt;%
-  as_tibble()
+for (i in 1:468) {
+  
+  i_pco2_product &lt;-
+    pco2_product_nc %&gt;%
+    hyper_filter(time = index == i) %&gt;%
+    hyper_tibble(select_var = c(&quot;fco2atm&quot;, &quot;fgco2&quot;, &quot;kw&quot;, &quot;alpha&quot;, &quot;sfco2&quot;, &quot;tos&quot;)) %&gt;%
+    mutate(time = ymd(&quot;1990-01-15&quot;) %m+% months(i-1))
+  
+  if (exists(&quot;pco2_product&quot;)) {
+    pco2_product &lt;-
+      bind_rows(pco2_product, i_pco2_product)
+  }
+  
+  if (!exists(&quot;pco2_product&quot;)) {
+    pco2_product &lt;- i_pco2_product
+  }
+  
+  # print(i)
+  
+}
 
-pco2_product &lt;- pco2_product %&gt;%
-  drop_na()
+pco2_product_fgco2 &lt;-
+  pco2_product %&gt;% 
+  select(lon, lat, time, fgco2) %&gt;% 
+  mutate(time = time - years(5))
+
+pco2_product_fgco2 %&gt;% 
+  distinct(time) %&gt;% 
+  pull()</code></pre>
+<pre><code>  [1] &quot;1985-01-15&quot; &quot;1985-02-15&quot; &quot;1985-03-15&quot; &quot;1985-04-15&quot; &quot;1985-05-15&quot;
+  [6] &quot;1985-06-15&quot; &quot;1985-07-15&quot; &quot;1985-08-15&quot; &quot;1985-09-15&quot; &quot;1985-10-15&quot;
+ [11] &quot;1985-11-15&quot; &quot;1985-12-15&quot; &quot;1986-01-15&quot; &quot;1986-02-15&quot; &quot;1986-03-15&quot;
+ [16] &quot;1986-04-15&quot; &quot;1986-05-15&quot; &quot;1986-06-15&quot; &quot;1986-07-15&quot; &quot;1986-08-15&quot;
+ [21] &quot;1986-09-15&quot; &quot;1986-10-15&quot; &quot;1986-11-15&quot; &quot;1986-12-15&quot; &quot;1987-01-15&quot;
+ [26] &quot;1987-02-15&quot; &quot;1987-03-15&quot; &quot;1987-04-15&quot; &quot;1987-05-15&quot; &quot;1987-06-15&quot;
+ [31] &quot;1987-07-15&quot; &quot;1987-08-15&quot; &quot;1987-09-15&quot; &quot;1987-10-15&quot; &quot;1987-11-15&quot;
+ [36] &quot;1987-12-15&quot; &quot;1988-01-15&quot; &quot;1988-02-15&quot; &quot;1988-03-15&quot; &quot;1988-04-15&quot;
+ [41] &quot;1988-05-15&quot; &quot;1988-06-15&quot; &quot;1988-07-15&quot; &quot;1988-08-15&quot; &quot;1988-09-15&quot;
+ [46] &quot;1988-10-15&quot; &quot;1988-11-15&quot; &quot;1988-12-15&quot; &quot;1989-01-15&quot; &quot;1989-02-15&quot;
+ [51] &quot;1989-03-15&quot; &quot;1989-04-15&quot; &quot;1989-05-15&quot; &quot;1989-06-15&quot; &quot;1989-07-15&quot;
+ [56] &quot;1989-08-15&quot; &quot;1989-09-15&quot; &quot;1989-10-15&quot; &quot;1989-11-15&quot; &quot;1989-12-15&quot;
+ [61] &quot;1990-01-15&quot; &quot;1990-02-15&quot; &quot;1990-03-15&quot; &quot;1990-04-15&quot; &quot;1990-05-15&quot;
+ [66] &quot;1990-06-15&quot; &quot;1990-07-15&quot; &quot;1990-08-15&quot; &quot;1990-09-15&quot; &quot;1990-10-15&quot;
+ [71] &quot;1990-11-15&quot; &quot;1990-12-15&quot; &quot;1991-01-15&quot; &quot;1991-02-15&quot; &quot;1991-03-15&quot;
+ [76] &quot;1991-04-15&quot; &quot;1991-05-15&quot; &quot;1991-06-15&quot; &quot;1991-07-15&quot; &quot;1991-08-15&quot;
+ [81] &quot;1991-09-15&quot; &quot;1991-10-15&quot; &quot;1991-11-15&quot; &quot;1991-12-15&quot; &quot;1992-01-15&quot;
+ [86] &quot;1992-02-15&quot; &quot;1992-03-15&quot; &quot;1992-04-15&quot; &quot;1992-05-15&quot; &quot;1992-06-15&quot;
+ [91] &quot;1992-07-15&quot; &quot;1992-08-15&quot; &quot;1992-09-15&quot; &quot;1992-10-15&quot; &quot;1992-11-15&quot;
+ [96] &quot;1992-12-15&quot; &quot;1993-01-15&quot; &quot;1993-02-15&quot; &quot;1993-03-15&quot; &quot;1993-04-15&quot;
+[101] &quot;1993-05-15&quot; &quot;1993-06-15&quot; &quot;1993-07-15&quot; &quot;1993-08-15&quot; &quot;1993-09-15&quot;
+[106] &quot;1993-10-15&quot; &quot;1993-11-15&quot; &quot;1993-12-15&quot; &quot;1994-01-15&quot; &quot;1994-02-15&quot;
+[111] &quot;1994-03-15&quot; &quot;1994-04-15&quot; &quot;1994-05-15&quot; &quot;1994-06-15&quot; &quot;1994-07-15&quot;
+[116] &quot;1994-08-15&quot; &quot;1994-09-15&quot; &quot;1994-10-15&quot; &quot;1994-11-15&quot; &quot;1994-12-15&quot;
+[121] &quot;1995-01-15&quot; &quot;1995-02-15&quot; &quot;1995-03-15&quot; &quot;1995-04-15&quot; &quot;1995-05-15&quot;
+[126] &quot;1995-06-15&quot; &quot;1995-07-15&quot; &quot;1995-08-15&quot; &quot;1995-09-15&quot; &quot;1995-10-15&quot;
+[131] &quot;1995-11-15&quot; &quot;1995-12-15&quot; &quot;1996-01-15&quot; &quot;1996-02-15&quot; &quot;1996-03-15&quot;
+[136] &quot;1996-04-15&quot; &quot;1996-05-15&quot; &quot;1996-06-15&quot; &quot;1996-07-15&quot; &quot;1996-08-15&quot;
+[141] &quot;1996-09-15&quot; &quot;1996-10-15&quot; &quot;1996-11-15&quot; &quot;1996-12-15&quot; &quot;1997-01-15&quot;
+[146] &quot;1997-02-15&quot; &quot;1997-03-15&quot; &quot;1997-04-15&quot; &quot;1997-05-15&quot; &quot;1997-06-15&quot;
+[151] &quot;1997-07-15&quot; &quot;1997-08-15&quot; &quot;1997-09-15&quot; &quot;1997-10-15&quot; &quot;1997-11-15&quot;
+[156] &quot;1997-12-15&quot; &quot;1998-01-15&quot; &quot;1998-02-15&quot; &quot;1998-03-15&quot; &quot;1998-04-15&quot;
+[161] &quot;1998-05-15&quot; &quot;1998-06-15&quot; &quot;1998-07-15&quot; &quot;1998-08-15&quot; &quot;1998-09-15&quot;
+[166] &quot;1998-10-15&quot; &quot;1998-11-15&quot; &quot;1998-12-15&quot; &quot;1999-01-15&quot; &quot;1999-02-15&quot;
+[171] &quot;1999-03-15&quot; &quot;1999-04-15&quot; &quot;1999-05-15&quot; &quot;1999-06-15&quot; &quot;1999-07-15&quot;
+[176] &quot;1999-08-15&quot; &quot;1999-09-15&quot; &quot;1999-10-15&quot; &quot;1999-11-15&quot; &quot;1999-12-15&quot;
+[181] &quot;2000-01-15&quot; &quot;2000-02-15&quot; &quot;2000-03-15&quot; &quot;2000-04-15&quot; &quot;2000-05-15&quot;
+[186] &quot;2000-06-15&quot; &quot;2000-07-15&quot; &quot;2000-08-15&quot; &quot;2000-09-15&quot; &quot;2000-10-15&quot;
+[191] &quot;2000-11-15&quot; &quot;2000-12-15&quot; &quot;2001-01-15&quot; &quot;2001-02-15&quot; &quot;2001-03-15&quot;
+[196] &quot;2001-04-15&quot; &quot;2001-05-15&quot; &quot;2001-06-15&quot; &quot;2001-07-15&quot; &quot;2001-08-15&quot;
+[201] &quot;2001-09-15&quot; &quot;2001-10-15&quot; &quot;2001-11-15&quot; &quot;2001-12-15&quot; &quot;2002-01-15&quot;
+[206] &quot;2002-02-15&quot; &quot;2002-03-15&quot; &quot;2002-04-15&quot; &quot;2002-05-15&quot; &quot;2002-06-15&quot;
+[211] &quot;2002-07-15&quot; &quot;2002-08-15&quot; &quot;2002-09-15&quot; &quot;2002-10-15&quot; &quot;2002-11-15&quot;
+[216] &quot;2002-12-15&quot; &quot;2003-01-15&quot; &quot;2003-02-15&quot; &quot;2003-03-15&quot; &quot;2003-04-15&quot;
+[221] &quot;2003-05-15&quot; &quot;2003-06-15&quot; &quot;2003-07-15&quot; &quot;2003-08-15&quot; &quot;2003-09-15&quot;
+[226] &quot;2003-10-15&quot; &quot;2003-11-15&quot; &quot;2003-12-15&quot; &quot;2004-01-15&quot; &quot;2004-02-15&quot;
+[231] &quot;2004-03-15&quot; &quot;2004-04-15&quot; &quot;2004-05-15&quot; &quot;2004-06-15&quot; &quot;2004-07-15&quot;
+[236] &quot;2004-08-15&quot; &quot;2004-09-15&quot; &quot;2004-10-15&quot; &quot;2004-11-15&quot; &quot;2004-12-15&quot;
+[241] &quot;2005-01-15&quot; &quot;2005-02-15&quot; &quot;2005-03-15&quot; &quot;2005-04-15&quot; &quot;2005-05-15&quot;
+[246] &quot;2005-06-15&quot; &quot;2005-07-15&quot; &quot;2005-08-15&quot; &quot;2005-09-15&quot; &quot;2005-10-15&quot;
+[251] &quot;2005-11-15&quot; &quot;2005-12-15&quot; &quot;2006-01-15&quot; &quot;2006-02-15&quot; &quot;2006-03-15&quot;
+[256] &quot;2006-04-15&quot; &quot;2006-05-15&quot; &quot;2006-06-15&quot; &quot;2006-07-15&quot; &quot;2006-08-15&quot;
+[261] &quot;2006-09-15&quot; &quot;2006-10-15&quot; &quot;2006-11-15&quot; &quot;2006-12-15&quot; &quot;2007-01-15&quot;
+[266] &quot;2007-02-15&quot; &quot;2007-03-15&quot; &quot;2007-04-15&quot; &quot;2007-05-15&quot; &quot;2007-06-15&quot;
+[271] &quot;2007-07-15&quot; &quot;2007-08-15&quot; &quot;2007-09-15&quot; &quot;2007-10-15&quot; &quot;2007-11-15&quot;
+[276] &quot;2007-12-15&quot; &quot;2008-01-15&quot; &quot;2008-02-15&quot; &quot;2008-03-15&quot; &quot;2008-04-15&quot;
+[281] &quot;2008-05-15&quot; &quot;2008-06-15&quot; &quot;2008-07-15&quot; &quot;2008-08-15&quot; &quot;2008-09-15&quot;
+[286] &quot;2008-10-15&quot; &quot;2008-11-15&quot; &quot;2008-12-15&quot; &quot;2009-01-15&quot; &quot;2009-02-15&quot;
+[291] &quot;2009-03-15&quot; &quot;2009-04-15&quot; &quot;2009-05-15&quot; &quot;2009-06-15&quot; &quot;2009-07-15&quot;
+[296] &quot;2009-08-15&quot; &quot;2009-09-15&quot; &quot;2009-10-15&quot; &quot;2009-11-15&quot; &quot;2009-12-15&quot;
+[301] &quot;2010-01-15&quot; &quot;2010-02-15&quot; &quot;2010-03-15&quot; &quot;2010-04-15&quot; &quot;2010-05-15&quot;
+[306] &quot;2010-06-15&quot; &quot;2010-07-15&quot; &quot;2010-08-15&quot; &quot;2010-09-15&quot; &quot;2010-10-15&quot;
+[311] &quot;2010-11-15&quot; &quot;2010-12-15&quot; &quot;2011-01-15&quot; &quot;2011-02-15&quot; &quot;2011-03-15&quot;
+[316] &quot;2011-04-15&quot; &quot;2011-05-15&quot; &quot;2011-06-15&quot; &quot;2011-07-15&quot; &quot;2011-08-15&quot;
+[321] &quot;2011-09-15&quot; &quot;2011-10-15&quot; &quot;2011-11-15&quot; &quot;2011-12-15&quot; &quot;2012-01-15&quot;
+[326] &quot;2012-02-15&quot; &quot;2012-03-15&quot; &quot;2012-04-15&quot; &quot;2012-05-15&quot; &quot;2012-06-15&quot;
+[331] &quot;2012-07-15&quot; &quot;2012-08-15&quot; &quot;2012-09-15&quot; &quot;2012-10-15&quot; &quot;2012-11-15&quot;
+[336] &quot;2012-12-15&quot; &quot;2013-01-15&quot; &quot;2013-02-15&quot; &quot;2013-03-15&quot; &quot;2013-04-15&quot;
+[341] &quot;2013-05-15&quot; &quot;2013-06-15&quot; &quot;2013-07-15&quot; &quot;2013-08-15&quot; &quot;2013-09-15&quot;
+[346] &quot;2013-10-15&quot; &quot;2013-11-15&quot; &quot;2013-12-15&quot; &quot;2014-01-15&quot; &quot;2014-02-15&quot;
+[351] &quot;2014-03-15&quot; &quot;2014-04-15&quot; &quot;2014-05-15&quot; &quot;2014-06-15&quot; &quot;2014-07-15&quot;
+[356] &quot;2014-08-15&quot; &quot;2014-09-15&quot; &quot;2014-10-15&quot; &quot;2014-11-15&quot; &quot;2014-12-15&quot;
+[361] &quot;2015-01-15&quot; &quot;2015-02-15&quot; &quot;2015-03-15&quot; &quot;2015-04-15&quot; &quot;2015-05-15&quot;
+[366] &quot;2015-06-15&quot; &quot;2015-07-15&quot; &quot;2015-08-15&quot; &quot;2015-09-15&quot; &quot;2015-10-15&quot;
+[371] &quot;2015-11-15&quot; &quot;2015-12-15&quot; &quot;2016-01-15&quot; &quot;2016-02-15&quot; &quot;2016-03-15&quot;
+[376] &quot;2016-04-15&quot; &quot;2016-05-15&quot; &quot;2016-06-15&quot; &quot;2016-07-15&quot; &quot;2016-08-15&quot;
+[381] &quot;2016-09-15&quot; &quot;2016-10-15&quot; &quot;2016-11-15&quot; &quot;2016-12-15&quot; &quot;2017-01-15&quot;
+[386] &quot;2017-02-15&quot; &quot;2017-03-15&quot; &quot;2017-04-15&quot; &quot;2017-05-15&quot; &quot;2017-06-15&quot;
+[391] &quot;2017-07-15&quot; &quot;2017-08-15&quot; &quot;2017-09-15&quot; &quot;2017-10-15&quot; &quot;2017-11-15&quot;
+[396] &quot;2017-12-15&quot; &quot;2018-01-15&quot; &quot;2018-02-15&quot; &quot;2018-03-15&quot; &quot;2018-04-15&quot;
+[401] &quot;2018-05-15&quot; &quot;2018-06-15&quot; &quot;2018-07-15&quot; &quot;2018-08-15&quot; &quot;2018-09-15&quot;
+[406] &quot;2018-10-15&quot; &quot;2018-11-15&quot; &quot;2018-12-15&quot; &quot;2019-01-15&quot; &quot;2019-02-15&quot;
+[411] &quot;2019-03-15&quot; &quot;2019-04-15&quot; &quot;2019-05-15&quot; &quot;2019-06-15&quot; &quot;2019-07-15&quot;
+[416] &quot;2019-08-15&quot; &quot;2019-09-15&quot; &quot;2019-10-15&quot; &quot;2019-11-15&quot; &quot;2019-12-15&quot;
+[421] &quot;2020-01-15&quot; &quot;2020-02-15&quot; &quot;2020-03-15&quot; &quot;2020-04-15&quot; &quot;2020-05-15&quot;
+[426] &quot;2020-06-15&quot; &quot;2020-07-15&quot; &quot;2020-08-15&quot; &quot;2020-09-15&quot; &quot;2020-10-15&quot;
+[431] &quot;2020-11-15&quot; &quot;2020-12-15&quot; &quot;2021-01-15&quot; &quot;2021-02-15&quot; &quot;2021-03-15&quot;
+[436] &quot;2021-04-15&quot; &quot;2021-05-15&quot; &quot;2021-06-15&quot; &quot;2021-07-15&quot; &quot;2021-08-15&quot;
+[441] &quot;2021-09-15&quot; &quot;2021-10-15&quot; &quot;2021-11-15&quot; &quot;2021-12-15&quot; &quot;2022-01-15&quot;
+[446] &quot;2022-02-15&quot; &quot;2022-03-15&quot; &quot;2022-04-15&quot; &quot;2022-05-15&quot; &quot;2022-06-15&quot;
+[451] &quot;2022-07-15&quot; &quot;2022-08-15&quot; &quot;2022-09-15&quot; &quot;2022-10-15&quot; &quot;2022-11-15&quot;
+[456] &quot;2022-12-15&quot; &quot;2023-01-15&quot; &quot;2023-02-15&quot; &quot;2023-03-15&quot; &quot;2023-04-15&quot;
+[461] &quot;2023-05-15&quot; &quot;2023-06-15&quot; &quot;2023-07-15&quot; &quot;2023-08-15&quot; &quot;2023-09-15&quot;
+[466] &quot;2023-10-15&quot; &quot;2023-11-15&quot; &quot;2023-12-15&quot;</code></pre>
+<pre class="r"><code>pco2_product %&gt;% 
+  distinct(time) %&gt;% 
+  pull()</code></pre>
+<pre><code>  [1] &quot;1990-01-15&quot; &quot;1990-02-15&quot; &quot;1990-03-15&quot; &quot;1990-04-15&quot; &quot;1990-05-15&quot;
+  [6] &quot;1990-06-15&quot; &quot;1990-07-15&quot; &quot;1990-08-15&quot; &quot;1990-09-15&quot; &quot;1990-10-15&quot;
+ [11] &quot;1990-11-15&quot; &quot;1990-12-15&quot; &quot;1991-01-15&quot; &quot;1991-02-15&quot; &quot;1991-03-15&quot;
+ [16] &quot;1991-04-15&quot; &quot;1991-05-15&quot; &quot;1991-06-15&quot; &quot;1991-07-15&quot; &quot;1991-08-15&quot;
+ [21] &quot;1991-09-15&quot; &quot;1991-10-15&quot; &quot;1991-11-15&quot; &quot;1991-12-15&quot; &quot;1992-01-15&quot;
+ [26] &quot;1992-02-15&quot; &quot;1992-03-15&quot; &quot;1992-04-15&quot; &quot;1992-05-15&quot; &quot;1992-06-15&quot;
+ [31] &quot;1992-07-15&quot; &quot;1992-08-15&quot; &quot;1992-09-15&quot; &quot;1992-10-15&quot; &quot;1992-11-15&quot;
+ [36] &quot;1992-12-15&quot; &quot;1993-01-15&quot; &quot;1993-02-15&quot; &quot;1993-03-15&quot; &quot;1993-04-15&quot;
+ [41] &quot;1993-05-15&quot; &quot;1993-06-15&quot; &quot;1993-07-15&quot; &quot;1993-08-15&quot; &quot;1993-09-15&quot;
+ [46] &quot;1993-10-15&quot; &quot;1993-11-15&quot; &quot;1993-12-15&quot; &quot;1994-01-15&quot; &quot;1994-02-15&quot;
+ [51] &quot;1994-03-15&quot; &quot;1994-04-15&quot; &quot;1994-05-15&quot; &quot;1994-06-15&quot; &quot;1994-07-15&quot;
+ [56] &quot;1994-08-15&quot; &quot;1994-09-15&quot; &quot;1994-10-15&quot; &quot;1994-11-15&quot; &quot;1994-12-15&quot;
+ [61] &quot;1995-01-15&quot; &quot;1995-02-15&quot; &quot;1995-03-15&quot; &quot;1995-04-15&quot; &quot;1995-05-15&quot;
+ [66] &quot;1995-06-15&quot; &quot;1995-07-15&quot; &quot;1995-08-15&quot; &quot;1995-09-15&quot; &quot;1995-10-15&quot;
+ [71] &quot;1995-11-15&quot; &quot;1995-12-15&quot; &quot;1996-01-15&quot; &quot;1996-02-15&quot; &quot;1996-03-15&quot;
+ [76] &quot;1996-04-15&quot; &quot;1996-05-15&quot; &quot;1996-06-15&quot; &quot;1996-07-15&quot; &quot;1996-08-15&quot;
+ [81] &quot;1996-09-15&quot; &quot;1996-10-15&quot; &quot;1996-11-15&quot; &quot;1996-12-15&quot; &quot;1997-01-15&quot;
+ [86] &quot;1997-02-15&quot; &quot;1997-03-15&quot; &quot;1997-04-15&quot; &quot;1997-05-15&quot; &quot;1997-06-15&quot;
+ [91] &quot;1997-07-15&quot; &quot;1997-08-15&quot; &quot;1997-09-15&quot; &quot;1997-10-15&quot; &quot;1997-11-15&quot;
+ [96] &quot;1997-12-15&quot; &quot;1998-01-15&quot; &quot;1998-02-15&quot; &quot;1998-03-15&quot; &quot;1998-04-15&quot;
+[101] &quot;1998-05-15&quot; &quot;1998-06-15&quot; &quot;1998-07-15&quot; &quot;1998-08-15&quot; &quot;1998-09-15&quot;
+[106] &quot;1998-10-15&quot; &quot;1998-11-15&quot; &quot;1998-12-15&quot; &quot;1999-01-15&quot; &quot;1999-02-15&quot;
+[111] &quot;1999-03-15&quot; &quot;1999-04-15&quot; &quot;1999-05-15&quot; &quot;1999-06-15&quot; &quot;1999-07-15&quot;
+[116] &quot;1999-08-15&quot; &quot;1999-09-15&quot; &quot;1999-10-15&quot; &quot;1999-11-15&quot; &quot;1999-12-15&quot;
+[121] &quot;2000-01-15&quot; &quot;2000-02-15&quot; &quot;2000-03-15&quot; &quot;2000-04-15&quot; &quot;2000-05-15&quot;
+[126] &quot;2000-06-15&quot; &quot;2000-07-15&quot; &quot;2000-08-15&quot; &quot;2000-09-15&quot; &quot;2000-10-15&quot;
+[131] &quot;2000-11-15&quot; &quot;2000-12-15&quot; &quot;2001-01-15&quot; &quot;2001-02-15&quot; &quot;2001-03-15&quot;
+[136] &quot;2001-04-15&quot; &quot;2001-05-15&quot; &quot;2001-06-15&quot; &quot;2001-07-15&quot; &quot;2001-08-15&quot;
+[141] &quot;2001-09-15&quot; &quot;2001-10-15&quot; &quot;2001-11-15&quot; &quot;2001-12-15&quot; &quot;2002-01-15&quot;
+[146] &quot;2002-02-15&quot; &quot;2002-03-15&quot; &quot;2002-04-15&quot; &quot;2002-05-15&quot; &quot;2002-06-15&quot;
+[151] &quot;2002-07-15&quot; &quot;2002-08-15&quot; &quot;2002-09-15&quot; &quot;2002-10-15&quot; &quot;2002-11-15&quot;
+[156] &quot;2002-12-15&quot; &quot;2003-01-15&quot; &quot;2003-02-15&quot; &quot;2003-03-15&quot; &quot;2003-04-15&quot;
+[161] &quot;2003-05-15&quot; &quot;2003-06-15&quot; &quot;2003-07-15&quot; &quot;2003-08-15&quot; &quot;2003-09-15&quot;
+[166] &quot;2003-10-15&quot; &quot;2003-11-15&quot; &quot;2003-12-15&quot; &quot;2004-01-15&quot; &quot;2004-02-15&quot;
+[171] &quot;2004-03-15&quot; &quot;2004-04-15&quot; &quot;2004-05-15&quot; &quot;2004-06-15&quot; &quot;2004-07-15&quot;
+[176] &quot;2004-08-15&quot; &quot;2004-09-15&quot; &quot;2004-10-15&quot; &quot;2004-11-15&quot; &quot;2004-12-15&quot;
+[181] &quot;2005-01-15&quot; &quot;2005-02-15&quot; &quot;2005-03-15&quot; &quot;2005-04-15&quot; &quot;2005-05-15&quot;
+[186] &quot;2005-06-15&quot; &quot;2005-07-15&quot; &quot;2005-08-15&quot; &quot;2005-09-15&quot; &quot;2005-10-15&quot;
+[191] &quot;2005-11-15&quot; &quot;2005-12-15&quot; &quot;2006-01-15&quot; &quot;2006-02-15&quot; &quot;2006-03-15&quot;
+[196] &quot;2006-04-15&quot; &quot;2006-05-15&quot; &quot;2006-06-15&quot; &quot;2006-07-15&quot; &quot;2006-08-15&quot;
+[201] &quot;2006-09-15&quot; &quot;2006-10-15&quot; &quot;2006-11-15&quot; &quot;2006-12-15&quot; &quot;2007-01-15&quot;
+[206] &quot;2007-02-15&quot; &quot;2007-03-15&quot; &quot;2007-04-15&quot; &quot;2007-05-15&quot; &quot;2007-06-15&quot;
+[211] &quot;2007-07-15&quot; &quot;2007-08-15&quot; &quot;2007-09-15&quot; &quot;2007-10-15&quot; &quot;2007-11-15&quot;
+[216] &quot;2007-12-15&quot; &quot;2008-01-15&quot; &quot;2008-02-15&quot; &quot;2008-03-15&quot; &quot;2008-04-15&quot;
+[221] &quot;2008-05-15&quot; &quot;2008-06-15&quot; &quot;2008-07-15&quot; &quot;2008-08-15&quot; &quot;2008-09-15&quot;
+[226] &quot;2008-10-15&quot; &quot;2008-11-15&quot; &quot;2008-12-15&quot; &quot;2009-01-15&quot; &quot;2009-02-15&quot;
+[231] &quot;2009-03-15&quot; &quot;2009-04-15&quot; &quot;2009-05-15&quot; &quot;2009-06-15&quot; &quot;2009-07-15&quot;
+[236] &quot;2009-08-15&quot; &quot;2009-09-15&quot; &quot;2009-10-15&quot; &quot;2009-11-15&quot; &quot;2009-12-15&quot;
+[241] &quot;2010-01-15&quot; &quot;2010-02-15&quot; &quot;2010-03-15&quot; &quot;2010-04-15&quot; &quot;2010-05-15&quot;
+[246] &quot;2010-06-15&quot; &quot;2010-07-15&quot; &quot;2010-08-15&quot; &quot;2010-09-15&quot; &quot;2010-10-15&quot;
+[251] &quot;2010-11-15&quot; &quot;2010-12-15&quot; &quot;2011-01-15&quot; &quot;2011-02-15&quot; &quot;2011-03-15&quot;
+[256] &quot;2011-04-15&quot; &quot;2011-05-15&quot; &quot;2011-06-15&quot; &quot;2011-07-15&quot; &quot;2011-08-15&quot;
+[261] &quot;2011-09-15&quot; &quot;2011-10-15&quot; &quot;2011-11-15&quot; &quot;2011-12-15&quot; &quot;2012-01-15&quot;
+[266] &quot;2012-02-15&quot; &quot;2012-03-15&quot; &quot;2012-04-15&quot; &quot;2012-05-15&quot; &quot;2012-06-15&quot;
+[271] &quot;2012-07-15&quot; &quot;2012-08-15&quot; &quot;2012-09-15&quot; &quot;2012-10-15&quot; &quot;2012-11-15&quot;
+[276] &quot;2012-12-15&quot; &quot;2013-01-15&quot; &quot;2013-02-15&quot; &quot;2013-03-15&quot; &quot;2013-04-15&quot;
+[281] &quot;2013-05-15&quot; &quot;2013-06-15&quot; &quot;2013-07-15&quot; &quot;2013-08-15&quot; &quot;2013-09-15&quot;
+[286] &quot;2013-10-15&quot; &quot;2013-11-15&quot; &quot;2013-12-15&quot; &quot;2014-01-15&quot; &quot;2014-02-15&quot;
+[291] &quot;2014-03-15&quot; &quot;2014-04-15&quot; &quot;2014-05-15&quot; &quot;2014-06-15&quot; &quot;2014-07-15&quot;
+[296] &quot;2014-08-15&quot; &quot;2014-09-15&quot; &quot;2014-10-15&quot; &quot;2014-11-15&quot; &quot;2014-12-15&quot;
+[301] &quot;2015-01-15&quot; &quot;2015-02-15&quot; &quot;2015-03-15&quot; &quot;2015-04-15&quot; &quot;2015-05-15&quot;
+[306] &quot;2015-06-15&quot; &quot;2015-07-15&quot; &quot;2015-08-15&quot; &quot;2015-09-15&quot; &quot;2015-10-15&quot;
+[311] &quot;2015-11-15&quot; &quot;2015-12-15&quot; &quot;2016-01-15&quot; &quot;2016-02-15&quot; &quot;2016-03-15&quot;
+[316] &quot;2016-04-15&quot; &quot;2016-05-15&quot; &quot;2016-06-15&quot; &quot;2016-07-15&quot; &quot;2016-08-15&quot;
+[321] &quot;2016-09-15&quot; &quot;2016-10-15&quot; &quot;2016-11-15&quot; &quot;2016-12-15&quot; &quot;2017-01-15&quot;
+[326] &quot;2017-02-15&quot; &quot;2017-03-15&quot; &quot;2017-04-15&quot; &quot;2017-05-15&quot; &quot;2017-06-15&quot;
+[331] &quot;2017-07-15&quot; &quot;2017-08-15&quot; &quot;2017-09-15&quot; &quot;2017-10-15&quot; &quot;2017-11-15&quot;
+[336] &quot;2017-12-15&quot; &quot;2018-01-15&quot; &quot;2018-02-15&quot; &quot;2018-03-15&quot; &quot;2018-04-15&quot;
+[341] &quot;2018-05-15&quot; &quot;2018-06-15&quot; &quot;2018-07-15&quot; &quot;2018-08-15&quot; &quot;2018-09-15&quot;
+[346] &quot;2018-10-15&quot; &quot;2018-11-15&quot; &quot;2018-12-15&quot; &quot;2019-01-15&quot; &quot;2019-02-15&quot;
+[351] &quot;2019-03-15&quot; &quot;2019-04-15&quot; &quot;2019-05-15&quot; &quot;2019-06-15&quot; &quot;2019-07-15&quot;
+[356] &quot;2019-08-15&quot; &quot;2019-09-15&quot; &quot;2019-10-15&quot; &quot;2019-11-15&quot; &quot;2019-12-15&quot;
+[361] &quot;2020-01-15&quot; &quot;2020-02-15&quot; &quot;2020-03-15&quot; &quot;2020-04-15&quot; &quot;2020-05-15&quot;
+[366] &quot;2020-06-15&quot; &quot;2020-07-15&quot; &quot;2020-08-15&quot; &quot;2020-09-15&quot; &quot;2020-10-15&quot;
+[371] &quot;2020-11-15&quot; &quot;2020-12-15&quot; &quot;2021-01-15&quot; &quot;2021-02-15&quot; &quot;2021-03-15&quot;
+[376] &quot;2021-04-15&quot; &quot;2021-05-15&quot; &quot;2021-06-15&quot; &quot;2021-07-15&quot; &quot;2021-08-15&quot;
+[381] &quot;2021-09-15&quot; &quot;2021-10-15&quot; &quot;2021-11-15&quot; &quot;2021-12-15&quot; &quot;2022-01-15&quot;
+[386] &quot;2022-02-15&quot; &quot;2022-03-15&quot; &quot;2022-04-15&quot; &quot;2022-05-15&quot; &quot;2022-06-15&quot;
+[391] &quot;2022-07-15&quot; &quot;2022-08-15&quot; &quot;2022-09-15&quot; &quot;2022-10-15&quot; &quot;2022-11-15&quot;
+[396] &quot;2022-12-15&quot; &quot;2023-01-15&quot; &quot;2023-02-15&quot; &quot;2023-03-15&quot; &quot;2023-04-15&quot;
+[401] &quot;2023-05-15&quot; &quot;2023-06-15&quot; &quot;2023-07-15&quot; &quot;2023-08-15&quot; &quot;2023-09-15&quot;
+[406] &quot;2023-10-15&quot; &quot;2023-11-15&quot; &quot;2023-12-15&quot; &quot;2024-01-15&quot; &quot;2024-02-15&quot;
+[411] &quot;2024-03-15&quot; &quot;2024-04-15&quot; &quot;2024-05-15&quot; &quot;2024-06-15&quot; &quot;2024-07-15&quot;
+[416] &quot;2024-08-15&quot; &quot;2024-09-15&quot; &quot;2024-10-15&quot; &quot;2024-11-15&quot; &quot;2024-12-15&quot;
+[421] &quot;2025-01-15&quot; &quot;2025-02-15&quot; &quot;2025-03-15&quot; &quot;2025-04-15&quot; &quot;2025-05-15&quot;
+[426] &quot;2025-06-15&quot; &quot;2025-07-15&quot; &quot;2025-08-15&quot; &quot;2025-09-15&quot; &quot;2025-10-15&quot;
+[431] &quot;2025-11-15&quot; &quot;2025-12-15&quot; &quot;2026-01-15&quot; &quot;2026-02-15&quot; &quot;2026-03-15&quot;
+[436] &quot;2026-04-15&quot; &quot;2026-05-15&quot; &quot;2026-06-15&quot; &quot;2026-07-15&quot; &quot;2026-08-15&quot;
+[441] &quot;2026-09-15&quot; &quot;2026-10-15&quot; &quot;2026-11-15&quot; &quot;2026-12-15&quot; &quot;2027-01-15&quot;
+[446] &quot;2027-02-15&quot; &quot;2027-03-15&quot; &quot;2027-04-15&quot; &quot;2027-05-15&quot; &quot;2027-06-15&quot;
+[451] &quot;2027-07-15&quot; &quot;2027-08-15&quot; &quot;2027-09-15&quot; &quot;2027-10-15&quot; &quot;2027-11-15&quot;
+[456] &quot;2027-12-15&quot; &quot;2028-01-15&quot; &quot;2028-02-15&quot; &quot;2028-03-15&quot; &quot;2028-04-15&quot;
+[461] &quot;2028-05-15&quot; &quot;2028-06-15&quot; &quot;2028-07-15&quot; &quot;2028-08-15&quot; &quot;2028-09-15&quot;
+[466] &quot;2028-10-15&quot; &quot;2028-11-15&quot; &quot;2028-12-15&quot;</code></pre>
+<pre class="r"><code>pco2_product &lt;-
+  full_join(pco2_product %&gt;% select(-fgco2) %&gt;% filter(time &lt; ymd(&quot;2024-01-01&quot;)),
+            pco2_product_fgco2 %&gt;% filter(time &gt; ymd(&quot;1990-01-01&quot;)))
 
 pco2_product &lt;-
   pco2_product %&gt;%
@@ -904,7 +1159,9 @@ pco2_product &lt;-
 
 pco2_product &lt;-
   pco2_product %&gt;%
-  mutate(area = earth_surf(lat, lon),
+  mutate(lon = as.numeric(lon),
+         lat = as.numeric(lat),
+         area = earth_surf(lat, lon),
          year = year(time),
          month = month(time))
 
@@ -2037,6 +2294,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_map_annual_absolute-2.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_map_annual_absolute-2.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -2414,6 +2682,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_map_annual_change-4.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_map_annual_change-4.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -2672,6 +2951,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_map_annual_anomaly-4.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_map_annual_anomaly-4.png" target="_blank">e30251a</a>
@@ -3397,6 +3687,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_map_monthly_absolute-2.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_map_monthly_absolute-2.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -3803,6 +4104,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_map_monthly_anomaly-4.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_map_monthly_anomaly-4.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -3941,8 +4253,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4292432   229.3   40678423  2172.5  124140691  6629.9
-Vcells 1613041055 12306.6 3074707163 23458.2 3074707163 23458.2</code></pre>
+Ncells    4278867   228.6   25823783  1379.2   98509907  5261.0
+Vcells 1682805449 12838.8 3448566520 26310.5 3448566520 26310.5</code></pre>
 <pre class="r"><code>map +
   geom_tile(data = pco2_product_map_annual_fCO2_decomposition %&gt;%
               filter(year == 2023), aes(lon, lat, fill = resid)) +
@@ -4118,6 +4430,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/flux_attribution_annual_maps-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/flux_attribution_annual_maps-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -4133,8 +4456,8 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4310546   230.3   32542739  1738.0  124140691  6629.9
-Vcells 1858251033 14177.4 3074707163 23458.2 3074707163 23458.2</code></pre>
+Ncells    4296954   229.5   20659027  1103.4   98509907  5261.0
+Vcells 1928043435 14709.9 3448566520 26310.5 3448566520 26310.5</code></pre>
 <pre class="r"><code>pco2_product_map_monthly_anomaly %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
@@ -4422,6 +4745,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_hovmoeller_annual_anomaly-5.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_hovmoeller_annual_anomaly-5.png" target="_blank">e30251a</a>
@@ -4734,6 +5068,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_hovmoeller_monthly_anomalies-5.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_hovmoeller_monthly_anomalies-5.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -5038,6 +5383,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_hovmoeller_monthly_anomalies_recent_years-5.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -5222,6 +5578,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_global-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_global-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -5288,6 +5655,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_overview_biomes-1.png" target="_blank">e30251a</a>
@@ -5365,6 +5743,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_key_biomes-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_key_biomes-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -5402,6 +5791,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_key_biomes-2.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_key_biomes-2.png" target="_blank">e30251a</a>
@@ -5443,6 +5843,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_key_biomes-3.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_key_biomes-3.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -5480,6 +5891,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_key_biomes-4.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_absolute_means_and_integrals_key_biomes-4.png" target="_blank">e30251a</a>
@@ -5562,6 +5984,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_annual_mean_trends-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_annual_mean_trends-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -5634,6 +6067,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_annual_mean_trends-2.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_annual_mean_trends-2.png" target="_blank">e30251a</a>
@@ -5709,6 +6153,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_annual_mean_trends-3.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_annual_mean_trends-3.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -5774,6 +6229,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_annual_mean_trends-4.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_annual_mean_trends-4.png" target="_blank">e30251a</a>
@@ -5857,6 +6323,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_overview-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -5921,6 +6398,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_overview-2.png" target="_blank">e30251a</a>
@@ -6000,6 +6488,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -6037,6 +6536,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">e30251a</a>
@@ -6078,6 +6588,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -6115,6 +6636,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_annual_mean_trends_key_biomes-4.png" target="_blank">e30251a</a>
@@ -6378,6 +6910,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_global-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -6443,6 +6986,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_global-2.png" target="_blank">e30251a</a>
@@ -6515,6 +7069,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends__key_biomes_overview-1.png" target="_blank">e30251a</a>
@@ -6595,6 +7160,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -6633,6 +7209,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-2.png" target="_blank">e30251a</a>
@@ -6675,6 +7262,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-3.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -6713,6 +7311,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_from_monthly_mean_trends_key_biomes-4.png" target="_blank">e30251a</a>
@@ -6824,6 +7433,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_correlation_absolute_global_annual-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_correlation_absolute_global_annual-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -6922,6 +7542,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/2023_anomalies_correlation_absolute_global_monthly-1.png" target="_blank">e30251a</a>
@@ -7315,6 +7946,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/flux_attribution-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/flux_attribution-1.png" target="_blank">e30251a</a>
 </td>
 <td>
@@ -7354,6 +7996,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/ca52e03b02b61b435ed9b984b5ffae325378e4cf/docs/figure/CMEMS_GCB.Rmd/flux_attribution_seasonal-1.png" target="_blank">ca52e03</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e30251a29cc2f043f9ed1ac69b2ccd5973546ed3/docs/figure/CMEMS_GCB.Rmd/flux_attribution_seasonal-1.png" target="_blank">e30251a</a>
@@ -7653,16 +8306,15 @@ attached base packages:
 other attached packages:
  [1] ggh4x_0.3.0         scales_1.3.0        cmocean_0.3-2      
  [4] ggtext_0.1.2        broom_1.0.7         khroma_1.14.0      
- [7] ggnewscale_0.5.0    seacarb_3.3.3       SolveSAPHE_2.1.0   
-[10] oce_1.8-3           gsw_1.2-0           stars_0.6-7        
-[13] abind_1.4-8         terra_1.8-5         sf_1.0-19          
-[16] rnaturalearth_1.0.1 geomtextpath_0.1.4  colorspace_2.1-1   
-[19] marelac_2.1.11      shape_1.4.6.1       ggforce_0.4.2      
-[22] metR_0.16.0         scico_1.5.0         patchwork_1.3.0    
-[25] collapse_2.0.18     lubridate_1.9.3     forcats_1.0.0      
-[28] stringr_1.5.1       dplyr_1.1.4         purrr_1.0.2        
-[31] readr_2.1.5         tidyr_1.3.1         tibble_3.2.1       
-[34] ggplot2_3.5.1       tidyverse_2.0.0     workflowr_1.7.1    
+ [7] ggnewscale_0.5.0    tidync_0.4.0        terra_1.8-5        
+[10] sf_1.0-19           rnaturalearth_1.0.1 geomtextpath_0.1.4 
+[13] colorspace_2.1-1    marelac_2.1.11      shape_1.4.6.1      
+[16] ggforce_0.4.2       metR_0.16.0         scico_1.5.0        
+[19] patchwork_1.3.0     collapse_2.0.18     lubridate_1.9.3    
+[22] forcats_1.0.0       stringr_1.5.1       dplyr_1.1.4        
+[25] purrr_1.0.2         readr_2.1.5         tidyr_1.3.1        
+[28] tibble_3.2.1        ggplot2_3.5.1       tidyverse_2.0.0    
+[31] workflowr_1.7.1    
 
 loaded via a namespace (and not attached):
  [1] DBI_1.2.3               rlang_1.1.4             magrittr_2.0.3         
@@ -7672,29 +8324,31 @@ loaded via a namespace (and not attached):
 [13] crayon_1.5.3            fastmap_1.2.0           backports_1.5.0        
 [16] ncmeta_0.4.0            labeling_0.4.3          utf8_1.2.4             
 [19] promises_1.3.2          rmarkdown_2.29          markdown_1.13          
-[22] tzdb_0.4.0              ps_1.8.1                bit_4.5.0              
-[25] xfun_0.49               cachem_1.1.0            jsonlite_1.8.9         
-[28] later_1.4.1             tweenr_2.0.3            parallel_4.4.2         
-[31] R6_2.5.1                RColorBrewer_1.1-3      bslib_0.8.0            
-[34] stringi_1.8.4           jquerylib_0.1.4         Rcpp_1.0.13-1          
-[37] knitr_1.49              Matrix_1.7-1            splines_4.4.2          
-[40] httpuv_1.6.15           timechange_0.3.0        tidyselect_1.2.1       
-[43] RNetCDF_2.9-2           rstudioapi_0.17.1       yaml_2.3.10            
-[46] codetools_0.2-20        processx_3.8.4          lattice_0.22-6         
-[49] withr_3.0.2             evaluate_1.0.1          rnaturalearthdata_1.0.0
-[52] units_0.8-5             proxy_0.4-27            polyclip_1.10-7        
-[55] xml2_1.3.6              pillar_1.9.0            whisker_0.4.1          
-[58] CFtime_1.4.1            KernSmooth_2.23-24      checkmate_2.3.2        
-[61] generics_0.1.3          vroom_1.6.5             rprojroot_2.0.4        
-[64] hms_1.1.3               commonmark_1.9.2        munsell_0.5.1          
-[67] class_7.3-22            glue_1.8.0              tools_4.4.2            
-[70] data.table_1.16.2       fs_1.6.5                grid_4.4.2             
-[73] nlme_3.1-166            cli_3.6.3               textshaping_0.4.0      
-[76] fansi_1.0.6             viridisLite_0.4.2       gtable_0.3.6           
-[79] sass_0.4.9              digest_0.6.37           classInt_0.4-10        
-[82] farver_2.1.2            memoise_2.0.1           htmltools_0.5.8.1      
-[85] lifecycle_1.0.4         httr_1.4.7              here_1.0.1             
-[88] gridtext_0.1.5          bit64_4.5.2             MASS_7.3-61            </code></pre>
+[22] tzdb_0.4.0              ps_1.8.1                oce_1.8-3              
+[25] gsw_1.2-0               bit_4.5.0               xfun_0.49              
+[28] cachem_1.1.0            jsonlite_1.8.9          later_1.4.1            
+[31] tweenr_2.0.3            parallel_4.4.2          R6_2.5.1               
+[34] RColorBrewer_1.1-3      bslib_0.8.0             stringi_1.8.4          
+[37] jquerylib_0.1.4         Rcpp_1.0.13-1           knitr_1.49             
+[40] seacarb_3.3.3           Matrix_1.7-1            splines_4.4.2          
+[43] httpuv_1.6.15           timechange_0.3.0        tidyselect_1.2.1       
+[46] RNetCDF_2.9-2           rstudioapi_0.17.1       yaml_2.3.10            
+[49] codetools_0.2-20        processx_3.8.4          lattice_0.22-6         
+[52] withr_3.0.2             evaluate_1.0.1          rnaturalearthdata_1.0.0
+[55] units_0.8-5             proxy_0.4-27            polyclip_1.10-7        
+[58] xml2_1.3.6              pillar_1.9.0            whisker_0.4.1          
+[61] CFtime_1.4.1            KernSmooth_2.23-24      checkmate_2.3.2        
+[64] ncdf4_1.23              generics_0.1.3          vroom_1.6.5            
+[67] rprojroot_2.0.4         hms_1.1.3               commonmark_1.9.2       
+[70] munsell_0.5.1           class_7.3-22            glue_1.8.0             
+[73] tools_4.4.2             data.table_1.16.2       fs_1.6.5               
+[76] grid_4.4.2              nlme_3.1-166            cli_3.6.3              
+[79] SolveSAPHE_2.1.0        textshaping_0.4.0       fansi_1.0.6            
+[82] viridisLite_0.4.2       gtable_0.3.6            sass_0.4.9             
+[85] digest_0.6.37           classInt_0.4-10         farver_2.1.2           
+[88] memoise_2.0.1           htmltools_0.5.8.1       lifecycle_1.0.4        
+[91] httr_1.4.7              here_1.0.1              gridtext_0.1.5         
+[94] bit64_4.5.2             MASS_7.3-61            </code></pre>
 </div>
 </div>
 </div>
