@@ -84,13 +84,13 @@ pco2_product_fgco2 <-
   select(lon, lat, time, fgco2) %>% 
   mutate(time = time - years(5))
 
-pco2_product_fgco2 %>% 
-  distinct(time) %>% 
-  pull()
-
-pco2_product %>% 
-  distinct(time) %>% 
-  pull()
+# pco2_product_fgco2 %>% 
+#   distinct(time) %>% 
+#   pull()
+# 
+# pco2_product %>% 
+#   distinct(time) %>% 
+#   pull()
 
 pco2_product <-
   full_join(pco2_product %>% select(-fgco2) %>% filter(time < ymd("2024-01-01")),
