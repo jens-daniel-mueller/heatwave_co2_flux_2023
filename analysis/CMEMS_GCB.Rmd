@@ -15,9 +15,8 @@ editor_options:
 
 ```{r load_libraries_read_data, include = FALSE}
 
-library(stars)
 library(lubridate)
-library(seacarb)
+library(tidync)
 
 ```
 
@@ -40,29 +39,62 @@ nc <-
     "GCB-2024_dataprod_CMEMS-LSCE-FFNN_1990-2023_r100_v6.nc"
   ))
 
+time <- ncvar_get(nc,"time")
+time
+
 print(nc)
+ncmeta::nc_extended(nc)
 
 ```
 
 
-```{r read_VLIZ_CMEMS}
+```{r read_CMEMS}
 
-pco2_product <-
-  read_ncdf(
+pco2_product_nc <-
+  tidync(
     paste0(
       path_pCO2_products,
       "GCB-2024_dataprod_CMEMS-LSCE-FFNN_1990-2023_r100_v6.nc"
-    ),
-    var = c("fco2atm", "fgco2", "kw", "alpha", "sfco2", "tos"),
-    ignore_bounds = TRUE,
-    make_units = FALSE
+    )
   )
 
-pco2_product <- pco2_product %>%
-  as_tibble()
+for (i in 1:468) {
+  
+  i_pco2_product <-
+    pco2_product_nc %>%
+    hyper_filter(time = index == i) %>%
+    hyper_tibble(select_var = c("fco2atm", "fgco2", "kw", "alpha", "sfco2", "tos")) %>%
+    mutate(time = ymd("1990-01-15") %m+% months(i-1))
+  
+  if (exists("pco2_product")) {
+    pco2_product <-
+      bind_rows(pco2_product, i_pco2_product)
+  }
+  
+  if (!exists("pco2_product")) {
+    pco2_product <- i_pco2_product
+  }
+  
+  # print(i)
+  
+}
 
-pco2_product <- pco2_product %>%
-  drop_na()
+pco2_product_fgco2 <-
+  pco2_product %>% 
+  select(lon, lat, time, fgco2) %>% 
+  mutate(time = time - years(5))
+
+pco2_product_fgco2 %>% 
+  distinct(time) %>% 
+  pull()
+
+pco2_product %>% 
+  distinct(time) %>% 
+  pull()
+
+pco2_product <-
+  full_join(pco2_product %>% select(-fgco2) %>% filter(time < ymd("2024-01-01")),
+            pco2_product_fgco2 %>% filter(time > ymd("1990-01-01")))
 
 pco2_product <-
   pco2_product %>%
@@ -72,7 +104,9 @@ pco2_product <-
 
 pco2_product <-
   pco2_product %>%
-  mutate(area = earth_surf(lat, lon),
+  mutate(lon = as.numeric(lon),
+         lat = as.numeric(lat),
+         area = earth_surf(lat, lon),
          year = year(time),
          month = month(time))
 
