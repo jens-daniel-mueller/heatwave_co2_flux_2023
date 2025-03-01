@@ -1,0 +1,122 @@
+---
+title: "fco2residual"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r parent, child = "/nfs/kryo/work/jenmueller/emlr_cant/utilities/setup.Rmd"}
+# this chunk runs the code stored in setup.Rmd
+# if required, please refer to instructions given here:
+# https://jdblischak.github.io/workflowr/articles/wflow-07-common-code.html
+```
+
+```{r load_libraries_read_data, include = FALSE}
+
+library(stars)
+library(lubridate)
+library(seacarb)
+
+```
+
+# Read data
+
+```{r define_paths}
+
+path_pCO2_products <-
+  "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/gcb_2024_pco2_products/"
+
+```
+
+
+```{r read_nc_metadata, eval=FALSE}
+
+library(ncdf4)
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "LDEO-Residual_1982-2023.nc"
+  ))
+
+print(nc)
+
+```
+
+
+```{r read_VLIZ_SOM_FFNm, eval=FALSE}
+
+pco2_product <-
+  read_ncdf(
+    paste0(
+      path_pCO2_products,
+      "LDEO-Residual_1982-2023.nc"
+    ),
+    var = c("fco2atm", "fgco2", "kw", "alpha", "sfco2", "tos"),
+    ignore_bounds = TRUE,
+    make_units = FALSE
+  )
+
+pco2_product <- pco2_product %>%
+  as_tibble()
+
+pco2_product <- pco2_product %>%
+  drop_na()
+
+pco2_product <-
+  pco2_product %>%
+  rename(temperature = tos,
+         atm_fco2 = fco2atm,
+         sol = alpha)
+
+pco2_product <-
+  pco2_product %>%
+  mutate(area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
+
+pco2_product <-
+  pco2_product %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+pco2_product <-
+  pco2_product %>%
+  mutate(dfco2 = sfco2 - atm_fco2)
+
+pco2_product <-
+  pco2_product %>% 
+  mutate(fgco2 = -fgco2 * 60 * 60 * 24 * 365,
+         kw_sol = kw * sol * 1e-2 * 24 * 365)
+
+pco2_product <-
+  pco2_product %>%
+  select(-c(kw, sol))
+
+```
+
+
+
+```{r source_pCO2_product_preprocessing_child, eval=FALSE}
+
+pCO2_product_preprocessing <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"),
+    product_name = "fco2residual_GCB"
+  )
+
+```
+
+
+```{r source_pCO2_product_analysis_child_2023, eval=FALSE}
+
+pCO2_product_analysis_2023 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "fco2residual_GCB",
+    year_anom = 2023
+  )
+
+
+```
+
