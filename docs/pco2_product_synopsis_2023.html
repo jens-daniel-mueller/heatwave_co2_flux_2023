@@ -389,6 +389,12 @@ div.tocify {
     <li>
       <a href="NRT_fco2residual.html">NRT fco2residual</a>
     </li>
+    <li>
+      <a href="fco2residual_GCB.html">fco2residual_GCB</a>
+    </li>
+    <li>
+      <a href="LDEO-HDP_GCB.html">LDEO-HDP_GCB</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -459,7 +465,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">pCO2 product synopsis 2023</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">27 February, 2025</h4>
+<h4 class="date">02 March, 2025</h4>
 
 </div>
 
@@ -488,7 +494,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-27
+<strong>Last updated:</strong> 2025-03-02
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -620,15 +626,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree6fd2de008e2d4838844907d4d5bf5accea94fcdetargetblank6fd2de0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treed93db5e5af1376f64025921f63486e6ef4339ce2targetblankd93db5ea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/6fd2de008e2d4838844907d4d5bf5accea94fcde" target="_blank">6fd2de0</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/d93db5e5af1376f64025921f63486e6ef4339ce2" target="_blank">d93db5e</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree6fd2de008e2d4838844907d4d5bf5accea94fcdetargetblank6fd2de0a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treed93db5e5af1376f64025921f63486e6ef4339ce2targetblankd93db5ea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -638,7 +644,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/6fd2de008e2d4838844907d4d5bf5accea94fcde" target="_blank">6fd2de0</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/d93db5e5af1376f64025921f63486e6ef4339ce2" target="_blank">d93db5e</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -659,8 +665,6 @@ Ignored files:
     Ignored:    output/
 
 Untracked files:
-    Untracked:  analysis/CMEMS_GCB.Rmd
-    Untracked:  analysis/pco2_product_synopsis_2023_GCB.Rmd
     Untracked:  code/gas_flux_kwko.R
 
 Unstaged changes:
@@ -715,6 +719,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/528798e791c18c21f00bba37ab7d2d33af91b809/docs/pco2_product_synopsis_2023.html" target="_blank">528798e</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2922,8 +2943,10 @@ all_product_list &lt;- c(pco2_product_list, gobm_product_list)
 
 color_products &lt;- c(
   &quot;OceanSODAv2&quot; = &quot;#672933&quot;,
+  &quot;OceanSODA&quot; = &quot;#672933&quot;,
   &quot;SOM-FFN&quot; = &quot;#d1495b&quot;,
   &quot;fCO2-Residual&quot; = &quot;#edae49&quot;,
+  &quot;LDEO-HPD&quot; = &quot;#edae49&quot;,
   &quot;CMEMS&quot; = &quot;#AD8E55&quot;,
   &quot;ETHZ-CESM&quot; = &quot;#66a182&quot;,
   &quot;FESOM-REcoM&quot; = &quot;#00798c&quot;
@@ -2969,8 +2992,8 @@ rev(c(
                       pattern = paste(2023, i_file_type, sep = &quot;_&quot;),
                       full.names = TRUE)
   
-  if(GCB_products){
-    files &lt;- str_subset(files, &quot;_GCB_&quot;)
+  if (GCB_products) {
+    files &lt;- str_subset(files, paste(&quot;_GCB_&quot;, paste(gobm_product_list, collapse = &quot;|&quot;), sep = &quot;|&quot;))
   } else {
     files &lt;- str_subset(files, &quot;_GCB_&quot;, negate = TRUE)
   }
@@ -2978,6 +3001,9 @@ rev(c(
 
   pco2_product &lt;-
     read_csv(files, id = &quot;product&quot;)
+  
+  # pco2_product %&gt;% 
+  #   distinct(product)
   
   pco2_product &lt;-
     pco2_product %&gt;%
@@ -7396,42 +7422,7 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code># plot_list &lt;- 
-# pco2_product_map_annual_anomaly %&gt;%
-#   filter(year == 2023,
-#          product == &quot;ETHZ-CESM&quot;,
-#          name %in% c(
-#            &quot;fgco2&quot;,
-#            &quot;dfco2&quot;,
-#            &quot;kw_sol&quot;,
-#            &quot;temperature&quot;,
-#            &quot;salinity&quot;,
-#            &quot;sdissic&quot;,
-#            &quot;stalk&quot;,
-#            &quot;no3&quot;,
-#            &quot;mld&quot;,
-#            &quot;intpp&quot;,
-#            &quot;chl&quot;
-#          )) %&gt;%
-#   group_split(name) %&gt;% 
-#   # head(1) %&gt;%
-#   map(
-#     ~ map +
-#       geom_tile(data = .x,
-#                 aes(lon, lat, fill = resid)) +
-#       scale_fill_gradientn(
-#         colours = warm_cool_gradient,
-#         rescaler = ~ scales::rescale_mid(.x, mid = 0),
-#         name = labels_breaks(.x %&gt;% distinct(name))$i_legend_title,
-#         limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
-#         oob = squish
-#       ) +
-#       theme(legend.title = element_markdown(),
-#             legend.justification = &quot;left&quot;)
-#   )
-
-
-plot_list &lt;- 
+<pre class="r"><code>plot_list &lt;- 
 pco2_product_map_annual_anomaly %&gt;%
   filter(year == 2023,
          product == &quot;ETHZ-CESM&quot;,
@@ -9233,8 +9224,8 @@ rm(plot_list,
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3170366  169.4    8418107  449.6   8418107  449.6
-Vcells 293251883 2237.4  602882361 4599.7 602831780 4599.3</code></pre>
+Ncells   3170103  169.4    8405087  448.9   8405087  448.9
+Vcells 293250578 2237.4  602881056 4599.7 602832279 4599.3</code></pre>
 </div>
 <div id="bivariate-anomaly" class="section level3">
 <h3>Bivariate anomaly</h3>
@@ -11229,8 +11220,8 @@ rm(
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3302204  176.4    8418107  449.6   8418107  449.6
-Vcells 310938108 2372.3  602882361 4599.7 602831780 4599.3</code></pre>
+Ncells   3301942  176.4    8405087  448.9   8405087  448.9
+Vcells 310936808 2372.3  602881056 4599.7 602881056 4599.7</code></pre>
 </div>
 </div>
 <div id="monthly-means" class="section level2">
@@ -11506,8 +11497,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3260170  174.2    8418107  449.6   8418107  449.6
-Vcells 275526185 2102.1  602882361 4599.7 602867814 4599.6</code></pre>
+Ncells   3259905  174.1    8405087  448.9   8405087  448.9
+Vcells 275524880 2102.1  602881056 4599.7 602881056 4599.7</code></pre>
 </div>
 <div id="fco2-decomposition-1" class="section level3">
 <h3>fCO2 decomposition</h3>
@@ -11603,8 +11594,8 @@ pco2_product_map_monthly_fCO2_decomposition %&gt;%
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3229883  172.5    8418107  449.6   8418107  449.6
-Vcells 250123950 1908.3  602882361 4599.7 602867814 4599.6</code></pre>
+Ncells   3229618  172.5    8405087  448.9   8405087  448.9
+Vcells 250122645 1908.3  602881056 4599.7 602881056 4599.7</code></pre>
 <pre class="r"><code>pco2_product_map_annual_fCO2_decomposition %&gt;%
   filter(year == 2023) %&gt;%
   select(-year) %&gt;% 
@@ -14438,7 +14429,7 @@ bind_rows(
 ) %&gt;%
   mutate(year = year + month/12) %&gt;% 
   filter(name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;),
-         product == &quot;OceanSODAv2&quot;,
+         product == if(GCB_products){&quot;OceanSODA&quot;}else{&quot;OceanSODAv2&quot;},
          biome == &quot;Global non-polar&quot;,
          year &gt;= 2010) %&gt;%
   ggplot() +
