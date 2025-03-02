@@ -82,14 +82,35 @@ biome_mask <-
 
 ```
 
+```{r read_SOCAT_synthesis, eval=FALSE}
+
+SOCATv2024 <- read_tsv(
+  "/nfs/kryo/work/datasets/ungridded/2d/ocn/pco2/socat/v2024/SOCATv2024.tsv.zip.unzip/SOCATv2024.tsv", 
+  skip = 4,
+  n_max = 1e4,
+  lazy = TRUE
+  )
+
+# rm(SOCATv2024)
+gc()
+
+SOCATv2024_only <- SOCATv2024 %>% 
+  filter(version == "2024.0N")
+gc()
 
 
-```{r read_SOCAT}
+SOCATv2024_only <- SOCATv2024_only %>% 
+  filter(`Start Time` > as.Date("01/01/2023", "%m/%d/%Y"))
+
+```
+
+
+```{r read_SOCAT_gridded}
 
 SOCAT_gridded_monthly <-
   read_csv(
     here::here(
-      "data/SOCATv2024_prelim/SOCATv2024_tracks_gridded_monthly.csv"
+      "data/SOCATv2024/SOCATv2024_tracks_gridded_monthly.csv"
     ),
     skip = 241
   )
