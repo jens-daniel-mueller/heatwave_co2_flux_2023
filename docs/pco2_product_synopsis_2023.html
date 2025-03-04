@@ -465,7 +465,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">pCO2 product synopsis 2023</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">02 March, 2025</h4>
+<h4 class="date">04 March, 2025</h4>
 
 </div>
 
@@ -494,7 +494,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-03-02
+<strong>Last updated:</strong> 2025-03-04
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -626,15 +626,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treed93db5e5af1376f64025921f63486e6ef4339ce2targetblankd93db5ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treeb76a7c87fb11c47c168440e6e0855a39c705fe7ctargetblankb76a7c8a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/d93db5e5af1376f64025921f63486e6ef4339ce2" target="_blank">d93db5e</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/b76a7c87fb11c47c168440e6e0855a39c705fe7c" target="_blank">b76a7c8</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treed93db5e5af1376f64025921f63486e6ef4339ce2targetblankd93db5ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treeb76a7c87fb11c47c168440e6e0855a39c705fe7ctargetblankb76a7c8a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -644,7 +644,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/d93db5e5af1376f64025921f63486e6ef4339ce2" target="_blank">d93db5e</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/b76a7c87fb11c47c168440e6e0855a39c705fe7c" target="_blank">b76a7c8</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -672,7 +672,6 @@ Unstaged changes:
     Modified:   analysis/child/pCO2_product_analysis.Rmd
     Modified:   analysis/child/pCO2_product_preprocessing.Rmd
     Modified:   analysis/child/pCO2_product_synopsis.Rmd
-    Modified:   analysis/pco2_product_mapping_skill.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -719,6 +718,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/89d6687fadfc47583dd9e0295efac5428db86666/docs/pco2_product_synopsis_2023.html" target="_blank">89d6687</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -2945,6 +2961,7 @@ color_products &lt;- c(
   &quot;OceanSODAv2&quot; = &quot;#672933&quot;,
   &quot;OceanSODA&quot; = &quot;#672933&quot;,
   &quot;SOM-FFN&quot; = &quot;#d1495b&quot;,
+  &quot;fco2residual&quot; = &quot;#edae49&quot;,
   &quot;fCO2-Residual&quot; = &quot;#edae49&quot;,
   &quot;LDEO-HPD&quot; = &quot;#edae49&quot;,
   &quot;CMEMS&quot; = &quot;#AD8E55&quot;,
@@ -2994,6 +3011,11 @@ rev(c(
   
   if (GCB_products) {
     files &lt;- str_subset(files, paste(&quot;_GCB_&quot;, paste(gobm_product_list, collapse = &quot;|&quot;), sep = &quot;|&quot;))
+    files &lt;- str_subset(files, paste(
+      paste(pco2_product_list, collapse = &quot;|&quot;),
+      paste(gobm_product_list, collapse = &quot;|&quot;),
+      sep = &quot;|&quot;
+    ))
   } else {
     files &lt;- str_subset(files, &quot;_GCB_&quot;, negate = TRUE)
   }
@@ -9224,8 +9246,8 @@ rm(plot_list,
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3170103  169.4    8405087  448.9   8405087  448.9
-Vcells 293250578 2237.4  602881056 4599.7 602832279 4599.3</code></pre>
+Ncells   3170141  169.4    8418927  449.7   8418927  449.7
+Vcells 293251244 2237.4  602882031 4599.7 602832897 4599.3</code></pre>
 </div>
 <div id="bivariate-anomaly" class="section level3">
 <h3>Bivariate anomaly</h3>
@@ -11220,8 +11242,8 @@ rm(
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3301942  176.4    8405087  448.9   8405087  448.9
-Vcells 310936808 2372.3  602881056 4599.7 602881056 4599.7</code></pre>
+Ncells   3301963  176.4    8418927  449.7   8418927  449.7
+Vcells 310937460 2372.3  602882031 4599.7 602833087 4599.3</code></pre>
 </div>
 </div>
 <div id="monthly-means" class="section level2">
@@ -11497,8 +11519,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3259905  174.1    8405087  448.9   8405087  448.9
-Vcells 275524880 2102.1  602881056 4599.7 602881056 4599.7</code></pre>
+Ncells   3259929  174.1    8418927  449.7   8418927  449.7
+Vcells 275525537 2102.1  602882031 4599.7 602867209 4599.6</code></pre>
 </div>
 <div id="fco2-decomposition-1" class="section level3">
 <h3>fCO2 decomposition</h3>
@@ -11594,8 +11616,8 @@ pco2_product_map_monthly_fCO2_decomposition %&gt;%
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3229618  172.5    8405087  448.9   8405087  448.9
-Vcells 250122645 1908.3  602881056 4599.7 602881056 4599.7</code></pre>
+Ncells   3229642  172.5    8418927  449.7   8418927  449.7
+Vcells 250123302 1908.3  602882031 4599.7 602867209 4599.6</code></pre>
 <pre class="r"><code>pco2_product_map_annual_fCO2_decomposition %&gt;%
   filter(year == 2023) %&gt;%
   select(-year) %&gt;% 
@@ -29743,6 +29765,71 @@ pco2_product_biome_annual_anomaly_temperature_predict %&gt;%
   select(product,
          year,
          biome,
+         `true anomaly` = fgco2_int,
+         `SST pattern` = fgco2_predict_int,
+         `SST mean` = fgco2_predict_int_biome) %&gt;% 
+  pivot_longer(4:6,
+               values_to = &quot;resid&quot;) %&gt;% 
+  filter(biome %in% c(&quot;Global non-polar&quot;)) %&gt;%
+  ggplot(aes(year, resid))+
+  geom_hline(yintercept = 0) +
+  geom_path(aes(col = name))+
+  geom_point(aes(fill = name), shape = 21, size = 1) +
+  labs(y = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title) +
+  facet_wrap( ~ product) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_markdown(),
+    legend.title = element_blank()
+  )</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fgco2_anomaly_prediction_biome-1">
+Past versions of fgco2_anomaly_prediction_biome-1.png
+</button>
+</p>
+<div id="fig-fgco2_anomaly_prediction_biome-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e717448c27671c93d494fb9a4d3666cd61738610/docs/figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-1.png" target="_blank">e717448</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggsave(width = 10,
+       height = 6,
+       dpi = 600,
+       filename = &quot;../output/biome_flux_anomaly_prediction_timeseries_all_pco2_products_global.jpg&quot;)
+
+
+pco2_product_biome_annual_anomaly_temperature_predict %&gt;% 
+  select(product,
+         year,
+         biome,
          fgco2_int,
          `SST pattern` = fgco2_predict_int,
          `SST mean` = fgco2_predict_int_biome) %&gt;% 
@@ -29787,13 +29874,13 @@ pco2_product_biome_annual_anomaly_temperature_predict %&gt;%
     legend.title = element_blank(),
     legend.position = &quot;top&quot;
   )</code></pre>
-<p><img src="figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fgco2_anomaly_prediction_biome-1">
-Past versions of fgco2_anomaly_prediction_biome-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fgco2_anomaly_prediction_biome-2">
+Past versions of fgco2_anomaly_prediction_biome-2.png
 </button>
 </p>
-<div id="fig-fgco2_anomaly_prediction_biome-1" class="collapse">
+<div id="fig-fgco2_anomaly_prediction_biome-2" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -29812,7 +29899,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e717448c27671c93d494fb9a4d3666cd61738610/docs/figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-1.png" target="_blank">e717448</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e717448c27671c93d494fb9a4d3666cd61738610/docs/figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-2.png" target="_blank">e717448</a>
 </td>
 <td>
 jens-daniel-mueller
@@ -29825,7 +29912,83 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_biome_annual_anomaly_temperature_predict %&gt;% 
+<pre class="r"><code>ggsave(width = 10,
+       height = 4,
+       dpi = 600,
+       filename = &quot;../output/biome_flux_anomaly_prediction_correlation_all_pco2_products_global.jpg&quot;)
+
+
+
+
+pco2_product_biome_annual_anomaly_temperature_predict %&gt;% 
+  select(product,
+         year,
+         biome,
+         fgco2_int,
+         `SST pattern` = fgco2_predict_int,
+         `SST mean` = fgco2_predict_int_biome) %&gt;% 
+  pivot_longer(contains(&quot;SST&quot;),
+               values_to = &quot;resid&quot;) %&gt;% 
+  filter(biome %in% c(&quot;Global non-polar&quot;)) %&gt;%
+  group_by(product, biome, name) %&gt;% 
+  summarise(correlation = cor(fgco2_int, resid)) %&gt;% 
+  ungroup() %&gt;% 
+  ggplot(aes(name, correlation, fill = name))+
+  geom_hline(yintercept = 0) +
+  geom_col(col = &quot;grey20&quot;) +
+  scale_fill_highcontrast() +
+  labs(y = &quot;FCO&lt;sub&gt;2&lt;/sub&gt; anom.&lt;br&gt;correlation&quot;) +
+  facet_grid( ~ product) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.y = element_markdown(),
+    legend.title = element_blank()
+  )</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fgco2_anomaly_prediction_biome-3">
+Past versions of fgco2_anomaly_prediction_biome-3.png
+</button>
+</p>
+<div id="fig-fgco2_anomaly_prediction_biome-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e717448c27671c93d494fb9a4d3666cd61738610/docs/figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-3.png" target="_blank">e717448</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggsave(width = 10,
+       height = 2,
+       dpi = 600,
+       filename = &quot;../output/biome_flux_anomaly_prediction_correlation_coefficients_all_pco2_products_global.jpg&quot;)
+
+pco2_product_biome_annual_anomaly_temperature_predict %&gt;% 
   select(product,
          year,
          biome,
@@ -29872,51 +30035,8 @@ jens-daniel-mueller
     legend.title = element_blank(),
     legend.position = &quot;top&quot;
   )</code></pre>
-<p><img src="figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fgco2_anomaly_prediction_biome-2">
-Past versions of fgco2_anomaly_prediction_biome-2.png
-</button>
-</p>
-<div id="fig-fgco2_anomaly_prediction_biome-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e717448c27671c93d494fb9a4d3666cd61738610/docs/figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-2.png" target="_blank">e717448</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2025-02-26
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code># ggsave(width = 8,
-#        height = 10,
-#        dpi = 600,
-#        filename = &quot;../output/biome_flux_anomaly_prediction_correlation_all_pco2_products.jpg&quot;)  
-
-
-pco2_product_biome_annual_anomaly_temperature_predict %&gt;% 
+<p><img src="figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_biome_annual_anomaly_temperature_predict %&gt;% 
   select(product, year, biome, fgco2_int, fgco2_predict_int, fgco2_predict_int_biome) %&gt;% 
   pivot_longer(contains(&quot;predict&quot;),
                values_to = &quot;resid&quot;) %&gt;% 
@@ -29932,44 +30052,7 @@ pco2_product_biome_annual_anomaly_temperature_predict %&gt;%
     legend.title = element_blank(),
     legend.position = &quot;top&quot;
   )</code></pre>
-<p><img src="figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fgco2_anomaly_prediction_biome-3">
-Past versions of fgco2_anomaly_prediction_biome-3.png
-</button>
-</p>
-<div id="fig-fgco2_anomaly_prediction_biome-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/e717448c27671c93d494fb9a4d3666cd61738610/docs/figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-3.png" target="_blank">e717448</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2025-02-26
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/pco2_product_synopsis_2023.Rmd/fgco2_anomaly_prediction_biome-5.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="monthly-anomalies" class="section level2">
