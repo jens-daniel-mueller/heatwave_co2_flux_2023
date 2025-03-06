@@ -134,24 +134,34 @@ wflow_publish(here::here(
     "mhw_stats.Rmd",
     "atm_co2.Rmd",
     "SOM_FFN.Rmd",
+    "SOM_FFN_GCB.Rmd",
     "OceanSODA.Rmd",
+    "OceanSODA_GCB.Rmd",
+    "fco2residual_GCB.Rmd",
     "NRT_fco2residual.Rmd",
+    "LDEO-HDP_GCB.Rmd",
+    "UExP-FNN-U_GCB.Rmd",
+    "JMA-MLR_GCB.Rmd",
+    "NIES-ML3_GCB.Rmd",
+    "CSIR-ML6_GCB.Rmd",
     "CMEMS.Rmd",
+    "CMEMS_GCB.Rmd",
     "ETHZ_CESM.Rmd",
     "FESOM_REcoM.Rmd",
     "pco2_product_synopsis_2023.Rmd",
+    "pco2_product_synopsis_2023_GCB.Rmd",
     "pco2_product_mapping_skill.Rmd"
   )
 ),
-message = "low res rebuild",
+message = "rerun all analysis",
 republish = TRUE)
 
 
 wflow_publish(here::here(
   "analysis", c(
-    "pco2_product_synopsis_2023.Rmd"
+    "CSIR-ML6_GCB.Rmd"
   )
-), message = "Global non-polar integral label changed")
+), message = "Include all GCB product")
 
 
 

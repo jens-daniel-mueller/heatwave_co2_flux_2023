@@ -1,4 +1,39 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # {{year_anom}} anomalies
+
+```{r color_definition, include=FALSE}
+
+warm_cool_gradient <- 
+rev(c(
+  "#61195a",
+  "#6f185f",
+  "#8d1e62",
+  "#aa2960",
+  "#c33c57",
+  "#da5351",
+  "#e77155",
+  "#f09264",
+  "#f09264",
+  "#fbd297",
+  "#fefefe",
+  "#c6e8ea",
+  "#97d4db",
+  "#79bcd0",
+  "#5ca2c6",
+  "#4a88bc",
+  "#3f6fb3",
+  "#3e56a2",
+  "#3c3f82",
+  "#2f2c5a",
+  "#272648"
+))
+
+```
+
 
 # Functions
 
@@ -17,8 +52,8 @@ anomaly_determination <- function(df,...) {
   
   group_by <- quos(...)
   # group_by <- quos(lon, lat)
+  # group_by <- quos(biome)
   # df <- pco2_product_map_annual
-  
   # Linear regression models
 
   df_lm <-
@@ -94,10 +129,13 @@ anomaly_determination <- function(df,...) {
     filter(year != {{year_anom}},
            name %in% name_quadratic_fit) %>%
     drop_na() %>% 
+    mutate(year = year - 2000) %>% 
     nest(data = -c(name, !!!group_by)) %>%
     mutate(
       fit = map(data, ~ flm(
-        formula = value ~ year + I(year ^ 2), data = .x))
+        # formula = value ~ year + I(year ^ 2), data = .x))
+        # formula = value ~ year + I(year ^ 2) + I(year ^ 3), data = .x))
+        formula = value ~ poly(year, 2, raw = TRUE), data = .x))
     )
   
   df_quadratic <-
@@ -105,15 +143,23 @@ anomaly_determination <- function(df,...) {
       df_quadratic %>%
         unnest_wider(fit) %>%
         select(name, !!!group_by,
-               intercept = `(Intercept)`, slope = year, slope_squared = `I(year^2)`) %>%
+               intercept = `(Intercept)`,
+               slope = `1`, 
+               slope_squared = `2`
+               # slope_cube = `3`
+               ) %>%
         mutate(intercept = as.vector(intercept),
                slope = as.vector(slope),
-               slope_squared = as.vector(slope_squared)),
-      df
+               slope_squared = as.vector(slope_squared)
+               # slope_cube = as.vector(slope_cube)
+               ),
+      df %>% 
+        mutate(year = year - 2000)
     ) %>%
     mutate(fit = intercept + year * slope + year^2 * slope_squared) %>%
     select(name, !!!group_by, year, fit, value) %>%
-    mutate(resid = value - fit)
+    mutate(resid = value - fit,
+           year = year + 2000)
   
   
   # df_quadratic <-
@@ -284,7 +330,7 @@ p_season <- function(df,
 
 ## fCO2 decomposition
 
-```{r fCO2_decomposition_function}
+```{r fCO2_decomposition_function_residual_approach}
 
 fco2_decomposition <- function(df, ...) {
   
@@ -326,6 +372,62 @@ fco2_decomposition <- function(df, ...) {
   pco2_product_biome_monthly_fCO2_decomposition <-
     pco2_product_biome_monthly_fCO2_decomposition %>%
     mutate(sfco2_nontherm = sfco2_total - sfco2_therm)
+  
+  pco2_product_biome_monthly_fCO2_decomposition <-
+    pco2_product_biome_monthly_fCO2_decomposition %>%
+    select(-c(temperature, sfco2)) %>%
+    pivot_longer(starts_with("sfco2"),
+                 values_to = "resid")
+  
+}
+
+
+```
+
+```{r fCO2_decomposition_function_direct_approach, eval=FALSE}
+
+fco2_decomposition <- function(df, ...) {
+  
+  group_by <- quos(...)
+  # group_by <- quos(lon, lat, month)
+  # group_by <- quos(biome, year, month)
+  
+  pco2_product_biome_monthly_fCO2_decomposition <-
+    df %>%
+    filter(name %in% c("temperature", "sfco2"))
+  
+  pco2_product_biome_monthly_fCO2_decomposition <-
+    inner_join(
+      pco2_product_biome_monthly_fCO2_decomposition %>%
+        filter(name == "temperature") %>%
+        select(-c(value, fit)) %>%
+        pivot_wider(values_from = resid),
+      pco2_product_biome_monthly_fCO2_decomposition %>%
+        filter(name == "sfco2") %>%
+        select(-c(value, resid)) %>%
+        pivot_wider(values_from = fit)
+    )
+  
+  pco2_product_biome_monthly_fCO2_decomposition <-
+    pco2_product_biome_monthly_fCO2_decomposition %>%
+    mutate(
+      sfco2_therm = (sfco2 * exp(0.0423 * temperature)) - sfco2,
+      sfco2_nontherm = (sfco2 * exp(-0.0423 * temperature)) - sfco2)
+  
+  
+  pco2_product_biome_monthly_fCO2_decomposition <-
+    inner_join(
+      pco2_product_biome_monthly_fCO2_decomposition,
+      df %>%
+        filter(name %in% c("sfco2")) %>%
+        select(-c(value, fit, name)) %>%
+        rename(sfco2_total = resid)
+    )
+  
+  
+  # pco2_product_biome_monthly_fCO2_decomposition <-
+  #   pco2_product_biome_monthly_fCO2_decomposition %>%
+  #   mutate(sfco2_nontherm = sfco2_total - sfco2_therm)
   
   pco2_product_biome_monthly_fCO2_decomposition <-
     pco2_product_biome_monthly_fCO2_decomposition %>%
@@ -615,22 +717,191 @@ map +
   ) +
   theme(legend.title = element_markdown(), legend.position = "top")
 
+pco2_product_map_annual_anomaly_temperature_predict <-
+  inner_join(
+    pco2_product_map_annual_slope,
+    pco2_product_map_annual_anomaly %>%
+      filter(name %in% c("temperature", "fgco2")) %>% 
+      select(lon, lat, name, resid, year) %>% 
+      drop_na() %>% 
+      arrange(desc(name)) %>% 
+      pivot_wider(values_from = "resid")
+  )
+
+pco2_product_map_annual_anomaly_temperature_predict <-
+  pco2_product_map_annual_anomaly_temperature_predict %>%
+  mutate(fgco2_predict = slope * temperature)
+
+pco2_product_map_annual_anomaly_temperature_predict %>%
+  filter(year == {{year_anom}}) %>%
+  select(-slope) %>% 
+  pivot_longer(c(fgco2, temperature, fgco2_predict),
+               values_to = "resid") %>%
+  drop_na() %>% 
+  # filter(name == "fgco2_predict") %>% 
+  group_split(name) %>% 
+  # head(1) %>%
+  map( ~ map +
+         geom_tile(data = .x,
+                   aes(lon, lat, fill = resid)) +
+         labs(title =  paste({{year_anom}},"anomaly")) +
+         scale_fill_gradientn(
+           colours = cmocean("curl")(100),
+           rescaler = ~ scales::rescale_mid(.x, mid = 0),
+           name = labels_breaks(.x %>% distinct(name)),
+           limits = c(quantile(.x$resid, .01), quantile(.x$resid, .99)),
+           oob = squish
+         ) +
+      guides(
+        fill = guide_colorbar(
+          barheight = unit(0.3, "cm"),
+          barwidth = unit(6, "cm"),
+          ticks = TRUE,
+          ticks.colour = "grey20",
+          frame.colour = "grey20",
+          label.position = "top",
+          direction = "horizontal"
+        )
+      ) +
+      theme(legend.title = element_markdown(),
+            legend.position = "top")
+  )
+
+
 ```
 
 
+```{r compute_global_means_and_integrals_predicted_fluxes}
+
+pco2_product_biome_annual_anomaly_temperature_predict <-
+  full_join(
+    pco2_product_map_annual_anomaly_temperature_predict %>% 
+      select(lon, lat, year, temperature, fgco2, fgco2_predict),
+    biome_mask %>%
+      mutate(area = earth_surf(lat, lon))
+  )
+
+
+pco2_product_biome_annual_anomaly_temperature_predict_global <-
+  pco2_product_biome_annual_anomaly_temperature_predict %>%
+  drop_na() %>%
+  mutate(fgco2_int = fgco2,
+         fgco2_predict_int = fgco2_predict) %>%
+  mutate(biome = case_when(str_detect(biome, "SO-SPSS|SO-ICE|Arctic") ~ "Polar",
+                           TRUE ~ "Global non-polar")) %>%
+  filter(biome == "Global non-polar") %>%
+  select(-c(lon, lat)) %>%
+  group_by(year, biome) %>%
+  summarise(across(-c(fgco2_int, fgco2_predict_int, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(c(fgco2_int, fgco2_predict_int),
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
+  ungroup()
+
+pco2_product_biome_annual_anomaly_temperature_predict <-
+  pco2_product_biome_annual_anomaly_temperature_predict %>%
+  drop_na() %>%
+  mutate(fgco2_int = fgco2,
+         fgco2_predict_int = fgco2_predict) %>%
+  select(-c(lon, lat)) %>%
+  group_by(year, biome) %>%
+  summarise(across(-c(fgco2_int, fgco2_predict_int, area),
+                   ~ weighted.mean(., area, na.rm = TRUE)),
+            across(c(fgco2_int, fgco2_predict_int),
+                   ~ sum(. * area, na.rm = TRUE) * 12.01 * 1e-15)) %>%
+  ungroup()
+
+pco2_product_biome_annual_anomaly_temperature_predict <-
+  bind_rows(pco2_product_biome_annual_anomaly_temperature_predict_global,
+            pco2_product_biome_annual_anomaly_temperature_predict)
+
+rm(pco2_product_biome_annual_anomaly_temperature_predict_global)
+
+pco2_product_biome_annual_anomaly_temperature_predict <-
+  pco2_product_biome_annual_anomaly_temperature_predict %>% 
+  filter(!is.na(biome))
+
+pco2_product_biome_annual_anomaly_temperature_predict %>% 
+  select(year, biome, fgco2_int, fgco2_predict_int) %>% 
+  filter(biome == "Global non-polar") %>% 
+  pivot_longer(starts_with("fgco2"),
+               values_to = "resid") %>% 
+  ggplot(aes(year, resid, col = name)) +
+  geom_path() +
+  geom_point()
+
+pco2_product_biome_annual_anomaly_temperature_predict %>%
+  ggplot(aes(fgco2_int, fgco2_predict_int)) +
+  geom_smooth(
+    data = . %>% filter(year != 2023),
+    method = "lm",
+    fill = "grey",
+    col = "grey40",
+    fullrange = TRUE,
+    level = 0.68
+  ) +
+  geom_point(data = . %>% filter(!year %in% c(2023, 1997, 2015)),
+             aes(fill = "1990-2022"),
+             shape = 21) +
+  scale_color_manual(values = "grey60", name = "X") +
+  scale_fill_manual(values = "grey60", name = "X") +
+  new_scale_fill() +
+  new_scale_color() +
+  geom_point(
+    data = . %>% filter(year %in% c(2023, 1997, 2015)),
+    aes(fill = as.factor(year)),
+    shape = 21,
+    size = 3
+  )  +
+  scale_fill_manual(
+    values = rev(warm_cool_gradient[c(17,13,20)]),
+    guide = guide_legend(reverse = TRUE,
+                         order = 2)
+  ) +
+  scale_color_manual(
+    values = rev(warm_cool_gradient[c(17,13,20)]),
+    guide = guide_legend(reverse = TRUE,
+                         order = 2)
+  ) +
+  labs(y = labels_breaks("fgco2_int")$i_legend_title,
+       x = labels_breaks("fgco2_predict_int")$i_legend_title) +
+  facet_wrap(~ biome, scales = "free") +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown(),
+    legend.title = element_blank(),
+    legend.position = "top"
+  )
+
+
+pco2_product_biome_annual_anomaly_temperature_predict %>%
+  ggplot(aes(fgco2_int, fgco2_predict_int)) +
+  geom_smooth(
+    data = . %>% filter(year != 2023),
+    method = "lm",
+    fill = "grey",
+    col = "grey40",
+    fullrange = TRUE,
+    level = 0.68
+  ) +
+  geom_point(aes(fill = temperature),
+             shape = 21) +
+  scale_fill_divergent() +
+  labs(y = labels_breaks("fgco2_int")$i_legend_title,
+       x = labels_breaks("fgco2_predict_int")$i_legend_title) +
+  facet_wrap(~ biome, scales = "free") +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown(),
+    legend.title = element_blank(),
+    legend.position = "top"
+  )
+  
+
+```
+
 
 ```{r write_anomaly_anomaly_year_annual_mean_maps, results = FALSE}
-
-pco2_product_map_annual_slope %>%
-  write_csv(
-    paste0(
-      "../data/",
-      "{{product_name}}",
-      "_",
-      "{{year_anom}}",
-      "_map_annual_slope.csv"
-    )
-  )
 
 pco2_product_map_annual_anomaly %>%
   filter(year == {{year_anom}}) %>%
@@ -644,8 +915,33 @@ pco2_product_map_annual_anomaly %>%
     )
   )
 
+pco2_product_map_annual_anomaly_temperature_predict %>%
+  filter(year == {{year_anom}}) %>%
+  write_csv(
+    paste0(
+      "../data/",
+      "{{product_name}}",
+      "_",
+      "{{year_anom}}",
+      "_map_annual_anomaly_temperature_predict.csv"
+    )
+  )
+
+pco2_product_biome_annual_anomaly_temperature_predict %>%
+  write_csv(
+    paste0(
+      "../data/",
+      "{{product_name}}",
+      "_",
+      "{{year_anom}}",
+      "_biome_annual_anomaly_temperature_predict.csv"
+    )
+  )
+
 rm(pco2_product_map_annual_anomaly,
-   pco2_product_map_annual_slope)
+   pco2_product_map_annual_slope,
+   pco2_product_map_annual_anomaly_temperature_predict,
+   pco2_product_biome_annual_anomaly_temperature_predict)
 gc()
 
 ```
@@ -877,9 +1173,9 @@ map +
     ),
     oob = squish
   ) +
-  facet_wrap( ~ name,
-              ncol = 2,
-              labeller = labeller(name = x_axis_labels)) +
+  facet_wrap(~ name,
+             ncol = 2,
+             labeller = labeller(name = x_axis_labels)) +
   guides(
     fill = guide_colorbar(
       barheight = unit(0.3, "cm"),
@@ -1385,8 +1681,8 @@ pco2_product_biome_annual %>%
                                   name %in% name_quadratic_fit),
               method = "lm",
               fullrange = TRUE,
-              formula = y ~ x + I(x^2),
-              aes(col = "quadratic"),
+              formula = y ~ poly(x,2),
+              aes(col = "poly2"),
               se = FALSE) +
   scale_color_brewer(
     palette = "Set1",
@@ -1424,8 +1720,8 @@ pco2_product_biome_annual %>%
                                   name %in% name_quadratic_fit),
               method = "lm",
               fullrange = TRUE,
-              formula = y ~ x + I(x^2),
-              aes(col = "quadratic"),
+              formula = y ~ poly(x,2),
+              aes(col = "poly2"),
               se = FALSE) +
   scale_color_brewer(
     palette = "Set1",
@@ -2593,6 +2889,7 @@ The following analysis is available for GOBMs only.
 ### {{year_anom}} anomaly
 
 ```{r {{year_anom}}_anomaly_profiles_annual, fig.asp=1, eval=model, results = FALSE}
+
 
 pco2_product_profiles_annual <-   pco2_product_profiles %>%
   pivot_longer(-c(biome, depth, time, year, month)) %>%

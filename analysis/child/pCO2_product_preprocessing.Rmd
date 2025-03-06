@@ -14,6 +14,7 @@ library(scico)
 library(ggtext)
 library(cmocean)
 library(scales)
+library(ggh4x)
 
 ```
 
@@ -141,12 +142,20 @@ labels_breaks <- function(i_name) {
     i_legend_title <- "FCO<sub>2</sub><br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
   }
   
+  if (i_name == "fgco2_predict") {
+    i_legend_title <- "FCO<sub>2</sub> pred.<br>(mol m<sup>-2</sup> yr<sup>-1</sup>)"
+  }
+  
   if (i_name == "fgco2_hov") {
     i_legend_title <- "FCO<sub>2</sub><br>(PgC deg<sup>-1</sup> yr<sup>-1</sup>)"
   }
   
   if (i_name == "fgco2_int") {
     i_legend_title <- "FCO<sub>2</sub><br>(PgC yr<sup>-1</sup>)"
+  }
+  
+  if (i_name == "fgco2_predict_int") {
+    i_legend_title <- "FCO<sub>2</sub> pred.<br>(PgC yr<sup>-1</sup>)"
   }
   
   if (i_name == "thetao") {
@@ -250,8 +259,10 @@ x_axis_labels <-
     "sfco2_therm" = labels_breaks("sfco2_therm")$i_legend_title,
     "sfco2_nontherm" = labels_breaks("sfco2_nontherm")$i_legend_title,
     "fgco2" = labels_breaks("fgco2")$i_legend_title,
+    "fgco2_predict" = labels_breaks("fgco2_predict")$i_legend_title,
     "fgco2_hov" = labels_breaks("fgco2_hov")$i_legend_title,
     "fgco2_int" = labels_breaks("fgco2_int")$i_legend_title,
+    "fgco2_predict_int" = labels_breaks("fgco2_int")$i_legend_title,
     "thetao" = labels_breaks("thetao")$i_legend_title,
     "temperature" = labels_breaks("temperature")$i_legend_title,
     "salinity" = labels_breaks("salinity")$i_legend_title,
@@ -278,6 +289,7 @@ x_axis_labels <-
 ```{r analysis_settings}
 
 name_quadratic_fit <- c("atm_co2", "atm_fco2", "spco2", "sfco2")
+# name_quadratic_fit <- c(name_quadratic_fit, "dfco2", "fgco2", "fgco2_int", "temperature")
 
 start_year <- 1990
 
