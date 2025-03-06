@@ -1,0 +1,46 @@
+---
+title: "pCO2 product synopsis 2023 GCB all"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r parent, child = "/nfs/kryo/work/jenmueller/emlr_cant/utilities/setup.Rmd"}
+# this chunk runs the code stored in setup.Rmd
+# if required, please refer to instructions given here:
+# https://jdblischak.github.io/workflowr/articles/wflow-07-common-code.html
+```
+
+
+```{r data_products_used}
+
+pco2_product_list <- c("OceanSODA", "SOM-FFN", "CMEMS", "LDEO-HPD", 
+                       "CSIR-ML6", "JMA-MLR", "NIES-ML3", "UExP-FNN-U")
+
+gobm_product_list <- c("ETHZ-CESM", "FESOM-REcoM")
+
+files <- list.files(here::here("data/"), pattern = "FESOM-REcoM")
+
+file_types <- str_remove(files, "FESOM-REcoM_2023_")
+GCB_products = TRUE
+
+```
+
+
+```{r source_pCO2_product_synopsis_child}
+
+pCO2_product_synopsis <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_synopsis.Rmd"),
+    year_anom = 2023
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2_product_synopsis))`
+
+
+
