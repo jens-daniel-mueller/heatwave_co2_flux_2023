@@ -140,16 +140,17 @@ wflow_publish(here::here(
     "fco2residual_GCB.Rmd",
     "NRT_fco2residual.Rmd",
     "LDEO-HDP_GCB.Rmd",
+    "CMEMS.Rmd",
+    "CMEMS_GCB.Rmd",
     "UExP-FNN-U_GCB.Rmd",
     "JMA-MLR_GCB.Rmd",
     "NIES-ML3_GCB.Rmd",
     "CSIR-ML6_GCB.Rmd",
-    "CMEMS.Rmd",
-    "CMEMS_GCB.Rmd",
     "ETHZ_CESM.Rmd",
     "FESOM_REcoM.Rmd",
     "pco2_product_synopsis_2023.Rmd",
     "pco2_product_synopsis_2023_GCB.Rmd",
+    "pco2_product_synopsis_2023_GCB_all.Rmd",
     "pco2_product_mapping_skill.Rmd"
   )
 ),
@@ -159,7 +160,7 @@ republish = TRUE)
 
 wflow_publish(here::here(
   "analysis", c(
-    "CSIR-ML6_GCB.Rmd"
+    "pco2_product_synopsis_2023.Rmd"
   )
 ), message = "Include all GCB product")
 

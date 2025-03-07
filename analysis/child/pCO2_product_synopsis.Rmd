@@ -92,7 +92,27 @@ color_products <- c(
   "LDEO-HPD" = "#edae49",
   "CMEMS" = "#AD8E55",
   "ETHZ-CESM" = "#66a182",
-  "FESOM-REcoM" = "#00798c"
+  "FESOM-REcoM" = "#00798c",
+  "CSIR-ML6" = "grey10",
+  "JMA-MLR" = "grey30",
+  "NIES-ML3" = "grey50",
+  "UExP-FNN-U" = "grey70"
+)
+
+shape_products <- c(
+  "OceanSODAv2" = 0,
+  "OceanSODA" = 0,
+  "SOM-FFN" = 1,
+  "fco2residual" = 2,
+  "fCO2-Residual" = 2,
+  "LDEO-HPD" = 2,
+  "CMEMS" = 5,
+  "ETHZ-CESM" = 0,
+  "FESOM-REcoM" = 1,
+  "CSIR-ML6" = 6,
+  "JMA-MLR" = 7,
+  "NIES-ML3" = 9,
+  "UExP-FNN-U" = 10
 )
 
 warm_color <- "#c33c57"
@@ -3354,7 +3374,7 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
     aes(col = product, shape = product)
   ) +
   scale_color_manual(values = color_products, name = "fCO2 products") +
-  scale_shape_manual(values = 21:24, name = "fCO2 products") +
+  scale_shape_manual(values = shape_products, name = "fCO2 products") +
   new_scale_color() +
   new_scale("shape") +
   geom_point(
@@ -3368,7 +3388,7 @@ pco2_product_biome_annual_anomaly_merged_ensemble %>%
     position = position_nudge(x = 0.2)
   ) +
   scale_color_manual(values = color_products, name = "GOBMs") +
-  scale_shape_manual(values = 21:22, name = "GOBMs") +
+  scale_shape_manual(values = shape_products, name = "GOBMs") +
   facet_nested(
     name ~ latitude + biome_class,
     scales = "free",
