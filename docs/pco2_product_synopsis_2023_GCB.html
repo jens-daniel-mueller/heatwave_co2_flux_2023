@@ -480,7 +480,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">pCO2 product synopsis 2023 GCB</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">07 March, 2025</h4>
+<h4 class="date">10 March, 2025</h4>
 
 </div>
 
@@ -509,7 +509,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-03-07
+<strong>Last updated:</strong> 2025-03-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -641,15 +641,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree1fe8590442ff9f3dd95e8100e6c93b29d1bee0dbtargetblank1fe8590a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree60900ed8ca6a0f654d6d8fc1a952d886a91911cbtargetblank60900eda">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/1fe8590442ff9f3dd95e8100e6c93b29d1bee0db" target="_blank">1fe8590</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/60900ed8ca6a0f654d6d8fc1a952d886a91911cb" target="_blank">60900ed</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree1fe8590442ff9f3dd95e8100e6c93b29d1bee0dbtargetblank1fe8590a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree60900ed8ca6a0f654d6d8fc1a952d886a91911cbtargetblank60900eda"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -659,7 +659,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/1fe8590442ff9f3dd95e8100e6c93b29d1bee0db" target="_blank">1fe8590</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/60900ed8ca6a0f654d6d8fc1a952d886a91911cb" target="_blank">60900ed</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -727,6 +727,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/60900ed8ca6a0f654d6d8fc1a952d886a91911cb/docs/pco2_product_synopsis_2023_GCB.html" target="_blank">60900ed</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1032,7 +1049,8 @@ biome_mask &lt;-
 
 biome_mask_print &lt;-
   biome_mask %&gt;%
-  filter(!str_detect(biome, &quot;SO-SPSS|SO-ICE|Arctic&quot;)) %&gt;%
+  # filter(!str_detect(biome, &quot;SO-SPSS|SO-ICE|Arctic&quot;)) %&gt;%
+  filter(!str_detect(biome, &quot;SO-ICE|Arctic&quot;)) %&gt;%
   select(lon, lat)
 
 region_biomes &lt;-
@@ -1692,7 +1710,8 @@ bbox_graticules &lt;- st_graticule(
   crs = st_crs(bbox_trans),
   datum = st_crs(bbox_trans),
   lon = c(20, 20.001),
-  lat = c(-54,76),
+  # lat = c(-54,76),
+  lat = c(-80,85),
   ndiscr = 1e3,
   margin = 0.001
 )
@@ -3123,8 +3142,8 @@ rm(plot_list,
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3170356  169.4    6786058  362.5   6786058  362.5
-Vcells 271302097 2069.9  512203670 3907.9 512142246 3907.4</code></pre>
+Ncells   3141317  167.8    6874028  367.2   6874028  367.2
+Vcells 272452570 2078.7  512214419 3907.9 512187830 3907.7</code></pre>
 </div>
 <div id="bivariate-anomaly" class="section level3">
 <h3>Bivariate anomaly</h3>
@@ -4591,8 +4610,8 @@ rm(
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3303962  176.5    6786058  362.5   6786058  362.5
-Vcells 289259565 2206.9  512352505 3909.0 512352505 3909.0</code></pre>
+Ncells   3278577  175.1    6874028  367.2   6874028  367.2
+Vcells 288892182 2204.1  513187840 3915.4 513187840 3915.4</code></pre>
 </div>
 </div>
 <div id="monthly-means" class="section level2">
@@ -4758,8 +4777,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3258076  174.1    6786058  362.5   6786058  362.5
-Vcells 258840886 1974.8  512352505 3909.0 512352505 3909.0</code></pre>
+Ncells   3233364  172.7    6874028  367.2   6874028  367.2
+Vcells 271176591 2069.0  513187840 3915.4 513187840 3915.4</code></pre>
 </div>
 <div id="fco2-decomposition-1" class="section level3">
 <h3>fCO2 decomposition</h3>
@@ -4855,8 +4874,8 @@ pco2_product_map_monthly_fCO2_decomposition %&gt;%
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3230782  172.6    6786058  362.5   6786058  362.5
-Vcells 232615412 1774.8  512352505 3909.0 512352505 3909.0</code></pre>
+Ncells   3203091  171.1    6874028  367.2   6874028  367.2
+Vcells 251669544 1920.1  513187840 3915.4 513187840 3915.4</code></pre>
 <pre class="r"><code>pco2_product_map_annual_fCO2_decomposition %&gt;%
   filter(year == 2023) %&gt;%
   select(-year) %&gt;% 
@@ -6104,6 +6123,43 @@ df_baseline %&gt;%
   geom_path() +
   facet_grid(name ~ ., scales = &quot;free_y&quot;)</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/baseline_definitions_testing-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-baseline_definitions_testing-1">
+Past versions of baseline_definitions_testing-1.png
+</button>
+</p>
+<div id="fig-baseline_definitions_testing-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/60900ed8ca6a0f654d6d8fc1a952d886a91911cb/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/baseline_definitions_testing-1.png" target="_blank">60900ed</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_baseline %&gt;% 
   select(-fgco2_int_predict_baseline_global_SST) %&gt;% 
   pivot_longer(-c(year, fgco2_int_observed)) %&gt;% 
@@ -6114,6 +6170,43 @@ df_baseline %&gt;%
   scale_fill_viridis_c() +
   facet_wrap(~ name, scales = &quot;free_x&quot;)</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/baseline_definitions_testing-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-baseline_definitions_testing-2">
+Past versions of baseline_definitions_testing-2.png
+</button>
+</p>
+<div id="fig-baseline_definitions_testing-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/60900ed8ca6a0f654d6d8fc1a952d886a91911cb/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/baseline_definitions_testing-2.png" target="_blank">60900ed</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>mlr &lt;- lm(data = df_baseline, fgco2_int_observed ~ atmco2 + atmco2_gr + nino34)
 
 df_baseline %&gt;% 
@@ -6133,6 +6226,43 @@ df_baseline %&gt;%
         axis.title.y = element_markdown(),
         legend.title = element_blank())</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/baseline_definitions_testing-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-baseline_definitions_testing-3">
+Past versions of baseline_definitions_testing-3.png
+</button>
+</p>
+<div id="fig-baseline_definitions_testing-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/60900ed8ca6a0f654d6d8fc1a952d886a91911cb/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/baseline_definitions_testing-3.png" target="_blank">60900ed</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(width = 8,
        height = 4,
        dpi = 600,
@@ -7274,6 +7404,16 @@ bind_rows(
     ungroup() %&gt;%
     mutate(region = &quot;Global non-polar&quot;),
   pco2_product_biome_annual_anomaly_super_regions %&gt;%
+    filter(!str_detect(biome, &quot;SO-ICE|Arctic&quot;)) %&gt;%
+    select(-biome) %&gt;% 
+    group_by(product, estimate, year) %&gt;%
+    summarise(across(-c(fgco2_int, area),
+                     ~ weighted.mean(., area, na.rm = TRUE)),
+              across(fgco2_int,
+                     ~ sum(., na.rm = TRUE))) %&gt;%
+    ungroup() %&gt;%
+    mutate(region = &quot;Global ice-free&quot;),
+  pco2_product_biome_annual_anomaly_super_regions %&gt;%
     filter(str_detect(biome, &quot;NA-|NP-&quot;)) %&gt;%
     select(-biome) %&gt;% 
     group_by(product, estimate, year) %&gt;%
@@ -7283,26 +7423,26 @@ bind_rows(
                      ~ sum(., na.rm = TRUE))) %&gt;%
     ungroup() %&gt;%
     mutate(region = &quot;NH extratropics&quot;),
-  pco2_product_biome_annual_anomaly_super_regions %&gt;%
-    filter(str_detect(biome, &quot;NA-&quot;)) %&gt;%
-    select(-biome) %&gt;% 
-    group_by(product, estimate, year) %&gt;%
-    summarise(across(-c(fgco2_int, area),
-                     ~ weighted.mean(., area, na.rm = TRUE)),
-              across(fgco2_int,
-                     ~ sum(., na.rm = TRUE))) %&gt;%
-    ungroup() %&gt;%
-    mutate(region = &quot;North Atlantic&quot;),
-  pco2_product_biome_annual_anomaly_super_regions %&gt;%
-    filter(str_detect(biome, &quot;NP-&quot;)) %&gt;%
-    select(-biome) %&gt;% 
-    group_by(product, estimate, year) %&gt;%
-    summarise(across(-c(fgco2_int, area),
-                     ~ weighted.mean(., area, na.rm = TRUE)),
-              across(fgco2_int,
-                     ~ sum(., na.rm = TRUE))) %&gt;%
-    ungroup() %&gt;%
-    mutate(region = &quot;North Pacific&quot;),
+  # pco2_product_biome_annual_anomaly_super_regions %&gt;%
+  #   filter(str_detect(biome, &quot;NA-&quot;)) %&gt;%
+  #   select(-biome) %&gt;% 
+  #   group_by(product, estimate, year) %&gt;%
+  #   summarise(across(-c(fgco2_int, area),
+  #                    ~ weighted.mean(., area, na.rm = TRUE)),
+  #             across(fgco2_int,
+  #                    ~ sum(., na.rm = TRUE))) %&gt;%
+  #   ungroup() %&gt;%
+  #   mutate(region = &quot;North Atlantic&quot;),
+  # pco2_product_biome_annual_anomaly_super_regions %&gt;%
+  #   filter(str_detect(biome, &quot;NP-&quot;)) %&gt;%
+  #   select(-biome) %&gt;% 
+  #   group_by(product, estimate, year) %&gt;%
+  #   summarise(across(-c(fgco2_int, area),
+  #                    ~ weighted.mean(., area, na.rm = TRUE)),
+  #             across(fgco2_int,
+  #                    ~ sum(., na.rm = TRUE))) %&gt;%
+  #   ungroup() %&gt;%
+  #   mutate(region = &quot;North Pacific&quot;),
   pco2_product_biome_annual_anomaly_super_regions %&gt;%
     filter(str_detect(biome, &quot;PEQU|AEQU|Equ&quot;)) %&gt;%
     select(-biome) %&gt;% 
