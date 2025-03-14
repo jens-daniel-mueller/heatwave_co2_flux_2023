@@ -478,7 +478,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">CMEMS_GCB</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">07 March, 2025</h4>
+<h4 class="date">14 March, 2025</h4>
 
 </div>
 
@@ -507,7 +507,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-03-07
+<strong>Last updated:</strong> 2025-03-14
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -639,15 +639,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treea26d2abdf4dab2d7050575b326792a91450aaee2targetblanka26d2aba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree5c7cafeb71f093cb197750a146e1cce70cbd7035targetblank5c7cafea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/a26d2abdf4dab2d7050575b326792a91450aaee2" target="_blank">a26d2ab</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/5c7cafeb71f093cb197750a146e1cce70cbd7035" target="_blank">5c7cafe</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treea26d2abdf4dab2d7050575b326792a91450aaee2targetblanka26d2aba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023tree5c7cafeb71f093cb197750a146e1cce70cbd7035targetblank5c7cafea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -657,7 +657,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/a26d2abdf4dab2d7050575b326792a91450aaee2" target="_blank">a26d2ab</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/5c7cafeb71f093cb197750a146e1cce70cbd7035" target="_blank">5c7cafe</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -678,6 +678,7 @@ Ignored files:
     Ignored:    output/
 
 Unstaged changes:
+    Modified:   analysis/child/pCO2_product_analysis.Rmd
     Modified:   analysis/child/pCO2_product_synopsis.Rmd
     Modified:   code/Workflowr_project_managment.R
 
@@ -724,6 +725,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/643d6fabaca905348eef27f68e6f474d80f823b7/docs/CMEMS_GCB.html" target="_blank">643d6fa</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -4535,8 +4553,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4278597   228.6   41237837  2202.4  125847888  6721.1
-Vcells 1682804038 12838.8 4138972802 31577.9 4138965342 31577.8</code></pre>
+Ncells    4278579   228.6   40496704  2162.8  123586131  6600.3
+Vcells 1682804447 12838.8 4058003699 30960.2 4058003699 30960.2</code></pre>
 <pre class="r"><code>map +
   geom_tile(data = pco2_product_map_annual_fCO2_decomposition %&gt;%
               filter(year == 2023), aes(lon, lat, fill = resid)) +
@@ -4760,8 +4778,8 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    4296525   229.5   32990270  1761.9  125847888  6721.1
-Vcells 1928041834 14709.8 4138972802 31577.9 4138965342 31577.8</code></pre>
+Ncells    4296603   229.5   32397364  1730.3  123586131  6600.3
+Vcells 1928042386 14709.8 4058003699 30960.2 4058003699 30960.2</code></pre>
 <pre class="r"><code>pco2_product_map_monthly_anomaly %&gt;%
   filter(year == 2023) %&gt;%
   write_csv(
@@ -8629,11 +8647,42 @@ jens-daniel-mueller
 pco2_product_biome_monthly_fCO2_decomposition &lt;-
   full_join(pco2_product_map_monthly_fCO2_decomposition,
             biome_mask,
-            relationship = &quot;many-to-many&quot;) %&gt;% 
-  group_by(year, month, biome, name) %&gt;% 
-  summarise(resid = mean(resid, na.rm = TRUE)) %&gt;% 
-  ungroup() %&gt;% 
+            relationship = &quot;many-to-many&quot;)
+
+
+# pco2_product_biome_monthly_fCO2_decomposition_no_weight &lt;-
+#   pco2_product_biome_monthly_fCO2_decomposition %&gt;%
+#   group_by(year, month, biome, name) %&gt;%
+#   summarise(resid = mean(resid, na.rm = TRUE)) %&gt;%
+#   ungroup() %&gt;%
+#   drop_na()
+# 
+# pco2_product_biome_monthly_fCO2_decomposition_area &lt;-
+#   pco2_product_biome_monthly_fCO2_decomposition %&gt;%
+#   group_by(year, month, biome, name) %&gt;%
+#   summarise(resid = weighted.mean(resid, area, na.rm = TRUE)) %&gt;%
+#   ungroup() %&gt;%
+#   drop_na()
+
+
+# compute regional averages weighted by area and wind speed (represented by kw*sol)
+
+pco2_product_biome_monthly_fCO2_decomposition &lt;-
+  full_join(
+    pco2_product_biome_monthly_fCO2_decomposition,
+    pco2_product_map_monthly %&gt;%
+      filter(name == &quot;kw_sol&quot;) %&gt;% 
+      select(-name) %&gt;% 
+      rename(kw_sol = value)
+  )
+
+pco2_product_biome_monthly_fCO2_decomposition &lt;-
+  pco2_product_biome_monthly_fCO2_decomposition %&gt;%
+  group_by(year, month, biome, name) %&gt;%
+  summarise(resid = weighted.mean(resid, area*kw_sol, na.rm = TRUE)) %&gt;%
+  ungroup() %&gt;%
   drop_na()
+
 
 
 pco2_product_biome_annual_fCO2_decomposition &lt;-
@@ -8641,6 +8690,8 @@ pco2_product_biome_annual_fCO2_decomposition &lt;-
   group_by(year, biome, name) %&gt;%
   summarise(resid = mean(resid)) %&gt;%
   ungroup()
+  # filter(biome == &quot;Global non-polar&quot;,
+  #        year == 2023)
 
 
 pco2_product_biome_monthly_fCO2_decomposition %&gt;%
