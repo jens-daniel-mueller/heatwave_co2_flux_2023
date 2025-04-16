@@ -45,7 +45,7 @@ print(nc)
 ```
 
 
-```{r read_VLIZ_SOM_FFN}
+```{r read_OceanSODA}
 
 pco2_product <-
   read_ncdf(
@@ -110,6 +110,7 @@ pCO2_product_preprocessing <-
 
 `r knitr::knit(text = unlist(pCO2_product_preprocessing))`
 
+# 2023
 
 ```{r source_pCO2_product_analysis_child_2023}
 
@@ -124,4 +125,52 @@ pCO2_product_analysis_2023 <-
 ```
 
 `r knitr::knit(text = unlist(pCO2_product_analysis_2023))`
+
+# 1997
+
+```{r source_pCO2_product_analysis_child_1997}
+
+pCO2_product_analysis_1997 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "OceanSODA_GCB",
+    year_anom = 1997
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2_product_analysis_1997))`
+
+# 2003
+
+```{r source_pCO2_product_analysis_child_2003}
+
+pCO2_product_analysis_2003 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "OceanSODA_GCB",
+    year_anom = 2003
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2_product_analysis_2003))`
+
+# 2015
+
+```{r source_pCO2_product_analysis_child_2015}
+
+pCO2_product_analysis_2015 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "OceanSODA_GCB",
+    year_anom = 2015
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2_product_analysis_2015))`
 
