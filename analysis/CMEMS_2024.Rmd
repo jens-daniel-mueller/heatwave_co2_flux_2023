@@ -198,6 +198,9 @@ for (i_file_name in file_names) {
   pco2_product_2024_var <- pco2_product_2024_var %>%
   drop_na()
   
+  pco2_product_2024_var <- pco2_product_2024_var %>%
+    mutate(lon = if_else(lon < 20, lon + 360, lon))
+  
   pco2_product_2024_var <- m_grid_horizontal(pco2_product_2024_var)
   
   pco2_product_2024_var <- pco2_product_2024_var %>%
@@ -255,8 +258,7 @@ pco2_product_2024 <-
 
 pco2_product_2024 <-
   pco2_product_2024 %>% 
-  mutate(lon = if_else(lon < 20, lon + 360, lon),
-         fgco2 = -fgco2,
+  mutate(fgco2 = -fgco2,
          # chl = log10(chl),
          kw = kw * 12,
          sol = sol * 1.025e-3)
