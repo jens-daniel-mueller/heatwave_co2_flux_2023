@@ -1,0 +1,332 @@
+---
+title: "CMEMS_2024"
+author: "Jens Daniel Müller"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r parent, child = "/nfs/kryo/work/jenmueller/emlr_cant/utilities/setup.Rmd"}
+# this chunk runs the code stored in setup.Rmd
+# if required, please refer to instructions given here:
+# https://jdblischak.github.io/workflowr/articles/wflow-07-common-code.html
+```
+
+```{r load_libraries_read_data, include = FALSE}
+
+library(lubridate)
+library(tidync)
+library(stars)
+
+```
+
+# Read data
+
+```{r define_paths}
+
+path_pCO2_products <-
+  "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/gcb_2024_pco2_products/"
+
+
+path_CMEMS <- "/nfs/kryo/work/datasets/gridded/ocean/2d/observation/pco2/cmems_ffnn/v2024/"
+
+```
+
+
+```{r read_nc_metadata, eval=FALSE}
+
+library(ncdf4)
+nc <-
+  nc_open(paste0(
+    path_pCO2_products,
+    "GCB-2024_dataprod_CMEMS-LSCE-FFNN_1990-2023_r100_v6.nc"
+  ))
+
+time <- ncvar_get(nc,"time")
+time
+
+print(nc)
+ncmeta::nc_extended(nc)
+
+```
+
+
+```{r read_CMEMS_GCB}
+
+pco2_product_nc <-
+  tidync(
+    paste0(
+      path_pCO2_products,
+      "GCB-2024_dataprod_CMEMS-LSCE-FFNN_1990-2023_r100_v6.nc"
+    )
+  )
+
+for (i in 1:468) {
+  
+  i_pco2_product <-
+    pco2_product_nc %>%
+    hyper_filter(time = index == i) %>%
+    hyper_tibble(select_var = c("fco2atm", "fgco2", "kw", "alpha", "sfco2", "tos")) %>%
+    mutate(time = ymd("1990-01-15") %m+% months(i-1))
+  
+  if (exists("pco2_product")) {
+    pco2_product <-
+      bind_rows(pco2_product, i_pco2_product)
+  }
+  
+  if (!exists("pco2_product")) {
+    pco2_product <- i_pco2_product
+  }
+  
+  # print(i)
+  
+}
+
+pco2_product_fgco2 <-
+  pco2_product %>% 
+  select(lon, lat, time, fgco2) %>% 
+  mutate(time = time - years(5))
+
+# pco2_product_fgco2 %>% 
+#   distinct(time) %>% 
+#   pull()
+# 
+# pco2_product %>% 
+#   distinct(time) %>% 
+#   pull()
+
+pco2_product <-
+  full_join(pco2_product %>% select(-fgco2) %>% filter(time < ymd("2024-01-01")),
+            pco2_product_fgco2 %>% filter(time > ymd("1990-01-01")))
+
+pco2_product <-
+  pco2_product %>%
+  rename(temperature = tos,
+         atm_fco2 = fco2atm,
+         sol = alpha)
+
+pco2_product <-
+  pco2_product %>%
+  mutate(lon = as.numeric(lon),
+         lat = as.numeric(lat),
+         area = earth_surf(lat, lon),
+         year = year(time),
+         month = month(time))
+
+pco2_product <-
+  pco2_product %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon))
+
+pco2_product <-
+  pco2_product %>%
+  mutate(dfco2 = sfco2 - atm_fco2)
+
+pco2_product <-
+  pco2_product %>% 
+  mutate(fgco2 = -fgco2 * 60 * 60 * 24 * 365,
+         kw_sol = kw * sol * 1e-2 * 24 * 365 * 1.025e-3)
+
+pco2_product <-
+  pco2_product %>%
+  select(-c(kw, sol))
+
+rm(pco2_product_fgco2)
+gc()
+
+```
+
+
+```{r read_CMEMS_2024}
+
+CMEMS_files <- list.files(path = path_CMEMS)
+# CMEMS_files <- CMEMS_files[!(CMEMS_files %>% str_detect("UV"))]
+
+file_names <- str_split(CMEMS_files, "_", simplify = TRUE)[,1] %>% unique()
+
+for (i_file_name in file_names) {
+  # i_file_name <- file_names[1]
+  CMEMS_files_var <-
+    CMEMS_files[CMEMS_files %>% str_detect(i_file_name)]
+  
+  print(i_file_name)
+  
+  # if(i_file_name == "xCO2"){
+  # CMEMS_files_var <-
+  #   CMEMS_files_var[!CMEMS_files_var %>% str_detect("fluxCO2")]
+  # }
+  
+  for (i_name in CMEMS_files_var) {
+    # i_name <- CMEMS_files_var[1]
+    # i_name <- CMEMS_files_var[466]
+    # print(i_name)
+    
+    library(ncdf4)
+    nc <- nc_open(paste0(path_CMEMS, i_name))
+    var_name <- names(nc$var)[1]
+    
+    # if(i_file_name == "cmems"){
+    #   var_name = names(nc$var)[c(1,3)]
+    # }
+    
+    i_pco2_product_2024_var <-
+      read_ncdf(paste0(path_CMEMS, i_name),
+                make_units = FALSE,
+                var = var_name)
+    
+    if (exists("pco2_product_2024_var")) {
+      pco2_product_2024_var <-
+        c(pco2_product_2024_var,
+          i_pco2_product_2024_var)
+    }
+    
+    if (!exists("pco2_product_2024_var")) {
+      pco2_product_2024_var <- i_pco2_product_2024_var
+    }
+    
+    # ggplot() +
+    #   geom_stars(data = pco2_product_2024_var) +
+    #   scale_fill_viridis_c(trans = "log10", na.value = "red") +
+    #   facet_wrap(~ time)
+    
+    
+  }
+  
+  pco2_product_2024_var <- pco2_product_2024_var %>%
+  as_tibble()
+  
+  pco2_product_2024_var <- pco2_product_2024_var %>%
+  drop_na()
+  
+  pco2_product_2024_var <- m_grid_horizontal(pco2_product_2024_var)
+  
+  pco2_product_2024_var <- pco2_product_2024_var %>%
+    group_by(lon, lat, time) %>% 
+    summarise(across(where(is.numeric), mean)) %>% 
+    ungroup()
+  
+  pco2_product_2024_var <-
+    pco2_product_2024_var %>%
+    mutate(
+      area = earth_surf(lat, lon),
+      year = year(time),
+      month = month(time),
+      time = ymd(paste(year, month, "15", sep = "-"))
+    )
+  
+  # ggplot() +
+  #   geom_raster(data = pco2_product_2024_var, aes(lon, lat, fill = CHL)) +
+  #   scale_fill_viridis_c(trans = "log10", na.value = "red") +
+  #   facet_wrap( ~ time)
+  
+  if (exists("pco2_product_2024")) {
+    pco2_product_2024 <-
+      full_join(pco2_product_2024,
+                pco2_product_2024_var)
+  }
+  
+  if (!exists("pco2_product_2024")) {
+    pco2_product_2024 <- pco2_product_2024_var
+  }
+  
+  rm(pco2_product_2024_var)
+  
+}
+
+rm(i_pco2_product_2024_var,
+   pco2_product_2024_var,
+   nc, var_name,
+   i_file_name, file_names,
+   i_name, CMEMS_files_var,
+   CMEMS_files)
+gc()
+# rm(pco2_product_2024)
+
+# pco2_product_2024 %>% distinct(name)
+
+pco2_product_2024 <-
+  pco2_product_2024 %>%
+  rename(atm_fco2 = CO2,
+         # fgco2 = fCO2_mean,
+         sfco2 = fuCO2_mean,
+         sol = L,
+         # salinity = SSS,
+         temperature = SST)
+
+pco2_product_2024 <-
+  pco2_product_2024 %>% 
+  mutate(lon = if_else(lon < 20, lon + 360, lon),
+         fgco2 = -fgco2,
+         # chl = log10(chl),
+         kw = kw * 12,
+         sol = sol * 1.025e-3)
+
+# pco2_product_2024 <-
+#   pco2_product_2024 %>% 
+#   mutate(temperature = if_else(
+#     year == 2023 & month >=10,
+#     temperature - 273.15,
+#     temperature
+#   ))
+# ggplot() +
+#   geom_raster(data = pco2_product_2024 %>%
+#                 filter(year == 2023,
+#                        month %in% 9:10),
+#               aes(lon, lat, fill = chl)) +
+#   scale_fill_viridis_c(na.value = "red") +
+#   facet_wrap( ~ month)
+
+pco2_product_2024 <-
+  pco2_product_2024 %>%
+  mutate(
+    dfco2 = sfco2 - atm_fco2
+  )
+
+pco2_product_2024 <-
+  pco2_product_2024 %>%
+  mutate(kw_sol = kw * sol) %>% 
+  select(-c(kw, sol))
+
+```
+
+```{r merge_CMEMS_data}
+
+pco2_product <- bind_rows(
+  pco2_product,
+  pco2_product_2024
+)
+
+rm(pco2_product_2024)
+gc()
+
+```
+
+
+```{r source_pCO2_product_preprocessing_child}
+
+pCO2_product_preprocessing <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_preprocessing.Rmd"),
+    product_name = "CMEMS_2024"
+  )
+
+```
+
+
+`r knitr::knit(text = unlist(pCO2_product_preprocessing))`
+
+
+```{r source_pCO2_product_analysis_child_2024}
+
+pCO2_product_analysis_2024 <-
+  knitr::knit_expand(
+    file = here::here("analysis/child/pCO2_product_analysis.Rmd"),
+    product_name = "CMEMS_2024",
+    year_anom = 2024
+  )
+
+
+```
+
+`r knitr::knit(text = unlist(pCO2_product_analysis_2024))`
+
