@@ -134,6 +134,7 @@ wflow_publish(here::here(
     "mhw_stats.Rmd",
     "atm_co2.Rmd",
     "SOM_FFN.Rmd",
+    "SOM_FFN_2024.Rmd",
     "SOM_FFN_GCB.Rmd",
     "OceanSODA.Rmd",
     "OceanSODA_GCB.Rmd",
@@ -142,6 +143,7 @@ wflow_publish(here::here(
     "LDEO-HDP_GCB.Rmd",
     "CMEMS.Rmd",
     "CMEMS_GCB.Rmd",
+    "CMEMS_2024.Rmd",
     "UExP-FNN-U_GCB.Rmd",
     "JMA-MLR_GCB.Rmd",
     "NIES-ML3_GCB.Rmd",
@@ -150,6 +152,7 @@ wflow_publish(here::here(
     "FESOM_REcoM.Rmd",
     "pco2_product_synopsis_2023.Rmd",
     "pco2_product_synopsis_2023_GCB.Rmd",
+    "pco2_product_synopsis_1997_GCB.Rmd",
     "pco2_product_synopsis_2023_GCB_all.Rmd",
     "pco2_product_mapping_skill.Rmd"
   )
@@ -160,9 +163,9 @@ republish = TRUE)
 
 wflow_publish(here::here(
   "analysis", c(
-    "pco2_product_synopsis_2023.Rmd"
+    "CMEMS_2024.Rmd"
   )
-), message = "Include all GCB product")
+), message = "test analysing 2024")
 
 
 

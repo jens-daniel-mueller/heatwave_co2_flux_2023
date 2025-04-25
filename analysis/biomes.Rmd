@@ -242,3 +242,29 @@ super_biome_mask %>%
   write_rds("../data/super_biome_mask.rds")
 
 ```
+
+```{r area_fractions, eval=FALSE}
+
+biome_mask %>% 
+  ggplot(aes(lon, lat, fill = biome)) +
+  geom_raster()
+
+biome_area <-
+  biome_mask %>%
+  mutate(area = earth_surf(lat, lon)) %>%
+  group_by(biome) %>%
+  summarise(area = sum(area)) %>%
+  ungroup() %>%
+  mutate(area = 100 * area / sum(area))
+  
+biome_area %>% 
+  mutate(biome = fct_reorder(biome, area)) %>% 
+  ggplot(aes(area, biome)) +
+  geom_col()
+
+biome_area %>% 
+  filter(biome %in% c("SO-SPSS", "SO-ICE", "Arctic")) %>% 
+  summarise(sum(area))
+
+```
+
