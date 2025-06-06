@@ -438,6 +438,9 @@ div.tocify {
       <a href="pco2_product_synopsis_2023_GCB.html">Synopsis 2023 GCB</a>
     </li>
     <li>
+      <a href="pco2_product_synopsis_1997_GCB.html">Synopsis 1997 GCB</a>
+    </li>
+    <li>
       <a href="pco2_product_synopsis_2023_GCB_all.html">Synopsis 2023 GCB all</a>
     </li>
     <li>
@@ -480,7 +483,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">pCO2 product synopsis 2023 GCB</h1>
 <h4 class="author">Jens Daniel Müller</h4>
-<h4 class="date">14 March, 2025</h4>
+<h4 class="date">06 June, 2025</h4>
 
 </div>
 
@@ -509,7 +512,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-03-14
+<strong>Last updated:</strong> 2025-06-06
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -641,15 +644,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treec250079f616dedee840c7888789630dca3f6e89ftargetblankc250079a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treece33fff4c21c0b726fa87c889efc669a74b4fe30targetblankce33fffa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/c250079f616dedee840c7888789630dca3f6e89f" target="_blank">c250079</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/ce33fff4c21c0b726fa87c889efc669a74b4fe30" target="_blank">ce33fff</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treec250079f616dedee840c7888789630dca3f6e89ftargetblankc250079a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomjensdanielmuellerheatwaveco2flux2023treece33fff4c21c0b726fa87c889efc669a74b4fe30targetblankce33fffa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -659,7 +662,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/c250079f616dedee840c7888789630dca3f6e89f" target="_blank">c250079</a>.
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/tree/ce33fff4c21c0b726fa87c889efc669a74b4fe30" target="_blank">ce33fff</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -676,12 +679,14 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data
     Ignored:    output/
 
 Unstaged changes:
-    Modified:   analysis/child/pCO2_product_analysis.Rmd
     Modified:   analysis/child/pCO2_product_synopsis.Rmd
+    Modified:   analysis/mhw_stats.Rmd
+    Modified:   analysis/pco2_product_mapping_skill.Rmd
     Modified:   code/Workflowr_project_managment.R
 
 </code></pre>
@@ -728,6 +733,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jens-daniel-mueller/heatwave_co2_flux_2023/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/pco2_product_synopsis_2023_GCB.html" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1357,6 +1379,75 @@ rev(c(
   assign(paste(&quot;pco2_product&quot;, i_file_type, sep = &quot;_&quot;), pco2_product)
 
 }</code></pre>
+<pre class="r"><code>for(i_file_type in c(
+  &quot;map_annual_anomaly_temperature_predict.csv&quot;,
+  &quot;biome_annual_anomaly.csv&quot;,
+  &quot;hovmoeller_monthly_anomaly.csv&quot;
+)) {
+  # print(i_file_type)
+  # i_file_type &lt;- file_types[1]
+  
+  files &lt;- list.files(
+    here::here(&quot;data&quot;),
+    pattern = paste(&quot;2024&quot;, i_file_type, sep = &quot;_&quot;),
+    full.names = TRUE
+  )
+  
+  # if (GCB_products) {
+  #   files &lt;- str_subset(files, paste(&quot;_GCB_&quot;, paste(gobm_product_list, collapse = &quot;|&quot;), sep = &quot;|&quot;))
+  #   files &lt;- str_subset(files, paste(
+  #     paste(pco2_product_2024_list, collapse = &quot;|&quot;),
+  #     paste(gobm_product_list, collapse = &quot;|&quot;),
+  #     sep = &quot;|&quot;
+  #   ))
+  # } else {
+  #   files &lt;- str_subset(files, &quot;_GCB_&quot;, negate = TRUE)
+  # }
+  # 
+  
+  pco2_product_2024 &lt;-
+    read_csv(files, id = &quot;product&quot;)
+  
+  # pco2_product_2024 %&gt;%
+  #   distinct(product)
+  
+  pco2_product_2024 &lt;-
+    pco2_product_2024 %&gt;%
+    mutate(product = str_extract(product, paste(all_product_list, collapse = &quot;|&quot;)))
+  
+  if (!str_detect(files[1], &quot;slope|_temperature_predict&quot;)) {
+    pco2_product_2024 &lt;-
+      pco2_product_2024 %&gt;%
+      mutate(
+        name = factor(name, levels = name_core),
+        product = factor(product, levels = all_product_list)
+      ) %&gt;%
+      filter(!is.na(name))
+  } else {
+    pco2_product_2024 &lt;-
+      pco2_product_2024 %&gt;%
+      mutate(product = factor(product, levels = all_product_list))
+  }
+  
+  i_file_type &lt;- str_remove(i_file_type, &quot;.csv&quot;)
+  assign(paste(&quot;pco2_product_2024&quot;, i_file_type, sep = &quot;_&quot;),
+         pco2_product_2024)
+  
+}</code></pre>
+<pre class="r"><code># SOM_FFN_predict_2024_map_annual_anomaly &lt;-
+#   read_csv(
+#     &quot;/home/jenmueller/Projects/heatwave_co2_flux_2023/data/SOM-FFN_predict_2024_map_annual_anomaly.csv&quot;
+#   )
+
+SOM_FFN_predict_2024_map_annual_anomaly_temperature_predict &lt;-
+  read_csv(
+    &quot;/home/jenmueller/Projects/heatwave_co2_flux_2023/data/SOM-FFN_predict_2024_map_annual_anomaly_temperature_predict.csv&quot;
+  )
+
+SOM_FFN_predict_2024_biome_annual_anomaly &lt;-
+  read_csv(
+    &quot;/home/jenmueller/Projects/heatwave_co2_flux_2023/data/SOM-FFN_predict_2024_biome_annual_anomaly.csv&quot;
+  )</code></pre>
 </div>
 <div id="define-labels-and-breaks" class="section level1">
 <h1>Define labels and breaks</h1>
@@ -2416,6 +2507,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-2.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-2.png" target="_blank">17f843d</a>
 </td>
 <td>
@@ -2542,6 +2644,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-3.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-3.png" target="_blank">17f843d</a>
@@ -2672,6 +2785,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-4.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-4.png" target="_blank">17f843d</a>
 </td>
 <td>
@@ -2754,6 +2878,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-5.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-5.png" target="_blank">17f843d</a>
@@ -2840,6 +2975,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-6.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-6.png" target="_blank">17f843d</a>
 </td>
 <td>
@@ -2922,6 +3068,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-7.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-7.png" target="_blank">17f843d</a>
@@ -3008,6 +3165,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-8.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-8.png" target="_blank">17f843d</a>
 </td>
 <td>
@@ -3068,9 +3236,83 @@ jens-daniel-mueller
 <pre><code>
 [[9]]</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_annual_mean_maps-9">
+Past versions of anomaly_year_annual_mean_maps-9.png
+</button>
+</p>
+<div id="fig-anomaly_year_annual_mean_maps-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-9.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[10]]</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_year_annual_mean_maps-10">
+Past versions of anomaly_year_annual_mean_maps-10.png
+</button>
+</p>
+<div id="fig-anomaly_year_annual_mean_maps-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_year_annual_mean_maps-10.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_list &lt;- 
 pco2_product_map_annual_anomaly %&gt;%
   filter(year == 2023,
@@ -3347,6 +3589,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-2.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-2.png" target="_blank">17f843d</a>
 </td>
 <td>
@@ -3462,6 +3715,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-3.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-3.png" target="_blank">17f843d</a>
@@ -3581,6 +3845,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-4.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/17f843d83e4f7c7f68a646211b5e75bb6cbc74a7/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-4.png" target="_blank">17f843d</a>
 </td>
 <td>
@@ -3674,6 +3949,43 @@ jens-daniel-mueller
 <pre><code>
 [[5]]</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_annual_mean_maps_ensemble_mean-5">
+Past versions of anomaly_annual_mean_maps_ensemble_mean-5.png
+</button>
+</p>
+<div id="fig-anomaly_annual_mean_maps_ensemble_mean-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-5.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_list &lt;- pco2_product_map_annual_anomaly_ensemble %&gt;%
   mutate(product = &quot;Ensemble mean&quot;) %&gt;%
   filter(name %in% c(&quot;fgco2&quot;, &quot;temperature&quot;)) %&gt;% 
@@ -3696,6 +4008,7 @@ ggsave(plot = wrap_plots(plot_list,
                          byrow = FALSE),
        width = 10,
        height = 3,
+       dpi = 900,
        filename = &quot;../output/map_anomaly_ensemble_mean_pco2_products.jpg&quot;)
 
 
@@ -3724,6 +4037,43 @@ pco2_product_map_annual_anomaly_ensemble %&gt;%
   )</code></pre>
 <pre><code>[[1]]</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomaly_annual_mean_maps_ensemble_mean-6">
+Past versions of anomaly_annual_mean_maps_ensemble_mean-6.png
+</button>
+</p>
+<div id="fig-anomaly_annual_mean_maps_ensemble_mean-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomaly_annual_mean_maps_ensemble_mean-6.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(width = 5,
        height = 3,
        filename = &quot;../output/map_absolute_ensemble_mean_pco2_products.jpg&quot;)
@@ -3860,8 +4210,8 @@ rm(plot_list,
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3170445  169.4    7459878  398.5   7459878  398.5
-Vcells 327790648 2500.9  600970665 4585.1 600970665 4585.1</code></pre>
+Ncells   3172609  169.5    6799131  363.2   6799131  363.2
+Vcells 334912390 2555.2  599920042 4577.1 599897832 4576.9</code></pre>
 </div>
 <div id="bivariate-anomaly" class="section level3">
 <h3>Bivariate anomaly</h3>
@@ -4613,6 +4963,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/zonal_means-1.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/zonal_means-1.png" target="_blank">9fe7d3d</a>
 </td>
 <td>
@@ -4937,7 +5298,8 @@ pco2_product_zonal_annual_anomaly_ensemble %&gt;%
                      name = str_replace(
                        labels_breaks(&quot;fgco2_hov&quot;)$i_legend_title,
                      &quot;PgC&quot;, &quot;TgC&quot;
-                     )) +
+                     ),
+                     position = &quot;top&quot;) +
   theme_classic() +
   theme(
     legend.position = &quot;none&quot;,
@@ -4964,8 +5326,9 @@ pco2_product_zonal_annual_anomaly_ensemble %&gt;%
                      name = &quot;Lat (°N)&quot;,
                      limits = c(-54,76),
                      expand = c(0,0)) +
-  scale_x_continuous(breaks = seq(-0.6,0.6,0.3),
-                     name = labels_breaks(&quot;temperature&quot;)$i_legend_title) +
+  scale_x_continuous(breaks = seq(-0.5,0.5,0.5),
+                     name = labels_breaks(&quot;temperature&quot;)$i_legend_title,
+                     position = &quot;top&quot;) +
   theme_classic() +
   theme(
     legend.position = &quot;none&quot;,
@@ -5015,8 +5378,9 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>ggsave(width = 2.5,
-       height = 4,
+<pre class="r"><code>ggsave(width = 2.2,
+       height = 3.5,
+       dpi = 900,
        filename = &quot;../output/zonal_mean_anomaly_pco2_product_ensemble_mean_warm_cold_color.jpg&quot;)</code></pre>
 </div>
 <div id="sst-flux-slope" class="section level3">
@@ -5793,8 +6157,182 @@ rm(
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3304047  176.5    7459878  398.5   7459878  398.5
-Vcells 345754950 2638.0  601080420 4585.9 601080420 4585.9</code></pre>
+Ncells   3305053  176.6    6799131  363.2   6799131  363.2
+Vcells 352876223 2692.3  600044212 4578.0 600044212 4578.0</code></pre>
+<pre class="r"><code>pco2_product_2024_map_annual_anomaly_temperature_predict_merge &lt;-
+  bind_rows(
+    pco2_product_2024_map_annual_anomaly_temperature_predict %&gt;%
+      pivot_longer(-c(product, year, lon, lat), values_to = &quot;resid&quot;),
+    pco2_product_map_annual_anomaly_temperature_predict %&gt;%
+      filter(product %in% c(&quot;SOM-FFN&quot;, &quot;CMEMS&quot;)) %&gt;%
+      mutate(year = 2023)
+  )
+
+
+pco2_product_2024_map_annual_anomaly_temperature_predict_merge %&gt;%
+  filter(name == &quot;slope&quot;) %&gt;%
+  mutate(year = case_when(
+    year == &quot;2023&quot; ~ &quot;1990-2022&quot;,
+    year == &quot;2024&quot; ~ &quot;1990-2023&quot;,
+    TRUE ~ &quot;none&quot;
+  )) %&gt;% 
+  p_map_mdim_robinson(
+    var = &quot;resid&quot;,
+    legend_title = &quot;Slope FCO&lt;sub&gt;2&lt;/sub&gt; anom. / SST anom.&lt;br&gt;(mol m&lt;sup&gt;-2&lt;/sup&gt; yr&lt;sup&gt;-1&lt;/sup&gt; °C&lt;sup&gt;-1&lt;/sup&gt;)&quot;,
+    breaks = c(-Inf, seq(-1, 1, 0.25), Inf),
+    dim_row = &quot;year&quot;,
+    dim_col = &quot;product&quot;
+  )
+
+ggsave(width = 10,
+       height = 5,
+       dpi = 600,
+       filename = &quot;../output/map_anomaly_correlation_2024.jpg&quot;)
+
+
+pco2_product_2024_map_annual_anomaly_temperature_predict_merge %&gt;%
+  filter(str_detect(name, &quot;temperature&quot;)) %&gt;%
+  p_map_mdim_robinson(
+    var = &quot;resid&quot;,
+    legend_title = labels_breaks(&quot;temperature&quot;)$i_legend_title,
+    breaks = labels_breaks(&quot;temperature&quot;)$i_breaks,
+    dim_row = &quot;year&quot;,
+    dim_col = &quot;product&quot;
+  )
+
+ggsave(width = 10,
+       height = 5,
+       dpi = 600,
+       filename = &quot;../output/map_anomaly_sst_2024.jpg&quot;)
+
+
+pco2_product_2024_map_annual_anomaly_temperature_predict_merge %&gt;%
+  filter(name == &quot;fgco2&quot;) %&gt;%
+  p_map_mdim_robinson(
+    var = &quot;resid&quot;,
+    legend_title = labels_breaks(&quot;fgco2&quot;)$i_legend_title,
+    breaks = labels_breaks(&quot;fgco2&quot;)$i_breaks,
+    dim_row = &quot;year&quot;,
+    dim_col = &quot;product&quot;
+  )
+
+ggsave(width = 10,
+       height = 5,
+       dpi = 600,
+       filename = &quot;../output/map_anomaly_flux_observed_2024.jpg&quot;)
+
+pco2_product_2024_map_annual_anomaly_temperature_predict_merge %&gt;%
+  filter(str_detect(name, &quot;fgco2_predict&quot;)) %&gt;%
+  p_map_mdim_robinson(
+    var = &quot;resid&quot;,
+    legend_title = labels_breaks(&quot;fgco2_predict&quot;)$i_legend_title,
+    breaks = labels_breaks(&quot;fgco2_predict&quot;)$i_breaks,
+    dim_row = &quot;year&quot;,
+    dim_col = &quot;product&quot;
+  )
+
+ggsave(width = 10,
+       height = 5,
+       dpi = 600,
+       filename = &quot;../output/map_anomaly_flux_predicted_2024.jpg&quot;)
+
+plot_list &lt;- pco2_product_2024_map_annual_anomaly_temperature_predict_merge %&gt;%
+  filter(name %in% c(&quot;fgco2&quot;, &quot;temperature&quot;),
+         product == &quot;SOM-FFN&quot;,
+         year == 2024) %&gt;% 
+  group_split(name) %&gt;%
+  map(
+    ~ p_map_mdim_robinson(
+      df = .x,
+      var = &quot;resid&quot;,
+      legend_title = labels_breaks(.x %&gt;% distinct(name))$i_legend_title,
+      legend_position = &quot;top&quot;,
+      breaks = labels_breaks(.x %&gt;% distinct(name))$i_breaks,
+      n_labels = 2
+    )
+  )
+
+ggsave(plot = wrap_plots(plot_list,
+                         ncol = 2,
+                         byrow = FALSE),
+       width = 10,
+       height = 3,
+       dpi = 900,
+       filename = &quot;../output/map_anomaly_SOM-FFN_2024.jpg&quot;)</code></pre>
+<pre class="r"><code>pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble &lt;-
+  pco2_product_2024_map_annual_anomaly_temperature_predict_merge %&gt;%
+  filter(year == &quot;2024&quot;) %&gt;% 
+  fgroup_by(name, lon, lat) %&gt;%
+  fsummarise(
+    resid_sd = fsd(resid),
+    resid_mean = fmean(resid),
+    n = fnobs(resid)
+  ) %&gt;%
+  filter(n == 2) %&gt;% 
+  select(-n)
+
+pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble_coarse &lt;-
+  m_grid_horizontal_coarse(pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble) %&gt;%
+  fgroup_by(name, lon_grid, lat_grid) %&gt;%
+  fsummarise(
+    resid_sd_coarse = fmean(resid_sd, na.rm = TRUE),
+    resid_mean_coarse = fmean(resid_mean, na.rm = TRUE)
+  ) %&gt;%
+  rename(lon = lon_grid, lat = lat_grid)
+
+pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble_uncertainty &lt;-
+  pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble_coarse %&gt;%
+  mutate(signif_single = if_else(abs(resid_mean_coarse) &lt; resid_sd_coarse, 0, 1)) %&gt;% 
+  select(lon, lat, name, signif_single) %&gt;% 
+  st_as_sf(coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = &quot;+proj=longlat&quot;)
+
+
+pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble %&gt;%
+  mutate(product = &quot;Ensemble mean&quot;) %&gt;% 
+  group_split(name) %&gt;%
+  # head(1) %&gt;%
+  map(
+    ~ p_map_mdim_robinson(
+      df = .x,
+      df_uncertainty = pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble_uncertainty %&gt;% 
+        filter(name == .x %&gt;% distinct(name) %&gt;% pull()),
+      var = &quot;resid_mean&quot;,
+      legend_title = labels_breaks(.x %&gt;% distinct(name))$i_legend_title,
+      breaks = labels_breaks(.x %&gt;% distinct(name))$i_breaks,
+      n_labels = 2
+    )
+  )
+
+plot_list &lt;- pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble %&gt;%
+  mutate(product = &quot;Ensemble mean&quot;) %&gt;%
+  group_split(name) %&gt;%
+  map(
+    ~ p_map_mdim_robinson(
+      df = .x,
+      df_uncertainty = pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble_uncertainty %&gt;% 
+        filter(name == .x %&gt;% distinct(name) %&gt;% pull()),
+      var = &quot;resid_mean&quot;,
+      legend_title = labels_breaks(.x %&gt;% distinct(name))$i_legend_title,
+      legend_position = &quot;top&quot;,
+      breaks = labels_breaks(.x %&gt;% distinct(name))$i_breaks,
+      n_labels = 2
+    )
+  )
+
+ggsave(plot = wrap_plots(plot_list,
+                         ncol = 2),
+       width = 20,
+       height = 10,
+       dpi = 900,
+       filename = &quot;../output/map_annual_anomaly_temperature_predict_ensemble_2024.jpg&quot;)
+
+rm(
+  pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble,
+  pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble_coarse,
+  pco2_product_2024_map_annual_anomaly_temperature_predict_merge_ensemble_uncertainty
+)
+
+gc()</code></pre>
 </div>
 </div>
 <div id="monthly-means" class="section level2">
@@ -6015,8 +6553,8 @@ jens-daniel-mueller
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3261065  174.2    7459878  398.5   7459878  398.5
-Vcells 301383261 2299.4  601080420 4585.9 601080420 4585.9</code></pre>
+Ncells   3258446  174.1    6799131  363.2   6799131  363.2
+Vcells 308498449 2353.7  600718193 4583.2 600718193 4583.2</code></pre>
 </div>
 <div id="fco2-decomposition-1" class="section level3">
 <h3>fCO2 decomposition</h3>
@@ -6112,8 +6650,8 @@ pco2_product_map_monthly_fCO2_decomposition %&gt;%
 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   3231218  172.6    7459878  398.5   7459878  398.5
-Vcells 275152972 2099.3  601080420 4585.9 601080420 4585.9</code></pre>
+Ncells   3229993  172.6    6799131  363.2   6799131  363.2
+Vcells 282270464 2153.6  600718193 4583.2 600718193 4583.2</code></pre>
 <pre class="r"><code>pco2_product_map_annual_fCO2_decomposition %&gt;%
   filter(year == 2023) %&gt;%
   select(-year) %&gt;% 
@@ -6411,8 +6949,27 @@ jens-daniel-mueller
 </div>
 <pre class="r"><code>ggsave(width = 5,
        height = 7,
-       dpi = 600,
-       filename = &quot;../output/map_anomaly_fco2_decomposition_ensemble_mean_pco2_products.jpg&quot;)</code></pre>
+       dpi = 1200,
+       filename = &quot;../output/map_anomaly_fco2_decomposition_ensemble_mean_pco2_products.jpg&quot;)
+
+pco2_product_map_annual_fCO2_decomposition_ensemble %&gt;%
+  select(lon, lat, name, resid_mean) %&gt;% 
+  mutate(name = fct_relevel(name,
+                            c(&quot;sfco2_therm&quot;, &quot;sfco2_nontherm&quot;))) %&gt;% 
+  p_map_mdim_robinson(
+    df_uncertainty = pco2_product_map_annual_fCO2_decomposition_ensemble_uncertainty,
+    var = &quot;resid_mean&quot;,
+    legend_title = labels_breaks(&quot;sfco2&quot;)$i_legend_title,
+    breaks = labels_breaks(&quot;sfco2&quot;)$i_breaks,
+    dim_wrap = &quot;name&quot;,
+    n_col = 1,
+    n_labels = 2
+  )</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/fCO2_decomposition_annual_maps-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(width = 5,
+       height = 7,
+       dpi = 1200,
+       filename = &quot;../output/map_anomaly_fco2_decomposition_ensemble_mean_pco2_products_breaks.jpg&quot;)</code></pre>
 </div>
 <div id="flux-attribution-1" class="section level3">
 <h3>Flux attribution</h3>
@@ -6856,10 +7413,13 @@ removed.</p>
 <h2>Monthly means</h2>
 <div id="anomalies" class="section level3">
 <h3>Anomalies</h3>
-<pre class="r"><code>pco2_product_hovmoeller_monthly_anomaly %&gt;%
-  filter(name %in% name_core) %&gt;%
+<pre class="r"><code>pco2_product_hovmoeller_monthly_anomaly &lt;-
+pco2_product_hovmoeller_monthly_anomaly %&gt;%
+  filter(name %in% c(&quot;fgco2_hov&quot;, &quot;temperature&quot;))
+
+pco2_product_hovmoeller_monthly_anomaly %&gt;%
   group_split(name) %&gt;%
-  # head(1) %&gt;%
+  # head(2) %&gt;%
   map(
     ~ ggplot(data = .x,
              aes(decimal, lat, fill = resid)) +
@@ -6878,16 +7438,23 @@ removed.</p>
       theme(axis.title.x = element_blank()) +
       facet_wrap(~ product, ncol = 1)
   )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/hovmoeller_monthly_anomalies-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/hovmoeller_monthly_anomalies-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pco2_product_hovmoeller_monthly_anomaly_ensemble &lt;-
-  pco2_product_hovmoeller_monthly_anomaly %&gt;% 
+  pco2_product_hovmoeller_monthly_anomaly %&gt;%
+  filter(product %in% pco2_product_list) %&gt;% 
   group_by(name, decimal, lat) %&gt;%
   summarize(
     resid_range = max(resid) - min(resid),
+    resid_sd = sd(resid),
     resid_mean = mean(resid),
     n = n()
   ) %&gt;%
   ungroup() %&gt;%
-  filter(n &gt; 1)
+  filter(n == 4)
   
 
 pco2_product_hovmoeller_monthly_anomaly_ensemble %&gt;%
@@ -6912,6 +7479,215 @@ pco2_product_hovmoeller_monthly_anomaly_ensemble %&gt;%
       theme(axis.title.x = element_blank()) +
       facet_wrap( ~ product, ncol = 1)
   )</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/hovmoeller_monthly_anomalies_ensemble_mean-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/hovmoeller_monthly_anomalies_ensemble_mean-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pco2_product_hovmoeller_annual_anomaly_ensemble &lt;- 
+pco2_product_hovmoeller_monthly_anomaly_ensemble %&gt;% 
+  mutate(year = floor(decimal)) %&gt;% 
+  group_by(year, lat, name) %&gt;% 
+  summarise(resid_mean = mean(resid_mean),
+            resid_sd = mean(resid_sd)) %&gt;% 
+  ungroup()
+  
+
+p_hov_sst &lt;- pco2_product_hovmoeller_annual_anomaly_ensemble %&gt;%
+  filter(name == &quot;temperature&quot;) %&gt;% 
+  ggplot(aes(resid_mean, lat, group = year)) +
+  geom_vline(xintercept = 0) +
+  geom_path(data = . %&gt;% filter(!year %in% c(2023, 1997, 2015)),
+            aes(col = &quot;Other years\n1990-2022&quot;),
+            alpha = 0.5) +
+  scale_color_manual(values = &quot;grey60&quot;, name = &quot;X&quot;) +
+  scale_fill_manual(values = &quot;grey60&quot;, name = &quot;X&quot;) +
+  new_scale_fill() +
+  new_scale_color() +
+  # geom_path(data = . %&gt;% filter(year %in% 2002:2007),
+  #           aes(col = &quot;2002-2007&quot;),
+  #           alpha = 0.5) +
+  # scale_color_manual(values = cold_color, name = &quot;X&quot;) +
+  # scale_fill_manual(values = cold_color, name = &quot;X&quot;) +
+  # new_scale_fill() +
+  # new_scale_color() +
+  geom_path(data = . %&gt;% filter(year %in% c(2023, 1997, 2015)),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_fill_manual(values = rev(warm_cool_gradient[c(17, 13, 20)]),
+                    guide = guide_legend(reverse = TRUE, order = 2)) +
+  scale_color_manual(values = rev(warm_cool_gradient[c(17, 13, 20)]),
+                     guide = guide_legend(reverse = TRUE, order = 2)) +
+  labs(x = labels_breaks(&quot;temperature&quot;)$i_legend_title,
+       y = &quot;Latitude (°N)&quot;) +
+  scale_y_continuous(breaks = seq(-60, 60, 30), expand = c(0,0)) +
+  theme_bw() +
+  theme(axis.title = element_markdown(),
+        legend.title = element_blank(),
+        panel.grid.minor = element_blank())
+
+p_hov_fgco2 &lt;- pco2_product_hovmoeller_annual_anomaly_ensemble %&gt;%
+  filter(name == &quot;fgco2_hov&quot;) %&gt;% 
+  ggplot(aes(resid_mean, lat, group = year)) +
+  geom_vline(xintercept = 0) +
+  geom_path(data = . %&gt;% filter(!year %in% c(2023, 1997, 2015)),
+            aes(col = &quot;Other years\n1990-2022&quot;),
+            alpha = 0.5) +
+  scale_color_manual(values = &quot;grey60&quot;, name = &quot;X&quot;) +
+  scale_fill_manual(values = &quot;grey60&quot;, name = &quot;X&quot;) +
+  new_scale_fill() +
+  new_scale_color() +
+  # geom_path(data = . %&gt;% filter(year %in% 2002:2007),
+  #           aes(col = &quot;2002-2007&quot;),
+  #           alpha = 0.5) +
+  # scale_color_manual(values = cold_color, name = &quot;X&quot;) +
+  # scale_fill_manual(values = cold_color, name = &quot;X&quot;) +
+  # new_scale_fill() +
+  # new_scale_color() +
+  geom_path(data = . %&gt;% filter(year %in% c(2023, 1997, 2015)),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_fill_manual(values = rev(warm_cool_gradient[c(17, 13, 20)]),
+                    guide = guide_legend(reverse = TRUE, order = 2)) +
+  scale_color_manual(values = rev(warm_cool_gradient[c(17, 13, 20)]),
+                     guide = guide_legend(reverse = TRUE, order = 2)) +
+  labs(x = labels_breaks(&quot;fgco2_hov&quot;)$i_legend_title,
+       y = &quot;Latitude (°N)&quot;) +
+  scale_y_continuous(breaks = seq(-60, 60, 30), expand = c(0,0)) +
+  theme_bw() +
+  theme(axis.title = element_markdown(),
+        legend.title = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid.minor = element_blank())
+
+
+p_hov_sst + p_hov_fgco2  +
+   plot_layout(guides = &#39;collect&#39;)</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/hovmoeller_monthly_anomalies_ensemble_mean-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(width = 7,
+       height = 7,
+       dpi = 600,
+       filename = &quot;../output/zonal_mean_anomaly_sst_co2flux_ensemble_mean_pco2_products.jpg&quot;)</code></pre>
+<pre class="r"><code>pco2_product_2024_hovmoeller_annual_anomaly &lt;-
+  pco2_product_2024_hovmoeller_monthly_anomaly %&gt;%
+  filter(name %in% c(&quot;temperature&quot;, &quot;fgco2_hov&quot;)) %&gt;% 
+  group_by(product, year, lat, name) %&gt;%
+  summarise(resid = mean(resid)) %&gt;%
+  ungroup()
+
+pco2_product_2024_hovmoeller_annual_anomaly %&gt;%
+  ggplot(aes(resid, lat, group = year)) +
+  geom_vline(xintercept = 0) +
+  geom_path(data = . %&gt;% filter(!year %in% 2023:2024),
+            aes(col = &quot;1990-2022&quot;),
+            alpha = 0.5) +
+  scale_color_manual(values = &quot;grey60&quot;, name = &quot;X&quot;) +
+  scale_fill_manual(values = &quot;grey60&quot;, name = &quot;X&quot;) +
+  new_scale_fill() +
+  new_scale_color() +
+  geom_path(data = . %&gt;% filter(year %in% 2023:2024),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_fill_manual(values = warm_cool_gradient[c(17, 20)],
+                    guide = guide_legend(reverse = TRUE, order = 2)) +
+  scale_color_manual(values = warm_cool_gradient[c(17, 20)],
+                     guide = guide_legend(reverse = TRUE, order = 2)) +
+  # labs(x = labels_breaks(&quot;temperature&quot;)$i_legend_title,
+  #      y = &quot;Latitude (°N)&quot;) +
+  scale_y_continuous(breaks = seq(-60, 60, 30), expand = c(0,0)) +
+  theme_bw() +
+  facet_grid(product ~ name, scales = &quot;free_x&quot;) +
+  theme(axis.title = element_markdown(),
+        legend.title = element_blank(),
+        panel.grid.minor = element_blank())
+
+
+p_hov_sst &lt;- pco2_product_2024_hovmoeller_annual_anomaly %&gt;%
+  filter(name == &quot;temperature&quot;,
+         product == &quot;SOM-FFN&quot;) %&gt;% 
+  ggplot(aes(resid, lat, group = year)) +
+  geom_vline(xintercept = 0) +
+ geom_ribbon(data = . %&gt;% filter(year %in% 2023),
+              aes(xmin = 0, xmax = pmax(0, resid)),
+              alpha = 0.9,
+              fill = &quot;grey70&quot;) +
+  geom_ribbon(data = . %&gt;% filter(year %in% 2023),
+              aes(xmax = 0, xmin = pmin(0, resid)),
+              alpha = 0.9,
+              fill = &quot;grey70&quot;) +
+  geom_path(data = . %&gt;% filter(year %in% 2023:2024),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_fill_manual(values = warm_cool_gradient[c(17, 20)],
+                    guide = guide_legend(reverse = TRUE, order = 2)) +
+  scale_color_manual(values = warm_cool_gradient[c(17, 20)],
+                     guide = guide_legend(reverse = TRUE, order = 2)) +
+  scale_y_continuous(breaks = seq(-60,60,30),
+                     name = &quot;Lat (°N)&quot;,
+                     limits = c(-54,76),
+                     expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(-0.5,0.5,0.5),
+                     name = labels_breaks(&quot;temperature&quot;)$i_legend_title,
+                     position = &quot;top&quot;) +
+  theme_classic() +
+  theme(
+    legend.position = &quot;none&quot;,
+    axis.title.x = element_markdown(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.line.y = element_blank()
+  )
+
+p_hov_fgco2 &lt;- pco2_product_2024_hovmoeller_annual_anomaly %&gt;%
+  filter(name == &quot;fgco2_hov&quot;,
+         product == &quot;SOM-FFN&quot;) %&gt;% 
+  ggplot(aes(resid*1000, lat, group = year)) +
+  geom_vline(xintercept = 0) +
+  geom_ribbon(data = . %&gt;% filter(year %in% 2023),
+              aes(xmin = 0, xmax = pmax(0, resid*1000)),
+              alpha = 0.9,
+              fill = &quot;grey70&quot;) +
+  geom_ribbon(data = . %&gt;% filter(year %in% 2023),
+              aes(xmax = 0, xmin = pmin(0, resid*1000)),
+              alpha = 0.9,
+              fill = &quot;grey70&quot;) +
+  geom_path(data = . %&gt;% filter(year %in% 2023:2024),
+            aes(col = as.factor(year)),
+            linewidth = 1) +
+  scale_fill_manual(values = warm_cool_gradient[c(17, 20)],
+                    guide = guide_legend(reverse = TRUE, order = 2)) +
+  scale_color_manual(values = warm_cool_gradient[c(17, 20)],
+                     guide = guide_legend(reverse = TRUE, order = 2)) +
+  scale_y_continuous(breaks = seq(-60,60,30),
+                     name = &quot;Lat (°N)&quot;,
+                     limits = c(-54,76),
+                     expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(-20,20,20),
+                     name = str_replace(
+                       labels_breaks(&quot;fgco2_hov&quot;)$i_legend_title,
+                     &quot;PgC&quot;, &quot;TgC&quot;
+                     ),
+                     position = &quot;top&quot;) +
+  theme_classic() +
+  theme(
+    legend.position = &quot;none&quot;,
+    axis.title.x = element_markdown(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.line.y = element_blank()
+  )
+
+
+p_hov_sst + p_hov_fgco2  +
+   plot_layout(guides = &#39;collect&#39;)
+
+ggsave(width = 2.2,
+       height = 3.5,
+       dpi = 900,
+       filename = &quot;../output/zonal_mean_anomaly_sst_co2flux_ensemble_mean_pco2_products_2024.jpg&quot;)</code></pre>
 <pre class="r"><code>left_join(
     pco2_product_hovmoeller_monthly_anomaly_ensemble,
     pco2_product_hovmoeller_monthly_anomaly
@@ -6963,56 +7739,17 @@ year, hence preserving the seasonality.</p>
 # fit lin. reg. model fgco2 anomaly vs SST anomaly per biome
 # excluding anomaly year from fit
 
-lm_fgco2_sst &lt;- pco2_product_biome_annual_anomaly %&gt;%
+pco2_product_biome_annual_anomaly %&gt;%
   filter(
     name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;),
     biome == &quot;Global non-polar&quot;,
     product %in% pco2_product_list
   ) %&gt;%
-  select(year, product, name, resid) %&gt;%
-  pivot_wider(values_from = resid) %&gt;%
-  nest(data = -product) %&gt;%
-  mutate(fit = map(data, ~ lm(
-    formula = fgco2_int ~ temperature,
-    data = .x %&gt;% filter(year != 2023)
-  )))
-
-# predict fgco2 anomaly from SST anomaly per biome
-# include anomaly year for prediction
-
-lm_fgco2_sst &lt;- lm_fgco2_sst %&gt;% 
-  mutate(resid = map2(fit, data, predict)) %&gt;%
-  unnest(c(data, resid))
-
-# extract regression coefficients
-
-lm_fgco2_sst &lt;- lm_fgco2_sst %&gt;% 
-  mutate(coeff = map(fit, coefficients)) %&gt;%
-  select(-fit) %&gt;%
-  rename(temperature_obs = temperature) %&gt;%
-  unnest_wider(coeff) %&gt;%
-  rename(intercept = `(Intercept)`,
-         slope = temperature,
-         temperature = temperature_obs)
-
-
-lm_fgco2_sst %&gt;%
-  filter(year == 2023) %&gt;% 
-  select(-fgco2_int) %&gt;% 
-  mutate(across(c(slope, temperature, resid), ~ round(.x, 2)),
-         across(c(intercept), ~ signif(.x, 2))) %&gt;%
-  write_csv(&quot;../output/lm_fgco2_sst.csv&quot;)
-
-
-
-# compute unexpected (predicted vs observed) flux anomalies
-
-lm_fgco2_sst %&gt;% 
-  ggplot(aes(year, fgco2_int-resid, col = product)) +
+  select(year, product, name, resid) %&gt;% 
+  ggplot(aes(year, resid, col = product)) +
   geom_hline(yintercept = 0) +
   geom_path() +
-  labs(title = &quot;Unexpected residuals in ocean carbon sink&quot;,
-       subtitle = &quot;Linear regression baseline + global mean SST anomaly&quot;)</code></pre>
+  facet_wrap(~name, scales = &quot;free_y&quot;)</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_integrals_trends-1">
@@ -7062,42 +7799,57 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_biome_annual_anomaly_lm_fgco2_sst &lt;-
-  inner_join(
-    pco2_product_biome_annual_anomaly %&gt;%
-      filter(
-        name %in% c(&quot;fgco2_int&quot;),
-        biome == &quot;Global non-polar&quot;,
-        product %in% pco2_product_list
-      ) %&gt;%
-      select(year, product, baseline = fit),
-    lm_fgco2_sst %&gt;%
-      select(year, product, resid)
-  )
-
-
-
-lm_fgco2_sst &lt;-
-  lm_fgco2_sst %&gt;%
-  group_by(year) %&gt;%
-  summarise(
-    resid_sd = sd(resid),
-    resid_mean = mean(resid),
-    unexplained_sd = sd(fgco2_int - resid),
-    unexplained_mean = mean(fgco2_int - resid),
-    temperature_sd = sd(temperature),
-    temperature_mean = mean(temperature)
+<pre class="r"><code>lm_fgco2_sst &lt;- pco2_product_biome_annual_anomaly %&gt;%
+  filter(
+    name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;),
+    biome == &quot;Global non-polar&quot;,
+    product %in% pco2_product_list
   ) %&gt;%
-  ungroup()
+  select(year, product, name, resid) %&gt;%
+  pivot_wider(values_from = resid) %&gt;%
+  nest(data = -product) %&gt;%
+  mutate(fit = map(data, ~ lm(
+    formula = fgco2_int ~ temperature,
+    data = .x %&gt;% filter(year != 2023)
+  )))
+
+# predict fgco2 anomaly from SST anomaly per biome
+# include anomaly year for prediction
+
+lm_fgco2_sst &lt;- lm_fgco2_sst %&gt;% 
+  mutate(resid = map2(fit, data, predict)) %&gt;%
+  unnest(c(data, resid))
+
+# extract regression coefficients
+
+lm_fgco2_sst &lt;- lm_fgco2_sst %&gt;% 
+  mutate(coeff = map(fit, coefficients)) %&gt;%
+  select(-fit) %&gt;%
+  rename(temperature_obs = temperature) %&gt;%
+  unnest_wider(coeff) %&gt;%
+  rename(intercept = `(Intercept)`,
+         slope = temperature,
+         temperature = temperature_obs)
 
 
-lm_fgco2_sst %&gt;% 
-  ggplot(aes(year, unexplained_mean, 
-             ymin = unexplained_mean - unexplained_sd, 
-             ymax = unexplained_mean + unexplained_sd)) +
+lm_fgco2_sst %&gt;%
+  filter(year == 2023) %&gt;% 
+  select(-fgco2_int) %&gt;% 
+  mutate(across(c(slope, temperature, resid), ~ round(.x, 2)),
+         across(c(intercept), ~ signif(.x, 2))) %&gt;%
+  write_csv(&quot;../output/lm_fgco2_sst.csv&quot;)
+
+
+
+# compute unexpected (predicted vs observed) flux anomalies
+
+lm_fgco2_sst %&gt;%
+  select(product, year, fgco2_int, resid) %&gt;% 
+  pivot_longer(c(fgco2_int, resid)) %&gt;% 
+  ggplot(aes(year, value, col = product)) +
   geom_hline(yintercept = 0) +
-  geom_ribbon(alpha = 0.2) +
   geom_path() +
+  facet_wrap(~name) +
   labs(title = &quot;Unexpected residuals in ocean carbon sink&quot;,
        subtitle = &quot;Linear regression baseline + global mean SST anomaly&quot;)</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-2.png" width="672" style="display: block; margin: auto;" /></p>
@@ -7182,29 +7934,12 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_biome_annual_anomaly_ensemble_lm_fgco2_sst &lt;-
-  inner_join(
-    lm_fgco2_sst %&gt;% 
-      select(-starts_with(&quot;unex&quot;)),
-    pco2_product_biome_annual_anomaly_ensemble %&gt;%
-      filter(name %in% c(&quot;fgco2_int&quot;), biome == &quot;Global non-polar&quot;) %&gt;%
-      select(year, name, fit)
-  ) %&gt;%
-  mutate(fgco2_predict = resid_mean + fit) %&gt;%
-  select(-fit)
-
-nino_sst %&gt;% 
-  filter(year &gt;= 1990) %&gt;% 
-  ggplot(aes(year + month/12, resid)) +
-  geom_hline(yintercept = 0.5) +
-  geom_path(aes(col = &quot;Monthly mean&quot;)) +
-  geom_path(data = . %&gt;% 
-              group_by(year) %&gt;% 
-              mutate(resid = mean(resid)) %&gt;% 
-              ungroup(),
-            aes(col = &quot;Annual mean&quot;)) +
-  labs(y = &quot;Nino 3.4 SST anomaly (°C)&quot;) +
-  theme(axis.title.x = element_blank())</code></pre>
+<pre class="r"><code>lm_fgco2_sst %&gt;% 
+  ggplot(aes(year, fgco2_int-resid, col = product)) +
+  geom_hline(yintercept = 0) +
+  geom_path() +
+  labs(title = &quot;Unexpected residuals in ocean carbon sink&quot;,
+       subtitle = &quot;Linear regression baseline + global mean SST anomaly&quot;)</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-3.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_integrals_trends-3">
@@ -7292,6 +8027,154 @@ jens-daniel-mueller
 </td>
 <td>
 2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>pco2_product_biome_annual_anomaly_lm_fgco2_sst &lt;-
+  inner_join(
+    pco2_product_biome_annual_anomaly %&gt;%
+      filter(
+        name %in% c(&quot;fgco2_int&quot;),
+        biome == &quot;Global non-polar&quot;,
+        product %in% pco2_product_list
+      ) %&gt;%
+      select(year, product, baseline = fit),
+    lm_fgco2_sst %&gt;%
+      select(year, product, resid)
+  )
+
+
+
+lm_fgco2_sst &lt;-
+  lm_fgco2_sst %&gt;%
+  group_by(year) %&gt;%
+  summarise(
+    resid_sd = sd(resid),
+    resid_mean = mean(resid),
+    unexplained_sd = sd(fgco2_int - resid),
+    unexplained_mean = mean(fgco2_int - resid),
+    temperature_sd = sd(temperature),
+    temperature_mean = mean(temperature)
+  ) %&gt;%
+  ungroup()
+
+
+lm_fgco2_sst %&gt;% 
+  ggplot(aes(year, unexplained_mean, 
+             ymin = unexplained_mean - unexplained_sd, 
+             ymax = unexplained_mean + unexplained_sd)) +
+  geom_hline(yintercept = 0) +
+  geom_ribbon(alpha = 0.2) +
+  geom_path() +
+  labs(title = &quot;Unexpected residuals in ocean carbon sink&quot;,
+       subtitle = &quot;Linear regression baseline + global mean SST anomaly&quot;)</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_integrals_trends-4">
+Past versions of absolute_integrals_trends-4.png
+</button>
+</p>
+<div id="fig-absolute_integrals_trends-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b0312404d377ea2f190d3186f046be8cc49d2b2d/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-4.png" target="_blank">b031240</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-11
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/518e3d0c628d1db56d4cf6bf3b351f7b4eb20b43/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-4.png" target="_blank">518e3d0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>pco2_product_biome_annual_anomaly_ensemble_lm_fgco2_sst &lt;-
+  inner_join(
+    lm_fgco2_sst %&gt;% 
+      select(-starts_with(&quot;unex&quot;)),
+    pco2_product_biome_annual_anomaly_ensemble %&gt;%
+      filter(name %in% c(&quot;fgco2_int&quot;), biome == &quot;Global non-polar&quot;) %&gt;%
+      select(year, name, fit)
+  ) %&gt;%
+  mutate(fgco2_predict = resid_mean + fit) %&gt;%
+  select(-fit)
+
+nino_sst %&gt;% 
+  filter(year &gt;= 1990) %&gt;% 
+  ggplot(aes(year + month/12, resid)) +
+  geom_hline(yintercept = 0.5) +
+  geom_path(aes(col = &quot;Monthly mean&quot;)) +
+  geom_path(data = . %&gt;% 
+              group_by(year) %&gt;% 
+              mutate(resid = mean(resid)) %&gt;% 
+              ungroup(),
+            aes(col = &quot;Annual mean&quot;)) +
+  labs(y = &quot;Nino 3.4 SST anomaly (°C)&quot;) +
+  theme(axis.title.x = element_blank())</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_integrals_trends-5">
+Past versions of absolute_integrals_trends-5.png
+</button>
+</p>
+<div id="fig-absolute_integrals_trends-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b0312404d377ea2f190d3186f046be8cc49d2b2d/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-5.png" target="_blank">b031240</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-11
 </td>
 </tr>
 </tbody>
@@ -7433,13 +8316,13 @@ jens-daniel-mueller
     legend.position = &quot;none&quot;,
     legend.direction = &quot;vertical&quot;
   )</code></pre>
-<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_integrals_trends-4">
-Past versions of absolute_integrals_trends-4.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_integrals_trends-6">
+Past versions of absolute_integrals_trends-6.png
 </button>
 </p>
-<div id="fig-absolute_integrals_trends-4" class="collapse">
+<div id="fig-absolute_integrals_trends-6" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -7458,24 +8341,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b0312404d377ea2f190d3186f046be8cc49d2b2d/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-4.png" target="_blank">b031240</a>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b0312404d377ea2f190d3186f046be8cc49d2b2d/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-6.png" target="_blank">b031240</a>
 </td>
 <td>
 jens-daniel-mueller
 </td>
 <td>
 2025-03-11
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/518e3d0c628d1db56d4cf6bf3b351f7b4eb20b43/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-4.png" target="_blank">518e3d0</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2025-02-27
 </td>
 </tr>
 </tbody>
@@ -7486,6 +8358,126 @@ jens-daniel-mueller
        height = 2,
        dpi = 600,
        filename = &quot;../output/timeseries_ensemble_mean_pco2_products.jpg&quot;)
+
+pco2_product_biome_annual_anomaly_ensemble_presentation &lt;-
+  bind_rows(
+    pco2_product_biome_annual_anomaly_ensemble,
+    pco2_product_biome_annual_anomaly_ensemble %&gt;%
+      filter(year == max(year)) %&gt;%
+      mutate(year = year + 1) %&gt;%
+      select(-c(resid, resid_sd))
+  ) %&gt;%
+  filter(name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;),
+         biome == &quot;Global non-polar&quot;)
+
+
+pco2_product_biome_annual_anomaly_ensemble_presentation &lt;-
+  pco2_product_biome_annual_anomaly_ensemble_presentation %&gt;%
+  mutate(fit = case_when(
+    name == &quot;fgco2_int&quot; &amp; year == max(year) ~ fit - 0.022639,
+    name == &quot;temperature&quot; &amp; year == max(year) ~ fit + 0.01324,
+    TRUE ~ fit
+  ))
+
+pco2_product_biome_annual_anomaly_ensemble_presentation &lt;-
+  bind_rows(
+    pco2_product_biome_annual_anomaly_ensemble_presentation,
+    pco2_product_biome_annual_anomaly_ensemble_presentation %&gt;%
+      filter(year == max(year)) %&gt;%
+      mutate(year = year + 1) %&gt;%
+      select(-c(resid, resid_sd, value))
+  )
+
+pco2_product_biome_annual_anomaly_ensemble_presentation %&gt;%
+  mutate(name = fct_rev(as.factor(name))) %&gt;%
+  ggplot() +
+  geom_path(
+    data = pco2_product_biome_monthly_anomaly %&gt;%
+      filter(
+        product %in% pco2_product_list,
+        name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;),
+        biome == &quot;Global non-polar&quot;
+      ) %&gt;%
+      group_by(year, month, name, biome) %&gt;%
+      summarise(value = mean(value)) %&gt;%
+      ungroup(),
+    aes(year + month / 12, value),
+    col = &quot;grey90&quot;
+  ) +
+  # geom_rect(
+  #   data = pco2_product_biome_annual_anomaly_ensemble_lm_fgco2_sst %&gt;%
+  #     filter(year %in% 2023),
+  #   aes(xmin = year, xmax = year + 1, ymin = fgco2_predict - resid_sd,
+  #       ymax = fgco2_predict + resid_sd),
+  #   fill = trend_color, col = trend_color
+  # ) +
+  # geom_text(
+  #   data = pco2_product_biome_annual_anomaly_ensemble_lm_fgco2_sst %&gt;%
+  #     filter(year %in% c(2023)),
+  #   aes(x = year + 1, y = fgco2_predict - 0.2, label = &quot;Expected 2023 anomaly&quot;),
+  #   hjust = 1,
+  #   fontface = &quot;bold&quot;,
+  #   col = trend_color
+  # ) +
+  geom_rect(
+    data = . %&gt;% filter(year != max(year)),
+    aes(
+      xmin = year,
+      xmax = year + 1,
+      ymin = fit,
+      ymax = value,
+      fill = as.factor(sign(-resid))
+    ),
+    alpha = 0.7
+  ) +
+  geom_step(aes(year, fit, col = &quot;Baseline&quot;)) +
+  geom_point(data = . %&gt;% filter(year == max(year), name == &quot;fgco2_int&quot;),
+             aes(year-0.5, fit+0.65,fill = as.factor(sign(-1))),
+             shape = 21, size = 2) +
+  geom_step(aes(year, value, col = &quot;Observed&quot;)) +
+  geom_linerange(aes(
+    x = year + 0.5,
+    ymin = value - resid_sd,
+    ymax = value + resid_sd,
+    linetype = &quot;Product SD&quot;
+  )) +
+  scale_color_manual(values = c(&quot;grey40&quot;, &quot;grey10&quot;), name = &quot;Annual means&quot;) +
+  scale_fill_manual(
+    values = c(warm_color, cold_color),
+    labels = c(&quot;positive&quot;, &quot;negative&quot;),
+    name = &quot;Anomalies&quot;,
+    na.value = &quot;transparent&quot;
+  ) +
+  scale_linetype(name = &quot;Anomaly uncertainty&quot;) +
+  guides(
+    color = guide_legend(order = 1),
+    fill = guide_legend(order = 2),
+    linetype = guide_legend(order = 3)
+  ) +
+  scale_x_continuous(limits = c(1989.5, 2025.8), expand = c(0, 0)) +
+  facet_wrap(
+    . ~ name,
+    scales = &quot;free_y&quot;,
+    strip.position = &quot;left&quot;,
+    labeller = labeller(name = x_axis_labels_abs)
+    # switch = &quot;y&quot;
+  )+
+  labs(x = &quot;Year&quot;) +
+  theme_classic() +
+  theme(
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    legend.position = &quot;none&quot;,
+    legend.direction = &quot;vertical&quot;
+  )</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(width = 10,
+       height = 2,
+       dpi = 1200,
+       filename = &quot;../output/timeseries_ensemble_mean_pco2_products_presentation_2024.jpg&quot;)
 
 bind_rows(
   pco2_product_biome_annual_anomaly,
@@ -7544,44 +8536,7 @@ bind_rows(
     legend.position = &quot;none&quot;,
     legend.direction = &quot;vertical&quot;
   )</code></pre>
-<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_integrals_trends-5">
-Past versions of absolute_integrals_trends-5.png
-</button>
-</p>
-<div id="fig-absolute_integrals_trends-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b0312404d377ea2f190d3186f046be8cc49d2b2d/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-5.png" target="_blank">b031240</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2025-03-11
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-8.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggsave(width = 8,
        height = 3,
        dpi = 600,
@@ -7637,44 +8592,156 @@ bind_rows(
     legend.position = &quot;top&quot;,
     legend.direction = &quot;vertical&quot;
   )</code></pre>
-<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-6.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_integrals_trends-6">
-Past versions of absolute_integrals_trends-6.png
-</button>
-</p>
-<div id="fig-absolute_integrals_trends-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/b0312404d377ea2f190d3186f046be8cc49d2b2d/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-6.png" target="_blank">b031240</a>
-</td>
-<td>
-jens-daniel-mueller
-</td>
-<td>
-2025-03-11
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_integrals_trends-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SOM_FFN_biome_annual_anomaly &lt;-
+  bind_rows(
+    pco2_product_biome_annual_anomaly %&gt;%
+      filter(
+        name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;),
+        biome == &quot;Global non-polar&quot;,
+        product %in% &quot;SOM-FFN&quot;
+      ) %&gt;%
+      select(-product) %&gt;%
+      mutate(year_anom = &quot;2023&quot;),
+    SOM_FFN_predict_2024_biome_annual_anomaly %&gt;%
+      filter(
+        name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;),
+        biome == &quot;Global non-polar&quot;
+      ) %&gt;%
+      mutate(year_anom = &quot;2024&quot;)
+  )
+
+p_value &lt;- SOM_FFN_biome_annual_anomaly %&gt;% 
+  ggplot(aes(year, value, col = year_anom)) +
+  geom_path() +
+  facet_wrap(
+    . ~ name,
+    scales = &quot;free_y&quot;,
+    strip.position = &quot;left&quot;,
+    labeller = labeller(name = x_axis_labels_abs)
+  )+
+  labs(x = &quot;Year&quot;) +
+  scale_color_okabeito() +
+  theme(
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    legend.title = element_blank()
+  )
+
+p_resid &lt;- SOM_FFN_biome_annual_anomaly %&gt;% 
+  ggplot(aes(year, resid, col = year_anom)) +
+  geom_hline(yintercept = 0, col = &quot;grey&quot;) +
+  geom_path() +
+  facet_wrap(
+    . ~ name,
+    scales = &quot;free_y&quot;,
+    strip.position = &quot;left&quot;,
+    labeller = labeller(name = x_axis_labels)
+  )+
+  labs(x = &quot;Year&quot;) +
+  scale_color_okabeito() +
+  theme(
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    strip.text.y.left = element_markdown(),
+    strip.placement = &quot;outside&quot;,
+    strip.background.y = element_blank(),
+    legend.title = element_blank()
+  )
+
+p_value / p_resid
+
+ggsave(width = 8,
+       height = 4,
+       dpi = 600,
+       filename = &quot;../output/timeseries_flux_sst_SOM-FFN.jpg&quot;)
+
+SOM_FFN_biome_annual_anomaly %&gt;% 
+  select(name, resid, year_anom, year) %&gt;% 
+  pivot_wider(values_from = resid) %&gt;% 
+  ggplot(aes(temperature, fgco2_int)) +
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;) +
+  facet_wrap(~ year_anom)
+
+
+lm_fgco2_sst &lt;- SOM_FFN_biome_annual_anomaly %&gt;%
+  select(year, year_anom, name, resid) %&gt;%
+  pivot_wider(values_from = resid) %&gt;%
+  nest(data = -year_anom) %&gt;%
+  mutate(fit = map(data, ~ lm(
+    formula = fgco2_int ~ temperature,
+    data = .x %&gt;% filter(year &lt; 2023)
+  )))
+
+# predict fgco2 anomaly from SST anomaly per biome
+# include anomaly year for prediction
+
+lm_fgco2_sst &lt;- lm_fgco2_sst %&gt;% 
+  mutate(resid = map2(fit, data, predict)) %&gt;%
+  unnest(c(data, resid))
+
+
+# compute unexpected (predicted vs observed) flux anomalies
+
+lm_fgco2_sst %&gt;% 
+  select(year, year_anom, fgco2_int, resid) %&gt;% 
+  pivot_longer(c(fgco2_int, resid)) %&gt;% 
+  ggplot(aes(year, value, col = year_anom)) +
+  geom_hline(yintercept = 0) +
+  geom_path() +
+  facet_wrap(~ name) +
+  scale_color_okabeito() +
+  labs(title = &quot;Unexpected residuals in ocean carbon sink&quot;,
+       subtitle = &quot;Linear regression baseline + global mean SST anomaly&quot;) +
+  theme(legend.title = element_blank(),
+        axis.title.x = element_blank())
+
+lm_fgco2_sst %&gt;% 
+  ggplot(aes(year, fgco2_int-resid, col = year_anom)) +
+  geom_hline(yintercept = 0) +
+  geom_path() +
+  scale_color_okabeito() +
+  labs(title = &quot;Unexpected residuals in ocean carbon sink&quot;,
+       subtitle = &quot;Linear regression baseline + global mean SST anomaly&quot;,
+       y = paste(&quot;Unexpected&quot;, labels_breaks(&quot;fgco2_int&quot;)$i_legend_title)) +
+  theme(legend.title = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_markdown())
+
+
+
+ggsave(width = 8,
+       height = 4,
+       dpi = 600,
+       filename = &quot;../output/timeseries_flux_anomaly_SOM-FFN.jpg&quot;)
+
+# SOM_FFN_biome_annual_anomaly_lm_fgco2_sst &lt;-
+#   inner_join(
+#     SOM_FFN_biome_annual_anomaly %&gt;%
+#       filter(
+#         name %in% c(&quot;fgco2_int&quot;)
+#       ) %&gt;%
+#       select(year, year_anom, baseline = fit),
+#     lm_fgco2_sst %&gt;%
+#       select(year, year_anom, resid)
+#   )
+# 
+# 
+# lm_fgco2_sst &lt;-
+#   lm_fgco2_sst %&gt;%
+#   mutate(unexplained = fgco2_int - resid)
+# 
+# 
+# lm_fgco2_sst %&gt;% 
+#   ggplot(aes(year, unexplained, col = year_anom)) +
+#   geom_hline(yintercept = 0) +
+#   geom_path() +
+#   labs(title = &quot;Unexpected residuals in ocean carbon sink&quot;,
+#        subtitle = &quot;Linear regression baseline + global mean SST anomaly&quot;)</code></pre>
 <pre class="r"><code>df_baseline &lt;-
   pco2_product_biome_annual_anomaly %&gt;%
   filter(biome == &quot;Global non-polar&quot;,
@@ -7978,6 +9045,10 @@ jens-daniel-mueller
   ungroup() 
 
 mlr_ensemble %&gt;% 
+  mutate(name = case_when(
+    name == &quot;atm_nino&quot; ~ &quot;Multiple linear regression&quot;,
+    name == &quot;baseline_global_SST&quot; ~ &quot;Linear baseline + global mean SST&quot;,
+  )) %&gt;% 
   ggplot(aes(year, value,
              ymin = value - sd,
              ymax = value + sd)) +
@@ -7986,7 +9057,7 @@ mlr_ensemble %&gt;%
   geom_path() +
   scale_color_okabeito() +
   facet_wrap(~ name) +
-  labs(y = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title) +
+  labs(y = paste(&quot;Unexpected&quot;, labels_breaks(&quot;fgco2_int&quot;)$i_legend_title)) +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_markdown(),
         legend.title = element_blank())</code></pre>
@@ -8028,8 +9099,8 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>ggsave(width = 8,
-       height = 4,
+<pre class="r"><code>ggsave(width = 7,
+       height = 3,
        dpi = 600,
        filename = &quot;../output/timeseries_pco2_products_predictions_ensemble_mean.jpg&quot;)
 
@@ -8798,6 +9869,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-3.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-3.png" target="_blank">9fe7d3d</a>
 </td>
 <td>
@@ -8880,6 +9962,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-4.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-4.png" target="_blank">9fe7d3d</a>
@@ -8966,6 +10059,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-5.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/518e3d0c628d1db56d4cf6bf3b351f7b4eb20b43/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-5.png" target="_blank">518e3d0</a>
 </td>
 <td>
@@ -9004,6 +10108,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-6.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/518e3d0c628d1db56d4cf6bf3b351f7b4eb20b43/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-6.png" target="_blank">518e3d0</a>
@@ -9046,6 +10161,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-7.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/518e3d0c628d1db56d4cf6bf3b351f7b4eb20b43/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-7.png" target="_blank">518e3d0</a>
 </td>
 <td>
@@ -9084,6 +10210,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-8.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/518e3d0c628d1db56d4cf6bf3b351f7b4eb20b43/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-8.png" target="_blank">518e3d0</a>
@@ -9126,6 +10263,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-9.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/518e3d0c628d1db56d4cf6bf3b351f7b4eb20b43/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-9.png" target="_blank">518e3d0</a>
 </td>
 <td>
@@ -9142,9 +10290,83 @@ jens-daniel-mueller
 <pre><code>
 [[10]]</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_anomaly_integrals-10">
+Past versions of absolute_anomaly_integrals-10.png
+</button>
+</p>
+<div id="fig-absolute_anomaly_integrals-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-10.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 [[11]]</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-absolute_anomaly_integrals-11">
+Past versions of absolute_anomaly_integrals-11.png
+</button>
+</p>
+<div id="fig-absolute_anomaly_integrals-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/absolute_anomaly_integrals-11.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="super-regions" class="section level3">
 <h3>Super regions</h3>
 <pre class="r"><code>pco2_product_biome_annual_anomaly_super_regions &lt;-
@@ -11756,6 +12978,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_from_annual_mean_trends_overview-1.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_from_annual_mean_trends_overview-1.png" target="_blank">9fe7d3d</a>
 </td>
 <td>
@@ -11849,6 +13082,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_from_annual_mean_trends_key_biomes-1.png" target="_blank">9fe7d3d</a>
 </td>
 <td>
@@ -11934,6 +13178,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_from_annual_mean_trends_key_biomes-2.png" target="_blank">9fe7d3d</a>
 </td>
 <td>
@@ -12017,6 +13272,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_from_annual_mean_trends_key_biomes-3.png" target="_blank">9fe7d3d</a>
@@ -12443,11 +13709,11 @@ jens-daniel-mueller
        dpi = 600,
        filename = &quot;../output/biome_anomaly_correlation_ensemble_mean_pco2_products.jpg&quot;)
 
-
 pco2_product_biome_annual_anomaly_super_regions %&gt;%
   filter(name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;)) %&gt;%
   select(-contains(&quot;value&quot;)) %&gt;%
   pivot_wider(values_from = contains(&quot;resid&quot;)) %&gt;%
+  filter(biome %in% c(&quot;Global non-polar&quot;)) %&gt;%
   ggplot(aes(resid_temperature, resid_fgco2_int)) +
   # geom_vline(xintercept = 0) +
   # geom_hline(yintercept = 0) +
@@ -12457,8 +13723,8 @@ pco2_product_biome_annual_anomaly_super_regions %&gt;%
     fill = &quot;grey&quot;,
     col = &quot;grey40&quot;,
     fullrange = TRUE,
-        level = 0.68
-  ) +
+    level = 0.68
+  )+
   geom_linerange(
     data = . %&gt;% filter(!year %in% c(2023, 1997, 2015)),
     aes(
@@ -12512,14 +13778,11 @@ pco2_product_biome_annual_anomaly_super_regions %&gt;%
                      guide = guide_legend(reverse = TRUE, order = 2)) +
   labs(y = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title,
        x = labels_breaks(unique(&quot;temperature&quot;))$i_legend_title) +
-  facet_wrap(~ biome, scales = &quot;free&quot;,
-             ncol = 4) +
-  # theme_classic() +
   theme(
     axis.title.x = element_markdown(),
     axis.title.y = element_markdown(),
-    legend.title = element_blank(),
-    legend.position = &quot;top&quot;
+    legend.title = element_blank()
+    # strip.background = element_blank()
   )</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-3.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -12615,48 +13878,89 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>ggsave(width = 9,
-       height = 12,
-       dpi = 600,
-       filename = &quot;../output/biome_anomaly_correlation_ensemble_mean_pco2_products_all_biomes.jpg&quot;)
+<pre class="r"><code>ggsave(width = 5,
+       height = 3.5,
+       dpi = 900,
+       filename = &quot;../output/biome_anomaly_correlation_ensemble_mean_pco2_products_global.jpg&quot;)
 
 
-pco2_product_biome_annual_anomaly %&gt;%
-  filter(
-    biome %in% c(&quot;Global non-polar&quot;, key_biomes),
-    name %in% c(
-      &quot;fgco2_int&quot;,
-      &quot;chl&quot;,
-      &quot;dfco2&quot;,
-      &quot;sfco2&quot;,
-      &quot;atm_fco2&quot;,
-      &quot;temperature&quot;,
-      &quot;sdissic&quot;,
-      &quot;no3&quot;,
-      &quot;int_pp&quot;,
-      &quot;mld&quot;,
-      &quot;kw_sol&quot;
+pco2_product_biome_annual_anomaly_super_regions %&gt;%
+  filter(name %in% c(&quot;fgco2_int&quot;, &quot;temperature&quot;)) %&gt;%
+  select(-contains(&quot;value&quot;)) %&gt;%
+  pivot_wider(values_from = contains(&quot;resid&quot;)) %&gt;%
+  ggplot(aes(resid_temperature, resid_fgco2_int)) +
+  # geom_vline(xintercept = 0) +
+  # geom_hline(yintercept = 0) +
+  geom_smooth(
+    data = . %&gt;% filter(year != 2023),
+    method = &quot;lm&quot;,
+    fill = &quot;grey&quot;,
+    col = &quot;grey40&quot;,
+    fullrange = TRUE,
+        level = 0.68
+  ) +
+  geom_linerange(
+    data = . %&gt;% filter(!year %in% c(2023, 1997, 2015)),
+    aes(
+      ymin = resid_fgco2_int - resid_sd_fgco2_int,
+      ymax = resid_fgco2_int + resid_sd_fgco2_int,
+      col = &quot;1990-2022&quot;
     )
-  ) %&gt;% 
-  select(-c(value, fit)) %&gt;%
-  pivot_wider(values_from = resid) %&gt;%
-  pivot_longer(-c(product, year, biome, fgco2_int)) %&gt;% 
-  group_by(product, name, biome) %&gt;% 
-  summarise(correlation = cor(fgco2_int, value)) %&gt;% 
-  ungroup() %&gt;% 
-  group_by(name) %&gt;% 
-  mutate(correlation_mean = mean(abs(correlation), na.rm = TRUE)) %&gt;% 
-  ungroup() %&gt;% 
-  mutate(name = fct_reorder(name, correlation_mean)) %&gt;% 
-  ggplot(aes(product,name,fill=correlation)) +
-  geom_tile() +
-  scale_fill_divergent() +
-  facet_wrap(~ biome) +
-  labs(title = &quot;Correlation with FCO2 on a annual mean basis&quot;) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1),
-        axis.title = element_blank(),
-        legend.position = c(0.85,0.1),
-        legend.direction = &quot;horizontal&quot;)</code></pre>
+  ) +
+  geom_linerange(
+    data = . %&gt;% filter(!year %in% c(2023, 1997, 2015)),
+    aes(
+      xmin = resid_temperature - resid_sd_temperature,
+      xmax = resid_temperature + resid_sd_temperature,
+      col = &quot;1990-2022&quot;
+    )
+  ) +
+  geom_point(data = . %&gt;% filter(!year %in% c(2023, 1997, 2015)),
+             aes(fill = &quot;1990-2022&quot;),
+             shape = 21) +
+  scale_color_manual(values = &quot;grey60&quot;, name = &quot;X&quot;) +
+  scale_fill_manual(values = &quot;grey60&quot;, name = &quot;X&quot;) +
+  new_scale_fill() +
+  new_scale_color() +
+  geom_linerange(
+    data = . %&gt;% filter(year %in% c(2023, 1997, 2015)),
+    aes(
+      ymin = resid_fgco2_int - resid_sd_fgco2_int,
+      ymax = resid_fgco2_int + resid_sd_fgco2_int,
+      col = as.factor(year)
+    ),
+    linewidth = 1
+  ) +
+  geom_linerange(
+    data = . %&gt;% filter(year %in% c(2023, 1997, 2015)),
+    aes(
+      xmin = resid_temperature - resid_sd_temperature,
+      xmax = resid_temperature + resid_sd_temperature,
+      col = as.factor(year)
+    ),
+    linewidth = 1
+  ) +
+  geom_point(
+    data = . %&gt;% filter(year %in% c(2023, 1997, 2015)),
+    aes(fill = as.factor(year)),
+    shape = 21,
+    size = 3
+  )  +
+  scale_fill_manual(values = rev(warm_cool_gradient[c(17, 13, 20)]),
+                    guide = guide_legend(reverse = TRUE, order = 2)) +
+  scale_color_manual(values = rev(warm_cool_gradient[c(17, 13, 20)]),
+                     guide = guide_legend(reverse = TRUE, order = 2)) +
+  labs(y = labels_breaks(&quot;fgco2_int&quot;)$i_legend_title,
+       x = labels_breaks(unique(&quot;temperature&quot;))$i_legend_title) +
+  facet_wrap(~ biome, scales = &quot;free&quot;,
+             ncol = 4) +
+  # theme_classic() +
+  theme(
+    axis.title.x = element_markdown(),
+    axis.title.y = element_markdown(),
+    legend.title = element_blank(),
+    legend.position = &quot;top&quot;
+  )</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-4.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_annual_biome_key-4">
@@ -12681,6 +13985,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-4.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-4.png" target="_blank">9fe7d3d</a>
@@ -12740,8 +14055,14 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_biome_monthly_anomaly %&gt;%
-filter(
+<pre class="r"><code>ggsave(width = 9,
+       height = 12,
+       dpi = 600,
+       filename = &quot;../output/biome_anomaly_correlation_ensemble_mean_pco2_products_all_biomes.jpg&quot;)
+
+
+pco2_product_biome_annual_anomaly %&gt;%
+  filter(
     biome %in% c(&quot;Global non-polar&quot;, key_biomes),
     name %in% c(
       &quot;fgco2_int&quot;,
@@ -12759,7 +14080,7 @@ filter(
   ) %&gt;% 
   select(-c(value, fit)) %&gt;%
   pivot_wider(values_from = resid) %&gt;%
-  pivot_longer(-c(product, year, month, biome, fgco2_int)) %&gt;% 
+  pivot_longer(-c(product, year, biome, fgco2_int)) %&gt;% 
   group_by(product, name, biome) %&gt;% 
   summarise(correlation = cor(fgco2_int, value)) %&gt;% 
   ungroup() %&gt;% 
@@ -12771,7 +14092,7 @@ filter(
   geom_tile() +
   scale_fill_divergent() +
   facet_wrap(~ biome) +
-  labs(title = &quot;Correlation with FCO2 on a monthly mean basis&quot;) +
+  labs(title = &quot;Correlation with FCO2 on a annual mean basis&quot;) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         axis.title = element_blank(),
         legend.position = c(0.85,0.1),
@@ -12800,6 +14121,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-5.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-5.png" target="_blank">9fe7d3d</a>
@@ -12879,18 +14211,22 @@ filter(
   select(-c(value, fit)) %&gt;%
   pivot_wider(values_from = resid) %&gt;%
   pivot_longer(-c(product, year, month, biome, fgco2_int)) %&gt;% 
-  group_by(product, name, biome, month) %&gt;% 
+  group_by(product, name, biome) %&gt;% 
   summarise(correlation = cor(fgco2_int, value)) %&gt;% 
   ungroup() %&gt;% 
   group_by(name) %&gt;% 
   mutate(correlation_mean = mean(abs(correlation), na.rm = TRUE)) %&gt;% 
   ungroup() %&gt;% 
   mutate(name = fct_reorder(name, correlation_mean)) %&gt;% 
-  ggplot(aes(month, correlation, col = name)) +
-  geom_hline(yintercept = 0) +
-  geom_path() +
-  facet_grid(product ~ biome) +
-  labs(title = &quot;Correlation with FCO2 on a monthly mean basis&quot;)</code></pre>
+  ggplot(aes(product,name,fill=correlation)) +
+  geom_tile() +
+  scale_fill_divergent() +
+  facet_wrap(~ biome) +
+  labs(title = &quot;Correlation with FCO2 on a monthly mean basis&quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        axis.title = element_blank(),
+        legend.position = c(0.85,0.1),
+        legend.direction = &quot;horizontal&quot;)</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-anomalies_correlation_absolute_annual_biome_key-6">
@@ -12915,6 +14251,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-6.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/9fe7d3dead455a4a678431018e914297b1ed3f78/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-6.png" target="_blank">9fe7d3d</a>
@@ -12974,6 +14321,39 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>pco2_product_biome_monthly_anomaly %&gt;%
+filter(
+    biome %in% c(&quot;Global non-polar&quot;, key_biomes),
+    name %in% c(
+      &quot;fgco2_int&quot;,
+      &quot;chl&quot;,
+      &quot;dfco2&quot;,
+      &quot;sfco2&quot;,
+      &quot;atm_fco2&quot;,
+      &quot;temperature&quot;,
+      &quot;sdissic&quot;,
+      &quot;no3&quot;,
+      &quot;int_pp&quot;,
+      &quot;mld&quot;,
+      &quot;kw_sol&quot;
+    )
+  ) %&gt;% 
+  select(-c(value, fit)) %&gt;%
+  pivot_wider(values_from = resid) %&gt;%
+  pivot_longer(-c(product, year, month, biome, fgco2_int)) %&gt;% 
+  group_by(product, name, biome, month) %&gt;% 
+  summarise(correlation = cor(fgco2_int, value)) %&gt;% 
+  ungroup() %&gt;% 
+  group_by(name) %&gt;% 
+  mutate(correlation_mean = mean(abs(correlation), na.rm = TRUE)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(name = fct_reorder(name, correlation_mean)) %&gt;% 
+  ggplot(aes(month, correlation, col = name)) +
+  geom_hline(yintercept = 0) +
+  geom_path() +
+  facet_grid(product ~ biome) +
+  labs(title = &quot;Correlation with FCO2 on a monthly mean basis&quot;)</code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/anomalies_correlation_absolute_annual_biome_key-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sst-based-prediction" class="section level3">
 <h3>SST based prediction</h3>
@@ -13116,6 +14496,28 @@ jens-daniel-mueller
 
 
 pco2_product_biome_annual_anomaly_temperature_predict %&gt;% 
+  filter(year == 2023,
+         biome == &quot;Global non-polar&quot;,
+         product %in% pco2_product_list) %&gt;% 
+  select(product,
+         year,
+         biome,
+         `true anomaly` = fgco2_int,
+         `SST pattern` = fgco2_predict_int,
+         `SST mean` = fgco2_predict_int_biome) %&gt;% 
+  pivot_longer(4:6,
+               values_to = &quot;resid&quot;) %&gt;% 
+  group_by(name) %&gt;% 
+  summarise(sd = sd(resid),
+            mean = mean(resid)) %&gt;% 
+  ungroup()</code></pre>
+<pre><code># A tibble: 3 × 3
+  name             sd    mean
+  &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;
+1 SST mean     0.0383 -0.106 
+2 SST pattern  0.0198 -0.0986
+3 true anomaly 0.122   0.168 </code></pre>
+<pre class="r"><code>pco2_product_biome_annual_anomaly_temperature_predict %&gt;% 
   select(product,
          year,
          biome,
@@ -14188,12 +15590,15 @@ jens-daniel-mueller
   filter(product %in% pco2_product_list) %&gt;%
   group_by(year, name, biome, product) %&gt;%
   summarise(resid = mean(resid)) %&gt;%
-  ungroup() %&gt;%
+  ungroup()
+
+pco2_product_biome_annual_fCO2_decomposition_ensemble &lt;-
+  pco2_product_biome_annual_fCO2_decomposition %&gt;%
   group_by(year, name, biome) %&gt;%
   summarise(resid_sd = sd(resid), resid = mean(resid)) %&gt;%
   ungroup()
 
-pco2_product_biome_annual_fCO2_decomposition %&gt;%
+pco2_product_biome_annual_fCO2_decomposition_ensemble %&gt;%
   ggplot(aes(year, resid, colour = name)) +
   geom_hline(yintercept = 0) +
   geom_path() +
@@ -14280,7 +15685,7 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_biome_annual_fCO2_decomposition %&gt;%
+<pre class="r"><code>pco2_product_biome_annual_fCO2_decomposition_ensemble %&gt;%
   pivot_wider(values_from = contains(&quot;resid&quot;)) %&gt;% 
   ggplot(aes(resid_sfco2_therm, resid_sfco2_nontherm, col = &quot;observed&quot;)) +
   geom_vline(xintercept = 0) +
@@ -14372,7 +15777,7 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_biome_annual_fCO2_decomposition %&gt;%
+<pre class="r"><code>pco2_product_biome_annual_fCO2_decomposition_ensemble %&gt;%
   filter(year == 2023) %&gt;%
   ggplot(aes(name, resid, fill = name)) +
   geom_hline(yintercept = 0) +
@@ -14470,7 +15875,7 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>pco2_product_biome_annual_fCO2_decomposition %&gt;%
+<pre class="r"><code>pco2_product_biome_annual_fCO2_decomposition_ensemble %&gt;%
   filter(year == 2023, biome %in% c(&quot;PEQU-E&quot;, &quot;NA-STPS&quot;)) %&gt;%
   mutate(name = case_when(
     name == &quot;sfco2_therm&quot; ~ &quot;thermal&quot;,
@@ -14503,7 +15908,7 @@ jens-daniel-mueller
     axis.title.x = element_blank(),
     axis.title.y = element_markdown(),
     strip.background = element_blank(),
-    strip.text = element_text(face = &quot;bold&quot;, size = 16),
+    strip.text = element_text(face = &quot;bold&quot;, size = 12),
     axis.line.x = element_blank(),
     legend.position = &quot;none&quot;
   )</code></pre>
@@ -14578,14 +15983,13 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code># ggsave(width = 6,
-#        height = 3,
-#        dpi = 600,
-#        filename = &quot;../output/biome_annual_fco2_decomposition.jpg&quot;)
+<pre class="r"><code>ggsave(width = 4,
+       height = 2.5,
+       dpi = 1200,
+       filename = &quot;../output/biome_annual_fco2_decomposition.jpg&quot;)
 
-pco2_product_biome_annual_fCO2_decomposition %&gt;%
-  filter(year == 2023,
-         biome == &quot;Global non-polar&quot;) %&gt;%
+pco2_product_biome_annual_fCO2_decomposition_ensemble %&gt;%
+  filter(year == 2023) %&gt;%
   mutate(name = case_when(
     name == &quot;sfco2_therm&quot; ~ &quot;thermal&quot;,
     name == &quot;sfco2_nontherm&quot; ~ &quot;non-thermal&quot;,
@@ -14600,13 +16004,29 @@ pco2_product_biome_annual_fCO2_decomposition %&gt;%
     ymin = resid - resid_sd,
     ymax = resid + resid_sd
   ), col = &quot;grey20&quot;) +
-  scale_color_manual(values = c(warm_color, cold_color, &quot;grey20&quot;)) +
-  scale_fill_manual(values = c(warm_color, cold_color, &quot;grey20&quot;)) +
+  scale_color_manual(values = c(warm_color, cold_color, &quot;grey80&quot;)) +
+  scale_fill_manual(values = c(warm_color, cold_color, &quot;grey80&quot;)) +
+  geom_point(
+    data = pco2_product_biome_annual_fCO2_decomposition %&gt;%
+      filter(year == 2023) %&gt;%
+      mutate(
+        name = case_when(
+          name == &quot;sfco2_therm&quot; ~ &quot;thermal&quot;,
+          name == &quot;sfco2_nontherm&quot; ~ &quot;non-thermal&quot;,
+          name == &quot;sfco2_total&quot; ~ &quot;total&quot;
+        ),
+        name = fct_inorder(name)
+      ),
+    aes(shape = product), col = &quot;grey20&quot;
+  ) +
+  scale_shape_manual(values = shape_products, name = &quot;fCO2 products&quot;) +
   labs(y = labels_breaks(&quot;sfco2&quot;)$i_legend_title) +
   facet_wrap(. ~ biome, scales = &quot;free_y&quot;, ncol = 4) +
   theme(
     legend.title = element_blank(),
-    legend.position = c(0.9,0.1),
+    legend.position = c(0.75, 0.1),
+    legend.direction = &quot;vertical&quot;,
+    legend.box = &quot;horizontal&quot;,
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     axis.title.x = element_blank(),
@@ -14635,6 +16055,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/1398df06dd2cb73fd990b18f89cbe9899224ae80/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/pCO2_decomposition_ensemble-5.png" target="_blank">1398df0</a>
+</td>
+<td>
+jens-daniel-mueller
+</td>
+<td>
+2025-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jens-daniel-mueller/heatwave_co2_flux_2023/blob/c250079f616dedee840c7888789630dca3f6e89f/docs/figure/pco2_product_synopsis_2023_GCB.Rmd/pCO2_decomposition_ensemble-5.png" target="_blank">c250079</a>
@@ -14697,7 +16128,7 @@ jens-daniel-mueller
 <pre class="r"><code>ggsave(width = 7,
        height = 7,
        dpi = 600,
-       filename = &quot;../output/biome_annual_fco2_decomposition_all_biomes.jpg&quot;)</code></pre>
+       filename = &quot;../output/biome_annual_fco2_decomposition_all_biomes.pdf&quot;)</code></pre>
 </div>
 <div id="flux-attribution-2" class="section level2">
 <h2>Flux attribution</h2>
@@ -14727,7 +16158,7 @@ pco2_product_biome_annual_flux_attribution_ensemble %&gt;%
   ) +
   scale_fill_manual(values = color_products) +
   scale_y_continuous(breaks = seq(-10, 10, 0.1)) +
-  labs(y = labels_breaks(unique(&quot;fgco2&quot;))$i_legend_title) +
+  labs(y = labels_breaks(unique(&quot;fgco2&quot;))$i_legend_title)+
   facet_grid(
     biome ~ name,
     labeller = labeller(name = x_axis_labels),
@@ -14829,21 +16260,28 @@ jens-daniel-mueller
 </div>
 </div>
 <pre class="r"><code>pco2_product_biome_annual_flux_attribution_ensemble %&gt;%
-  ggplot() +
+  ggplot(aes(name, resid, fill = name)) +
   geom_hline(yintercept = 0) +
   geom_col(aes(name, resid, fill = name), col = &quot;grey20&quot;) +
   geom_linerange(aes(
-    name,
     ymin = resid - resid_sd,
     ymax = resid + resid_sd
   ), col = &quot;grey20&quot;) +
   scale_fill_bright(labels = x_axis_labels) +
+  geom_point(
+    data = pco2_product_biome_annual_flux_attribution %&gt;%
+      filter(product %in% pco2_product_list),
+    aes(shape = product), col = &quot;grey20&quot;
+  ) +
+  scale_shape_manual(values = shape_products, name = &quot;fCO2 products&quot;) +
   labs(y = labels_breaks(unique(&quot;fgco2&quot;))$i_legend_title) +
   facet_wrap( ~ biome, scales = &quot;free_y&quot;, ncol = 4) +
   theme(
     legend.title = element_blank(),
     legend.text = element_markdown(),
-    legend.position = c(0.8,0.1),
+    legend.position = c(0.75, 0.1),
+    legend.direction = &quot;vertical&quot;,
+    legend.box = &quot;horizontal&quot;,
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     axis.title.x = element_blank(),
@@ -16048,25 +17486,25 @@ jens-daniel-mueller
        dpi = 600,
        filename = &quot;../output/biome_seasonal_anomaly_fgco2_sst_ensemble_mean_pco2_products.jpg&quot;)
 
-pco2_product_biome_monthly_flux_attribution %&gt;%
+
+pco2_product_biome_monthly_detrended %&gt;%
   filter(product %in% pco2_product_list) %&gt;%
   group_by(year, month, biome, name) %&gt;%
   summarise(across(where(is.numeric), mean)) %&gt;%
   ungroup() %&gt;%
-  filter(name %in% c(&quot;resid_fgco2_dfco2&quot;, &quot;resid_fgco2_kw_sol&quot;),
-         biome %in% key_biomes) %&gt;%
-  p_season(dim_col = &quot;biome&quot;,
-           title = &quot;Ensemble mean drivers of flux anomaly&quot;,
-           scales = &quot;fixed&quot;) +
+  filter(name %in% c(&quot;temperature&quot;, &quot;fgco2&quot;), biome %in% key_biomes[2:3]) %&gt;%
+  p_season(dim_col = &quot;biome&quot;, 
+           title = &quot;Ensemble mean anomalies from predicted monthly mean&quot;) +
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank()) +
   new_scale_color() +
   scale_color_manual(values = warm_cool_gradient[15]) +
   geom_path(
-    data = pco2_product_biome_monthly_flux_attribution %&gt;%
+    data = pco2_product_biome_monthly_detrended %&gt;%
       filter(
         product %in% gobm_product_list,
         year == 2023,
-        name %in% c(&quot;resid_fgco2_dfco2&quot;, &quot;resid_fgco2_kw_sol&quot;),
-        biome %in% key_biomes
+        name %in% c(&quot;temperature&quot;, &quot;fgco2&quot;),
+        biome %in% key_biomes[2:3]
       ) %&gt;%
       group_by(year, month, biome, name) %&gt;%
       summarise(across(where(is.numeric), mean)) %&gt;%
@@ -16144,20 +17582,36 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
-<pre class="r"><code>ggsave(width = 9,
+<pre class="r"><code>ggsave(width = 8,
        height = 4,
-       dpi = 600,
-       filename = &quot;../output/biome_seasonal_anomaly_fgco2_attribution_ensemble_mean_pco2_products.jpg&quot;)
+       dpi = 1200,
+       filename = &quot;../output/biome_seasonal_anomaly_fgco2_sst_ensemble_mean_pco2_products_2_biomes.jpg&quot;)
 
-pco2_product_biome_monthly_fCO2_decomposition %&gt;%
+pco2_product_biome_monthly_flux_attribution %&gt;%
   filter(product %in% pco2_product_list) %&gt;%
   group_by(year, month, biome, name) %&gt;%
   summarise(across(where(is.numeric), mean)) %&gt;%
   ungroup() %&gt;%
-  filter(name %in% c(&quot;sfco2_nontherm&quot;, &quot;sfco2_therm&quot;, &quot;sfco2_total&quot;),
-         biome %in% c(&quot;Global non-polar&quot;, key_biomes)) %&gt;%
+  filter(name %in% c(&quot;resid_fgco2_dfco2&quot;, &quot;resid_fgco2_kw_sol&quot;),
+         biome %in% key_biomes) %&gt;%
   p_season(dim_col = &quot;biome&quot;,
-           title = &quot;Ensemble mean decomposition of fCO2 anomaly&quot;)  </code></pre>
+           title = &quot;Ensemble mean drivers of flux anomaly&quot;,
+           scales = &quot;fixed&quot;) +
+  new_scale_color() +
+  scale_color_manual(values = warm_cool_gradient[15]) +
+  geom_path(
+    data = pco2_product_biome_monthly_flux_attribution %&gt;%
+      filter(
+        product %in% gobm_product_list,
+        year == 2023,
+        name %in% c(&quot;resid_fgco2_dfco2&quot;, &quot;resid_fgco2_kw_sol&quot;),
+        biome %in% key_biomes
+      ) %&gt;%
+      group_by(year, month, biome, name) %&gt;%
+      summarise(across(where(is.numeric), mean)) %&gt;%
+      ungroup(),
+    aes(month, resid, col = &quot;2023\nGOBM mean&quot;)
+  )</code></pre>
 <p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/merged_seasonality_ensemble_mean-4.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-merged_seasonality_ensemble_mean-4">
@@ -16240,6 +17694,21 @@ jens-daniel-mueller
 </table>
 </div>
 </div>
+<pre class="r"><code>ggsave(width = 9,
+       height = 4,
+       dpi = 600,
+       filename = &quot;../output/biome_seasonal_anomaly_fgco2_attribution_ensemble_mean_pco2_products.jpg&quot;)
+
+pco2_product_biome_monthly_fCO2_decomposition %&gt;%
+  filter(product %in% pco2_product_list) %&gt;%
+  group_by(year, month, biome, name) %&gt;%
+  summarise(across(where(is.numeric), mean)) %&gt;%
+  ungroup() %&gt;%
+  filter(name %in% c(&quot;sfco2_nontherm&quot;, &quot;sfco2_therm&quot;, &quot;sfco2_total&quot;),
+         biome %in% c(&quot;Global non-polar&quot;, key_biomes)) %&gt;%
+  p_season(dim_col = &quot;biome&quot;,
+           title = &quot;Ensemble mean decomposition of fCO2 anomaly&quot;)  </code></pre>
+<p><img src="figure/pco2_product_synopsis_2023_GCB.Rmd/merged_seasonality_ensemble_mean-5.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggsave(width = 9,
        height = 4,
        dpi = 600,
@@ -17920,7 +19389,126 @@ ggsave(plot = wrap_plots(plot_list,
        width = 10,
        height = 6,
        dpi = 600,
-       filename = &quot;../output/profiles_hovmoeller_ensemble_mean_gobm_evolution.jpg&quot;)</code></pre>
+       filename = &quot;../output/profiles_hovmoeller_ensemble_mean_gobm_evolution.jpg&quot;)
+
+
+plot_list_left &lt;-
+  pco2_product_profiles_monthly_ensemble %&gt;%
+  filter(biome == &quot;NA-STPS&quot;) %&gt;% 
+  arrange(month) %&gt;%
+  group_by(name, biome, depth) %&gt;%
+  mutate(resid = if_else(name == &quot;sdissic_stalk&quot;, resid - first(resid), resid)) %&gt;%
+  ungroup() %&gt;%
+  group_split(biome, name) %&gt;%
+  map(
+    ~ ggplot(data = .x) +
+      geom_contour_filled(aes(month, depth, z = resid),
+                          breaks = labels_breaks_hov(.x %&gt;% distinct(name),
+                                                     .x %&gt;% distinct(biome))$i_breaks) +
+      geom_line(aes(month, mld)) +
+      scale_fill_gradientn(
+        colours = warm_cool_gradient,
+        super = ScaleDiscretised,
+        name = labels_breaks_hov(.x %&gt;% distinct(name),
+                                   .x %&gt;% distinct(biome))$i_legend_title,
+        labels = labels_breaks_hov(.x %&gt;% distinct(name),
+                                   .x %&gt;% distinct(biome))$i_breaks_labels
+      ) +
+      # scale_fill_gradientn(
+      #   colours = warm_cool_gradient,
+      #   rescaler = ~ scales::rescale_mid(.x, mid = 0),
+      #   super = ScaleDiscretised,
+      #   name = labels_breaks(.x %&gt;% distinct(name))$i_legend_title
+      # ) +
+      scale_y_continuous(
+        trans = trans_reverser(&quot;sqrt&quot;),
+        breaks = c(20, 50, 100, 200, 400)
+      ) +
+      coord_cartesian(expand = 0, ylim = c(300, NA)) +
+      labs(y = &quot;Depth (m)&quot;,
+           x = &quot;Month&quot;) +
+      facet_wrap(~ biome) +
+      guides(
+        fill = guide_colorsteps(
+          barheight = unit(0.3, &quot;cm&quot;),
+          barwidth = unit(5, &quot;cm&quot;),
+          ticks = TRUE,
+          ticks.colour = &quot;grey20&quot;,
+          frame.colour = &quot;grey20&quot;,
+          label.position = &quot;top&quot;,
+          direction = &quot;horizontal&quot;
+        )
+      ) +
+      theme(
+        legend.position = &quot;top&quot;,
+        legend.box.spacing = unit(0.1, &quot;cm&quot;),
+        legend.title = element_markdown(hjust = 1,
+                                        lineheight = 1.5)
+      )
+  )
+
+plot_list_right &lt;-
+  pco2_product_profiles_monthly_ensemble %&gt;%
+  filter(biome == &quot;PEQU-E&quot;) %&gt;% 
+  arrange(month) %&gt;%
+  group_by(name, biome, depth) %&gt;%
+  mutate(resid = if_else(name == &quot;sdissic_stalk&quot;, resid - first(resid), resid)) %&gt;%
+  ungroup() %&gt;%
+  group_split(biome, name) %&gt;%
+  # tail(4) %&gt;%
+  map(
+    ~ ggplot(data = .x) +
+      geom_contour_filled(aes(month, depth, z = resid),
+                          breaks = labels_breaks_hov(.x %&gt;% distinct(name),
+                                                     .x %&gt;% distinct(biome))$i_breaks) +
+      geom_line(aes(month, mld)) +
+      scale_fill_gradientn(
+        colours = warm_cool_gradient,
+        super = ScaleDiscretised,
+        name = labels_breaks_hov(.x %&gt;% distinct(name),
+                                   .x %&gt;% distinct(biome))$i_legend_title,
+        labels = labels_breaks_hov(.x %&gt;% distinct(name),
+                                   .x %&gt;% distinct(biome))$i_breaks_labels
+      ) +
+      scale_y_continuous(
+        trans = trans_reverser(&quot;sqrt&quot;),
+        breaks = c(20, 50, 100, 200, 400)
+      ) +
+      coord_cartesian(expand = 0, ylim = c(300, NA)) +
+      labs(y = &quot;Depth (m)&quot;, x = &quot;Month&quot;)+
+      facet_wrap(~ biome) +
+      guides(
+        fill = guide_colorsteps(
+          barheight = unit(0.3, &quot;cm&quot;),
+          barwidth = unit(5, &quot;cm&quot;),
+          ticks = TRUE,
+          ticks.colour = &quot;grey20&quot;,
+          frame.colour = &quot;grey20&quot;,
+          label.position = &quot;top&quot;,
+          direction = &quot;horizontal&quot;
+        )
+      ) +
+      theme(
+        legend.position = &quot;top&quot;,
+        # legend.margin = margin(0, 0, 0, 0),
+        # legend.justification = &quot;left&quot;,
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        legend.title.align = 1,
+        legend.box.spacing = unit(0.1, &quot;cm&quot;),
+        legend.title = element_blank()
+      )
+  )
+
+plot_list &lt;- c(plot_list_left, plot_list_right)
+
+ggsave(plot = wrap_plots(plot_list,
+                         ncol = 2,
+                         byrow = FALSE),
+       width = 7,
+       height = 6,
+       dpi = 1200,
+       filename = &quot;../output/profiles_hovmoeller_ensemble_mean_gobm_evolution_2_biomes.jpg&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
